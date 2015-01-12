@@ -1,6 +1,6 @@
-package org.geoint.acetate.lang.temp;
+package org.geoint.acetate.data.temp;
 
-import org.geoint.acetate.unit.TempUnit;
+import org.geoint.acetate.data.unit.TempUnit;
 
 /**
  *

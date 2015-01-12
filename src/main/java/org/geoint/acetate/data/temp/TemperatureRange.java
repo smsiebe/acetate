@@ -1,9 +1,9 @@
-package org.geoint.acetate.lang.temp;
+package org.geoint.acetate.data.temp;
 
-import org.geoint.acetate.lang.DoubleRange;
-import org.geoint.acetate.lang.Ranged;
-import org.geoint.acetate.lang.UnboundedRangeException;
-import org.geoint.acetate.unit.TempUnit;
+import org.geoint.acetate.data.common.DoubleRange;
+import org.geoint.acetate.data.common.Ranged;
+import org.geoint.acetate.data.common.UnboundedRangeException;
+import org.geoint.acetate.data.unit.TempUnit;
 
 /**
  * A temperature range that internally manages the temperatures in celsius.

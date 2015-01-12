@@ -1,4 +1,4 @@
-package org.geoint.acetate.lang;
+package org.geoint.acetate.data.common;
 
 /**
  * Thrown when a comparison value against a range is attempted by the range

@@ -1,4 +1,4 @@
-package org.geoint.acetate.lang;
+package org.geoint.acetate.data.common;
 
 /**
  * Identifies a data type that has an (optional) lower limit and (optional)

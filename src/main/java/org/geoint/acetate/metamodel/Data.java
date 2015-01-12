@@ -1,4 +1,4 @@
-package org.geoint.acetate.data;
+package org.geoint.acetate.metamodel;
 
 /**
  * Metadata model of a data structure.

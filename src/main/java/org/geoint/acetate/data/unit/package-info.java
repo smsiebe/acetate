@@ -1,4 +1,4 @@
 /**
  * Data units of measure support.
  */
-package org.geoint.acetate.unit;
+package org.geoint.acetate.data.unit;

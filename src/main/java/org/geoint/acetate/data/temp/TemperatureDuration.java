@@ -1,4 +1,4 @@
-package org.geoint.acetate.lang.temp;
+package org.geoint.acetate.data.temp;
 
 import java.time.Duration;
 import java.util.Objects;
