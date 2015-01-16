@@ -7,13 +7,15 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Identifies a method as an operation.
+ * Identifies an annotation as one that is used by the acetate data binding
+ * framework.
  *
- * An Operation will not be data bound.
+ * This annotation is used internally to help identify those annotations that
+ * are of consequence to acetate.
  */
 @Documented
-@Target(ElementType.METHOD)
+@Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Operation {
+public @interface Model {
 
 }
