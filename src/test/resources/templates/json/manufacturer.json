@@ -1,0 +1,6 @@
+{
+    "id": "{$id}",
+    "name": "{$name}",
+    "companyUrl": "{$companyUrl}",
+    "ebayUrl": "{$ebayUrl}"
+}

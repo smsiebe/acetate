@@ -27,7 +27,7 @@ public abstract class AbstractStreamCodec<F> implements StreamCodec<F> {
     }
 
     @Override
-    public byte[] convert(F dataItem) throws AcetateTransformException {
+    public byte[] encode(F dataItem) throws AcetateTransformException {
         try (ByteArrayOutputStream os = new ByteArrayOutputStream();
                 WritableByteChannel channel = Channels.newChannel(os)) {
             this.to(dataItem, channel);
@@ -42,7 +42,7 @@ public abstract class AbstractStreamCodec<F> implements StreamCodec<F> {
     }
 
     @Override
-    public F invert(byte[] acetate) throws AcetateTransformException {
+    public F decode(byte[] acetate) throws AcetateTransformException {
         try (ByteArrayInputStream is = new ByteArrayInputStream(acetate);
                 ReadableByteChannel channel = Channels.newChannel(is)) {
             return this.from(channel);

@@ -1,0 +1,11 @@
+{
+    "product": "{$productId}",
+    "totalQuantity": "{$quantityInStock}",
+    "averageCost": "{$averageCost}",
+    "locations": [
+        {
+            "quantity": "{$locations.quantity}",
+            "locaton": "{$locations.address}"
+        }
+    ]
+}

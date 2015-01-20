@@ -4,6 +4,6 @@ package org.geoint.acetate.metamodel;
 /**
  *
  */
-public interface DataModelBuilder {
+public interface DataModelBuilder<F> {
 
 }

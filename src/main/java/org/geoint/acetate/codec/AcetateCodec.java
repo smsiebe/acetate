@@ -19,7 +19,7 @@ public interface AcetateCodec<F, T> {
      * @return the alternative format
      * @throws AcetateTransformException thrown if there is a conversion problem
      */
-    T convert(F dataItem) throws AcetateTransformException;
+    T encode(F dataItem) throws AcetateTransformException;
 
     /**
      * Inverts an alternative data item representation to a java object.
@@ -32,5 +32,5 @@ public interface AcetateCodec<F, T> {
      * @return the java object
      * @throws AcetateTransformException thrown if there is a conversion problem
      */
-    F invert(T acetate) throws AcetateTransformException;
+    F decode(T acetate) throws AcetateTransformException;
 }

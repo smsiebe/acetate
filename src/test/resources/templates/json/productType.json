@@ -1,0 +1,11 @@
+{
+    "id": "{$id}",
+    "type": "{$name}",
+    "specification": [
+        {
+            "code": "{$specifications.code}",
+            "name": "{$specifications.name}",
+            "dataType": "{$specifications.datatype}"
+        }
+    ]
+}

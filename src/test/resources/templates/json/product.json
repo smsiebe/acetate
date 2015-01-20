@@ -1,0 +1,10 @@
+{
+    "id": "{$id}",
+    "type": "{$productType.name}",
+    "manufacturer": "${manufacturer.name}",
+    "name": "{$name}",
+    "model": "{$model}",
+    "specifications": {
+        "{$specifications.key}":"{$specifications.value}"
+    }
+}
