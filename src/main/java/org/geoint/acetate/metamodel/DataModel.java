@@ -20,7 +20,7 @@ public final class DataModel<F> {
     }
 
     /**
-     * Bind a java object to this model.
+     * Binds a java object to this model.
      *
      * @param instance object to bind against this model
      * @return binding object
