@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Map;
 import org.geoint.acetate.bind.DataBinder;
+import org.geoint.acetate.impl.bind.DefaultDataBinder;
 import org.geoint.acetate.codec.AcetateTransformException;
 import org.geoint.acetate.template.DataTemplate;
 
@@ -15,7 +16,7 @@ public final class DataModel<F> {
 
     private final Map<String, FieldModel<F, ?, ?>> fields; //key is a field alias
 
-    public DataModel(Map<String, FieldModel<F, ?, ?>> fields) {
+    private DataModel(Map<String, FieldModel<F, ?, ?>> fields) {
         this.fields = fields;
     }
 

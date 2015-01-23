@@ -1,8 +1,10 @@
-package org.geoint.acetate.bind;
+package org.geoint.acetate.impl.bind;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import org.geoint.acetate.bind.DataBinder;
+import org.geoint.acetate.bind.FieldBinder;
 import org.geoint.acetate.metamodel.DataModel;
 
 /**

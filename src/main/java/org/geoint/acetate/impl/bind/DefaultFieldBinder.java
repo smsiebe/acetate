@@ -1,5 +1,6 @@
-package org.geoint.acetate.bind;
+package org.geoint.acetate.impl.bind;
 
+import org.geoint.acetate.bind.FieldBinder;
 import org.geoint.acetate.codec.AcetateTransformException;
 import org.geoint.acetate.metamodel.FieldModel;
 
