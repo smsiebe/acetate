@@ -1,4 +1,4 @@
-package org.geoint.acetate.data;
+package org.geoint.acetate.data.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -12,10 +12,8 @@ import org.geoint.acetate.metamodel.annotation.Model;
  * Identifies a data item field as the globally unique identifier for the data
  * item instance.
  *
- * For simplicity, all data items serialized by acetate must have GUID assigned
- * to it. We could have make exceptional cases, but that increases what you need
- * to know about the framework. Simply put - if you have an Object, make sure
- * somewhere in its inheritance chain there is a field annotated with GUID.
+ * All data items serialized by acetate <b>SHOULD</b> have GUID assigned to it.
+ * Having a GUID allows the various formatters to bind much more cleanly.
  *
  */
 @Documented

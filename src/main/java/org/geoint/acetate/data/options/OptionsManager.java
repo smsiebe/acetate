@@ -1,4 +1,4 @@
-package org.geoint.acetate.data.unit.options;
+package org.geoint.acetate.data.options;
 
 import java.util.Collection;
 
