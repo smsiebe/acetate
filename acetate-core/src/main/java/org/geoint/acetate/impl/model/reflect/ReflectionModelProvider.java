@@ -1,6 +1,6 @@
 package org.geoint.acetate.impl.model.reflect;
 
-import org.geoint.acetate.impl.plugin.DefaultPlugin;
+import org.geoint.acetate.impl.plugin.DefaultProvider;
 import org.geoint.acetate.spi.model.ModelProvider;
 
 /**
@@ -8,7 +8,7 @@ import org.geoint.acetate.spi.model.ModelProvider;
  * 
  * This is the default {@link ModelProvider}.
  */
-@DefaultPlugin
+@DefaultProvider
 public final class ReflectionModelProvider implements ModelProvider {
 d
 }
