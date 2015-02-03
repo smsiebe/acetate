@@ -1,6 +1,6 @@
 package org.geoint.acetate.impl.bind;
 
-import org.geoint.acetate.bind.FieldBinder;
+import org.geoint.acetate.bind.BoundField;
 import org.geoint.acetate.codec.AcetateTransformException;
 import org.geoint.acetate.metamodel.FieldModel;
 
@@ -11,7 +11,7 @@ import org.geoint.acetate.metamodel.FieldModel;
  * @param <F> the value of the field
  * @param <T> the value of the field after encoding
  */
-public class DefaultFieldBinder<D, F, T> implements FieldBinder<D, F, T> {
+public class DefaultFieldBinder<D, F, T> implements BoundField<D, F, T> {
 
     private final FieldModel<D, F, T> model;
     private final D dataItem;

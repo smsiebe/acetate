@@ -3,44 +3,43 @@ package org.geoint.acetate.template;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import org.geoint.acetate.bind.DataBinder;
-import org.geoint.acetate.codec.AcetateTransformException;
+import org.geoint.acetate.bind.BoundData;
+import org.geoint.acetate.codec.AcetateCodecException;
 import org.geoint.acetate.metamodel.DataModel;
 
 /**
- * Templates are a specialized format-aware bidirectional data transformer,
- * mapping data from a document to an instance or an instance of a data
+ * Templates are a specialized format-aware bidirectional structured data
+ * binder, mapping data from a document to an instance or an instance of a data
  * document.
  *
  * Templates can also (optionally) create schemas based on their data format.
  */
 public interface DataTemplate {
 
-    /**
-     * Encodes a data item to the format defined by this template.
-     *
-     * @param <F> data type that is bound
-     * @param binder the binding object
-     * @param out where the data format is written
-     * @throws AcetateTransformException if there are data transformation
-     * problems
-     * @throws IOException if there are problems writing
-     */
-    <F> void encode(DataBinder<F> binder, OutputStream out)
-            throws AcetateTransformException, IOException;
+    <T> BoundData<T> read(DataModel<T> model, InputStream in)
+            throws IOException, AcetateCodecException;
+
+//    <T> BoundData<T> read(DataModel<T> model, InputStream in,
+//            TemplateFilter... filters) throws IOException, AcetateCodecException;
+
+    void write(BoundData<?> data, OutputStream out)
+            throws IOException, AcetateCodecException;
+
+//    void write(BoundData<?> data, OutputStream out, TemplateFilter... filters)
+//            throws IOException, AcetateCodecException;
 
     /**
-     * Decode a data document into a data item using the template and data
-     * model.
+     * Optional method; creates a mime type specific schema based on the
+     * template and model.
      *
-     * @param <F> object type that is to be created
-     * @param in formatted data information
-     * @param model data model to use
-     * @return bound data item
-     * @throws AcetateTransformException if there are data transformation
-     * problems
-     * @throws IOException if there are problems reading
+     * @param model model with which to bind the template
+     * @param out stream to write the schema
+     * @throws IOException if there are problems writing to the stream
+     * @throws UnsupportedOperationException if not supported
      */
-    <F> DataBinder<F> decode(InputStream in, DataModel<F> model)
-            throws AcetateTransformException, IOException;
+    void writeSchema(DataModel<?> model, OutputStream out)
+            throws IOException, UnsupportedOperationException;
+
+    boolean isSchemaSupported();
+
 }

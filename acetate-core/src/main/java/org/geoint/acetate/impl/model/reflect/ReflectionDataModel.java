@@ -6,7 +6,7 @@ import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.geoint.acetate.bind.DataBinder;
+import org.geoint.acetate.bind.BoundData;
 import org.geoint.acetate.data.annotation.Operation;
 import org.geoint.acetate.metamodel.DataModel;
 import org.geoint.acetate.metamodel.DataModelBuilder;
@@ -46,7 +46,7 @@ public class ReflectionDataModel<F> implements DataModel<F> {
     }
 
     @Override
-    public DataBinder<F> bind(F instance) {
+    public BoundData<F> bind(F instance) {
 
     }
 
