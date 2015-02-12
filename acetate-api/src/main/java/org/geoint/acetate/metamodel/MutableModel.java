@@ -7,8 +7,10 @@ import org.geoint.acetate.codec.AcetateCodec;
  *
  * Note that DataModel instances must be immutable, so any MutableModel must be
  * a decorated/proxy model.
+ *
+ * @param <T> root class type modeled
  */
-public interface MutableModel {
+public interface MutableModel<T> {
 
     /**
      * Adds a new field to the data model.
@@ -48,12 +50,14 @@ public interface MutableModel {
     /**
      * Adds a codec to a specific field.
      *
+     * @param <T> to type
+     * @param <F> from type
      * @param fieldName absolute field name
      * @param codec codec to set for this field
      * @return the model the codec was applied, or null if there is not field by
      * this name in the model
      */
-    FieldModel<?, ?> setCodec(String fieldName, AcetateCodec<?, ?> codec);
+    <T,F> FieldModel<?, T> setCodec(String fieldName, AcetateCodec<T, F> codec);
 
     /**
      * Adds a codec that is used for any field that returns the type defined by
