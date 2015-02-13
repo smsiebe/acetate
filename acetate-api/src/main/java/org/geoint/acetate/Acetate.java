@@ -1,5 +1,6 @@
 package org.geoint.acetate;
 
+import org.geoint.acetate.metamodel.ModelException;
 import org.geoint.acetate.metamodel.MutableModel;
 import org.geoint.acetate.spi.model.ModelProvider;
 
@@ -21,10 +22,11 @@ public final class Acetate {
      * @param <T> root class type of the model
      * @param clazz root class of the model
      * @return mutable data model
+     * @throws ModelException if the model could not be created
      */
-    public static <T> MutableModel<T> mutableModel(Class<T> clazz) {
+    public static <T> MutableModel<T> mutableModel(Class<T> clazz)
+            throws ModelException {
         return defaultModelProvider.mutableModel(clazz);
     }
-    
 
 }
