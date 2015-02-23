@@ -13,8 +13,28 @@ import org.geoint.acetate.metamodel.MutableModel;
  */
 public interface ModelProvider {
 
+    /**
+     * Creates a data model from the provided class.
+     *
+     * @param <T> data model type
+     * @param clazz class from which to model
+     * @return the data model
+     * @throws ModelException thrown if the provider could not model the
+     * provided class
+     */
     <T> DataModel<T> model(Class<T> clazz) throws ModelException;
 
+    /**
+     * Creates a mutable model based on the provided class.
+     *
+     * The returned model can be changed programmatically.
+     *
+     * @param <T> data model type
+     * @param clazz class from which to model
+     * @return the data model
+     * @throws ModelException thrown if the provider could not model the
+     * provided class
+     */
     <T> MutableModel<T> mutableModel(Class<T> clazz) throws ModelException;
 
 }

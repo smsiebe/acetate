@@ -3,24 +3,32 @@ package org.geoint.acetate.impl.model.reflect;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.Collection;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.geoint.acetate.bind.BoundData;
 import org.geoint.acetate.data.annotation.Operation;
 import org.geoint.acetate.metamodel.DataModel;
-import org.geoint.acetate.metamodel.DataModelBuilder;
 import org.geoint.acetate.metamodel.FieldAccessor;
 import org.geoint.acetate.metamodel.FieldModel;
 
 /**
  * Model generation using reflection.
  *
+ * Reflection isn't the most sexiest approach, but it's a simple solution that
+ * has pretty good performance right out of the box (no dependencies).
+ *
  * @param <F> data item type
  */
 public class ReflectionDataModel<F> implements DataModel<F> {
 
-    private Collection<ReflectionFieldModel<F, ?, ?>> fields;
+    /*
+     * key: field path
+     * value: field model
+     */
+    private Map<String, ReflectionFieldModel<?, ?, ?>> fields;
     private static final Logger logger = Logger.getLogger(ReflectionDataModel.class.getName());
 
     /**
@@ -32,21 +40,50 @@ public class ReflectionDataModel<F> implements DataModel<F> {
      * @return data model for the data item type
      */
     public static <F> ReflectionDataModel<F> from(Class<F> type) {
-        return DefaultModelBuilder.modelFrom(type).build();
-    }
-
-    @Override
-    public FieldModel<?, ?, ?> getField(String alias) {
-
-    }
-
-    @Override
-    public Collection<FieldModel<?, ?, ?>> getFields() {
 
     }
 
     @Override
     public BoundData<F> bind(F instance) {
+
+    }
+
+    /*
+     * Returns field accessors and mutators in a single pass over the class.
+     */
+    private FieldModel[] findFields(Class<?> type) {
+        Map<String, FieldModel> fields = new HashMap<>();
+        Arrays.stream(type.getMethods()).parallel()
+                .filter((m) -> ReflectionDataModel::isOperation)
+                
+                
+    }
+
+    /*
+     * Predicated used to check if a method is annotated with the 
+     * Operation annotation.
+     */
+    private boolean isOperation(Method m) {
+        return m.getAnnotation(Operation.class) != null;
+    }
+
+    /**
+     * Predicate used to determine if a method is a setter.
+     *
+     * @param m
+     * @return
+     */
+    private boolean isSetter(Method m) {
+
+    }
+
+    /**
+     * Predicate used to determine if the method is an accessor.
+     *
+     * @param m
+     * @return
+     */
+    private boolean isGetter(Method m) {
 
     }
 

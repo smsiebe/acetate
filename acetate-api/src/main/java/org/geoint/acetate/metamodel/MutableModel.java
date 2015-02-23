@@ -10,7 +10,7 @@ import org.geoint.acetate.codec.AcetateCodec;
  *
  * @param <T> root class type modeled
  */
-public interface MutableModel<T> {
+public interface MutableModel<T> extends DataModel<T>{
 
     /**
      * Adds a new field to the data model.

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import org.geoint.acetate.bind.BoundData;
 import org.geoint.acetate.codec.AcetateCodec;
 import org.geoint.acetate.metamodel.DataModel;
 import org.geoint.acetate.metamodel.FieldAccessor;
@@ -16,32 +17,19 @@ import org.geoint.acetate.metamodel.MutableModel;
  *
  * This is not thread safe.
  *
+ * @param <T>
  */
-public final class MutableModelDecorator implements MutableModel {
+public final class MutableModelDecorator<T> implements MutableModel<T> {
 
+    private final DataModel<T> baseModel;
     //key is a field alias name, the map value is a ref to the field model
     private final Map<String, DefaultFieldModel<?, ?>> fields;
     private final Map<DefaultFieldModel<?, ?>, Collection<AcetateCodec<?, ?>>> codecs;
 
-    private MutableModelDecorator(Class<F> dataType) {
-        this.dataType = dataType;
+    public MutableModelDecorator(DataModel<T> baseModel) {
+        this.baseModel = baseModel;
         this.fields = new HashMap<>();
         this.codecs = new HashMap<>();
-    }
-
-    /**
-     * Create a model builder that models for the specific object type.
-     *
-     * This method does not attempt to build a "base model" based on the class;
-     * this creates a empty builder.
-     *
-     * @param <F> object type
-     * @param dataType object type to model
-     * @return model builder
-     */
-    public static <F> MutableModelDecorator<F> forClass(Class<F> dataType) {
-        MutableModelDecorator<F> builder = new MutableModelDecorator<>(dataType);
-        return builder;
     }
 
     @Override
@@ -74,27 +62,4 @@ public final class MutableModelDecorator implements MutableModel {
         return model;
     }
 
-    @Override
-    public FieldModel<?, ?> setCodec(String fieldName, AcetateCodec<?, ?> codec) {
-
-    }
-
-    @Override
-    public void addCodec(AcetateCodec<?, ?> codec) {
-
-    }
-
-    public DataModel<F> build() {
-
-    }
-
-    private FieldModel<?, ?> setField(DefaultFieldModel<?, ?> model) {
-
-        if (model != null) {
-            //link all aliases to the new field model
-            model.getNames().forEach((a) -> fields.put(a, model));
-        }
-
-        return model;
-    }
 }
