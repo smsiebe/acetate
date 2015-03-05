@@ -8,12 +8,14 @@ import org.geoint.acetate.bind.BoundData;
 import org.geoint.acetate.codec.AcetateCodec;
 import org.geoint.acetate.metamodel.DataModel;
 import org.geoint.acetate.metamodel.FieldAccessor;
-import org.geoint.acetate.metamodel.FieldModel;
+import org.geoint.acetate.metamodel.ModelField;
 import org.geoint.acetate.metamodel.FieldSetter;
 import org.geoint.acetate.metamodel.MutableModel;
 
 /**
- * Decorates a DataModel to provide mutable capabilities.
+ * Provides a "mutable" model layer on top of a DataModel, allowing for 
+ * changes to the resultant model but without changes to the underlying 
+ * DataModel.
  *
  * This is not thread safe.
  *
@@ -33,7 +35,7 @@ public final class MutableModelDecorator<T> implements MutableModel<T> {
     }
 
     @Override
-    public <P, T> FieldModel<?, ?> setField(String name,
+    public <P, T> ModelField<?, ?> setField(String name,
             FieldAccessor<P, T> accessor,
             FieldSetter<P, T> setter) {
         DefaultFieldModel<?, ?> model = new DefaultFieldModel(accessor, setter, name);
@@ -41,8 +43,8 @@ public final class MutableModelDecorator<T> implements MutableModel<T> {
     }
 
     @Override
-    public FieldModel<?, ?> removeField(String name) {
-        FieldModel<?, ?> removed = fields.remove(name);
+    public ModelField<?, ?> removeComponent(String name) {
+        ModelField<?, ?> removed = fields.remove(name);
 
         if (removed != null) {
             //remove all aliases/references
@@ -53,7 +55,7 @@ public final class MutableModelDecorator<T> implements MutableModel<T> {
     }
 
     @Override
-    public FieldModel<?, ?> addAlias(String name, String... newAliases) {
+    public ModelField<?, ?> addAlias(String name, String... newAliases) {
         DefaultFieldModel<?, ?> model = fields.get(name);
         if (model != null) {
             model = DefaultFieldModel.addAliases(model, newAliases);

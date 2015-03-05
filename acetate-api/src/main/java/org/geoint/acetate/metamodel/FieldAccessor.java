@@ -3,11 +3,11 @@ package org.geoint.acetate.metamodel;
 /**
  * Retrieves the value of a field.
  *
- * @param <D> data object to retrieve the data from
- * @param <F> field value
+ * @param <P> containing object type
+ * @param <F> field value type
  */
 @FunctionalInterface
-public interface FieldAccessor<D, F> {
+public interface FieldAccessor<P, F> {
 
     /**
      * Return the value of the field.
@@ -15,5 +15,5 @@ public interface FieldAccessor<D, F> {
      * @param data data to retrieve the field data from
      * @return the field value or null
      */
-    F get(D data);
+    F get(P data);
 }

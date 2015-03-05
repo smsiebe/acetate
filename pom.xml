@@ -16,7 +16,10 @@
     </properties>
     <modules>
         <module>acetate-api</module>
+        <module>acetate-spi</module>
         <module>acetate-core</module>
+        <module>acetate-reflection</module>
         <module>acetate-json</module>
+        <module>acetate-jaxrs</module>
     </modules>
 </project>

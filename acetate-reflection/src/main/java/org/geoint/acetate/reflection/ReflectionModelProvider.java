@@ -1,4 +1,4 @@
-package org.geoint.acetate.impl.model.reflect;
+package org.geoint.acetate.reflection;
 
 import org.geoint.acetate.impl.model.MutableModelDecorator;
 import org.geoint.acetate.metamodel.DataModel;

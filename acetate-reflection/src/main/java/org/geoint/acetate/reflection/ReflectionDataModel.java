@@ -1,4 +1,4 @@
-package org.geoint.acetate.impl.model.reflect;
+package org.geoint.acetate.reflection;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import org.geoint.acetate.metamodel.FieldSetter;
 public class ReflectionDataModel<F> implements DataModel<F> {
 
     /*
-     * key: field path
+     * key: field name
      * value: field model
      */
     private Map<String, ReflectionFieldModel<?, ?, ?>> fields;
@@ -56,6 +56,8 @@ public class ReflectionDataModel<F> implements DataModel<F> {
         Map<String, FieldAccessor> accessors = new HashMap<>();
         Map<String, FieldSetter> setters = new HashMap<>();
         List<String> fieldNames = new ArrayList<>();
+        
+        //single pass over the class methods
         Arrays.stream(type.getMethods()).parallel()
                 .forEach((m) -> {
                     if (isOperation(m)) {

@@ -1,4 +1,4 @@
-package org.geoint.acetate.impl.model.reflect;
+package org.geoint.acetate.reflection;
 
 import java.util.Collection;
 import org.geoint.acetate.codec.AcetateCodec;

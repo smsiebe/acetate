@@ -4,10 +4,7 @@ import java.util.Collection;
 import org.geoint.acetate.metamodel.DataModel;
 
 /**
- * The binder links the DataModel to a java object, providing access to the data
- * model.
- *
- * This object must be immutable.
+ * The binder links the DataModel data values.
  *
  * @param <D> the object type being bound
  */
@@ -30,20 +27,16 @@ public interface BoundData<D> {
     /**
      * Data bound to the requested field.
      *
-     * @param name field name
+     * @param path absolute component path
      * @return field binder for the provided field name
      */
-    BoundField getField(String name);
+    BoundComponent<?> getComponent(String path);
 
     /**
-     * Any fields that were in the template but could not be matched back to the
-     * model.
-     *
-     * Extraction of unbound data is an optional feature for a DataTemplate and
-     * if supported may not contain all of the unbounded data within a document.
-     *
-     * @return non-backed collection of unmatched fields or empty collection
+     * Collection of data instances that are bound to a component name.
+     * @param path absolute component path
+     * @return bound component
      */
-    Collection<UnboundData> getUnmatched();
+    Collection<? extends BoundComponent<?>> getComponentCollection(String path);
 
 }

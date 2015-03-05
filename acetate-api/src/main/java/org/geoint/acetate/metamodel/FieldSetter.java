@@ -3,11 +3,11 @@ package org.geoint.acetate.metamodel;
 /**
  * Mutator of a fields data.
  *
- * @param <D> data item to set the value
+ * @param <P> containing object type
  * @param <F> the field value type
  */
 @FunctionalInterface
-public interface FieldSetter<D, F> {
+public interface FieldSetter<P, F> {
 
     /**
      * Set the value of the object.
@@ -16,5 +16,5 @@ public interface FieldSetter<D, F> {
      * @param value field value
      * @return true if the value was set, otherwise false
      */
-    boolean set(D dataItem, F value);
+    boolean set(P dataItem, F value);
 }
