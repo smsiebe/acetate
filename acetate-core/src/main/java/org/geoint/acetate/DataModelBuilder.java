@@ -1,7 +1,9 @@
 package org.geoint.acetate;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import org.geoint.acetate.bind.BoundData;
 import org.geoint.acetate.codec.AcetateCodec;
@@ -46,7 +48,8 @@ public class DataModelBuilder<R extends BoundData<?>> implements MutableModel<R>
 
     @Override
     public ModelComponent<?> addAlias(String name, String... aliases) {
-        if (aliases == null || aliases.length == 0) {
+        if (name == null || name.length == 0 || !components.contains(name)
+                || aliases == null || aliases.length == 0) {
             return null;
         }
 

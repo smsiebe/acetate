@@ -4,10 +4,10 @@ import java.util.Set;
 
 /**
  * A component of a data model.
- * 
- * The ModelComponent is the abstract parent type of a Composite Pattern
- * that defines the data model.
- * 
+ *
+ * The ModelComponent is the abstract parent type of a Composite Pattern that
+ * defines the data model.
+ *
  * @see ModelClass
  * @see ModelField
  * @param <T> value type
@@ -15,14 +15,8 @@ import java.util.Set;
 public interface ModelComponent<T> {
 
     /**
-     * Data component name, normally the actual name of the java class field.
-     *
-     * @return name of the field
-     */
-    String getName();
-
-    /**
-     * Alternative names (aliases) that can be used to address this field.
+     * All the names this component may be called in a template, as defined by
+     * the model.
      *
      * @return alternative names used by this field
      */
