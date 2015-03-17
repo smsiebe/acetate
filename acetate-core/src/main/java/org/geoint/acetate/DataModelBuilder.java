@@ -14,7 +14,7 @@ import org.geoint.acetate.metamodel.ModelClass;
 import org.geoint.acetate.metamodel.ModelComponent;
 import org.geoint.acetate.metamodel.MutableModel;
 import org.geoint.util.hierarchy.HierarchicalPath;
-import org.geoint.util.hierarchy.LinkedHierarchy;
+import org.geoint.util.hierarchy.impl.LinkedHierarchy;
 import org.geoint.util.hierarchy.MutableHierarchy;
 
 /**
