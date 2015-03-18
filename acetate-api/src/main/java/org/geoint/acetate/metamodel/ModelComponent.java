@@ -15,6 +15,13 @@ import java.util.Set;
 public interface ModelComponent<T> {
 
     /**
+     * Return the model component name.
+     *
+     * @return model component name
+     */
+    String getName();
+
+    /**
      * All the names this component may be called in a template, as defined by
      * the model.
      *
