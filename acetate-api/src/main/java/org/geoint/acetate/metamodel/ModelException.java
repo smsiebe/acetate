@@ -1,5 +1,6 @@
 package org.geoint.acetate.metamodel;
 
+import java.util.Optional;
 import org.geoint.acetate.AcetateException;
 
 /**
@@ -8,33 +9,33 @@ import org.geoint.acetate.AcetateException;
  */
 public abstract class ModelException extends AcetateException {
 
-    private final Class<?> modelType;
+    private final Optional<Class<?>> modelType;
 
     public ModelException(Class<?> modelType) {
-        this.modelType = modelType;
+        this.modelType = Optional.ofNullable(modelType);
     }
 
     public ModelException(Class<?> modelType, String message) {
         super(message);
-        this.modelType = modelType;
+        this.modelType = Optional.ofNullable(modelType);
     }
 
     public ModelException(Class<?> modelType, String message, Throwable cause) {
         super(message, cause);
-        this.modelType = modelType;
+        this.modelType = Optional.ofNullable(modelType);
     }
 
     public ModelException(Class<?> modelType, Throwable cause) {
         super(cause);
-        this.modelType = modelType;
+        this.modelType = Optional.ofNullable(modelType);
     }
 
     /**
      * Type of object that had modeling problems.
      *
-     * @return
+     * @return class type of the model, if known
      */
-    public Class<?> getModelType() {
+    public Optional<Class<?>> getModelType() {
         return modelType;
     }
 
