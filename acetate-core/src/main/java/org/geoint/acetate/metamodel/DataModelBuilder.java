@@ -16,8 +16,8 @@ public class DataModelBuilder<T> {
 
     private final ClassModelBuilder<T> root;
 
-    public DataModelBuilder() {
-        this.root = new ClassModelBuilder<>();
+    public DataModelBuilder(String name) {
+        this.root = new ClassModelBuilder<>(name);
     }
 
     public ClassModelBuilder<T> model() {
@@ -29,7 +29,7 @@ public class DataModelBuilder<T> {
     }
 
     @NotThreadSafe
-    public static abstract class ComponentModelBuilder<T> {
+    abstract class ComponentModelBuilder<T> {
 
         private final String name;
         private final Set<String> aliases; //alies for THIS component
