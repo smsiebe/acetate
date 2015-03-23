@@ -3,22 +3,22 @@ package org.geoint.acetate.metamodel;
 /**
  * Data field leaf node which provides access to an (optional) value.
  *
- * @param <C> container object type
- * @param <T> the value type
+ * @param <P> parent container object type
+ * @param <F> the field value type
  */
-public interface ModelField<C, T> extends ModelComponent<T> {
+public interface ModelField<P, F> extends ModelComponent<F> {
 
     /**
      * Accessor to the component value.
      *
      * @return value accessor
      */
-    FieldAccessor<C, T> getAccessor();
+    FieldAccessor<P, F> getAccessor();
 
     /**
      * Setter to change the component value
      *
      * @return value setter
      */
-    FieldSetter<C, T> getSetter();
+    FieldSetter<P, F> getSetter();
 }

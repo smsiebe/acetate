@@ -5,9 +5,8 @@ import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.geoint.acetate.metamodel.ModelException;
-import org.geoint.acetate.metamodel.MutableModel;
 import org.geoint.acetate.spi.model.ModelProvider;
-import org.geoint.acetate.spi.model.NoModelProviderException;
+import org.geoint.provider.NoProviderFoundException;
 
 /**
  * Convenience interface for most data binding operations.
@@ -46,7 +45,7 @@ public final class Acetate {
             throws ModelException {
         ModelProvider provider = defaultProvider();
         if (provider == null) {
-            throw new NoModelProviderException(clazz);
+            throw new NoProviderFoundException(clazz);
         }
         return provider.mutableModel(clazz);
     }
@@ -68,10 +67,10 @@ public final class Acetate {
      * </ol>
      *
      * @return default ModelProvider
-     * @throws NoModelProviderException if a default ModelProvider could not be
+     * @throws NoProviderFoundException if a default ModelProvider could not be
      * determined
      */
-    private static ModelProvider defaultProvider() throws NoModelProviderException {
+    private static ModelProvider defaultProvider() throws NoProviderFoundException {
         if (defaultModelProvider != null) {
             return defaultModelProvider;
         }

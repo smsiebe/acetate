@@ -21,7 +21,7 @@ public interface DataModel<D> {
     public BoundData<D> bind(D instance);
 
     /**
-     * Retrieve a field model for any field within the data model.
+     * Retrieve a component model for any path within the data model.
      *
      * The field path is a period (.) delimited field name hierarchy, supporting
      * field aliases at any level.
@@ -29,7 +29,7 @@ public interface DataModel<D> {
      * @param path fully qualified field path
      * @return model for the field, if no field returns null
      */
-    ModelField<?, ?> getField(String path);
+    ModelComponent<?> getComponent(String path);
 
     /**
      * The root model component.
