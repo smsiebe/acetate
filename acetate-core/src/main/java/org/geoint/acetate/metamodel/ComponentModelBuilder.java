@@ -1,31 +1,11 @@
 package org.geoint.acetate.metamodel;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import org.geoint.concurrent.NotThreadSafe;
-
 /**
+ * Common methods for building both class and field model components.
  *
- * @param <T>
+ * @param <T> component data type
  */
-@NotThreadSafe
-public abstract class ComponentModelBuilder<T> {
-
-    private final String name;
-    private final Set<String> aliases; //alies for THIS component
-    private final Map<String, ClassModelBuilder<?>> aggregates;
-    //all components (aggregates and fields), including aliases
-    //used as an in-memory index
-    private final Map<String, ComponentModelBuilder> components;
-
-    public ComponentModelBuilder(String name) {
-        this.name = name;
-        this.aggregates = new HashMap<>();
-        this.components = new HashMap<>();
-        this.aliases = new HashSet<>();
-    }
+public interface ComponentModelBuilder<T> {
 
     /**
      * Adds an alias for this component.
@@ -33,10 +13,7 @@ public abstract class ComponentModelBuilder<T> {
      * @param alias additional alias name for this component
      * @return this builder (fluid interface)
      */
-    public ComponentModelBuilder<T> withAlias(String alias) {
-        aliases.add(alias);
-        return this;
-    }
+    ComponentModelBuilder<T> alias(String alias);
 
     /**
      * Returns the builder for the specified model aggregate, creating a new one
@@ -48,9 +25,7 @@ public abstract class ComponentModelBuilder<T> {
      * @param name local model unique component name
      * @return builder for this aggregate
      */
-    public ClassModelBuilder<?> aggregate(String name) {
-        return getOrCreateComponent(name, (n) -> new ClassModelBuilder(n));
-    }
+    ClassModelBuilder<?> aggregate(String name);
 
     /**
      * Returns the builder for the specified model aggregate, creating a new one
@@ -64,49 +39,6 @@ public abstract class ComponentModelBuilder<T> {
      * @param type class type of the aggregate
      * @return builder for this aggregate
      */
-    public <T> ComponentModelBuilder<T> aggregate(String name, Class<T> type) {
-        return getOrCreateComponent(name, (n) -> new ClassModelBuilder<T>(n));
-    }
+    <T> ComponentModelBuilder<T> aggregate(String name, Class<T> type);
 
-    /**
-     * Builds the model components recursively.
-     *
-     * @return model component
-     */
-    public abstract ModelComponent<T> build();
-
-    /**
-     * Adds a new component to the builder.
-     *
-     * This method must be called by all subclasses that with to add a new,
-     * perhaps specialized, component.
-     *
-     * @param <M> component model builder type that is created
-     * @param name name of the component
-     * @param factory factory to builder a new component as needed
-     * @return the component builder for this component
-     */
-    protected final <M extends ComponentModelBuilder<?>>
-            M getOrCreateComponent(String name, ComponentBuilderFactory<M> factory) {
-
-        if (components.containsKey(name)) {
-            return (M) components.get(name);
-        }
-
-        M mb = factory.create(name);
-        this.components.put(name, mb);
-        return mb;
-    }
-
-    /**
-     * Functional interface used to asynchronously create a
-     * ComponentModelBuilder after it's determined that the builder can be made.
-     *
-     * @param <B> component builder type
-     */
-    @FunctionalInterface
-    protected static interface ComponentBuilderFactory<B extends ComponentModelBuilder> {
-
-        B create(String name);
-    }
 }

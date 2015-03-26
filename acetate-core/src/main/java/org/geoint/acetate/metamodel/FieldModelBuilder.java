@@ -1,22 +1,28 @@
 package org.geoint.acetate.metamodel;
 
-import org.geoint.acetate.metamodel.DataModelBuilder.ComponentModelBuilder;
-
 /**
+ * Builder for adding a new field to the model.
  *
- * @param <P>
- * @param <F>
+ * @param <P> data type of the component that contains this field
+ * @param <F> data type of the field
  */
-public class FieldModelBuilder<P, F>
-        extends ComponentModelBuilder<F, ModelField<P, F>> {
+public interface FieldModelBuilder<P, F>
+        extends ComponentModelBuilder<F> {
 
-    public FieldModelBuilder(String name) {
-        super(name);
-    }
+    /**
+     * Accessor to retrieve the field data value.
+     *
+     * @param accessor accessor to retrieve the data value
+     * @return this builder
+     */
+    FieldModelBuilder<P, F> accessor(FieldAccessor<P, F> accessor);
 
-    @Override
-    protected ModelField<P, F> build() {
-
-    }
+    /**
+     * Setter to mutate the field data value.
+     *
+     * @param setter setter to mutate the data value
+     * @return this builder
+     */
+    FieldModelBuilder<P, F> setter(FieldSetter<P, F> setter);
 
 }

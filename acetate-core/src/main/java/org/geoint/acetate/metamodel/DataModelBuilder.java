@@ -3,6 +3,8 @@ package org.geoint.acetate.metamodel;
 import org.geoint.acetate.bind.BoundData;
 import org.geoint.concurrent.NotThreadSafe;
 import org.geoint.util.hierarchy.Hierarchy;
+import org.geoint.util.hierarchy.impl.StandardHierarchy;
+import org.geoint.util.hierarchy.impl.StandardHierarchyBuilder;
 
 /**
  * API to programmatically create a data model.
@@ -10,12 +12,12 @@ import org.geoint.util.hierarchy.Hierarchy;
  * @param <T> type of object that is intended to be bound to this model
  */
 @NotThreadSafe
-public class DataModelBuilder<T> {
+public final class DataModelBuilder<T> {
 
-    private final ClassModelBuilder<T> root;
+    private final StandardHierarchyBuilder<ComponentModelBuilder> model;
 
     public DataModelBuilder(String name) {
-        this.root = new ClassModelBuilder<>(name);
+        this.model.child(name).withValue(new ClassModelBuilder<>(name));
     }
 
     public ClassModelBuilder<T> model() {
@@ -26,16 +28,21 @@ public class DataModelBuilder<T> {
         return DataModelImpl.from(root);
     }
 
-    protected static class DataModelImpl<T> implements DataModel<T> {
+    private static class DataModelImpl<T> implements DataModel<T> {
 
-        private final StandardHierarchy<ModelComponent<?>> root;
+        private final StandardHierarchy<ModelComponent<?>> model;
 
-        public DataModelImpl(ModelClass<?> root) {
-            this.root = root;
+        private DataModelImpl(StandardHierarchy<ModelComponent<?>> model) {
+            this.model = model;
         }
 
-        public static <T> DataModel<T> from(ClassModelBuilder<T> builder) {
-            return new DataModelImpl(builder.build());
+        public static <T> DataModel<T> from(ClassModelBuilder<T> rootBuilder) {
+            
+            //build a Hierarchy from the model
+            StandardHierarchyBuilder<ModelComponent<?>> b 
+                    = StandardHierarchy.builder();
+
+            return new DataModelImpl();
         }
 
         @Override
