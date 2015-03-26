@@ -6,7 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.geoint.acetate.metamodel.ModelException;
 import org.geoint.acetate.spi.model.ModelProvider;
-import org.geoint.provider.NoProviderFoundException;
+import org.geoint.extension.NoProviderFoundException;
 
 /**
  * Convenience interface for most data binding operations.
