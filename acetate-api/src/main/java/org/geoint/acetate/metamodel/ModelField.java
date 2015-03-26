@@ -9,14 +9,14 @@ package org.geoint.acetate.metamodel;
 public interface ModelField<P, F> extends ModelComponent<F> {
 
     /**
-     * Accessor to the component value.
+     * Accessor to the field data value.
      *
      * @return value accessor
      */
     FieldAccessor<P, F> getAccessor();
 
     /**
-     * Setter to change the component value
+     * Setter to change the field data value.
      *
      * @return value setter
      */

@@ -8,12 +8,14 @@ package org.geoint.acetate.metamodel;
 public interface ModelClass<T> extends ModelComponent<T>, Iterable<ModelComponent<T>> {
 
     /**
-     * Retrieve a field of this class by its relative name or alias (not full
-     * path).
+     * Retrieve a child field property of this component by its name or alias.
+     *
+     * Similar to {@link ModelComponent#getComponent(String) } but ignores
+     * fields.
      *
      * @param alias field name or alias
-     * @return matching field or null if no field matches
+     * @return the field model or null if not found
      */
-    ModelComponent<T> getComponent(String alias);
+    ModelField<T, ?> getField(String alias);
 
 }

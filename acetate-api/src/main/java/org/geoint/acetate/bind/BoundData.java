@@ -4,25 +4,25 @@ import java.util.Collection;
 import org.geoint.acetate.metamodel.DataModel;
 
 /**
- * The binder links the DataModel data values.
+ * DataModel + data binder.
  *
- * @param <D> the object type being bound
+ * @param <T> the object type being bound
  */
-public interface BoundData<D> {
+public interface BoundData<T> {
 
     /**
      * Retrieve the structured model for this data.
      *
      * @return the data object
      */
-    DataModel<D> getModel();
+    DataModel<T> getModel();
 
     /**
      * Java Object from the bound data.
      *
      * @return bound data object
      */
-    D getValue();
+    T asObject();
 
     /**
      * Data bound to the requested field.

@@ -1,47 +1,22 @@
 package org.geoint.acetate.metamodel;
 
-import java.util.Iterator;
-import java.util.Set;
-import org.geoint.acetate.metamodel.DataModelBuilder.ComponentModelBuilder;
 import org.geoint.concurrent.NotThreadSafe;
 
 /**
+ * Build a new class (aggregate).
  *
- * @param <T>
+ * @param <T> data type of the class
  */
 @NotThreadSafe
-public class ClassModelBuilder<T> extends ComponentModelBuilder<T, ModelClass<T>> {
+public class ClassModelBuilder<T> extends ComponentModelBuilder<T> {
 
     public ClassModelBuilder(String name) {
         super(name);
     }
 
     @Override
-    protected ModelClass<T> build() {
+    public ModelClass<T> build() {
 
     }
 
-    private static class ModelClassImpl<T> implements ModelClass<T> {
-
-        @Override
-        public ModelComponent<T> getComponent(String alias) {
-
-        }
-
-        @Override
-        public String getName() {
-
-        }
-
-        @Override
-        public Set<String> getAliases() {
-
-        }
-
-        @Override
-        public Iterator<ModelComponent<T>> iterator() {
-
-        }
-
-    }
 }

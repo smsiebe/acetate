@@ -1,10 +1,11 @@
 package org.geoint.acetate.bind;
 
 import java.util.Collection;
-import org.geoint.acetate.metamodel.DataModel;
+import org.geoint.acetate.metamodel.ModelComponent;
 
 /**
- * A component within the object graph from which data values can be retreived.
+ * A component (aggregate or field) within the object graph from which data
+ * values can be retrieved.
  */
 public interface BoundComponent<T> {
 
@@ -16,11 +17,11 @@ public interface BoundComponent<T> {
     T getValue();
 
     /**
-     * Data model used to bind the data.
+     * Data model for the bound component.
      *
-     * @return data model used in binding
+     * @return model component for this data
      */
-    DataModel<T> getModel();
+    ModelComponent<T> getModel();
 
     /**
      * Retrieves an object component by absolute path name.

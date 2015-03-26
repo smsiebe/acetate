@@ -29,4 +29,23 @@ public interface ModelComponent<T> {
      */
     Set<String> getAliases();
 
+    /**
+     * Retrieve a child data property (field or aggregate) of this component by
+     * its name or alias.
+     *
+     * @param alias field name or alias
+     * @return matching component or null if no child component matches
+     */
+    ModelComponent<T> getComponent(String alias);
+
+    /**
+     * Retrieve a child aggregate of this component by its name or alias.
+     *
+     * Similar to {@link #getComponent(String) } but ignores fields.
+     *
+     * @param alias aggregate name or alias
+     * @return matching aggregate model or null if not child aggregate matches
+     */
+    ModelClass<T> getAggregate(String alias);
+
 }

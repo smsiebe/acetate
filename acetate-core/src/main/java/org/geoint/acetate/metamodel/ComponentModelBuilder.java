@@ -15,7 +15,7 @@ public abstract class ComponentModelBuilder<T> {
 
     private final String name;
     private final Set<String> aliases; //alies for THIS component
-    private final Map<String, ? extends ClassModelBuilder<?>> aggregates;
+    private final Map<String, ClassModelBuilder<?>> aggregates;
     //all components (aggregates and fields), including aliases
     //used as an in-memory index
     private final Map<String, ComponentModelBuilder> components;
@@ -67,6 +67,13 @@ public abstract class ComponentModelBuilder<T> {
     public <T> ComponentModelBuilder<T> aggregate(String name, Class<T> type) {
         return getOrCreateComponent(name, (n) -> new ClassModelBuilder<T>(n));
     }
+
+    /**
+     * Builds the model components recursively.
+     *
+     * @return model component
+     */
+    public abstract ModelComponent<T> build();
 
     /**
      * Adds a new component to the builder.
