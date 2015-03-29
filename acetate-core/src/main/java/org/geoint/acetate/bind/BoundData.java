@@ -4,25 +4,18 @@ import java.util.Collection;
 import org.geoint.acetate.metamodel.DataModel;
 
 /**
- * DataModel + data binder.
+ * Bound data wraps a DataModel and a DataBinder, providing a programmatic
+ * interface to read data from the model.
  *
- * @param <T> the object type being bound
  */
-public interface BoundData<T> {
+public interface BoundData extends Hierarchy<BoundComponent> {
 
     /**
      * Retrieve the structured model for this data.
      *
      * @return the data object
      */
-    DataModel<T> getModel();
-
-    /**
-     * Java Object from the bound data.
-     *
-     * @return bound data object
-     */
-    T asObject();
+    DataModel getModel();
 
     /**
      * Data bound to the requested field.
