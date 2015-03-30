@@ -10,4 +10,11 @@
     <name>acetate-api</name>
     <packaging>jar</packaging>
     <description>Application API for the acetate data binding library.</description>
+    <dependencies>
+        <dependency>
+            <groupId>org.geoint</groupId>
+            <artifactId>geoint-common</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>
