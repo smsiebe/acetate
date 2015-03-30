@@ -7,7 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.geoint.acetate.data.annotation.GUID;
-import org.geoint.acetate.metamodel.annotation.Model;
+import org.geoint.acetate.model.annotation.Model;
 
 /**
  * Identifies the user that created the data item.

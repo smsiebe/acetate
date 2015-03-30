@@ -4,4 +4,4 @@
  * Metamodel annotations are used by acetate and acetate plugins to understand
  * the meaning or purpose of a field. 
  */
-package org.geoint.acetate.metamodel.annotation;
+package org.geoint.acetate.model.annotation;

@@ -3,8 +3,7 @@ package org.geoint.acetate;
 /**
  * Base exception class for all acetate checked exceptions.
  */
-public abstract class AcetateException extends Exception
-        implements AcetateThrowable {
+public abstract class AcetateException extends Exception {
 
     public AcetateException() {
     }
