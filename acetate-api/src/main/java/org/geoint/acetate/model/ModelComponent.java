@@ -1,11 +1,9 @@
 package org.geoint.acetate.model;
 
-import org.geoint.util.hierarchy.Hierarchical;
-
 /**
  *
  */
-public interface ModelComponent extends Hierarchical {
+public interface ModelComponent {
 
     /**
      * Return all aggregate components of the immediate model (non-recursive).

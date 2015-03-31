@@ -1,13 +1,11 @@
 package org.geoint.acetate.model;
 
-import org.geoint.util.hierarchy.Hierarchical;
-
 /**
  * Models a single, byte-serializable, data-bearing field of the model.
  *
  * @param <T> data type of the field
  */
-public interface FieldModel<T> extends Hierarchical<FieldModel<T>> {
+public interface FieldModel<T> extends ModelComponent {
 
     /**
      * Data type of the Field.

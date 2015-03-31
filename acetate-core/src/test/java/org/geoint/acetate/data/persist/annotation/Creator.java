@@ -6,7 +6,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.geoint.acetate.data.annotation.GUID;
+import org.geoint.acetate.model.annotation.GUID;
 import org.geoint.acetate.model.annotation.Model;
 
 /**
