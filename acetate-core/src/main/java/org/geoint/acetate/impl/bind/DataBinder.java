@@ -1,4 +1,4 @@
-package org.geoint.acetate.bind;
+package org.geoint.acetate.impl.bind;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,7 +7,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 
 /**
- * Binds a data to a model creating {@link BoundData}.
+ * Binds a data to a model creating {@link BoundDataImpl}.
  *
  * @param <T> java object data type this binder binds to
  */
@@ -20,13 +20,13 @@ public interface DataBinder<T> {
      */
     String getMediaType();
 
-    BoundData bind(InputStream in)
+    BoundDataImpl bind(InputStream in)
             throws IOException;
 
-    BoundData bind(ReadableByteChannel channel)
+    BoundDataImpl bind(ReadableByteChannel channel)
             throws IOException;
 
-    BoundData bind(BoundData bound);
+    BoundDataImpl bind(BoundDataImpl bound);
 
     void bind(InputStream in, OutputStream out)
             throws IOException;
@@ -34,9 +34,9 @@ public interface DataBinder<T> {
     void bind(ReadableByteChannel in, WritableByteChannel out)
             throws IOException;
 
-    void bind(BoundData bound, OutputStream out)
+    void bind(BoundDataImpl bound, OutputStream out)
             throws IOException;
 
-    void bind(BoundData bound, WritableByteChannel out)
+    void bind(BoundDataImpl bound, WritableByteChannel out)
             throws IOException;
 }

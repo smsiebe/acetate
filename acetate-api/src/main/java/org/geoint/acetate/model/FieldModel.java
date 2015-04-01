@@ -5,7 +5,7 @@ package org.geoint.acetate.model;
  *
  * @param <T> data type of the field
  */
-public interface FieldModel<T> extends ModelComponent {
+public interface FieldModel<T> extends ComponentModel {
 
     /**
      * Data type of the Field.

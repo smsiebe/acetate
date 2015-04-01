@@ -1,4 +1,4 @@
-package org.geoint.acetate.bind;
+package org.geoint.acetate.impl.bind;
 
 import java.util.LinkedHashMap;
 import org.geoint.acetate.model.DataModel;
@@ -8,15 +8,15 @@ import org.geoint.util.hierarchy.Hierarchy;
 import org.geoint.util.hierarchy.HierarchyBuilder;
 
 /**
- *
+ * 
  */
-public final class BoundData
-        extends BoundComponent
-        implements Hierarchy<BoundComponent> {
+public final class BoundDataImpl
+        extends BoundComponentImpl
+        implements Hierarchy<BoundComponentImpl> {
 
     private final DataModel model;
 
-    private BoundData(DataModel model) {
+    private BoundDataImpl(DataModel model) {
         super(HierarchicalPath.ROOT, new LinkedHashMap<>());
         this.model = model;
     }
@@ -26,13 +26,13 @@ public final class BoundData
     }
 
     public static class BoundDataBuilder
-            implements HierarchyBuilder<BoundComponent, BoundDataBuilder> {
+            implements HierarchyBuilder<BoundComponentImpl, BoundDataBuilder> {
 
-        private BoundData data;
+        private BoundDataImpl data;
         private HierarchicalPath position;
 
         public BoundDataBuilder(DataModel m) {
-            data = new BoundData(m);
+            data = new BoundDataImpl(m);
             position = HierarchicalPath.ROOT;
         }
 
@@ -67,13 +67,13 @@ public final class BoundData
         }
 
         @Override
-        public BoundDataBuilder merge(Hierarchical<BoundComponent> donor,
+        public BoundDataBuilder merge(Hierarchical<BoundComponentImpl> donor,
                 final boolean overwrite) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        public BoundData build() {
+        public BoundDataImpl build() {
             try {
                 return data;
             } finally {
