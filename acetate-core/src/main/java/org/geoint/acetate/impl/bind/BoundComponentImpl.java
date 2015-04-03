@@ -2,7 +2,7 @@ package org.geoint.acetate.impl.bind;
 
 import java.util.Map;
 import org.geoint.util.hierarchy.HierarchicalPath;
-import org.geoint.util.hierarchy.impl.AbstractHierarchical;
+import org.geoint.util.hierarchy.AbstractHierarchical;
 
 /**
  *
