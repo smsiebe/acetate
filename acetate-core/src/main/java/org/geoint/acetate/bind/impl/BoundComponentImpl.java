@@ -1,4 +1,4 @@
-package org.geoint.acetate.impl.bind;
+package org.geoint.acetate.bind.impl;
 
 import java.util.Map;
 import org.geoint.util.hierarchy.HierarchicalPath;

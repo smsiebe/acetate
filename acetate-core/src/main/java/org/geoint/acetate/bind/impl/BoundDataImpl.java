@@ -1,4 +1,4 @@
-package org.geoint.acetate.impl.bind;
+package org.geoint.acetate.bind.impl;
 
 import java.util.LinkedHashMap;
 import org.geoint.acetate.model.DataModel;
@@ -8,10 +8,9 @@ import org.geoint.util.hierarchy.Hierarchy;
 import org.geoint.util.hierarchy.HierarchyBuilder;
 
 /**
- * 
+ *
  */
-public final class BoundDataImpl
-        extends BoundComponentImpl
+public final class BoundDataImpl extends BoundComponentImpl
         implements Hierarchy<BoundComponentImpl> {
 
     private final DataModel model;
@@ -53,17 +52,17 @@ public final class BoundDataImpl
             this.position = position.getParent();
             return this;
         }
-        
-        public BoundDataBuilder setValue (String utf8) {
-            
+
+        public BoundDataBuilder setValue(String utf8) {
+
         }
-        
-        public BoundDataBuilder setValue (byte[] bytes) {
-            
+
+        public BoundDataBuilder setValue(byte[] bytes) {
+
         }
-        
-        public BoundDataBuilder setValue (Object obj) {
-            
+
+        public BoundDataBuilder setValue(Object obj) {
+
         }
 
         @Override

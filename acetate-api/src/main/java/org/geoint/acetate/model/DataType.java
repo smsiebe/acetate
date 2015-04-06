@@ -4,8 +4,8 @@ import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
 /**
- * Object which provides metadata on a data type as well as behavior to convert
- * the data type to/from binary, String, and Object representations.
+ * Pluggable data types which provide type meta and default
+ * conversions/formatting for standard binding operations.
  *
  * @param <T> java object for this type
  */

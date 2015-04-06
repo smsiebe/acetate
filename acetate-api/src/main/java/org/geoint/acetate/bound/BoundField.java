@@ -10,16 +10,18 @@ import org.geoint.acetate.model.FieldModel;
 public interface BoundField<T> {
 
     /**
-     * Data model of the field.
-     *
-     * @return field model
-     */
-    FieldModel<T> getModel();
-
-    /**
      * Data value.
      *
      * @return data value
      */
     T getValue();
+
+    /**
+     * Data model of the field.
+     *
+     * @return field model or null if the field is not bound to a known model
+     * component
+     */
+    FieldModel<T> getModel();
+
 }

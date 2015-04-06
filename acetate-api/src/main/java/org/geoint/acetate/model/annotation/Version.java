@@ -6,7 +6,6 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.geoint.acetate.model.annotation.Model;
 
 /**
  * Identifies a field as the model instance version field.
@@ -30,9 +29,8 @@ import org.geoint.acetate.model.annotation.Model;
  * string. The following field values are supported for Version:
  * <ul>
  * <li>an instance of java.lang.String, renderable with the UTF-8 charset</li>
- * <li>can be converted using {@link  String#valueOf(Object) } and not return the
- * value {@code null}</li>
- * <li>specify a {@link DataConverter}</li>
+ * <li>is a supported DataType, whereby the DataType string format will be
+ * used</li>
  * </ul>
  */
 @Documented

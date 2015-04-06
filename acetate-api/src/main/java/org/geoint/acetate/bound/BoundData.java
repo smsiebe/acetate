@@ -11,12 +11,38 @@ import org.geoint.acetate.model.ModelConstraintException;
 public interface BoundData {
 
     /**
+     * The bound data unique identity.
+     *
+     * @return unique data identity
+     */
+    String getGUID();
+
+    /**
+     * The bound data version, if supported.
+     *
+     * @return bound data version, or null if not supported for this data type
+     */
+    String getVersion();
+
+    /**
      * Return the data component(s) mapped to the specified path.
+     * <p>
+     * This method will return all components that were mapped to a specific
+     * path. Depending on the path, the data may be sourced from multiple class
+     * instances within the data mode.
      *
      * @param path data model path
      * @return data component(s) mapped to this model path
      */
     Collection<BoundField> get(String path);
+
+    /**
+     * Returns data component(s) that were read by a {@link DataBinder} but were
+     * not able to be mapped to a component in the {@link DataModel}.
+     *
+     * @return collection of sparse data fields
+     */
+    Collection<BoundField> getSparse();
 
     /**
      * Model field names that have had data mapped to it.
