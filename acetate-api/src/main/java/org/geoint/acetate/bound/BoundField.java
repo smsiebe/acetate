@@ -7,21 +7,27 @@ import org.geoint.acetate.model.FieldModel;
  *
  * @param <T> data type of the field
  */
-public interface BoundField<T> {
+public interface BoundField<T> extends BoundComponent<FieldModel<T>> {
 
     /**
-     * Data value.
+     * Data value as object.
      *
-     * @return data value
+     * @return data value as object
      */
-    T getValue();
+    T asObject();
 
     /**
-     * Data model of the field.
+     * Data value as binary.
      *
-     * @return field model or null if the field is not bound to a known model
-     * component
+     * @return data value as bytes
      */
-    FieldModel<T> getModel();
+    byte[] asBytes();
+
+    /**
+     * Data value as String.
+     *
+     * @return data value as String
+     */
+    String asString();
 
 }

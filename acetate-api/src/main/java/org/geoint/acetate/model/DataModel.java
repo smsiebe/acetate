@@ -1,5 +1,6 @@
 package org.geoint.acetate.model;
 
+import java.util.Optional;
 import org.geoint.acetate.bound.BoundData;
 
 /**
@@ -13,6 +14,28 @@ public interface DataModel {
      * @return model "root" component
      */
     ComponentModel getRoot();
+
+    /**
+     * Return the mode for the requested component.
+     *
+     * @param path component path
+     * @return model
+     */
+    ComponentModel get(String path);
+
+    /**
+     * Return the component model for the data models GUID field.
+     *
+     * @return model for the GUID field
+     */
+    FieldModel<?> getGUID();
+
+    /**
+     * Return the component model for the data models version field.
+     *
+     * @return version model for the data model
+     */
+    Optional<FieldModel<?>> getVersion();
 
     /**
      * Structural constraints placed on the model.

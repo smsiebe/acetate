@@ -1,18 +1,15 @@
 package org.geoint.acetate.model;
 
-import java.util.Collection;
-import org.geoint.acetate.model.annotation.Model;
-
 /**
  * Component of a data model.
  */
 public interface ComponentModel {
 
     /**
-     * The {@link Model} annotations detected for this component.
+     * The path of the data model component.
      *
-     * @return annotations identified as model relevant
+     * @return data model component path
      */
-    Collection<? extends Model> getModelAnnotations();
+    String getPath();
 
 }

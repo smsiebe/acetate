@@ -1,4 +1,4 @@
-package org.geoint.acetate.reflection;
+package org.geoint.acetate.bind.object.impl.reflect;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;

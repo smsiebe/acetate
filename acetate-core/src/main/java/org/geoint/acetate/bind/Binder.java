@@ -1,20 +1,28 @@
 package org.geoint.acetate.bind;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.geoint.acetate.Acetate;
+import org.geoint.acetate.bind.impl.BoundDataReader;
+import org.geoint.acetate.bind.impl.BoundDataWriter;
 import org.geoint.acetate.bind.spi.BinaryDataFormatter;
 import org.geoint.acetate.bind.spi.BindExceptionHandler;
+import org.geoint.acetate.bind.spi.BindingReader;
 import org.geoint.acetate.bind.spi.BindingStep;
 import org.geoint.acetate.bind.spi.BindingWriter;
 import org.geoint.acetate.bind.spi.DataBinder;
 import org.geoint.acetate.bind.spi.DataConverter;
 import org.geoint.acetate.bind.spi.StringDataFormatter;
 import org.geoint.acetate.bound.BoundData;
+import org.geoint.acetate.model.DataModel;
 import org.geoint.concurrent.ThreadSafe;
 
 /**
@@ -54,16 +62,25 @@ public final class Binder {
      * this method first than use {@link #bind(BoundData, DataBinder) }
      * to write from the bound data to the desired destination binder.
      *
+     * @param model data model of the data
      * @param binder data source binder
      * @return bound data
      * @throws DataBindException thrown if there are problems binding the data
      */
-    public BoundData bind(DataBinder binder) throws DataBindException {
+    public BoundData bind(DataModel model, DataBinder binder)
+            throws DataBindException {
         try {
-            rl.lock();
-            return readToBound(binder);
-        } finally {
-            rl.unlock();
+            BoundDataWriter bdw = new BoundDataWriter();
+            bind(model, binder.reader(), bdw);
+            return bdw.getBoundData();
+        } catch (IOException ex) {
+            DataBindException bex = new DataBindException(binder.getClass(),
+                    "Unable to retrieve reader from binder.",
+                    ex);
+            if (options.errorHandler.isPresent()) {
+                options.errorHandler.get().handle(bex);
+            }
+            throw bex;
         }
     }
 
@@ -76,27 +93,77 @@ public final class Binder {
      * on the binder types, option settings, etc this may be done anyway, but
      * we'll try to avoid it if we can.
      *
+     * @param model model of the data
      * @param from data source binder
      * @param to data destination binder
      * @throws DataBindException thrown if there are problems binding the data
      */
-    public void bind(DataBinder from, DataBinder to) throws DataBindException {
-        try {
-            rl.lock();
+    public void bind(DataModel model, DataBinder from, DataBinder to)
+            throws DataBindException {
+        BindingReader reader;
+        BindingWriter writer;
 
-        } finally {
-            rl.unlock();
+        try {
+            reader = from.reader();
+        } catch (IOException ex) {
+            DataBindException bex = new DataBindException(from.getClass(),
+                    "Unable to retrieve reader from binder.",
+                    ex);
+            if (options.errorHandler.isPresent()) {
+                options.errorHandler.get().handle(bex);
+            }
+            throw bex;
         }
+
+        try {
+            writer = to.writer();
+        } catch (IOException ex) {
+
+            DataBindException bex = new DataBindException(to.getClass(),
+                    "Unable to retrieve writer from binder.",
+                    ex);
+            if (options.errorHandler.isPresent()) {
+                options.errorHandler.get().handle(bex);
+            }
+            throw bex;
+        }
+
+        bind(model, reader, writer);
     }
 
     /**
      * Binds an instance of {@link BoundData} to the destination binder.
      *
-     * @param bound bound data
+     * @param bound bound data/model
      * @param to destination binder
      * @throws DataBindException thrown if there are problems binding the data
      */
     public void bind(BoundData bound, DataBinder to) throws DataBindException {
+        BindingWriter writer;
+        try {
+            writer = to.writer();
+        } catch (IOException ex) {
+            DataBindException bex = new DataBindException(to.getClass(),
+                    "Unable to retrieve writer from binder.",
+                    ex);
+            if (options.errorHandler.isPresent()) {
+                options.errorHandler.get().handle(bex);
+            }
+            throw bex;
+        }
+        bind(bound.getModel(), new BoundDataReader(bound), writer);
+    }
+
+    /**
+     * Bind from reader to writer using the model as a reference.
+     *
+     * @param model
+     * @param reader
+     * @param writer
+     * @throws DataBindException
+     */
+    private void bind(DataModel model, BindingReader reader,
+            BindingWriter writer) throws DataBindException {
         try {
             rl.lock();
 
@@ -104,27 +171,15 @@ public final class Binder {
             rl.unlock();
         }
     }
-
-    /**
-     * Reads the provided binder content into a BoundData instance.
-     *
-     * @param binder data source binder
-     * @return bound data instance
-     * @throws DataBindException thrown if there are problems binding the data
-     */
-    private BoundData readToBound(DataBinder binder) throws DataBindException {
-
-    }
-    
 
     private class BindOptionsImpl implements BindOptions {
 
         private final Map<String, String> aliases = new HashMap<>();
         private final Map<String, ComponentOptions> components
                 = new HashMap<>();
-        private BindingWriter sparseWriter;
-        private BindExceptionHandler errorHandler;
-        private BindExceptionHandler warningHandler;
+        private Optional<BindingWriter> sparseWriter = Optional.empty();
+        private Optional<BindExceptionHandler> errorHandler = Optional.empty();
+        private Optional<BindExceptionHandler> warningHandler = Optional.empty();
 
         @Override
         public BindOptions alias(String path, String aliasPath) {
@@ -154,7 +209,7 @@ public final class Binder {
         public BindOptions setSparseWriter(BindingWriter sparseWriter) {
             try {
                 wl.lock();
-                this.sparseWriter = sparseWriter;
+                this.sparseWriter = Optional.ofNullable(sparseWriter);
             } finally {
                 wl.unlock();
             }
@@ -165,7 +220,7 @@ public final class Binder {
         public BindOptions setErrorHandler(BindExceptionHandler handler) {
             try {
                 wl.lock();
-                this.errorHandler = handler;
+                this.errorHandler = Optional.ofNullable(handler);
             } finally {
                 wl.unlock();
             }
@@ -176,7 +231,7 @@ public final class Binder {
         public BindOptions setWarningHandler(BindExceptionHandler handler) {
             try {
                 wl.lock();
-                this.warningHandler = handler;
+                this.warningHandler = Optional.ofNullable(handler);
             } finally {
                 wl.unlock();
             }

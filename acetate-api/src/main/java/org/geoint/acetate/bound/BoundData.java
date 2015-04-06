@@ -1,6 +1,8 @@
 package org.geoint.acetate.bound;
 
 import java.util.Collection;
+import java.util.Optional;
+import org.geoint.acetate.bound.sparse.SparseField;
 import org.geoint.acetate.model.DataConstraintException;
 import org.geoint.acetate.model.DataModel;
 import org.geoint.acetate.model.ModelConstraintException;
@@ -22,7 +24,14 @@ public interface BoundData {
      *
      * @return bound data version, or null if not supported for this data type
      */
-    String getVersion();
+    Optional<String> getVersion();
+
+    /**
+     * Return the root bound data component.
+     *
+     * @return root bound data component
+     */
+    BoundComponent get();
 
     /**
      * Return the data component(s) mapped to the specified path.
@@ -34,7 +43,7 @@ public interface BoundData {
      * @param path data model path
      * @return data component(s) mapped to this model path
      */
-    Collection<BoundField> get(String path);
+    Optional<Collection<BoundComponent>> get(String path);
 
     /**
      * Returns data component(s) that were read by a {@link DataBinder} but were
@@ -42,14 +51,7 @@ public interface BoundData {
      *
      * @return collection of sparse data fields
      */
-    Collection<BoundField> getSparse();
-
-    /**
-     * Model field names that have had data mapped to it.
-     *
-     * @return collection of <i>.</i> delimited model paths to fields with data
-     */
-    Collection<String> getFieldPaths();
+    Collection<? extends SparseField> getSparse();
 
     /**
      * The model with which this data is bound.
@@ -57,6 +59,22 @@ public interface BoundData {
      * @return model
      */
     DataModel getModel();
+
+    /**
+     * Validates the bound data against the model and all data constraints.
+     *
+     * This method is functionally equivalent to:
+     *
+     * {@code
+     *    BoundData bd = ...
+     *    bd.validateModel();
+     *    bd.validateData();
+     * }
+     *
+     * @throws ModelConstraintException
+     * @throws DataConstraintException
+     */
+    void validate() throws ModelConstraintException, DataConstraintException;
 
     /**
      * Validate the bound data against all data model constraints.

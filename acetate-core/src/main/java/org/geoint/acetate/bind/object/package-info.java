@@ -1,4 +1,4 @@
 /**
- * Annotation that may be used on a Java class for binding configuration.
+ * Binding a Java Object.
  */
 package org.geoint.acetate.bind.object;

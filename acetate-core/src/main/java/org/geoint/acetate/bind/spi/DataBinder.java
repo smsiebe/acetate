@@ -1,10 +1,10 @@
 package org.geoint.acetate.bind.spi;
 
 import java.io.IOException;
-import org.geoint.acetate.bind.impl.BoundDataImpl;
+import org.geoint.acetate.bind.impl.HierarchicalBoundDataImpl;
 
 /**
- * Binds a data to a model creating {@link BoundDataImpl}.
+ * Binds a data to a model creating {@link HierarchicalBoundDataImpl}.
  *
  */
 public interface DataBinder {

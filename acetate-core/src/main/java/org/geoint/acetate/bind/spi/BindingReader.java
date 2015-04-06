@@ -20,52 +20,52 @@ public interface BindingReader {
     public enum ComponentType {
 
         /**
-         * A container for multiple data or object types.
+         * Start a data container for multiple component instances.
          */
-        ARRAY,
+        START_ARRAY,
         /**
-         * A "data bag".
+         * Close the data container.
          */
-        OBJECT,
+        END_ARRAY,
+        /**
+         * Start a "data bag".
+         */
+        START_OBJECT,
+        /**
+         * End a "data bag".
+         */
+        END_OBJECT,
         /**
          * Data with a value.
          */
-        DATA;
+        FIELD;
     }
 
     /**
-     * Provides a component "hint" as to the next component type that is
-     * encountered by the reader.
+     * Advances the reader to the next component type, providing a component
+     * "hint" as to the next component type that is encountered by the reader.
      *
      * @return component type hint or null if EOF
      * @throws IOException thrown if there is a problem reading
      */
-    ComponentType nextType() throws IOException;
-
-    /**
-     * Returns the component path of the next component.
-     *
-     * @return the field path of the next component
-     * @throws IOException thrown if there is a problem reading
-     * @throws EOFException thrown if there are no more data components to read
-     */
-    String nextPath() throws IOException;
-
-    /**
-     * Skip the next data component.
-     *
-     * @throws IOException thrown if there is a problem advancing the binder
-     * @throws EOFException thrown if there are no more components to read
-     */
-    void skip() throws IOException, EOFException;
+    ComponentType next() throws IOException;
 
     /**
      * Skips to the next component of the specified path.
      *
      * @param path data component path
+     * @return component type hint or null if EOF
      * @throws IOException thrown if there is a problem advancing the binder
-     * @throws EOFException thrown if there are no more components to read
      */
-    void skipTo(String path) throws IOException, EOFException;
+    ComponentType skipTo(String path) throws IOException;
+
+    /**
+     * Returns the component path of the current component.
+     *
+     * @return the field path of the next component
+     * @throws IOException thrown if there is a problem reading
+     * @throws EOFException thrown if there are no more data components to read
+     */
+    String path() throws IOException;
 
 }

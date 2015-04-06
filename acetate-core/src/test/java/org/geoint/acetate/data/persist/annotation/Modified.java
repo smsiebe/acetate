@@ -7,7 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.time.ZonedDateTime;
-import org.geoint.acetate.model.annotation.Model;
+import org.geoint.acetate.bind.object.annotation.Model;
 
 /**
  * Annotates a {@link ZonedDateTime} field that identifies the last time the 
