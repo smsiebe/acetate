@@ -1,11 +1,14 @@
 package org.geoint.acetate.bind;
 
-import org.geoint.acetate.bind.spi.BindExceptionHandler;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
 import org.geoint.acetate.bind.spi.BindingWriter;
-import org.geoint.acetate.bound.BoundData;
+import org.geoint.concurrent.Immutable;
+import org.geoint.exception.ExceptionHandler;
 
 /**
- * Binding options that augment the behavior of a bind operation.
+ * Binding options augment the data binding process.
  * <p>
  * Binding options can be used to augment source binder, the binding engine, and
  * optionally the destination binder, allowing run-time customization of a data
@@ -15,59 +18,58 @@ import org.geoint.acetate.bound.BoundData;
 public interface BindOptions {
 
     /**
-     * Add a model component alias, allowing data to also be bound for the
-     * defined alias.
+     * Retrieve all component path aliases.
      *
-     * @param path data model component path
-     * @param aliasPath alias model component path
-     * @return this (fluid interface)
+     * If a component does not have any aliases it will not be found in the
+     * returned map.
+     *
+     * The returned map is immutable. Any calls to manipulate the content of the
+     * Map will fail to update the binding options any may result in exceptions
+     * being thrown.
+     *
+     * @return immutable map of aliases; key is the component path, value is a
+     * collection of aliased paths for that component
      */
-    public BindOptions alias(String path, String aliasPath);
+    @Immutable
+    Map<String, Collection<String>> getAliases();
 
     /**
-     * Returns the ComponentOptions for a specified component path.
+     * Return all the component path aliases for a specific domain model
+     * component.
      *
      * @param path component path
-     * @return component options for the model component
+     * @return optional collection of aliases, if not aliases are found for the
+     * component the returned Optional will not contain a collection
      */
-    public ComponentOptions component(String path);
+    @Immutable
+    Optional<Collection<String>> getAliases(String path);
 
     /**
-     * Adds a writer to called for data that was read from a data binder but did
-     * not have a corresponding field in the data model.
+     * Returns the writer used for data not mappable to the domain model (sparse
+     * data).
      *
-     * For bind operations that do not create a {@link BoundData} instance this
-     * is the lightest-weight way to collect the sparse data from a data binding
-     * (as opposed to requesting the BoundData directly).
-     *
-     *
-     * @param sparseWriter interface to write the sparse data
-     * @return this (fluid interface)
+     * @return optional sparse data writer
      */
-    public BindOptions setSparseWriter(BindingWriter sparseWriter);
+    Optional<BindingWriter> getSparseWriter();
 
     /**
-     * Sets an error handler to intercept exceptions that would otherwise cause
-     * the binding operation to fail.
+     * Returns the handler to use for binding errors.
      *
-     * The may only be one error handler that may either re-throw the exception,
-     * which will terminate the binding operation, or "swallow" the exception
-     * allowing the binding operation to continue.
+     * If the exception is swawllowed (not-rethrown) the binder will continue
+     * despite of the exception. If it is rethrown the binder will stop.
      *
-     * @param handler fatal exception handler
-     * @return this (fluid interface)
+     * @return optional error handler
      */
-    public BindOptions setErrorHandler(BindExceptionHandler handler);
+    Optional<ExceptionHandler<DataBindException>> getErrorHandler();
 
     /**
-     * Sets a warning handler to intercept exceptions that gets logged but not
-     * cause the binding operation to fail.
+     * Returns the handler to use for binding warnings.
      *
-     * Even with a warning handler set the warning exception will still be
-     * logged.
+     * If the handler re-throws a warning exception the exception will then be
+     * processed as an error.
      *
-     * @param handler warning exception handler
-     * @return this (fluid interface)
+     * @return optional warning handler
      */
-    public BindOptions setWarningHandler(BindExceptionHandler handler);
+    Optional<ExceptionHandler<DataBindException>> getWarningHandler();
+
 }

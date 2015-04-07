@@ -1,4 +1,4 @@
-package org.geoint.acetate.bind.impl;
+package org.geoint.acetate.bound.impl;
 
 import java.io.EOFException;
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package org.geoint.acetate.bind.impl;
+package org.geoint.acetate.bound.impl;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -10,6 +10,7 @@ import org.geoint.acetate.model.DataConstraintException;
 import org.geoint.acetate.model.DataModel;
 import org.geoint.acetate.model.FieldModel;
 import org.geoint.acetate.model.ModelConstraintException;
+import org.geoint.concurrent.ThreadSafe;
 import org.geoint.util.hierarchy.HierarchicalPath;
 import org.geoint.util.hierarchy.StandardHierarchy;
 
@@ -17,14 +18,15 @@ import org.geoint.util.hierarchy.StandardHierarchy;
  * Default BoundData implementation which maintains the data binding as a
  * hierarchy of bound components.
  */
+@ThreadSafe
 public class HierarchicalBoundDataImpl implements BoundData {
 
     private final DataModel model;
-    private final StandardHierarchy<AbstractHierarchicalComponent> root;
+    private final StandardHierarchy<HierarchicalBoundComponent> root;
     private final Collection<? extends SparseField> sparse;
 
-    public HierarchicalBoundDataImpl(DataModel model,
-            StandardHierarchy<AbstractHierarchicalComponent> root,
+    HierarchicalBoundDataImpl(DataModel model,
+            StandardHierarchy<HierarchicalBoundComponent> root,
             Collection<? extends SparseField> sparse) {
         this.root = root;
         this.model = model;

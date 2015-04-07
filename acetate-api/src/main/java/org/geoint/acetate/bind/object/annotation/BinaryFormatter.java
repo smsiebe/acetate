@@ -5,7 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.geoint.acetate.bind.spi.BinaryDataFormatter;
+import org.geoint.acetate.data.DataFormatter;
 
 /**
  * Defines an alternative default binary data formatter for this component.
@@ -16,13 +16,14 @@ import org.geoint.acetate.bind.spi.BinaryDataFormatter;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Model
-public @interface DefaultBinaryFormatter {
+public @interface BinaryFormatter {
 
     /**
-     * Formatter to use as the default binary formatter for this data model 
-     * component.
+     * Formatter to use to create the alternative default data format for this
+     * field.
      *
-     * @return default binary formatter for this model component
+     * @return binary formatter to use to create the alternative default binary
+     * representation of the field
      */
-    Class<? extends BinaryDataFormatter> value();
+    Class<? extends DataFormatter<byte[]>> value();
 }

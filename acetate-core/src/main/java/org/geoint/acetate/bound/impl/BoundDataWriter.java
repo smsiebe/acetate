@@ -1,4 +1,4 @@
-package org.geoint.acetate.bind.impl;
+package org.geoint.acetate.bound.impl;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -9,8 +9,9 @@ import org.geoint.acetate.bind.spi.TypedDataWriter;
 import org.geoint.acetate.bound.BoundData;
 
 /**
- * DataWriter which creates a {@link BoundData}.
+ * DataWriter which creates a {@link BoundData} instance.
  *
+ * This writer supports any data format.
  */
 public class BoundDataWriter implements BindingWriter, StringDataWriter,
         BinaryDataWriter, TypedDataWriter {

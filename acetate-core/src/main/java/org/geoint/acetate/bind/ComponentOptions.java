@@ -1,8 +1,9 @@
 package org.geoint.acetate.bind;
 
-import org.geoint.acetate.bind.spi.BinaryDataFormatter;
-import org.geoint.acetate.bind.spi.StringDataFormatter;
-import org.geoint.acetate.bind.spi.DataConverter;
+import java.nio.ByteBuffer;
+import org.geoint.acetate.bind.spi.BindingWriter;
+import org.geoint.acetate.data.DataConverter;
+import org.geoint.acetate.data.DataFormatter;
 import org.geoint.acetate.model.DataType;
 
 /**
@@ -36,62 +37,74 @@ import org.geoint.acetate.model.DataType;
 public interface ComponentOptions {
 
     /**
-     * Adds a formatter to the read chain which will be used before
-     * {@link DataType#asString}.
+     * Adds a String formatter to the read chain which will be used to reformat
+     * String formatted data value prior to it being set as the value of the
+     * field through {@link DataType#asString}.
      *
-     * @param <T> data type of the component
+     * Multiple read formatters may be added as a chain by repeatedly calling
+     * #readString.
+     *
      * @param formatter data formatter that will be used to read the data
      * @return this (fluid interface)
      */
-    <T> ComponentOptions read(StringDataFormatter<T> formatter);
+    ComponentOptions readString(DataFormatter<String> formatter);
 
     /**
-     * Adds a formatter to the read chain which will be used before  
-     * {@link DataType#asObject(ByteBuffer) }.
+     * Adds a byte formatter to the read chain which will be used to reformat
+     * binary formatted data value prior to it being set as the value of the
+     * field through {@link DataType#asString}.
      *
-     * @param <T> data type of the component
+     * Multiple read formatters may be added as a chain by repeatedly calling
+     * #readBytes.
+     *
      * @param formatter formatter that will be used to read the binary data
      * @return this (fluid interface)
      */
-    <T> ComponentOptions read(BinaryDataFormatter<T> formatter);
+    ComponentOptions readBytes(DataFormatter<byte[]> formatter);
 
     /**
-     * Adds a {@link DataConverter} to the read chain.
+     * Adds a {@link DataConverter} to the field read chain.
      *
      * @param <F> "from" data type
      * @param <T> "to" data type
      * @param converter converter used to convert the data type
      * @return this (fluid interface)
      */
-    <F, T> ComponentOptions read(DataConverter<F, T> converter);
+    <F, T> ComponentOptions readConverter(DataConverter<F, T> converter);
 
     /**
-     * Adds a formatter to the write chain which will be used after
-     * {@link DataType#asString}.
+     * Adds a String formatter to the write chain which will be used to reformat
+     * String formatted data value prior to it being written to a
+     * {@link BindingWriter}.
      *
-     * @param <T> data type of the component
+     * Multiple write formatters may be added as a chain by repeatedly calling
+     * #writeString.
+     *
      * @param formatter data formatter that will be used to read the data
      * @return this (fluid interface)
      */
-    <T> ComponentOptions write(StringDataFormatter<T> formatter);
+    ComponentOptions writeString(DataFormatter<String> formatter);
 
     /**
-     * Adds a formatter to the write chain which will be used after  
-     * {@link DataType#asObject(ByteBuffer) }.
+     * Adds a byte formatter to the write chain which will be used to reformat
+     * binary formatted data value prior to it being written to a
+     * {@link BindingWriter}.
      *
-     * @param <T> data type of the component
+     * Multiple write formatters may be added as a chain by repeatedly calling
+     * #writeBytes.
+     *
      * @param formatter formatter that will be used to read the binary data
      * @return this (fluid interface)
      */
-    <T> ComponentOptions write(BinaryDataFormatter<T> formatter);
+    ComponentOptions writeBytes(DataFormatter<byte[]> formatter);
 
     /**
-     * Adds a {@link DataConverter} to the write chain.
+     * Adds a {@link DataConverter} to the field write chain.
      *
      * @param <F> "from" data type
      * @param <T> "to" data type
      * @param converter converter used to convert the data type
      * @return this (fluid interface)
      */
-    <F, T> ComponentOptions write(DataConverter<F, T> converter);
+    <F, T> ComponentOptions writeConverter(DataConverter<F, T> converter);
 }

@@ -1,5 +1,5 @@
 /**
- * Bound data is data that has been "stitched" to a data model.
+ * Data that has been "bound" to a data model.
  * <p>
  * BoundData is an optional intermediary object which can be retrieved to
  * introspect, inspect, manipulate, etc the binding operation programmatically.
