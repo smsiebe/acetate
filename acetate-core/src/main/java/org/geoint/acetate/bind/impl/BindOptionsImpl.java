@@ -1,17 +1,20 @@
 package org.geoint.acetate.bind.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import org.geoint.acetate.bind.BindOptions;
-import org.geoint.acetate.bind.Binder;
 import org.geoint.acetate.bind.ComponentOptions;
 import org.geoint.acetate.bind.DataBindException;
+import org.geoint.acetate.bind.impl.ComponentOptionsImpl.ComponentOptionsBuilder;
 import org.geoint.acetate.bind.spi.BindingWriter;
 import org.geoint.acetate.bound.BoundData;
 import org.geoint.exception.ExceptionHandler;
+import org.geoint.util.collection.CustomMultiMap;
+import org.geoint.util.collection.MultiMap;
 
 /**
  *
@@ -22,7 +25,10 @@ public class BindOptionsImpl implements BindOptions {
             = new BindOptionsImpl(Collections.EMPTY_MAP,
                     Collections.EMPTY_MAP, null, null, null);
 
+    //key is component path, value is a collection of aliases
     private final Map<String, Collection<String>> aliases;
+    //key is alias, value is component path
+    private final Map<String, String> reverseAliases;
     private final Map<String, ComponentOptions> componentOptions;
     private final Optional<BindingWriter> sparseWriter;
     private final Optional<ExceptionHandler<DataBindException>> warningHandler;
@@ -46,42 +52,79 @@ public class BindOptionsImpl implements BindOptions {
         this.warningHandler = Optional.ofNullable(warningHandler);
         this.sparseWriter = Optional.ofNullable(sparseWriter);
         this.componentOptions = Collections.unmodifiableMap(componentOptions);
+        this.reverseAliases = reverseAliases;
 
+        MultiMap<String, String> multiAliases = new CustomMultiMap(
+                () -> new HashMap<>(), () -> new ArrayList<>()
+        );
+
+        //remember: the key is the alias and value is the component name 
+        //          in the reverseAliases
         reverseAliases.entrySet().stream()
-                .collect(Collectors.t)
+                .forEach((e) -> multiAliases.add(e.getValue(), e.getKey()));
+
+        this.aliases = Collections.unmodifiableMap(multiAliases);
     }
 
     @Override
     public Map<String, Collection<String>> getAliases() {
-
+        return aliases;
     }
 
     @Override
     public Optional<Collection<String>> getAliases(String path) {
+        return Optional.ofNullable(aliases.get(path));
+    }
 
+    @Override
+    public Optional<String> resolveAlias(String alias) {
+        return Optional.ofNullable(reverseAliases.get(alias));
+    }
+
+    @Override
+    public Optional<ComponentOptions> getComponentOptions(String pathOrAlias) {
+        String path = null;
+        if (componentOptions.containsKey(pathOrAlias)) {
+            path = pathOrAlias;
+        } else {
+            //lookup alias 
+            Optional<String> resolvedPath = resolveAlias(pathOrAlias);
+            if (resolvedPath.isPresent()) {
+                path = resolvedPath.get();
+            }
+        }
+
+        return Optional.ofNullable(
+                (path != null) ? componentOptions.get(path) : null
+        );
     }
 
     @Override
     public Optional<BindingWriter> getSparseWriter() {
-
+        return sparseWriter;
     }
 
     @Override
     public Optional<ExceptionHandler<DataBindException>> getErrorHandler() {
-
+        return errorHandler;
     }
 
     @Override
     public Optional<ExceptionHandler<DataBindException>> getWarningHandler() {
-
+        return warningHandler;
     }
 
-    public static class BindOptionsBuilder {
+    public static class BindOptionsBuilderImpl {
 
         //alias reverse lookup (key is alias, value is the real component path)
         private final Map<String, String> reverseAliases = new HashMap<>();
+        private final Map<String, ComponentOptionsBuilder> componentOptions
+                = new HashMap<>();
+        private BindingWriter sparseWriter;
+        private ExceptionHandler<DataBindException> warningHandler;
+        private ExceptionHandler<DataBindException> errorHandler;
 
-        private BindOptionsBuilder() {
+        private BindOptionsBuilderImpl() {
         }
 
         /**
@@ -92,8 +135,8 @@ public class BindOptionsImpl implements BindOptions {
          * @param aliasPath alias model component path
          * @return this (fluid interface)
          */
-        public BindOptionsBuilder alias(String path, String aliasPath) {
-            options.aliases.put(path, aliasPath);
+        public BindOptionsBuilderImpl alias(String path, String aliasPath) {
+            reverseAliases.put(aliasPath, path);
             return this;
         }
 
@@ -103,11 +146,11 @@ public class BindOptionsImpl implements BindOptions {
          * @param path component path
          * @return component options for the model component
          */
-        public ComponentOptions component(String path) {
-            if (!options.components.containsKey(path)) {
-                options.components.put(path, new ComponentOptionsImpl());
+        public ComponentOptionsBuilder component(String path) {
+            if (!componentOptions.containsKey(path)) {
+                componentOptions.put(path, ComponentOptionsImpl.builder());
             }
-            return options.components.get(path);
+            return componentOptions.get(path);
         }
 
         /**
@@ -122,8 +165,8 @@ public class BindOptionsImpl implements BindOptions {
          * @param sparseWriter interface to write the sparse data
          * @return this (fluid interface)
          */
-        public BindOptionsBuilder setSparseWriter(BindingWriter sparseWriter) {
-            options.sparseWriter = Optional.ofNullable(sparseWriter);
+        public BindOptionsBuilderImpl setSparseWriter(BindingWriter sparseWriter) {
+            this.sparseWriter = sparseWriter;
             return this;
         }
 
@@ -138,9 +181,9 @@ public class BindOptionsImpl implements BindOptions {
          * @param handler fatal exception handler
          * @return this (fluid interface)
          */
-        public BindOptionsBuilder setErrorHandler(
+        public BindOptionsBuilderImpl setErrorHandler(
                 ExceptionHandler<DataBindException> handler) {
-            options.errorHandler = Optional.ofNullable(handler);
+            this.errorHandler = handler;
             return this;
         }
 
@@ -154,11 +197,14 @@ public class BindOptionsImpl implements BindOptions {
          * @param handler warning exception handler
          * @return this (fluid interface)
          */
-        public BindOptionsBuilder setWarningHandler(
+        public BindOptionsBuilderImpl setWarningHandler(
                 ExceptionHandler<DataBindException> handler) {
-
-            options.warningHandler = Optional.ofNullable(handler);
+            this.warningHandler = handler;
             return this;
+        }
+        
+        public BindOptions build() {
+            
         }
     }
 
