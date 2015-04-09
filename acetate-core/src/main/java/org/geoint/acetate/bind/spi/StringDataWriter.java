@@ -1,5 +1,6 @@
 package org.geoint.acetate.bind.spi;
 
+import org.geoint.acetate.bind.BindingWriter;
 import java.io.IOException;
 
 /**

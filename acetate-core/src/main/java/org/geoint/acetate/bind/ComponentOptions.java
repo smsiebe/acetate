@@ -1,8 +1,7 @@
 package org.geoint.acetate.bind;
 
-import org.geoint.acetate.bind.spi.BindingWriter;
-import org.geoint.acetate.data.DataConverter;
-import org.geoint.acetate.data.DataFormatter;
+import org.geoint.acetate.transform.DataConverter;
+import org.geoint.acetate.transform.DataFormatter;
 import org.geoint.acetate.model.DataType;
 
 /**
@@ -33,6 +32,9 @@ import org.geoint.acetate.model.DataType;
  */
 public interface ComponentOptions {
 
+    public static interface DataTransformFlow {
+        
+    }
     public static interface ComponentOptionsBuilder {
 
         /**

@@ -1,5 +1,6 @@
 package org.geoint.acetate.bind.spi;
 
+import org.geoint.acetate.bind.BindingReader;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.OutputStream;
