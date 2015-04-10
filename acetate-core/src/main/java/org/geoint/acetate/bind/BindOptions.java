@@ -1,18 +1,28 @@
 package org.geoint.acetate.bind;
 
-import org.geoint.acetate.bind.ComponentOptions.ComponentOptionsBuilder;
-import org.geoint.acetate.bound.BoundData;
+import org.geoint.acetate.bound.sparse.SparseWriter;
+import org.geoint.acetate.transform.DataFormatter;
 
 /**
- * Binding options augments the data binding process.
- * <p>
- * Binding options is used to run-time customize the binding operation by making
- * Binder scoped changes to the DataModel or bound data, without affecting other
- * binding operations using the same model.
- *
- * @param <T> binding data type (characters, binary, object, etc)
  */
-public interface BindOptions<T> {
+public interface BindOptions {
+
+    /**
+     * Reformat the data value of the component.
+     *
+     * @param componentPath path
+     * @param formatter formatter
+     * @return this (fluid interface)
+     */
+    BindOptions reformat(String componentPath, DataFormatter formatter);
+
+    /**
+     * Ignore a specific component on the model for this binding operation.
+     *
+     * @param path component path
+     * @return this (fluid interface)
+     */
+    BindOptions ignore(String path);
 
     /**
      * Add a model component alias, allowing data to also be bound for the
@@ -22,7 +32,7 @@ public interface BindOptions<T> {
      * @param aliasPath alias model component path
      * @return this (fluid interface)
      */
-    BindOptions<T> alias(String path, String aliasPath);
+    BindOptions alias(String path, String aliasPath);
 
     /**
      * Sets the writer that is called for data is not represented in either the
@@ -32,20 +42,7 @@ public interface BindOptions<T> {
      * @param sparseWriter interface to write the sparse data
      * @return this (fluid interface)
      */
-    BindOptions<T> sparseHandler(BindingWriter<T> sparseWriter);
-
-    /**
-     * Sets an error handler to intercept exceptions that would otherwise cause
-     * the binding operation to fail.
-     *
-     * The may only be one error handler that may either re-throw the exception,
-     * which will terminate the binding operation, or "swallow" the exception
-     * allowing the binding operation to continue.
-     *
-     * @param handler fatal exception handler
-     * @return this (fluid interface)
-     */
-    BindOptions<T> errorHandler(BindExceptionHandler handler);
+    BindOptions sparseWriter(SparseWriter sparseWriter);
 
     /**
      * Sets a warning handler to intercept exceptions that gets logged but not
@@ -59,6 +56,19 @@ public interface BindOptions<T> {
      * @param handler warning exception handler
      * @return this (fluid interface)
      */
-    BindOptions<T> warningHandler(BindExceptionHandler handler);
+    BindOptions warningHandler(BindExceptionHandler handler);
+
+    /**
+     * Sets an error handler to intercept exceptions that would otherwise cause
+     * the binding operation to fail.
+     *
+     * The may only be one error handler that may either re-throw the exception,
+     * which will terminate the binding operation, or "swallow" the exception
+     * allowing the binding operation to continue.
+     *
+     * @param handler fatal exception handler
+     * @return this (fluid interface)
+     */
+    BindOptions errorHandler(BindExceptionHandler handler);
 
 }

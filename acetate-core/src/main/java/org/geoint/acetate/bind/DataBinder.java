@@ -1,36 +1,18 @@
 package org.geoint.acetate.bind;
 
-
-
-import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import org.geoint.acetate.model.DataModel;
 
 /**
- * Binds a data to a model.
  *
  */
 public interface DataBinder {
 
-    /**
-     * The media type of the resultant data.I
-     *
-     * @return media type
-     */
-    String getMediaType();
+    DataModel getModel();
 
-    /**
-     * Returns the BindingReader for this binder.
-     *
-     * @return reader binder reader
-     * @throws IOException thrown if the binder is unable to read
-     */
-    BindingReader reader() throws IOException;
+    DataReader reader(InputStream in);
 
-    /**
-     * Returns the BindingWriter for this binder.
-     *
-     * @return binder writer
-     * @throws IOException throws if the binder is unable to write
-     */
-    BindingWriter writer() throws IOException;
+    DataWriter writer(OutputStream out);
 
 }
