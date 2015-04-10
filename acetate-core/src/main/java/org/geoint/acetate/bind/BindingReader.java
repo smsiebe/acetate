@@ -4,16 +4,10 @@ import java.io.EOFException;
 import java.io.IOException;
 
 /**
- * Marker interface for a binding reader.
+ * 
  *
- * A BindingReader of one of the supported types (string, binary, or object) is
- * returned by the {@link DataBinder}.
- *
- * @see StringDataReader
- * @see BinaryDataReader
- * @see TypedDataReader
  */
-public interface BindingReader {
+public interface BindingReader<T> {
 
     public enum ComponentType {
 

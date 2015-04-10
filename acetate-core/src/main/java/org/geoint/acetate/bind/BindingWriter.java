@@ -5,7 +5,6 @@ import org.geoint.acetate.model.ClassModel;
 import org.geoint.acetate.model.FieldModel;
 
 /**
- * Marker interface for the writer for a binder.
  *
  * @param <T>
  */
