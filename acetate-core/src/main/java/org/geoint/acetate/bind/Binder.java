@@ -22,11 +22,6 @@ import org.geoint.util.collection.MultiMap;
  * This class layout might be a little hard to understand...it was done this 
  * way to create a cleaner/fluid Binder API.
  *
- * Binder makes purposeful use of the Java inner-class capabilities to 
- * acces the private fields of the outer class (and vice-versa).  This is how 
- * all three of the  BindOptionsImpl inner classes work, providing a fluid 
- * facade but the Binder instance being configured.  Binder is the class 
- * that actually does the work (#doBind).
  */
 /**
  *
@@ -34,34 +29,24 @@ import org.geoint.util.collection.MultiMap;
 @ThreadSafe
 public final class Binder {
 
-    private final DataModel sourceModel;
-    private final DataReader sourceReader;
-    private final SourceBindOptions sourceOptions
-            = new SourceBindOptionsImpl();
-    private DataModel destModel;
-    private DataWriter destWriter;
-    private final DestinationBindOptions destOptions
-            = new DestinationBindOptionsImpl();
-    private SparseWriter sparseWriter;
-    private BindExceptionHandler warningHandler;
-    private BindExceptionHandler errorHandler;
+    private final SourceBindContext source;
+    private final DestinationBindContext dest;
 
-    public Binder(DataModel sourceModel, DataReader sourceReader) {
-        this.sourceModel = sourceModel;
-        this.sourceReader = sourceReader;
+    private Binder(SourceBindContext source, DestinationBindContext dest) {
+        this.source = source;
+        this.dest = dest;
     }
 
     /**
-     * Do the actual work...bind from source to destination.
+     * Bind source reader to destination writer.
      */
-    private void doBind() {
-        bvbcvbc
+    public void execute() {
+
     }
 
     public static SourceBindOptions source(DataModel model,
             DataReader reader) {
-        Binder binder = new Binder(model, reader);
-        return binder.sourceOptions;
+        return new SourceBindContext(model, reader);
     }
 
     public static SourceBindOptions source(DataBinder binder,
@@ -79,13 +64,22 @@ public final class Binder {
         return source(binder.getModel(), binder.reader(bound));
     }
 
-    private abstract class BindOptionsImpl implements BindOptions {
+    /**
+     * Encapsulates the source/destination binding, exposed publically as
+     * BindOptions fluid binding interface.
+     */
+    private static abstract class BindContext implements BindOptions {
 
-        private final Map<String, String> aliases;
-        private final Set<String> ignore;
-        private final MultiMap<String, DataFormatter> formatters;
+        protected final Map<String, String> aliases;
+        protected final Set<String> ignore;
+        protected final MultiMap<String, DataFormatter> formatters;
+        protected DataModel model;
+        protected SparseWriter sparseWriter;
+        protected BindExceptionHandler warningHandler;
+        protected BindExceptionHandler errorHandler;
 
-        private BindOptionsImpl() {
+        private BindContext(DataModel model) {
+            this.model = model;
             this.aliases = new HashMap<>();
             this.ignore = new HashSet<>();
             this.formatters = new CustomMultiMap<>(
@@ -132,19 +126,28 @@ public final class Binder {
         }
     }
 
-    private class SourceBindOptionsImpl extends BindOptionsImpl
+    private static class SourceBindContext extends BindContext
             implements SourceBindOptions {
 
-        @Override
-        public DestinationBindOptions to(DataWriter destination) {
-            return to(sourceModel, destination);
+        public SourceBindContext(DataModel model) {
+            super(model);
         }
 
         @Override
-        public DestinationBindOptions to(DataModel model, DataWriter destination) {
-            destModel = model;
-            destWriter = destination;
-            return destOptions;
+        public DestinationBindOptions to(DataWriter destination) {
+            //source and destination model are the same
+
+            DestinationBindOptions dest
+                    = new DestinationBindContext(model, destination);
+
+        }
+
+        @Override
+        public DestinationBindOptions to(DataModel model,
+                DataWriter destination) {
+            DestinationBindOptions dest = new DestinationBindContext(model,
+                    destination);
+
         }
 
         @Override
@@ -191,18 +194,19 @@ public final class Binder {
 
     }
 
-    private class DestinationBindOptionsImpl extends BindOptionsImpl
+    private static class DestinationBindContext extends BindContext
             implements DestinationBindOptions {
 
         private final Map<String, Supplier> constants;
 
-        public DestinationBindOptionsImpl() {
+        public DestinationBindContext(DataModel model) {
+            super(model);
             this.constants = new HashMap<>();
         }
 
         @Override
         public void bind() {
-            doBind();
+            execute();
         }
 
         @Override

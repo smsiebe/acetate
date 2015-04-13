@@ -2,6 +2,7 @@ package org.geoint.acetate.bound;
 
 import java.util.Collection;
 import java.util.Optional;
+import org.geoint.acetate.bind.DataBinder;
 import org.geoint.acetate.bound.sparse.SparseField;
 import org.geoint.acetate.model.DataConstraintException;
 import org.geoint.acetate.model.DataModel;
