@@ -1,10 +1,13 @@
 /**
- * Data meta-model used by acetate to model a data structure.
+ * Data meta-model used by acetate to model the data components, constraints,
+ * converters, etc of a specific data model and ultimately a data structure.
  * <p>
- * The acetate data model is independent from any existing standard or
- * non-standard data structure type (POJO, XML, JSON, etc). The acetate data
- * model can be considered the transitionary model between these formats which 
- * is used by acetate to convert to/from different {@link DataBinder} 
- * implementations.
+ * The acetate DataModel is a generic model of data, independent from any
+ * existing standard, non-standard, structured, semi-structured and unstructured
+ * data structures (POJO, XML, JSON, etc). The model simply defines the
+ * components involved in the data structure.
+ * <p>
+ * The DataStructure ties the DataModel components together into a data
+ * structure used to represent data.
  */
 package org.geoint.acetate.model;

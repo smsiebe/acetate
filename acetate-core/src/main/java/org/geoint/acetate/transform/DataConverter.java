@@ -6,8 +6,7 @@ package org.geoint.acetate.transform;
  * @param <F> data "from" type
  * @param <T> data "to" type
  */
-@FunctionalInterface
-public interface DataConverter<F, T> extends DataTransformer {
+public interface DataConverter<F, T> {
 
     /**
      * Convert a Java object from one type to another.
@@ -18,4 +17,13 @@ public interface DataConverter<F, T> extends DataTransformer {
      * be completed
      */
     T convert(F data) throws DataConversionException;
+
+    /**
+     * Invert (convert back) the Java Object to the "original".
+     *
+     * @param data
+     * @return
+     * @throws DataConversionException
+     */
+    F invert(T data) throws DataConversionException;
 }

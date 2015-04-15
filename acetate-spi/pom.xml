@@ -11,11 +11,4 @@
     <packaging>jar</packaging>
     
     <description>Acetate service provider interfaces used to extend acetate.</description>
-    <dependencies>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>acetate-api</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
 </project>

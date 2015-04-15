@@ -1,38 +1,23 @@
 package org.geoint.acetate.bind;
 
-import org.geoint.acetate.AcetateException;
-
 /**
- * Thrown if there are problems binding data.
+ *
  */
-public class DataBindException extends AcetateException {
+public class DataBindException extends Exception {
 
-    private final Class<? extends DataBinder> binder;
-
-    public DataBindException(Class<? extends DataBinder> binder) {
-        this.binder = binder;
+    public DataBindException() {
     }
 
-    public DataBindException(Class<? extends DataBinder> binder,
-            String message) {
+    public DataBindException(String message) {
         super(message);
-        this.binder = binder;
     }
 
-    public DataBindException(Class<? extends DataBinder> binder,
-            String message, Throwable cause) {
+    public DataBindException(String message, Throwable cause) {
         super(message, cause);
-        this.binder = binder;
     }
 
-    public DataBindException(Class<? extends DataBinder> binder,
-            Throwable cause) {
+    public DataBindException(Throwable cause) {
         super(cause);
-        this.binder = binder;
-    }
-
-    public Class<? extends DataBinder> getBinder() {
-        return binder;
     }
 
 }

@@ -3,7 +3,7 @@ package org.geoint.acetate.transform;
 /**
  * Thrown if there was a problem converting data from one type to another.
  */
-public class DataConversionException extends Exception {
+public class DataConversionException extends DataTransformException {
 
     private final Class<?> sourceType;
     private final Class<?> expectedType;

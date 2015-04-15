@@ -9,8 +9,8 @@ import java.lang.annotation.Target;
 
 /**
  * Identifies a field as the globally unique identifier for the data item
- * instance. All root data models <b>MUST</b> have GUID; all aggregates
- * <b>SHOULD</b> have a GUID.
+ * instance. All root data models <b>MUST</b> have GUID; all aggregates (those
+ * fields modeled with a {@link ClassModel}) <b>may</b> have a GUID.
  *
  * <p>
  * A GUID is a generic term; the resultant field can be in any format so long as
@@ -53,7 +53,6 @@ import java.lang.annotation.Target;
 @Inherited
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Model
 public @interface GUID {
 
 }
