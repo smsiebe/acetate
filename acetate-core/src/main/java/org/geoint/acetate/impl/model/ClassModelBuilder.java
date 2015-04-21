@@ -10,4 +10,6 @@ import org.geoint.concurrent.NotThreadSafe;
 public interface ClassModelBuilder<T>
         extends DataModelBuilder<T, ClassModelBuilder<T>> {
 
+    
+    
 }

@@ -5,6 +5,6 @@ package org.geoint.acetate.transform;
  *
  * @param <T> data type
  */
-public interface StringConverter<T> extends DataConverter<String, T> {
+public interface DataFormatter<T> extends DataConverter<String, T> {
 
 }

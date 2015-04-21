@@ -32,8 +32,11 @@ public interface DataType<T> {
      *
      * @param bb buffer
      * @return true if the buffered data is valid for this data type
+     * @throws NullPointerException thrown if the buffer was null or did not
+     * contain any data
      */
-    boolean validate(ByteBuffer bb);
+    boolean validate(ByteBuffer bb)
+            throws NullPointerException;
 
     /**
      * Validate the data format/value is appropriate for this data type.
@@ -42,67 +45,46 @@ public interface DataType<T> {
      * @param offset start position
      * @param len number of bytes to read from buffer
      * @return true if the buffered data is valid for this data type
+     * @throws NullPointerException thrown if the buffer was null or did not
+     * contain any data
      */
-    boolean validate(ByteBuffer bb, int offset, int len);
-
-    /**
-     * Validate the data format/value is valid for the default String formatting
-     * of this data type.
-     *
-     * @param str data as string
-     * @return true if the String is properly formatted
-     */
-    boolean validate(String str);
+    boolean validate(ByteBuffer bb, int offset, int len)
+            throws NullPointerException;
 
     /**
      * Validate the format/value is valid for the object representation of the
      * data type.
      *
      * @param obj data as object
-     * @return true if the object is correct for this data type
+     * @return true if the object can be handled by this DataType
+     * @throws NullPointerException thrown if the object was null
      */
-    boolean validate(T obj);
-
-    /**
-     * Converts the content of the buffer to default String format of this value
-     * type.
-     *
-     * @param bb buffer
-     * @return default string format of this value type or null if the buffer
-     * was empty
-     * @throws DataFormatException thrown if the buffer was not empty but the
-     * content could not be formatted
-     */
-    Optional<String> asString(ByteBuffer bb) throws DataFormatException;
-
-    /**
-     * Converts the specified content of the buffer to the default String format
-     * of this value type.
-     *
-     * @param bb buffer
-     * @param offset start position
-     * @param length number of bytes to read from buffer
-     * @return default string format of this value type or null if the buffer
-     * was empty
-     * @throws DataFormatException thrown if the buffer was not empty but the
-     * content could not be formatted
-     */
-    Optional<String> asString(ByteBuffer bb, int offset, int length)
-            throws DataFormatException;
+    boolean validate(T obj) throws NullPointerException;
 
     /**
      * Converts the content of the buffer to a Java object instance.
+     *
+     * Each DataType should clearly define the (binary) data format of the data
+     * it is expecting; failing to pass the data in this format will result in
+     * the DataFormatException. Data read in from a source not conforming to
+     * this format must first be converted to this format. This is done by
+     * defining a (or a chain of) {@link BinaryCodec binary codecs} in the
+     * {@link DataStructure}.
      *
      * @param bb buffer
      * @return corresponding java instance for this data type or null if the
      * buffer was empty
      * @throws DataFormatException thrown if the buffer was not empty but the
      * content could not be formatted
+     * @throws NullPointerException thrown if the buffer was null or did not
+     * contain any data
      */
-    Optional<T> asObject(ByteBuffer bb) throws DataFormatException;
+    Optional<T> valueOf(ByteBuffer bb) throws DataFormatException,
+            NullPointerException;
 
     /**
-     * Converts the content of the buffer to a Java object instance.
+     * Similar to {@link #valueOf(ByteBuffer)} but allows the buffer content
+     * location to be specified.
      *
      * @param bb buffer
      * @param offset start position
@@ -111,7 +93,9 @@ public interface DataType<T> {
      * buffer was empty
      * @throws DataFormatException thrown if the buffer was not empty but the
      * content could not be formatted
+     * @throws NullPointerException thrown if the buffer was null or did not
+     * contain any data
      */
-    Optional<T> asObject(ByteBuffer bb, int offset, int length)
-            throws DataFormatException;
+    Optional<T> valueOf(ByteBuffer bb, int offset, int length)
+            throws DataFormatException, NullPointerException;
 }

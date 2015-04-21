@@ -5,30 +5,30 @@ package org.geoint.acetate.transform;
  */
 public class DataFormatException extends DataTransformException {
 
-    private final Class<? extends StringConverter> formatterType;
+    private final Class<? extends DataFormatter> formatterType;
     private final String dataSourceIdentity;
 
-    public DataFormatException(Class<? extends StringConverter> formatterType,
+    public DataFormatException(Class<? extends DataFormatter> formatterType,
             String dataSourceIdentity) {
         this.formatterType = formatterType;
         this.dataSourceIdentity = dataSourceIdentity;
     }
 
-    public DataFormatException(Class<? extends StringConverter> formatterType,
+    public DataFormatException(Class<? extends DataFormatter> formatterType,
             String dataSourceIdentity, String message) {
         super(message);
         this.formatterType = formatterType;
         this.dataSourceIdentity = dataSourceIdentity;
     }
 
-    public DataFormatException(Class<? extends StringConverter> formatterType,
+    public DataFormatException(Class<? extends DataFormatter> formatterType,
             String dataSourceIdentity, String message, Throwable cause) {
         super(message, cause);
         this.formatterType = formatterType;
         this.dataSourceIdentity = dataSourceIdentity;
     }
 
-    public DataFormatException(Class<? extends StringConverter> formatterType,
+    public DataFormatException(Class<? extends DataFormatter> formatterType,
             String dataSourceIdentity, Throwable cause) {
         super(cause);
         this.formatterType = formatterType;
@@ -49,7 +49,7 @@ public class DataFormatException extends DataTransformException {
      *
      * @return formatter type
      */
-    public Class<? extends StringConverter> getFormatter() {
+    public Class<? extends DataFormatter> getFormatter() {
         return formatterType;
     }
 

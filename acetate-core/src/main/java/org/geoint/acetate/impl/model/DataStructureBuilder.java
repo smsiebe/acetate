@@ -15,16 +15,13 @@ import org.geoint.util.function.Creator;
 @NotThreadSafe
 public final class DataStructureBuilder<T> {
 
-    //flat model for classes
-    private final Map<String, DataModelBuilderImpl> classComponents;
-    //flat model for values
-    private final Map<String, DataModelBuilderImpl> valueComponents;
+    //flat model for classes, key is full path
+    private final Map<String, ClassModelBuilderImpl<?>> classComponents;
     //key = alias; value = component name
     private final Map<String, String> reverseAliases;
 
     public DataStructureBuilder() {
         classComponents = new HashMap<>();
-        valueComponents = new HashMap<>();
         reverseAliases = new HashMap<>();
     }
 
