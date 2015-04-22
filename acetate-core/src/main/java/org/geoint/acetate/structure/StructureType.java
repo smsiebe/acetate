@@ -1,4 +1,4 @@
-package org.geoint.acetate.model;
+package org.geoint.acetate.structure;
 
 /**
  * Type of DataModel structural component.

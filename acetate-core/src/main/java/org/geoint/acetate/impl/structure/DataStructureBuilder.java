@@ -1,20 +1,24 @@
-package org.geoint.acetate.impl.model;
+package org.geoint.acetate.impl.structure;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.geoint.acetate.model.DataStructure;
+import org.geoint.acetate.impl.model.ClassModelBuilder;
+import org.geoint.acetate.impl.model.DataModelBuilder;
+import org.geoint.acetate.impl.model.ValueModelBuilder;
+import org.geoint.acetate.structure.DataStructure;
 import org.geoint.acetate.model.ModelException;
 import org.geoint.concurrent.NotThreadSafe;
 import org.geoint.util.function.Creator;
 
 /**
- * Programmatic DataModel builder.
+ * Programmatic construction of a DataStructure (model + data).
  *
- * @param <T> data model type
+ * @param <T> corresponding Java data type of the model
  */
 @NotThreadSafe
 public final class DataStructureBuilder<T> {
 
+    
     //flat model for classes, key is full path
     private final Map<String, ClassModelBuilderImpl<?>> classComponents;
     //key = alias; value = component name

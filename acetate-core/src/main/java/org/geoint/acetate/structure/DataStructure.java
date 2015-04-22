@@ -1,11 +1,13 @@
-package org.geoint.acetate.model;
+package org.geoint.acetate.structure;
 
 import java.util.Optional;
+import org.geoint.acetate.model.ValueModel;
 
 /**
- * A specific data structure using a DataModel as components of the structure.
+ * An data structure instance using components of a {@link DataModel} as
+ * components of the structure.
  *
- * @param <T> java root object data structure type
+ * @param <T> corresponding Java type for this data
  * @see DataModel
  */
 public interface DataStructure<T> {

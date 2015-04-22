@@ -1,6 +1,6 @@
 package org.geoint.acetate.bind;
 
-import org.geoint.acetate.model.StructureType;
+import org.geoint.acetate.structure.StructureType;
 import java.util.Optional;
 import org.geoint.acetate.model.DataModel;
 import org.geoint.acetate.transform.StringConverter;

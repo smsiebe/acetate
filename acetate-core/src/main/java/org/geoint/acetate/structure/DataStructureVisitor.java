@@ -1,4 +1,6 @@
-package org.geoint.acetate.model;
+package org.geoint.acetate.structure;
+
+import org.geoint.acetate.model.DataModel;
 
 /**
  * Visitor used to hierarchically traverse a {@link DataStructure}.

@@ -12,7 +12,7 @@ public interface BinaryCodec {
     /**
      * Returns a binary data converter intended to convert the data encountered
      * in a {@link DataStructure} to the binary format expected by the
-     * {@link DataType} of the {@link DataModel} field.
+     * {@link DataType} of the {@link Data Model} field.
      *
      * @param in binary data from the data structure
      * @param offset data read offset

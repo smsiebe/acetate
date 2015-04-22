@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 import static javafx.scene.input.KeyCode.T;
 import org.geoint.acetate.bind.DataBindException;
-import org.geoint.acetate.model.StructureType;
+import org.geoint.acetate.structure.StructureType;
 import org.geoint.acetate.bind.TemplatedDataReader;
 import org.geoint.acetate.bind.template.DataTemplate;
 import org.geoint.acetate.model.DataModel;

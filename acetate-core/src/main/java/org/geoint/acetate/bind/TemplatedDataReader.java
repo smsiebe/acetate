@@ -15,4 +15,5 @@ public interface TemplatedDataReader<T> extends StructuredDataReader<T> {
      * @return template
      */
     DataTemplate<T> getTemplate();
+
 }
