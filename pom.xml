@@ -15,8 +15,10 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
     <modules>
+        <module>acetate-api</module>
         <module>acetate-spi</module>
         <module>acetate-core</module>
         <module>acetate-json</module>
+        <module>acetate-xml</module>
     </modules>
 </project>

@@ -1,19 +1,20 @@
 package org.geoint.acetate.bind;
 
-import org.geoint.acetate.structure.StructureType;
+import java.io.IOException;
 import java.util.Optional;
-import org.geoint.acetate.model.DataModel;
-import org.geoint.acetate.transform.StringConverter;
-import org.geoint.acetate.transform.DataTransformException;
+import org.geoint.acetate.io.ByteReader;
+import org.geoint.acetate.io.ByteWriter;
+import org.geoint.acetate.structure.DataStructure;
+import org.geoint.acetate.transform.DataConversionException;
 
 /**
- * A reader which knows about its DataModel a priori and uses this information
- * during data reading to differentiate between structured (data defined by the
- * DataModel) and unstructured (not defined in the DataModel) data.
+ * A reader which knows about its data structure a priori and uses this
+ * information during data reading to differentiate between structured (data
+ * defined by the data structure) and unstructured (not defined in the data
+ * structure) data.
  *
- * @param <T> model type
  */
-public interface StructuredDataReader<T> extends DataReader {
+public interface StructuredDataReader extends DataReader {
 
     /**
      * Advances the reader to the next data component, optionally skipping or
@@ -24,7 +25,7 @@ public interface StructuredDataReader<T> extends DataReader {
      * @throws DataBindException if there were any problems reading or
      * determining the new structure component
      */
-    StructureType next(boolean includeUnstructured)
+    DataStructureType next(boolean includeUnstructured)
             throws DataBindException;
 
     /**
@@ -42,41 +43,16 @@ public interface StructuredDataReader<T> extends DataReader {
      *
      * @return meta model of the current component, if it has a meta model
      */
-    Optional<DataModel<T>> getModel();
+    Optional<DataStructure> getStructure();
 
     /**
      * Returns the value of the current data component as an object.
      *
      * @return the object or null if the component does not have a value
      * @throws DataBindException thrown if the value content could not be read
-     * @throws DataTransformException thrown if the value could not be converted
-     * or inverted to/from the desired type or format
+     * @throws DataConversionException thrown if the value could not be
+     * converted or inverted to/from the desired type or format
      */
-    Optional<Object> value() throws DataBindException, DataTransformException;
+    Optional<Object> value() throws DataBindException, DataConversionException;
 
-    /**
-     * Converts the value of the current data component to the default data
-     * format.
-     *
-     * @return value as String or null if the component does not have a value
-     * @throws DataBindException thrown if the value content could not be read
-     * @throws DataTransformException thrown if the value could not be converted
-     * or inverted to/from the desired type or format
-     */
-    Optional<String> valueAsString()
-            throws DataBindException, DataTransformException;
-
-    /**
-     * Converts the value of the current data component with the provided
-     * formatter.
-     *
-     * @param formatter formatter used to convert the data
-     * @return value as formatted String or null if the component does not have
-     * a value
-     * @throws DataBindException thrown if the value content could not be read
-     * @throws DataTransformException thrown if the value could not be converted
-     * or inverted to/from the desired type or format
-     */
-    Optional<String> valueAsString(StringConverter formatter)
-            throws DataBindException, DataTransformException;
 }

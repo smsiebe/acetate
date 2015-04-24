@@ -1,8 +1,10 @@
 package org.geoint.acetate.bind;
 
-import org.geoint.acetate.structure.StructureType;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.Optional;
+import org.geoint.acetate.io.ByteReader;
+import org.geoint.acetate.io.ByteWriter;
 
 /**
  * Decorates a {@link DataReader}.
@@ -17,7 +19,7 @@ public abstract class DataReaderDecorator implements DataReader {
     }
 
     @Override
-    public StructureType next() throws DataBindException {
+    public DataStructureType next() throws DataBindException {
         return reader.next();
     }
 
@@ -27,23 +29,13 @@ public abstract class DataReaderDecorator implements DataReader {
     }
 
     @Override
-    public int length() throws DataBindException {
-        return reader.length();
-    }
-
-    @Override
-    public int read(ByteBuffer buffer) throws DataBindException {
-        return reader.read(buffer);
-    }
-
-    @Override
-    public int remaining() throws DataBindException {
-        return reader.remaining();
-    }
-
-    @Override
-    public ByteBuffer read() throws DataBindException {
+    public Optional<ByteReader> read() {
         return reader.read();
+    }
+
+    @Override
+    public void writeBytes(ByteWriter writer) throws IOException {
+        reader.writeBytes(writer);
     }
 
 }

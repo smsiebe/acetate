@@ -1,8 +1,9 @@
 package org.geoint.acetate.bind;
 
-import org.geoint.acetate.structure.StructureType;
-import java.nio.ByteBuffer;
+import java.io.IOException;
 import java.util.Optional;
+import org.geoint.acetate.io.ByteReader;
+import org.geoint.acetate.io.ByteWriter;
 
 /**
  * Data reader.
@@ -16,7 +17,7 @@ public interface DataReader {
      * @return structural component type
      * @throws DataBindException
      */
-    StructureType next() throws DataBindException;
+    DataStructureType next() throws DataBindException;
 
     /**
      * Current data position of the reader.
@@ -27,41 +28,18 @@ public interface DataReader {
     Optional<String> position() throws DataBindException;
 
     /**
-     * Length, in bytes, of the data value.
+     * Returns a byte reader if the component has a value.
      *
-     * @return byte length of the currently data model
-     * @throws DataBindException
+     * @return reader if the component has a value
      */
-    int length() throws DataBindException;
+    Optional<ByteReader> read();
 
     /**
-     * Read the value of the data the reader is currently pointing to, writing
-     * the value to the provided buffer.
+     * Writes the value to the provided writer, if the component has a value.
      *
-     * A positive integer returned from this method will result in the number of
-     * {@link #remaining} bytes for this component to be decremented by the same
-     * value.
-     *
-     * @param buffer buffer to write the value data
-     * @return number of bytes read into the buffer, -1 if no data is available
-     * @throws DataBindException if there were problems reading/binding the
-     * value
+     * @param writer byte writer
+     * @throws IOException thrown if there was a value but there was a problem
+     * writing the value
      */
-    int read(ByteBuffer buffer) throws DataBindException;
-
-    /**
-     * Number of remaining bytes for the value of this data component.
-     *
-     * @return number of remaining bytes of the value
-     * @throws DataBindException
-     */
-    int remaining() throws DataBindException;
-
-    /**
-     * Returns a {@link ByteBuffer} containing the data value.
-     *
-     * @return buffer of value data
-     * @throws DataBindException
-     */
-    ByteBuffer read() throws DataBindException;
+    void writeBytes(ByteWriter writer) throws IOException;
 }

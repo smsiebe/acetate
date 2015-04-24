@@ -1,6 +1,7 @@
 package org.geoint.acetate.bind;
 
 import java.nio.ByteBuffer;
+import org.geoint.acetate.io.ByteReader;
 
 /**
  * Decorates a DataWriter.
@@ -29,16 +30,12 @@ public abstract class DataWriterDecorator {
         writer.endArray();
     }
 
-    public void write(String position, String value) throws DataBindException {
+    public void write(String position, byte[] value) throws DataBindException {
         writer.write(position, value);
     }
 
-    public void write(String position, ByteBuffer buffer) throws DataBindException {
-        writer.write(position, buffer);
-    }
-
-    public void write(String position, ByteBuffer buffer, int offset, int length) throws DataBindException {
-        writer.write(position, buffer, offset, length);
+    public void write(String position, ByteReader reader) throws DataBindException {
+        writer.write(position, reader);
     }
 
 }

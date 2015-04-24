@@ -1,6 +1,6 @@
 package org.geoint.acetate.bind;
 
-import java.nio.ByteBuffer;
+import org.geoint.acetate.io.ByteReader;
 
 /**
  * Low-level data structure/format specific writer.
@@ -15,11 +15,8 @@ public interface DataWriter {
 
     void endArray() throws DataBindException;
 
-    void write(String position, String value) throws DataBindException;
+    void write(String position, byte[] value) throws DataBindException;
 
-    void write(String position, ByteBuffer buffer) throws DataBindException;
-
-    void write(String position, ByteBuffer buffer, int offset, int length)
-            throws DataBindException;
+    void write(String position, ByteReader reader) throws DataBindException;
 
 }
