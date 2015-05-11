@@ -1,6 +1,6 @@
 package org.geoint.acetate.impl.structure;
 
-import org.geoint.acetate.model.DataType;
+import gov.ic.geoint.acetate.bind.DataType;
 
 /**
  * Uses an alternative data type.

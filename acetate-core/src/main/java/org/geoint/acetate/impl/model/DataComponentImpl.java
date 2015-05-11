@@ -3,25 +3,25 @@ package org.geoint.acetate.impl.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import org.geoint.acetate.model.DataAttribute;
-import org.geoint.acetate.model.DataComponent;
-import org.geoint.acetate.model.DataConstraint;
-import org.geoint.acetate.model.DataType;
+import org.geoint.acetate.model.attribute.ComponentAttribute;
+import org.geoint.acetate.model.ComponentModel;
+import org.geoint.acetate.model.constraint.ComponentConstraint;
+import gov.ic.geoint.acetate.bind.DataType;
 
 /**
  * Immutable data component of a model.
  *
  * @param <T> data value type
  */
-public class DataComponentImpl<T> implements DataComponent<T> {
+public class DataComponentImpl<T> implements ComponentModel<T> {
 
     private final DataType<T> type;
-    private final Collection<DataConstraint<T>> constraints;
-    private final Collection<DataAttribute> attributes;
+    private final Collection<ComponentConstraint<T>> constraints;
+    private final Collection<ComponentAttribute> attributes;
 
     public DataComponentImpl(DataType<T> type,
-            Collection<DataConstraint<T>> constraints,
-            Collection<DataAttribute> attributes) {
+            Collection<ComponentConstraint<T>> constraints,
+            Collection<ComponentAttribute> attributes) {
         this.type = type;
         this.constraints = defend(constraints);
         this.attributes = defend(attributes);
@@ -33,12 +33,12 @@ public class DataComponentImpl<T> implements DataComponent<T> {
     }
 
     @Override
-    public Collection<DataConstraint<T>> getConstraints() {
+    public Collection<ComponentConstraint<T>> getConstraints() {
         return constraints;
     }
 
     @Override
-    public Collection<DataAttribute> getAttributes() {
+    public Collection<ComponentAttribute> getAttributes() {
         return attributes;
     }
 

@@ -2,7 +2,7 @@ package org.geoint.acetate.impl.model.cache;
 
 import java.util.concurrent.Callable;
 import java.util.function.Supplier;
-import org.geoint.acetate.model.DataComponent;
+import org.geoint.acetate.model.ComponentModel;
 
 /**
  * Caches data model components for java types.
@@ -13,15 +13,15 @@ public interface TypedModelCache {
 
     /**
      * Returns the model component, if already cached, otherwise synchronously
-     * creates the DataComponent on the current thread.
+ creates the ComponentModel on the current thread.
      *
      * @param <T> component type
      * @param type component class
      * @param creator component creator
      * @return cached data component
      */
-    <T> DataComponent<T> getOrCache(Class<T> type,
-            Supplier<Callable<DataComponent<T>>> creator);
+    <T> ComponentModel<T> getOrCache(Class<T> type,
+            Supplier<Callable<ComponentModel<T>>> creator);
 
     /**
      * Sets the model component, returning the old component or null.
@@ -32,5 +32,5 @@ public interface TypedModelCache {
      * @return old component from cache or null if there wasn't a component
      * previously
      */
-    <T> DataComponent<T> put(Class<T> type, DataComponent<T> component);
+    <T> ComponentModel<T> put(Class<T> type, ComponentModel<T> component);
 }

@@ -2,7 +2,7 @@ package org.geoint.acetate.impl.model.reflect;
 
 import java.util.Collection;
 import java.util.concurrent.Callable;
-import org.geoint.acetate.model.DataComponent;
+import org.geoint.acetate.model.ComponentModel;
 
 /**
  * Creates a data model component for the provided class using reflection.
@@ -10,7 +10,7 @@ import org.geoint.acetate.model.DataComponent;
  * @param <T>
  */
 public class DataComponentReflector<T>
-        implements Callable<Collection<DataComponent<?>>> {
+        implements Callable<Collection<ComponentModel<?>>> {
 
     private final Class<T> clazz;
 
@@ -19,7 +19,7 @@ public class DataComponentReflector<T>
     }
 
     @Override
-    public Collection<DataComponent<?>> call() {
+    public Collection<ComponentModel<?>> call() {
 
     }
 

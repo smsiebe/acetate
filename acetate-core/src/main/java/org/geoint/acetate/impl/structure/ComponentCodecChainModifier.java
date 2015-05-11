@@ -2,7 +2,7 @@ package org.geoint.acetate.impl.structure;
 
 import java.util.Arrays;
 import java.util.LinkedList;
-import org.geoint.acetate.transform.BinaryCodec;
+import org.geoint.acetate.codec.BinaryCodec;
 
 /**
  * Completely replaces the component codec chain for a component.

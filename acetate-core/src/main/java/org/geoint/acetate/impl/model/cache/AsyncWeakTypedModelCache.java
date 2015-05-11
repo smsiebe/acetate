@@ -9,10 +9,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.geoint.acetate.model.DataAttribute;
-import org.geoint.acetate.model.DataComponent;
-import org.geoint.acetate.model.DataConstraint;
-import org.geoint.acetate.model.DataType;
+import org.geoint.acetate.model.attribute.ComponentAttribute;
+import org.geoint.acetate.model.ComponentModel;
+import org.geoint.acetate.model.constraint.ComponentConstraint;
+import gov.ic.geoint.acetate.bind.DataType;
 
 /**
  * WeakHashMap backed cache which provides support for asynchronous component
@@ -21,14 +21,14 @@ import org.geoint.acetate.model.DataType;
  */
 public class AsyncWeakTypedModelCache implements TypedModelCache {
 
-    private static final Map<Class<?>, DataComponent<?>> cache
+    private static final Map<Class<?>, ComponentModel<?>> cache
             = Collections.synchronizedMap(new WeakHashMap());
     private static final Logger logger
             = Logger.getLogger(AsyncWeakTypedModelCache.class.getName());
 
     @Override
-    public <T> DataComponent<T> getOrCache(Class<T> type,
-            Supplier<Callable<DataComponent<T>>> creator) {
+    public <T> ComponentModel<T> getOrCache(Class<T> type,
+            Supplier<Callable<ComponentModel<T>>> creator) {
         synchronized (cache) {
             if (!cache.containsKey(type)) {
                 //immediatley add to cache so we can get out of this terrible
@@ -36,12 +36,12 @@ public class AsyncWeakTypedModelCache implements TypedModelCache {
                 cache.put(type, new DataComponentPromise(type, creator.get()));
             }
         }
-        return (DataComponent<T>) cache.get(type);
+        return (ComponentModel<T>) cache.get(type);
     }
 
     @Override
-    public <T> DataComponent<T> put(Class<T> type, DataComponent<T> component) {
-        return (DataComponent<T>) cache.put(type, component);
+    public <T> ComponentModel<T> put(Class<T> type, ComponentModel<T> component) {
+        return (ComponentModel<T>) cache.put(type, component);
     }
 
     /**
@@ -53,15 +53,15 @@ public class AsyncWeakTypedModelCache implements TypedModelCache {
      *
      * @param <T>
      */
-    private class DataComponentPromise<T> implements DataComponent<T> {
+    private class DataComponentPromise<T> implements ComponentModel<T> {
 
         private final Class<T> clazz; //also used as synchronizor for promise
         private volatile boolean running;
-        private DataComponent results;
+        private ComponentModel results;
         private final long WAIT_TIMEOUT = TimeUnit.MINUTES.toMicros(1);
 
         public DataComponentPromise(final Class<T> clazz,
-                final Callable<DataComponent<T>> creator) {
+                final Callable<ComponentModel<T>> creator) {
             this.clazz = clazz;
 
             //TODO make use of resource management, if available
@@ -101,12 +101,12 @@ public class AsyncWeakTypedModelCache implements TypedModelCache {
         }
 
         @Override
-        public Collection<DataConstraint<T>> getConstraints() {
+        public Collection<ComponentConstraint<T>> getConstraints() {
             return waitForResults(WAIT_TIMEOUT, results::getConstraints);
         }
 
         @Override
-        public Collection<DataAttribute> getAttributes() {
+        public Collection<ComponentAttribute> getAttributes() {
             return waitForResults(WAIT_TIMEOUT, results::getAttributes);
         }
 

@@ -6,36 +6,36 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import org.geoint.acetate.model.DataAttribute;
-import org.geoint.acetate.model.DataComponent;
-import org.geoint.acetate.model.DataConstraint;
-import org.geoint.acetate.model.DataType;
-import org.geoint.acetate.transform.BinaryCodec;
+import org.geoint.acetate.model.attribute.ComponentAttribute;
+import org.geoint.acetate.model.ComponentModel;
+import org.geoint.acetate.model.constraint.ComponentConstraint;
+import gov.ic.geoint.acetate.bind.DataType;
+import org.geoint.acetate.codec.BinaryCodec;
 
 /**
  * Immutable context-specific data component.
  *
  * @param <T>
  */
-public class StructureComponent<T> implements DataComponent<T> {
+public class StructureComponent<T> implements ComponentModel<T> {
 
     private final String position;
     private final DataType<T> type;
-    private final Collection<DataConstraint<T>> constraints;
-    private final Collection<DataAttribute> attributes;
+    private final Collection<ComponentConstraint<T>> constraints;
+    private final Collection<ComponentAttribute> attributes;
     private final Set<String> aliases;
     private final List<BinaryCodec> codecChain;
 
     StructureComponent(String position, DataType<T> type,
-            Collection<DataConstraint<T>> constraints,
-            Collection<DataAttribute> attributes) {
+            Collection<ComponentConstraint<T>> constraints,
+            Collection<ComponentAttribute> attributes) {
         this(position, type, constraints, attributes,
                 Collections.EMPTY_SET, Collections.EMPTY_LIST);
     }
 
     StructureComponent(String position, DataType<T> type,
-            Collection<DataConstraint<T>> constraints,
-            Collection<DataAttribute> attributes, Set<String> aliases,
+            Collection<ComponentConstraint<T>> constraints,
+            Collection<ComponentAttribute> attributes, Set<String> aliases,
             List<BinaryCodec> codecChain) {
         this.position = position;
         this.type = type;
@@ -57,7 +57,7 @@ public class StructureComponent<T> implements DataComponent<T> {
      * @return context-specific structure component
      */
     public static <T> StructureComponent<T> fromModel(String position,
-            DataComponent<T> component,
+            ComponentModel<T> component,
             StructureComponentModifier... modifiers) {
 
         StructureComponent sc = new StructureComponent(position,
@@ -89,12 +89,12 @@ public class StructureComponent<T> implements DataComponent<T> {
     }
 
     @Override
-    public Collection<DataConstraint<T>> getConstraints() {
+    public Collection<ComponentConstraint<T>> getConstraints() {
         return constraints;
     }
 
     @Override
-    public Collection<DataAttribute> getAttributes() {
+    public Collection<ComponentAttribute> getAttributes() {
         return attributes;
     }
 

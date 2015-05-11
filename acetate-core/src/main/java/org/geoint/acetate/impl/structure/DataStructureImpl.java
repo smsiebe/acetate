@@ -2,7 +2,7 @@ package org.geoint.acetate.impl.structure;
 
 import java.util.Map;
 import java.util.Map.Entry;
-import org.geoint.acetate.model.DataModel;
+import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.structure.DataStructure;
 import org.geoint.acetate.structure.DataStructureVisitor;
 
@@ -14,19 +14,19 @@ import org.geoint.acetate.structure.DataStructureVisitor;
 public class DataStructureImpl implements DataStructure {
 
     //source data model
-    private final DataModel model;
+    private final DomainModel model;
     //key is relative structural node, component hierarchy is done through 
     //object graph, so this data structure instance is the root node
     private final Map<String, StructureNode> nodes;
 
-    private DataStructureImpl(DataModel model,
+    private DataStructureImpl(DomainModel model,
             Map<String, StructureNode> nodes) {
         this.model = model;
         this.nodes = nodes;
     }
 
     @Override
-    public DataModel getModel() {
+    public DomainModel getModel() {
         return model;
     }
 

@@ -5,7 +5,6 @@
  * there are occasions where the data is preferred to be, or can only be,
  * rendered as a generic data structure.
  *
- * @see DataModel
- * @see DataStructure
+ * @see DomainModel
  */
 package org.geoint.acetate.data;

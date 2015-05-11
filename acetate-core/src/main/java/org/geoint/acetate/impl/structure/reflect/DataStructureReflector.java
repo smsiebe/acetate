@@ -10,7 +10,7 @@ import org.geoint.acetate.impl.model.cache.AsyncWeakTypedModelCache;
 import org.geoint.acetate.impl.model.reflect.DataComponentReflector;
 import org.geoint.acetate.impl.structure.StructureComponent;
 import org.geoint.acetate.impl.structure.StructureComponentModifier;
-import org.geoint.acetate.model.DataComponent;
+import org.geoint.acetate.model.ComponentModel;
 import org.geoint.acetate.structure.DataStructure;
 
 /**
@@ -56,7 +56,7 @@ public class DataStructureReflector<T> implements Callable<DataStructure> {
 
     @Override
     public DataStructure call() throws Exception {
-        DataComponent<T> rComp = getModel(rootComponent);
+        ComponentModel<T> rComp = getModel(rootComponent);
         StructureComponent<T> rStr = deriveStructure(rComp);
     }
 
@@ -66,8 +66,8 @@ public class DataStructureReflector<T> implements Callable<DataStructure> {
      * @param rootComponent
      * @return non-structure (model) component definition
      */
-    private DataComponent<T> getModel(Class<T> clazz) {
-        final DataComponent<T> componentModel =  modelCache.getOrCache(clazz,
+    private ComponentModel<T> getModel(Class<T> clazz) {
+        final ComponentModel<T> componentModel =  modelCache.getOrCache(clazz,
                 () -> new DataComponentReflector(clazz));
         
         
@@ -81,7 +81,7 @@ public class DataStructureReflector<T> implements Callable<DataStructure> {
      * @return
      */
     private StructureComponent<T> deriveStructure(final String position,
-            final DataComponent<T> rComp) {
+            final ComponentModel<T> rComp) {
         return 
     }
 
