@@ -1,7 +1,5 @@
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.model.constraint.ComponentConstraint;
-import org.geoint.acetate.model.attribute.ComponentAttribute;
 import java.util.Collection;
 import java.util.Optional;
 import org.geoint.acetate.model.annotation.attribute.ComponentId;
@@ -19,7 +17,7 @@ public interface ComponentModel<T> {
      * @return unique component name
      */
     @ComponentId
-    String getName();
+    String getComponentName();
 
     /**
      * Component data type, if known.
@@ -29,16 +27,17 @@ public interface ComponentModel<T> {
     Optional<Class<T>> getDataType();
 
     /**
-     * Data constraints defined by the data model for this component.
+     * Component models from which this component inherits/specializes.
      *
-     * @return model-defined constraints for this component
+     * @return inherited (parent) components
      */
-    Collection<ComponentConstraint> getConstraints();
+    Collection<ComponentModel<?>> getInheritedComponents();
 
     /**
-     * Model-defined data attributes.
+     * The default context of this component, as defined by the component
+     * definition on the domain model.
      *
-     * @return model-defined attributes of the component
+     * @return default context of the model component
      */
-    Collection<ComponentAttribute> getAttributes();
+    ComponentContext getDefaultContext();
 }
