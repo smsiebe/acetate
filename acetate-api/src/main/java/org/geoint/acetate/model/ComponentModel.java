@@ -3,8 +3,8 @@ package org.geoint.acetate.model;
 import org.geoint.acetate.model.constraint.ComponentConstraint;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
 import java.util.Collection;
+import java.util.Optional;
 import org.geoint.acetate.model.annotation.attribute.ComponentId;
-import org.geoint.acetate.model.annotation.constraint.NotNull;
 
 /**
  * A supported data component within a domain model.
@@ -22,12 +22,11 @@ public interface ComponentModel<T> {
     String getName();
 
     /**
-     * Component data type.
+     * Component data type, if known.
      *
      * @return component data type
      */
-    @NotNull
-    Class<T> getDataType();
+    Optional<Class<T>> getDataType();
 
     /**
      * Data constraints defined by the data model for this component.

@@ -1,6 +1,8 @@
 package org.geoint.acetate.io;
 
+import java.io.Closeable;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
@@ -8,7 +10,7 @@ import java.nio.ByteBuffer;
  * Simple byte reader abstraction used by Acetate to support different binary
  * data sources.
  */
-public interface ByteReader {
+public interface ByteReader extends Closeable, AutoCloseable {
 
     /**
      * Reads all bytes into memory.
@@ -20,7 +22,8 @@ public interface ByteReader {
     byte[] read() throws IOException;
 
     /**
-     * Reads 0 or more bytes into the provided ByteBuffer.
+     * Reads 0 or more bytes into the provided ByteBuffer, returning the number
+     * of bytes that were read.
      *
      * @param buffer buffer to write the data
      * @return number of bytes read; -1 indicates there is no more bytes
@@ -30,4 +33,23 @@ public interface ByteReader {
      * provided buffer is 0 and there are more bytes available to read
      */
     int read(ByteBuffer buffer) throws IOException, BufferOverflowException;
+
+    /**
+     * Fills the remaining buffer in the provided buffer.
+     *
+     * @param buffer destination buffer
+     * @throws IOException thrown if there are problems reading
+     * @throws BufferOverflowException thrown if there are fewer than
+     * buffer.remaining bytes available from the reader
+     */
+    void readAll(ByteBuffer buffer) throws IOException, BufferOverflowException;
+
+    /**
+     * Drains the reader to the output stream.
+     *
+     * @param out stream the reader content is written
+     * @throws IOException thrown if there are problems reading from the data
+     * source or writing to the output stream
+     */
+    void drainTo(OutputStream out) throws IOException;
 }

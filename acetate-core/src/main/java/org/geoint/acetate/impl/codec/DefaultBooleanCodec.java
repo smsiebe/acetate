@@ -23,19 +23,16 @@ public final class DefaultBooleanCodec implements ObjectCodec<Boolean> {
     public Boolean convert(ByteReader reader) throws DataConversionException {
         try {
             ByteBuffer buffer = ByteBuffer.allocate(1);
-            int read = 0;
-            if (reader.read(buffer) == 1) {
-                switch (buffer.get()) {
-                    case TRUE:
-                        return true;
-                    case FALSE:
-                        return false;
-                    default:
-                        throw new DataConversionException("Invalid data "
-                                + "format for boolean.");
-                }
-            } else {
-                return null;
+            reader.readAll(buffer);
+
+            switch (buffer.get()) {
+                case TRUE:
+                    return Boolean.TRUE;
+                case FALSE:
+                    return Boolean.FALSE;
+                default:
+                    throw new DataConversionException("Invalid data "
+                            + "format for boolean.");
             }
         } catch (IOException | BufferOverflowException ex) {
             throw new DataConversionException("Problems reading boolean value "
@@ -46,9 +43,6 @@ public final class DefaultBooleanCodec implements ObjectCodec<Boolean> {
     @Override
     public void invert(Boolean data, ByteWriter writer) throws DataConversionException {
         try {
-            if (data == null) {
-                return;
-            }
             writer.write((data) ? TRUE : FALSE);
         } catch (IOException ex) {
             throw new DataConversionException("Problems writing boolean value "

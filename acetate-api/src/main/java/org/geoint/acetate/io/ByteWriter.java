@@ -1,5 +1,7 @@
 package org.geoint.acetate.io;
 
+import java.io.Closeable;
+import java.io.Flushable;
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
@@ -8,7 +10,7 @@ import java.nio.ByteBuffer;
  * Simple byte writer abstraction used by Acetate to support different binary
  * data outputs.
  */
-public interface ByteWriter {
+public interface ByteWriter extends Flushable, Closeable, AutoCloseable {
 
     /**
      * Writes the content of the byte array.
