@@ -6,7 +6,7 @@ package org.geoint.acetate.model;
  * @param <K> data type for the key component
  * @param <V> data type of the value component
  */
-public interface MapCompositeComponent<K, V> extends CompositeComponent {
+public interface CompositeMapComponent<K, V> extends CompositeComponent {
 
     /**
      * The component model for the map key.

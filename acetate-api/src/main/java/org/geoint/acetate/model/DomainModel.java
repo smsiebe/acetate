@@ -86,6 +86,6 @@ public interface DomainModel {
      * @return components of the data model, in no particular order. A model
      * with no components will return an empty collection.
      */
-    Collection<ComponentModel> getComponents();
+    Collection<ComponentModel<?>> getComponents();
 
 }

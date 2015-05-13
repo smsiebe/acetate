@@ -1,17 +1,18 @@
 package org.geoint.acetate.model;
 
 /**
- * A composite component which may only be a single domain model component
- * instance.
+ * A composite component which may contain multiple instances of a component
+ * model.
  *
- * @param <T> data type of the component model
+ * @param <T> data type of the components contained in the collection
  */
-public interface SimpleCompositeComponent<T> extends CompositeComponent {
+public interface CompositeCollectionComponent<T> extends CompositeComponent {
 
     /**
-     * Model of the component which may be used in this composite context.
+     * Component model which defines the component context of the composite
+     * collection.
      *
-     * @return component model for this composite context
+     * @return model of the composite collection
      */
     ComponentModel<T> getComponentModel();
 

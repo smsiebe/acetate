@@ -27,11 +27,19 @@ public interface ComponentModel<T> {
     Optional<Class<T>> getDataType();
 
     /**
+     * Component behavior/operations.
+     *
+     * @return component operations or empty collection if no behavior is found
+     * on the component
+     */
+    Collection<? extends ComponentOperation> getOperations();
+
+    /**
      * Component models from which this component inherits/specializes.
      *
      * @return inherited (parent) components
      */
-    Collection<ComponentModel<?>> getInheritedComponents();
+//    Collection<ComponentModel<? super T>> getInheritedComponents();
 
     /**
      * The default context of this component, as defined by the component
@@ -39,5 +47,5 @@ public interface ComponentModel<T> {
      *
      * @return default context of the model component
      */
-    ComponentContext getDefaultContext();
+    ComponentContext getContext();
 }

@@ -1,16 +1,15 @@
 package org.geoint.acetate.model;
 
 import org.geoint.acetate.model.annotation.constraint.NotNull;
-import org.geoint.acetate.model.attribute.Attributable;
-import org.geoint.acetate.model.constraint.Constrainable;
 
 /**
- * A component of a {@link CompositeComponentModel}, which defines the context
- * and components of the composite model.
+ * Provides the context of the aggregate(/composite) relationship between
+ * components.
  *
  * The constraints, attribute, and codec of a composite override that of the
  * component it defines.
  *
+ * @see SimpleCompositeComponent
  */
 public interface CompositeComponent {
 

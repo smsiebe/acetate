@@ -11,6 +11,14 @@ import org.geoint.acetate.model.attribute.ComponentAttribute;
 public interface ComponentRegistry {
 
     /**
+     * Returns an immutable collection containing all the model components
+     * within the domain model.
+     *
+     * @return all components within the domain model
+     */
+    Collection<ComponentModel<?>> findAll();
+
+    /**
      * Returns a component by the requested domain-unique component name.
      *
      * @param componentName case-insensitive component name

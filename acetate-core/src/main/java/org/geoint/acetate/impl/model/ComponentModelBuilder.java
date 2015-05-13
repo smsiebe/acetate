@@ -9,40 +9,33 @@ import org.geoint.acetate.model.constraint.ComponentConstraint;
  *
  * @param <T> component data type
  */
-public interface ComponentModelBuilder<T> {
+public interface ComponentModelBuilder<T> extends ContextBuilder<T> {
 
     /**
-     * Add a constraint to this component model.
+     * Indicates that the component inherits from the provided component name.
      *
-     * @param constraint constraint to be added to this model
+     * @param parentComponentName domain-unique name of component from which
+     * this component inherits
      * @return this builder (fluid interface)
      */
-    ComponentModelBuilder constraint(ComponentConstraint constraint);
+    ComponentModelBuilder<T> specializes(String parentComponentName);
 
     /**
-     * Add an attribute to this component model.
+     * Add a component operation on the domain model.
      *
-     * @param attribute attribute for this component model
-     * @return this builder (fluid interface)
+     * @param name operation name
+     * @return builder for the component operation
      */
-    ComponentModelBuilder attribute(ComponentAttribute attribute);
-
-    /**
-     * Set an explicit codec to use for this component.
-     *
-     * @param codec codec to use for this component
-     * @return this builder (fluid interface)
-     */
-    ComponentModelBuilder<T> codec(ObjectCodec<T> codec);
+    ComponentOperationBuilder operation(String name);
 
     /**
      * Add a composite component to this component.
      *
      * @param localName component-unique composite name
      * @param componentName domain-unique component name for this composite type
-     * @return builder for new composite component
+     * @return composite context builder
      */
-    ComponentModelBuilder composite(String localName, String componentName);
+    ContextBuilder<?> composite(String localName, String componentName);
 
     /**
      * Add a multi-valued composite collection.
@@ -50,9 +43,9 @@ public interface ComponentModelBuilder<T> {
      * @param localName component-unique composite name
      * @param componentName domain-unique component name of the acceptable
      * component types in the collection
-     * @return builder for new composite component
+     * @return composite context builder
      */
-    ComponentModelBuilder compositeCollection(String localName,
+    ContextBuilder<?> compositeCollection(String localName,
             String componentName);
 
     /**
@@ -63,9 +56,9 @@ public interface ComponentModelBuilder<T> {
      * the map
      * @param valueComponentName domain-unique component name used as the value
      * of the map
-     * @return builder for the new composite map component
+     * @return composite context builder
      */
-    ComponentModelBuilder compositeMap(String localName,
+    MapContextBuilder<?, ?> compositeMap(String localName,
             String keyComponentName, String valueComponentName);
 
 }
