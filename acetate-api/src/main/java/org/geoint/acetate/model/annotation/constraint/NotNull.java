@@ -16,7 +16,7 @@ import org.geoint.acetate.model.constraint.NotNullConstraint.NotNullConstraintAn
 @Inherited
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@ConstraintAnnotation(constructor = NotNullConstraintAnnotationConstructor.class)
+@Constraint(constructor = NotNullConstraintAnnotationConstructor.class)
 public @interface NotNull {
 
 }

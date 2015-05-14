@@ -13,5 +13,5 @@ public interface Constrainable {
      *
      * @return immutable collection of constraints for this model component
      */
-    Collection<ComponentConstraint> getConstraints();
+    Collection<? extends ComponentConstraint> getConstraints();
 }

@@ -1,8 +1,6 @@
 package org.geoint.acetate.impl.model;
 
-import org.geoint.acetate.codec.ObjectCodec;
-import org.geoint.acetate.model.attribute.ComponentAttribute;
-import org.geoint.acetate.model.constraint.ComponentConstraint;
+import org.geoint.acetate.model.OperationModel;
 
 /**
  * API to programmatically build a ComponentModel.
@@ -23,10 +21,10 @@ public interface ComponentModelBuilder<T> extends ContextBuilder<T> {
     /**
      * Add a component operation on the domain model.
      *
-     * @param name operation name
-     * @return builder for the component operation
+     * @param operation component operation
+     * @return this builder (fluid interface)
      */
-    ComponentOperationBuilder operation(String name);
+    ComponentModelBuilder<T> operation(OperationModel operation);
 
     /**
      * Add a composite component to this component.

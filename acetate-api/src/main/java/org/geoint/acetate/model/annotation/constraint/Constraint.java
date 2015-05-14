@@ -13,10 +13,11 @@ import org.geoint.acetate.model.constraint.ComponentConstraint;
  * model component.
  */
 @Documented
-@Target(ElementType.ANNOTATION_TYPE)
+@Target({ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ConstraintAnnotation {
-   /**
+public @interface Constraint {
+
+    /**
      * The factory use to instantiate the ComponentConstraint instance.
      *
      * @return component constraint factory

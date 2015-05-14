@@ -7,7 +7,7 @@ import org.geoint.acetate.model.annotation.attribute.Version;
 import org.geoint.acetate.model.annotation.constraint.NotNull;
 
 /**
- * Defines one or more {@link ComponentModel components} used to define the
+ * Defines one or more {@link ObjectModel components} used to define the
  * types of data with a data model.
  *
  * All DomainModel instances must be immutable and thread-safe.
@@ -86,6 +86,6 @@ public interface DomainModel {
      * @return components of the data model, in no particular order. A model
      * with no components will return an empty collection.
      */
-    Collection<ComponentModel<?>> getComponents();
+    Collection<ObjectModel<?>> getComponents();
 
 }

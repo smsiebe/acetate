@@ -14,9 +14,9 @@ import org.geoint.acetate.model.attribute.ComponentAttribute;
  *
  */
 @Documented
-@Target(ElementType.ANNOTATION_TYPE)
+@Target({ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface AttributeAnnotation {
+public @interface Attribute {
 
     /**
      * The factory use to instantiate the ComponentAttribute instance.

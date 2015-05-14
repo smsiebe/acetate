@@ -2,7 +2,7 @@ package org.geoint.acetate.model.registry;
 
 import java.util.Collection;
 import java.util.Optional;
-import org.geoint.acetate.model.ComponentModel;
+import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
 
 /**
@@ -16,7 +16,7 @@ public interface ComponentRegistry {
      *
      * @return all components within the domain model
      */
-    Collection<ComponentModel<?>> findAll();
+    Collection<ObjectModel<?>> findAll();
 
     /**
      * Returns a component by the requested domain-unique component name.
@@ -24,7 +24,7 @@ public interface ComponentRegistry {
      * @param componentName case-insensitive component name
      * @return component model, if found
      */
-    Optional<ComponentModel<?>> findByName(String componentName);
+    Optional<ObjectModel<?>> findByName(String componentName);
 
     /**
      * Returns an immutable collection of domain model components which are
@@ -35,7 +35,7 @@ public interface ComponentRegistry {
      * requested attribute, or an empty collection if not components have the
      * requested attribute
      */
-    Collection<ComponentModel<?>> findByAttribute(
+    Collection<ObjectModel<?>> findByAttribute(
             Class<? extends ComponentAttribute> attributeType);
 
     /**
@@ -47,5 +47,5 @@ public interface ComponentRegistry {
      * @return collection of component models which specialize (inherit from)
      * the requested component, or an empty collection
      */
-    Collection<ComponentModel<?>> findSpecialized(String parentComponentName);
+    Collection<ObjectModel<?>> findSpecialized(String parentComponentName);
 }

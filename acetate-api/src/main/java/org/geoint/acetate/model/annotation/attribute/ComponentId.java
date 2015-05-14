@@ -21,7 +21,7 @@ import org.geoint.acetate.model.attribute.AcetateDataAttribute.AcetateComponentA
 @Inherited
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@AttributeAnnotation(constructor = AcetateComponentAttributeConstructor.class)
+@Attribute(constructor = AcetateComponentAttributeConstructor.class)
 public @interface ComponentId {
 
 }

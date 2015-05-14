@@ -5,8 +5,9 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.geoint.acetate.model.constraint.ComponentConstraint;
 import org.geoint.acetate.codec.BinaryCodec;
+import org.geoint.acetate.model.DomainModel;
+import org.geoint.acetate.model.annotation.constraint.Constraint;
 
 /**
  * Use to augment the model of a individual model component.
@@ -30,18 +31,11 @@ public @interface ModelComponent {
     String path() default "";
 
     /**
-     * Optional listing of model component aliases.
-     *
-     * @return optional aliases, empty array means no aliases.
-     */
-    String[] alias() default {};
-
-    /**
      * Optional data constraints added to the model component.
      *
      * @return data constraints for this model
      */
-    Class<? extends ComponentConstraint>[] constraints() default {};
+    Constraint[] constraints() default {};
 
     /**
      * Optional explicitly defined chain of binary converter for this model

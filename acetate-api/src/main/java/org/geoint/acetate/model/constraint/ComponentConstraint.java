@@ -1,6 +1,7 @@
 package org.geoint.acetate.model.constraint;
 
-import org.geoint.acetate.model.ComponentModel;
+import org.geoint.acetate.model.Inheritable;
+import org.geoint.acetate.model.ObjectModel;
 
 /**
  * A constraint is a rule placed on a data (be it the model, structure, or
@@ -8,7 +9,7 @@ import org.geoint.acetate.model.ComponentModel;
  *
  */
 @FunctionalInterface
-public interface ComponentConstraint {
+public interface ComponentConstraint extends Inheritable{
 
     /**
      * Test if the data value validates against the constraint.
@@ -18,5 +19,5 @@ public interface ComponentConstraint {
      * @param data data to test
      * @return true if the data passes the constraint, otherwise false
      */
-    <T> boolean validate(ComponentModel<T> model, T data);
+    <T> boolean validate(ObjectModel<T> model, T data);
 }

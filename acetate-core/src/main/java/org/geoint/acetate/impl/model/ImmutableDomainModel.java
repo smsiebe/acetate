@@ -2,7 +2,7 @@ package org.geoint.acetate.impl.model;
 
 import java.util.Collection;
 import java.util.Optional;
-import org.geoint.acetate.model.ComponentModel;
+import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.registry.ComponentRegistry;
 
@@ -64,7 +64,7 @@ public final class ImmutableDomainModel implements DomainModel {
     }
 
     @Override
-    public Collection<ComponentModel<?>> getComponents() {
+    public Collection<ObjectModel<?>> getComponents() {
         return registry.findAll();
     }
 

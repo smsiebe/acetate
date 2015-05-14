@@ -1,7 +1,7 @@
 package org.geoint.acetate.data;
 
 import java.util.Collection;
-import org.geoint.acetate.model.ComponentModel;
+import org.geoint.acetate.model.ObjectModel;
 
 /**
  * Root of a generic data graph.
@@ -15,7 +15,7 @@ public interface Data<T> {
      *
      * @return
      */
-    ComponentModel<T> getModel();
+    ObjectModel<T> getModel();
 
     /**
      * Return the root data node.
