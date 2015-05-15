@@ -1,7 +1,6 @@
-package org.geoint.acetate.model.registry;
+package org.geoint.acetate.model;
 
 import java.util.Optional;
-import org.geoint.acetate.model.DomainModel;
 
 /**
  * Model registry for domain models, their components, and acetate layers

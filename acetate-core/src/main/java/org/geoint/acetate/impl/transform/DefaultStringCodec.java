@@ -1,19 +1,25 @@
-package org.geoint.acetate.impl.codec;
+package org.geoint.acetate.impl.transform;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import org.geoint.acetate.codec.DataConversionException;
+import org.geoint.acetate.data.transform.DataConversionException;
 import org.geoint.acetate.io.ByteWriter;
-import org.geoint.acetate.codec.ObjectCodec;
+import org.geoint.acetate.data.transform.ObjectCodec;
 import org.geoint.acetate.io.ByteReader;
+import org.geoint.acetate.model.ModelContextPath;
+import org.geoint.acetate.model.DomainModel;
 
 /**
  * Default data type for {@link String}.
  *
  * Converts the entire content of the ByteReader to a UTF-8 String.
  */
-public final class DefaultStringCodec implements ObjectCodec<String> {
+public final class DefaultStringCodec extends ObjectCodec<String> {
+
+    public DefaultStringCodec(DomainModel model, ModelContextPath path) {
+        super(model, path);
+    }
 
     @Override
     public String convert(ByteReader reader) throws DataConversionException {

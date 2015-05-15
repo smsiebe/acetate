@@ -1,14 +1,15 @@
 package org.geoint.acetate.model;
 
-import java.util.Collection;
 import java.util.Optional;
+import org.geoint.acetate.data.transform.CodecRegistry;
+import org.geoint.acetate.data.transform.ConverterRegistry;
 import org.geoint.acetate.model.annotation.attribute.ComponentId;
 import org.geoint.acetate.model.annotation.attribute.Version;
 import org.geoint.acetate.model.annotation.constraint.NotNull;
 
 /**
- * Defines one or more {@link ObjectModel components} used to define the
- * types of data with a data model.
+ * Defines one or more {@link ObjectModel components} used to define the types
+ * of data with a data model.
  *
  * All DomainModel instances must be immutable and thread-safe.
  */
@@ -81,11 +82,25 @@ public interface DomainModel {
     Optional<String> getDescription();
 
     /**
-     * Model components that comprise the domain model.
+     * Registry containing the component models that make up this domain model.
      *
      * @return components of the data model, in no particular order. A model
      * with no components will return an empty collection.
      */
-    Collection<ObjectModel<?>> getComponents();
+    ObjectRegistry getComponents();
 
+    /**
+     * Registry containing the codecs registered to this domain model.
+     *
+     * @return domain model codec registry
+     */
+    CodecRegistry getCodecs();
+
+    /**
+     * Registry containing the object converters registered to this domain
+     * model.
+     *
+     * @return domain model converter registry
+     */
+    ConverterRegistry getConverters();
 }

@@ -1,6 +1,6 @@
 package org.geoint.acetate.impl.model;
 
-import org.geoint.acetate.model.ComponentPath;
+import org.geoint.acetate.model.ModelContextPath;
 import org.geoint.acetate.model.ModelException;
 
 /**
@@ -9,38 +9,38 @@ import org.geoint.acetate.model.ModelException;
  */
 public class ComponentCollisionException extends ModelException {
 
-    private final ComponentPath contextPath;
+    private final ModelContextPath contextPath;
 
-    public ComponentCollisionException(ComponentPath contextPath) {
+    public ComponentCollisionException(ModelContextPath contextPath) {
         super(contextPath.getDomainName(), contextPath.getDomainVersion(),
                 contextMessage(contextPath));
         this.contextPath = contextPath;
     }
 
-    public ComponentCollisionException(ComponentPath contextPath, String message) {
+    public ComponentCollisionException(ModelContextPath contextPath, String message) {
         super(contextPath.getDomainName(), contextPath.getDomainVersion(),
                 contextMessage(contextPath) + message);
         this.contextPath = contextPath;
     }
 
-    public ComponentCollisionException(ComponentPath contextPath, String message,
+    public ComponentCollisionException(ModelContextPath contextPath, String message,
             Throwable cause) {
         super(contextPath.getDomainName(), contextPath.getDomainVersion(),
                 contextMessage(contextPath) + message, cause);
         this.contextPath = contextPath;
     }
 
-    public ComponentCollisionException(ComponentPath contextPath, Throwable cause) {
+    public ComponentCollisionException(ModelContextPath contextPath, Throwable cause) {
         super(contextPath.getDomainName(), contextPath.getDomainVersion(),
                 contextMessage(contextPath), cause);
         this.contextPath = contextPath;
     }
 
-    public ComponentPath getContextPath() {
+    public ModelContextPath getContextPath() {
         return contextPath;
     }
 
-    private static String contextMessage(ComponentPath contextPath) {
+    private static String contextMessage(ModelContextPath contextPath) {
         return "Duplicate model component '" + contextPath.asString() + "'. ";
     }
 }

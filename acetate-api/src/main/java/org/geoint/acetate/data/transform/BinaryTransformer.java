@@ -1,13 +1,13 @@
-package org.geoint.acetate.codec;
+package org.geoint.acetate.data.transform;
 
 import org.geoint.acetate.io.ByteReader;
 import org.geoint.acetate.io.ByteWriter;
 
 /**
- * Converts binary data to an alternative binary format.
+ * Transforms binary data to an alternative binary format.
  */
 @FunctionalInterface
-public interface BinaryConverter {
+public interface BinaryTransformer {
 
     /**
      * Converts a binary data representation from one format to another.

@@ -5,9 +5,21 @@ import java.util.Optional;
 /**
  *
  */
-public interface ModelComponent  {
+public interface ModelComponent {
 
-    ComponentPath getPath();
+    /**
+     * The DomainModel this component is a member of.
+     *
+     * @return components domain model
+     */
+    DomainModel getDomainModel();
+
+    /**
+     * Domain model context path.
+     *
+     * @return components contextual path
+     */
+    ModelContextPath getPath();
 
     /**
      * Name of the model component.

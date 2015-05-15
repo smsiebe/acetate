@@ -3,8 +3,8 @@ package org.geoint.acetate.impl.model;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
-import org.geoint.acetate.codec.ObjectCodec;
-import org.geoint.acetate.model.ComponentPath;
+import org.geoint.acetate.data.transform.ObjectCodec;
+import org.geoint.acetate.model.ModelContextPath;
 import org.geoint.acetate.model.ContextualComponent;
 import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.model.OperationModel;
@@ -17,7 +17,7 @@ import org.geoint.acetate.model.constraint.ComponentConstraint;
  */
 public class ImmutableObjectModel<T> implements ObjectModel<T> {
 
-    private final ImmutableComponentPath path;
+    private final ImmutableContextPath path;
     private final String name;
     private final Optional<String> description;
     private final ObjectCodec<T> codec;
@@ -26,9 +26,9 @@ public class ImmutableObjectModel<T> implements ObjectModel<T> {
     private final Collection<? extends ComponentConstraint> constraints;
     private final Collection<? extends ComponentAttribute> attributes;
 
-    ImmutableObjectModel(ImmutableComponentPath path,
+    protected ImmutableObjectModel(ImmutableContextPath path,
             String name,
-            Optional<String> description,
+            String description,
             ObjectCodec<T> codec,
             Collection<ImmutableOperationModel> operations,
             Collection<ContextualComponent> composites,
@@ -36,12 +36,12 @@ public class ImmutableObjectModel<T> implements ObjectModel<T> {
             Collection<? extends ComponentAttribute> attributes) {
         this.path = path;
         this.name = name;
-        this.description = description;
-        this.operations = operations;
-        this.composites = composites;
+        this.description = Optional.ofNullable(description);
+        this.operations = Collections.unmodifiableCollection(operations);
+        this.composites = Collections.unmodifiableCollection(composites);
         this.codec = codec;
-        this.constraints = constraints;
-        this.attributes = attributes;
+        this.constraints = Collections.unmodifiableCollection(constraints);
+        this.attributes = Collections.unmodifiableCollection(attributes);
     }
 
     /**
@@ -51,7 +51,7 @@ public class ImmutableObjectModel<T> implements ObjectModel<T> {
      * @param domainName
      * @param version
      * @param name
-     * @param description
+     * @param description optional (nullable) model description
      * @param codec
      * @param operations
      * @param composites
@@ -69,48 +69,42 @@ public class ImmutableObjectModel<T> implements ObjectModel<T> {
             Collection<ContextualComponent> composites,
             Collection<? extends ComponentConstraint> constraints,
             Collection<? extends ComponentAttribute> attributes) {
-        final ImmutableComponentPath path
-                = ImmutableComponentPath.basePath(domainName, version, name);
-        return new ImmutableObjectModel(path,
-                name,
-                Optional.ofNullable(description),
-                codec,
-                Collections.unmodifiableCollection(operations),
-                Collections.unmodifiableCollection(composites),
-                Collections.unmodifiableCollection(constraints),
-                Collections.unmodifiableCollection(attributes));
+        return new ImmutableObjectModel(
+                ImmutableContextPath.basePath(domainName, version, name),
+                name, description, codec, operations, composites, constraints,
+                attributes);
     }
-//
-//    public ImmutableObjectModel(String componentName,
-//            ImmutableComponentContext context,
-//            Collection<ImmutableObjectModel<? super T>> inheritedFrom,
-//            Collection<OperationModel> operations,
-//            ComponentRegistry registry) {
-//        this(componentName, inheritedFrom, context, operations);
-//    }
-//
-//    public ImmutableObjectModel(String name,
-//            Collection<ImmutableObjectModel<? super T>> inheritedFrom,
-//            ImmutableComponentContext context,
-//            Collection<OperationModel> operations) {
-//        this.name = name;
-//        this.context = context;
-//        this.lineage = Collections.unmodifiableSet(new HashSet<>(inheritedFrom));
-//
-//        //component operations are native + inherited
-//        Map<String, OperationModel> ops = new HashMap<>();
-//        operations.stream()
-//                .forEach((o) -> ops.put(o.getName(), o));
-//        this.lineage.stream()
-//                .flatMap((p) -> p.getOperations().stream())
-//                .filter(OperationModel::inherit)
-//                .filter((o) -> !ops.containsKey(o.getName()))
-//                .forEach((o) -> ops.put(o.getName(), o));
-//        this.operations = Collections.unmodifiableCollection(ops.values());
-//    }
+
+    /**
+     * Create a "base" domain model object.
+     *
+     * @param <T> data type
+     * @param path
+     * @param name
+     * @param description optional (nullable) model description
+     * @param codec
+     * @param operations
+     * @param composites
+     * @param constraints
+     * @param attributes
+     * @return domain model "base" object
+     */
+    public static <T> ImmutableObjectModel<T> base(
+            ImmutableContextPath path,
+            String name,
+            String description,
+            ObjectCodec<T> codec,
+            Collection<ImmutableOperationModel> operations,
+            Collection<ContextualComponent> composites,
+            Collection<? extends ComponentConstraint> constraints,
+            Collection<? extends ComponentAttribute> attributes) {
+        return new ImmutableObjectModel<>(path, name, description, codec,
+                operations, composites, constraints, attributes
+        );
+    }
 
     @Override
-    public ComponentPath getPath() {
+    public ModelContextPath getPath() {
         return path;
     }
 
@@ -130,7 +124,7 @@ public class ImmutableObjectModel<T> implements ObjectModel<T> {
     }
 
     @Override
-    public Collection<? extends ContextualComponent> getComposites() {
+    public Collection<ContextualComponent> getComposites() {
         return composites;
     }
 

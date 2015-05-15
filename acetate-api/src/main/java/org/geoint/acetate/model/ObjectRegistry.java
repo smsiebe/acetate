@@ -1,4 +1,4 @@
-package org.geoint.acetate.model.registry;
+package org.geoint.acetate.model;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -8,7 +8,7 @@ import org.geoint.acetate.model.attribute.ComponentAttribute;
 /**
  * Registry of component models within a domain model.
  */
-public interface ComponentRegistry {
+public interface ObjectRegistry {
 
     /**
      * Returns an immutable collection containing all the model components
@@ -39,13 +39,13 @@ public interface ComponentRegistry {
             Class<? extends ComponentAttribute> attributeType);
 
     /**
-     * Returns an immutable collection of domain model components which
-     * specialize (inherits from) the specified component.
+     * Returns an immutable collection of domain model objects which specialize
+     * (inherits from) the specified objects.
      *
-     * @param parentComponentName component name to search for specialized
+     * @param parentObjectName component name to search for specialized
      * components
-     * @return collection of component models which specialize (inherit from)
-     * the requested component, or an empty collection
+     * @return collection of object models which specialize (inherit from) the
+     * requested object, or an empty collection
      */
-    Collection<ObjectModel<?>> findSpecialized(String parentComponentName);
+    Collection<ObjectModel<?>> findSpecialized(String parentObjectName);
 }

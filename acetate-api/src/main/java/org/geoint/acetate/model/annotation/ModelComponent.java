@@ -5,7 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.geoint.acetate.codec.BinaryCodec;
+import org.geoint.acetate.data.transform.BinaryTransformer;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.annotation.constraint.Constraint;
 
@@ -44,6 +44,6 @@ public @interface ModelComponent {
      *
      * @return optional binary converter chain
      */
-    Class<? extends BinaryCodec>[] codec() default {};
+    Class<? extends BinaryTransformer>[] codec() default {};
 
 }

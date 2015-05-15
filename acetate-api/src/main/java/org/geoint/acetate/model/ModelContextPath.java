@@ -6,7 +6,7 @@ import java.net.URISyntaxException;
 /**
  * Context-unique path for a domain model component.
  */
-public interface ComponentPath {
+public interface ModelContextPath {
 
     String getDomainName();
 

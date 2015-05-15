@@ -13,17 +13,25 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import org.geoint.acetate.codec.ObjectCodec;
-import org.geoint.acetate.impl.codec.DefaultBooleanCodec;
-import org.geoint.acetate.impl.codec.DefaultIntegerCodec;
-import org.geoint.acetate.impl.codec.DefaultStringCodec;
+import org.geoint.acetate.data.transform.ObjectCodec;
+import org.geoint.acetate.impl.transform.DefaultBooleanCodec;
+import org.geoint.acetate.impl.transform.DefaultIntegerCodec;
+import org.geoint.acetate.impl.transform.DefaultStringCodec;
+import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableCollectionPath;
+import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableMapPath;
+import org.geoint.acetate.model.ModelContextPath;
+import org.geoint.acetate.model.ContextualComponent;
+import org.geoint.acetate.model.ContextualObjectModel;
 import org.geoint.acetate.model.constraint.ComponentConstraint;
 import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.model.OperationModel;
 import org.geoint.acetate.model.DomainModel;
+import org.geoint.acetate.model.InheritedObjectModel;
 import org.geoint.acetate.model.ModelException;
+import org.geoint.acetate.model.ContextualCollectionModel;
+import org.geoint.acetate.model.ObjectMapModel;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
-import org.geoint.acetate.model.registry.ComponentRegistry;
+import org.geoint.acetate.model.ObjectRegistry;
 
 /**
  * API to programmatically build a DomainModel.
@@ -34,7 +42,7 @@ public class DomainModelBuilder {
     private final String name;
     private final long version;
     private String description;
-    private Map<String, ComponentModelBuilderImpl<?>> components;
+    private Map<String, ObjectModelBuilderImpl<?>> components;
     private static DomainModel DEFAULT_MODEL;
 
     private final static Logger logger
@@ -97,25 +105,29 @@ public class DomainModelBuilder {
      * @param componentName domain-unique component name
      * @return builder for this component model
      */
-    public ComponentModelBuilder<?> component(String componentName) {
-        return component(componentName, null);
+    public ObjectModelBuilder<?> component(String componentName) {
+        if (components.containsKey(componentName)) {
+            components.put(componentName,
+                    new ObjectModelBuilderImpl(componentName));
+        }
+        return components.get(componentName);
     }
 
     /**
-     * Add a component associated with a known java data type.
+     * Add a component to the domain model.
      *
      * @param <T> data type
      * @param componentName domain-unique component name
-     * @param componentType data type of the component model
+     * @param codec object codec
      * @return builder for this component model
      */
-    public <T> ComponentModelBuilder<T> component(String componentName,
-            Class<T> componentType) {
+    public <T> ObjectModelBuilder<T> component(String componentName,
+            ObjectCodec<T> codec) {
         if (components.containsKey(componentName)) {
             components.put(componentName,
-                    new ComponentModelBuilderImpl(componentName, componentType));
+                    new ObjectModelBuilderImpl(componentName));
         }
-        return (ComponentModelBuilder<T>) components.get(componentName);
+        return (ObjectModelBuilder<T>) components.get(componentName);
     }
 
     /**
@@ -130,111 +142,131 @@ public class DomainModelBuilder {
     public DomainModel build()
             throws IncompleteModelException, ComponentCollisionException {
 
-        final InternalComponentRegistry componentRegistry
-                = new InternalComponentRegistry(this.name, this.version);
+        final InternalObjectRegistry objectRegistry
+                = new InternalObjectRegistry(this.name, this.version);
 
         //build each "base" component model respecting inheritence first
-        for (Entry<String, ComponentModelBuilderImpl<?>> e
+        for (Entry<String, ObjectModelBuilderImpl<?>> e
                 : components.entrySet()) {
-            //for each component
-            componentRegistry.register(
-                    buildComponent(
-                            e.getValue(),
-                            componentRegistry
-                    )
+            //for each base object model
+            objectRegistry.register(
+                    buildObjectModel(e.getValue(), objectRegistry)
             );
         }
 
         //build the composite model definitions as needed
-        return new ImmutableDomainModel(componentRegistry,
+        return new ImmutableDomainModel(objectRegistry,
                 DomainUtil.uniqueDomainId(name, version),
                 this.name, this.version, this.name, this.description);
     }
 
-    private <T> ObjectModel<T> buildComponent(
-            final ComponentModelBuilderImpl<T> cb,
-            final ComponentRegistry registry)
+    private ObjectModel<?> buildObjectModel(
+            final ObjectModelBuilderImpl cb,
+            final ObjectRegistry registry)
             throws IncompleteModelException, ComponentCollisionException {
 
         final String componentName = cb.componentName;
-        final ImmutableComponentPath componentPath
-                = ImmutableComponentPath.basePath(name, version, componentName);
+        final ImmutableContextPath objectPath
+                = ImmutableContextPath.basePath(name, version, componentName);
+
         if (registry.findByName(componentName).isPresent()) {
-            throw new ComponentCollisionException(componentPath);
+            //registry already has a component by this name, don't even 
+            //bother building
+            throw new ComponentCollisionException(objectPath);
         }
 
-        if (cb.compositeComponents.isEmpty()) {
-            //simple (value) component
-            return new ImmutableObjectModel(componentName,
-                    ImmutableComponentContext.baseContext(componentPath,
-                            cb.constraints, cb.attributes, cb.codec),
-                    cb.inheritedComponents,
+        if (cb.inheritedComponents.isEmpty()) {
+            //non-inherited object model
+            return ImmutableObjectModel.base(
+                    objectPath,
+                    componentName,
+                    cb.description,
+                    cb.codec,
                     cb.operations.values(),
-                    registry);
+                    cb.compositeComponents,
+                    cb.constraints,
+                    cb.attributes);
         } else {
-            //composite component model
-
-            //key = component-unique composite (local) name
-            final Map<String, CompositeComponent> composites = new TreeMap<>();
-
-            for (Entry<String, DependentContextBuilder> ce
-                    : cb.compositeComponents.entrySet()) {
-
-                final String compositeLocalName = ce.getKey();
-                final DependentContextBuilder compositeContext = ce.getValue();
-                final ImmutableComponentPath compositePath
-                        = componentPath.compositePath(compositeLocalName);
-
-                if (composites.containsKey(compositeLocalName)) {
-                    //local name collision
-                    throw new CompositeCollisionException(compositePath);
-                }
-
-                composites.put(compositeLocalName,
-                        buildComposite(registry, compositePath,
-                                compositeContext)
-                );
-            }
-            return new ImmutableCompositeComponentModel(componentName,
-                    ImmutableComponentContext.baseContext(componentPath,
-                            cb.constraints, cb.attributes, cb.codec),
-                    cb.inheritedComponents,
-                    cb.operations.values(), composites.values());
+            //inherited object model
+            return ImmutableInheritedObjectModel.base(
+                    objectPath,
+                    componentName,
+                    cb.description,
+                    cb.codec,
+                    cb.operations.values(),
+                    cb.compositeComponents,
+                    cb.constraints,
+                    cb.attributes);
         }
     }
 
-    private CompositeComponent buildComposite(ComponentRegistry registry,
-            ImmutableComponentPath compositePath,
-            DependentContextBuilder cb) throws IncompleteModelException {
+    private <C extends ContextualComponent> deferContextual(
+            final ObjectRegistry registry,
+            ImmutableContextPath baseComponent,
+            Map<String, ContextualBuilder<C>> contextual) {
 
-        for (String compositeComponentName
-                : compositeContext.getComponentDependencies()) {
-            if (!components.containsKey(compositeComponentName)) {
-                // ensure that all component dependencies have been 
-                //registered with the domain model (even it it hasn't been 
-                //built yet)
-                throw new IncompleteModelException(this.name,
-                        this.version,
-                        "Composite component '" + componentName
-                        + "' depends on a component named '"
-                        + compositeComponentName + "' (locally named '"
-                        + compositeLocalName
-                        + "') which could not be found "
-                        + "in the domain model.");
-            }
+    }
+    /*
+     * Converts a map of composite objects to composite object instances.
+     */
+
+    private Collection<ContextualComponent> buildContextual(
+            final ObjectRegistry registry,
+            ImmutableContextPath baseComponent,
+            Map<String, ContextualBuilder> compositeBuilders) {
+        Collection<ContextualComponent> composites = new ArrayList<>();
+        for ( ) {
+            return composites.entrySet().stream()
+                    .map((e) -> buildComposite(
+                                    registry,
+                                    baseComponent.compositePath(e.getKey()),
+                                    e.getValue())
+                    )
+                    .collect(Collectors.toList());
         }
+    }
+
+    private ContextualObjectModel buildComposite(ObjectRegistry registry,
+            ImmutableContextPath compositePath,
+            ValueContextBuilderImpl cb) throws IncompleteModelException {
+
+//        for (String compositeComponentName
+//                : compositeContext.getComponentDependencies()) {
+//            if (!components.containsKey(compositeComponentName)) {
+//                // ensure that all component dependencies have been 
+//                //registered with the domain model (even it it hasn't been 
+//                //built yet)
+//                throw new IncompleteModelException(this.name,
+//                        this.version,
+//                        "Composite component '" + componentName
+//                        + "' depends on a component named '"
+//                        + compositeComponentName + "' (locally named '"
+//                        + compositeLocalName
+//                        + "') which could not be found "
+//                        + "in the domain model.");
+//            }
+//        }
+    }
+
+    private ContextualCollectionModel buildCompositeCollection(ObjectRegistry registry,
+            ImmutableContextPath compositePath,
+            CollectionContextBuilderImpl cb) throws IncompleteModelException {
+
+    }
+
+    private ObjectMapModel buildCompositeMap(ObjectRegistry registry,
+            ImmutableContextPath compositePath,
+            MapContextBuilderImpl cb) throws IncompleteModelException {
+
     }
 
     private static DomainModel defaultModel()
             throws ComponentCollisionException {
         if (DEFAULT_MODEL == null) {
             DomainModelBuilder db = new DomainModelBuilder("DEFAULT", 1);
-            db.component("java.util.String", String.class)
-                    .codec(new DefaultStringCodec());
-            db.component("java.lang.Integer", Integer.class)
-                    .codec(new DefaultIntegerCodec());
-            db.component("java.lang.Boolean", Boolean.class)
-                    .codec(new DefaultBooleanCodec());
+            db.component("java.util.String", new DefaultStringCodec());
+            db.component("java.lang.Integer", new DefaultIntegerCodec());
+            db.component("java.lang.Boolean", new DefaultBooleanCodec());
 
             try {
                 //TODO add the rest
@@ -258,252 +290,258 @@ public class DomainModelBuilder {
 
     }
 
-    private class ComponentModelBuilderImpl<T>
-            implements ComponentModelBuilder<T>, ComponentDependent {
+    private class ObjectModelBuilderImpl<T>
+            implements ObjectModelBuilder<T> {
 
         private final String componentName;
-        private final Class<T> componentType;
+        private String description;
         private ObjectCodec<T> codec;
         private final Set<ComponentConstraint> constraints = new HashSet<>();
         private final Set<ComponentAttribute> attributes = new HashSet<>();
         //key = local name, value = composite component name
-        private final Map<String, DependentContextBuilder> compositeComponents
+        private final Map<String, ContextualBuilder> compositeComponents
                 = new TreeMap<>();
         private final Set<String> inheritedComponents = new HashSet<>();
         private final Map<String, OperationModel> operations
                 = new HashMap<>();
 
-        public ComponentModelBuilderImpl(String componentName) {
+        public ObjectModelBuilderImpl(String componentName) {
             this.componentName = componentName;
-            this.componentType = null;
         }
 
-        public ComponentModelBuilderImpl(String componentName,
-                Class<T> componentType) {
+        public ObjectModelBuilderImpl(String componentName,
+                ObjectCodec<T> codec) {
             this.componentName = componentName;
-            this.componentType = componentType;
+            this.codec = codec;
         }
 
         @Override
-        public ComponentModelBuilder<T> constraint(
+        public ObjectModelBuilder<T> description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        @Override
+        public ObjectModelBuilder<T> constraint(
                 ComponentConstraint constraint) {
             constraints.add(constraint);
             return this;
         }
 
         @Override
-        public ComponentModelBuilder<T> attribute(ComponentAttribute attribute) {
+        public ObjectModelBuilder<T> attribute(ComponentAttribute attribute) {
             this.attributes.add(attribute);
             return this;
         }
 
         @Override
-        public ComponentModelBuilder<T> codec(ObjectCodec<T> codec) {
+        public ObjectModelBuilder<T> codec(ObjectCodec<T> codec) {
             this.codec = codec;
             return this;
         }
 
         @Override
-        public ContextBuilder<?> composite(String localName,
+        public ContextualObjectModelBuilder<?> composite(String localName,
                 String componentName) {
             return composite(localName,
-                    new ValueContextBuilderImpl(componentName));
+                    new ContextualObjectModelBuilderImpl(componentName));
         }
 
         @Override
-        public ContextBuilder<?> compositeCollection(String localName,
+        public ContextualObjectModelBuilder<?> compositeCollection(String localName,
                 String componentName) {
             return composite(localName,
-                    new CollectionContextBuilderImpl(componentName));
+                    new ContextualObjectCollectionBuilderImpl(componentName));
         }
 
         @Override
-        public MapContextBuilder<?, ?> compositeMap(String localName,
+        public ContextualObjectMapBuilder<?, ?> compositeMap(String localName,
                 String keyComponentName, String valueComponentName) {
             return composite(localName,
-                    new MapContextBuilderImpl(keyComponentName,
+                    new ContextualObjectMapBuilderImpl(keyComponentName,
                             valueComponentName));
         }
 
-        private <B extends DependentContextBuilder> B composite(String localName,
+        private <B extends ContextualBuilder> B composite(String localName,
                 B ref) {
             compositeComponents.put(localName, ref);
             return ref;
         }
 
         @Override
-        public ComponentModelBuilder<T> specializes(String parentComponentName) {
+        public ObjectModelBuilder<T> specializes(String parentComponentName) {
             inheritedComponents.add(parentComponentName);
             return this;
         }
 
         @Override
-        public ComponentModelBuilder<T> operation(OperationModel operation) {
-            operations.put(operation.getOperationName(), operation);
+        public ObjectModelBuilder<T> operation(OperationModel operation) {
+            operations.put(operation.getName(), operation);
             return this;
         }
 
-        @Override
-        public void appendDependencies(Set<String> appendable) {
-            //composite component models are dependencies
-            this.compositeComponents.entrySet().stream()
-                    .map((e) -> e.getValue())
-                    .forEach((v) -> v.appendDependencies(appendable));
-            //as are inherited components
-            appendable.addAll(this.inheritedComponents);
+        private ImmutableObjectModel<T> build(ObjectRegistry registry) {
+
         }
 
     }
 
-    /**
-     * Model component which may depends on one or more model components.
-     */
-    private interface ComponentDependent {
+    private abstract class AbstractContextualBuilder<B extends AbstractContextualBuilder> {
 
-        /**
-         * Returns a list of components this component depends on (including
-         * transitive dependencies).
-         *
-         * @return component dependencies
-         */
-        default Set<String> getComponentDependencies() {
-            Set<String> dependencies = new HashSet<>();
-            appendDependencies(dependencies);
-            return dependencies;
-        }
-
-        /**
-         * Adds component names gathered from the collection of dependents to
-         * the provided 'appendable' collection of component names.
-         *
-         * @param appendable set of component names to add to
-         * @param dependents components which may depend on other components
-         */
-        void appendDependencies(Set<String> appendable);
-    }
-
-    /**
-     * marker interface for context builders which provide dependency info
-     *
-     * @param <T>
-     */
-    private interface DependentContextBuilder
-            extends ComponentDependent {
-
-    }
-
-    private class ValueContextBuilderImpl<T>
-            implements DependentContextBuilder,
-            ContextBuilder<T> {
-
-        private final String componentName;
-        private ObjectCodec<T> codec;
-        private Collection<ComponentAttribute> attributes
+        private final ImmutableContextPath path;
+        private String description;
+        private final Collection<ComponentAttribute> attributes
                 = new ArrayList<>();
-        private Collection<ComponentConstraint> constraints
+        private final Collection<ComponentConstraint> constraints
                 = new ArrayList<>();
 
-        public ValueContextBuilderImpl(String componentName) {
-            this.componentName = componentName;
+        public AbstractContextualBuilder(ImmutableContextPath path) {
+            this.path = path;
         }
 
-        @Override
-        public ContextBuilder<T> codec(ObjectCodec<T> codec) {
-            this.codec = codec;
-            return this;
+        public B description(String description) {
+            this.description = description;
+            return self();
         }
 
-        @Override
-        public ContextBuilder<T> attribute(ComponentAttribute attribute) {
+        public B attribute(ComponentAttribute attribute) {
             this.attributes.add(attribute);
-            return this;
+            return self();
         }
 
-        @Override
-        public ContextBuilder<T> constraint(
-                ComponentConstraint constraint) {
+        public B constraint(ComponentConstraint constraint) {
             this.constraints.add(constraint);
-            return this;
+            return self();
         }
 
-        @Override
-        public void appendDependencies(Set<String> appendable) {
-            appendable.add(componentName);
-        }
+        abstract protected B self();
     }
 
-    private class CollectionContextBuilderImpl<T>
-            extends ValueContextBuilderImpl<T> {
+    private class ContextualObjectModelBuilderImpl<T>
+            extends AbstractContextualBuilder<ContextualObjectModelBuilderImpl<T>>
+            implements ContextualObjectModelBuilder<T> {
 
-        public CollectionContextBuilderImpl(String componentName) {
-            super(componentName);
+        private final String baseComponentName;
+        private ObjectCodec<T> codecOverride;
+        private final Set<String> ignoredOperation = new HashSet<>();
+        private final Set<String> ignoredComposite = new HashSet<>();
+
+        public ContextualObjectModelBuilderImpl(ImmutableContextPath path,
+                String baseComponentName) {
+            super(path);
+            this.baseComponentName = baseComponentName;
+        }
+
+        @Override
+        public ContextualObjectModelBuilderImpl<T> codec(ObjectCodec<T> codec) {
+            this.codecOverride = codec;
+            return this;
+        }
+
+        @Override
+        public ContextualObjectModelBuilderImpl<T> ignoreOperation(String operationName) {
+            this.ignoredOperation.add(operationName);
+            return this;
+        }
+
+        @Override
+        public ContextualObjectModelBuilderImpl<T> ignoreComposite(String compositeName) {
+            this.ignoredComposite.add(compositeName);
+            return this;
+        }
+
+        @Override
+        protected ContextualObjectModelBuilderImpl<T> self() {
+            return this;
+        }
+
+        public ContextualObjectModel<T> build(ObjectRegistry registry) {
+
         }
 
     }
 
-    private class MapContextBuilderImpl<K, V>
-            implements DependentContextBuilder,
-            MapContextBuilder<K, V> {
+    private class ContextualObjectCollectionBuilderImpl<T>
+            extends AbstractContextualBuilder<ContextualObjectCollectionBuilderImpl<T>>
+            implements ContextualObjectCollectionBuilder<T> {
 
-        private final String keyComponentName;
-        private ObjectCodec<K> keyCodec;
-        private final Collection<ComponentAttribute> keyAttributes
-                = new ArrayList<>();
-        private final Collection<ComponentConstraint> keyConstraints
-                = new ArrayList<>();
-        private final String valueComponentName;
-        private ObjectCodec<V> valueCodec;
-        private final Collection<ComponentAttribute> valueAttributes
-                = new ArrayList<>();
-        private final Collection<ComponentConstraint> valueConstraints
-                = new ArrayList<>();
+        private final AbstractContextualBuilder<T> containedModel;
 
-        private MapContextBuilderImpl(String keyComponentName,
-                String valueComponentName) {
-            this.keyComponentName = keyComponentName;
-            this.valueComponentName = valueComponentName;
+        public ContextualObjectCollectionBuilderImpl(
+                ImmutableCollectionPath collectionPath) {
+            super(collectionPath);
+            this.containedModel
+                    = new ContextualObjectModelBuilderImpl(
+                            collectionPath.(baseComponentName),
+                            baseComponentName);
+        }
+
+        public static ContextualObjectCollectionBuilderImpl<?>
+                collectionOfObjects(String baseComponentName) {
+
+        }
+
+        public static ContextualObjectCollectionBuilderImpl<?>
+                collectionOfCollections() {
+
+        }
+
+        public static ContextualObjectCollectionBuilderImpl<?>
+                collectionOfMaps() {
+
         }
 
         @Override
-        public MapContextBuilder<K, V> keyCodec(ObjectCodec<K> codec) {
-            this.keyCodec = codec;
+        protected ContextualObjectCollectionBuilderImpl<T> self() {
             return this;
         }
 
         @Override
-        public MapContextBuilder<K, V> keyAttribute(ComponentAttribute attribute) {
-            this.keyAttributes.add(attribute);
+        public ContextualObjectModelBuilder<T> getContainedModel() {
+            return containedModel;
+        }
+
+        public ContextualCollectionModel<T> build(ObjectRegistry registry) {
+
+        }
+
+    }
+
+    private class ContextualObjectMapBuilderImpl<K, V>
+            extends AbstractContextualBuilder<ContextualObjectMapBuilderImpl<K, V>>
+            implements ContextualObjectMapBuilder<K, V> {
+
+        private final ContextualObjectModelBuilder<K> keyModelBuilder;
+        private final ContextualObjectModelBuilder<V> valueModelBuilder;
+
+        private ContextualObjectMapBuilderImpl(ImmutableMapPath mapsPath,
+                String keyComponentName, String valueComponentName) {
+            super(mapsPath);
+            this.keyModelBuilder = new ContextualObjectModelBuilderImpl(
+                    mapsPath.key(),
+                    keyComponentName);
+            this.valueModelBuilder = new ContextualObjectModelBuilderImpl(
+                    mapsPath.value(),
+                    valueComponentName);
+        }
+
+        @Override
+        protected ContextualObjectMapBuilderImpl<K, V> self() {
             return this;
         }
 
         @Override
-        public MapContextBuilder<K, V> keyConstraint(ComponentConstraint constraint) {
-            this.keyConstraints.add(constraint);
-            return this;
+        public ContextualObjectModelBuilder<K> getKeyModel() {
+            return keyModelBuilder;
         }
 
         @Override
-        public MapContextBuilder<K, V> valueCodec(ObjectCodec<V> codec) {
-            this.valueCodec = codec;
-            return this;
+        public ContextualObjectModelBuilder<V> getValueModel() {
+            return valueModelBuilder;
         }
 
-        @Override
-        public MapContextBuilder<K, V> valueAttribute(ComponentAttribute attribute) {
-            this.valueAttributes.add(attribute);
-            return this;
-        }
+        public ObjectMapModel<K, V> build(ObjectRegistry registry) {
 
-        @Override
-        public MapContextBuilder<K, V> valueConstraint(ComponentConstraint constraint) {
-            this.valueConstraints.add(constraint);
-            return this;
-        }
-
-        @Override
-        public void appendDependencies(Set<String> appendable) {
-            appendable.add(keyComponentName);
-            appendable.add(valueComponentName);
         }
     }
 
@@ -516,60 +554,63 @@ public class DomainModelBuilder {
      *
      * This implementation is NOT thread-safe.
      */
-    private class InternalComponentRegistry implements ComponentRegistry {
+    private class InternalObjectRegistry implements ObjectRegistry {
 
         private final String domainName;
         private final long domainVersion;
-        private final Map<String, ObjectModel<?>> domainComponents
+        private final Map<ModelContextPath, ObjectModel<?>> domainComponents
                 = new HashMap<>();
         private final Map<Class<? extends ComponentAttribute>, Collection<ObjectModel<?>>> attributeIndex
                 = new HashMap<>();
-        //key=parent component name
-        //value=component names which inherit from key
-        private final Map<String, Set<String>> inheritenceIndex
+        //key=parent component path
+        //value=component path which inherit from key
+        private final Map<ModelContextPath, Set<ModelContextPath>> inheritenceIndex
                 = new HashMap<>();
 
-        public InternalComponentRegistry(String domainName, long domainVersion) {
+        public InternalObjectRegistry(String domainName, long domainVersion) {
             this.domainName = domainName;
             this.domainVersion = domainVersion;
         }
 
-        private void register(ObjectModel<?> component)
+        private void register(ObjectModel<?> object)
                 throws ComponentCollisionException {
-            final String cn = component.getObjectName();
-            if (domainComponents.containsKey(cn)) {
+            if (domainComponents.containsKey(object.getPath())) {
                 throw new ComponentCollisionException(
-                        component.getContext().getPath(),
+                        object.getPath(),
                         "Registration of component model failed, component "
                         + "already exists with this name in domain '"
                         + domainName + "-"
                         + String.valueOf(domainVersion) + "'");
             }
 
-            domainComponents.put(cn, component);
+            domainComponents.put(object.getPath(), object);
 
             //add to attribute index, creating multi-map bucket as necessary
-            component.getContext().getAttributes().stream()
+            object.getAttributes().stream()
                     .forEach((a) -> {
                         final Class<? extends ComponentAttribute> aClass
                         = a.getClass();
                         if (!attributeIndex.containsKey(aClass)) {
                             attributeIndex.put(aClass, new ArrayList<>());
                         }
-                        attributeIndex.get(aClass).add(component);
+                        attributeIndex.get(aClass).add(object);
                     });
 
             //add to inheritence index
-            component.inheritsFrom()
-                    .stream() //parent components inherited from
-                    .map((pc) -> pc.getObjectName())
-                    .forEach((pn) -> {
-                        //index key is parent component name
-                        if (!inheritenceIndex.containsKey(pn)) {
-                            inheritenceIndex.put(pn, new HashSet<>());
-                        }
-                        inheritenceIndex.get(pn).add(cn);
-                    });
+            if (object instanceof InheritedObjectModel) {
+                InheritedObjectModel<?> inheritedObject = (InheritedObjectModel) object;
+                inheritedObject.inheritsFrom()
+                        .stream() //parent components inherited from
+                        .map((pc) -> pc.getPath())
+                        .forEach((pn) -> {
+                            //index key is parent component name
+                            if (!inheritenceIndex.containsKey(pn)) {
+                                inheritenceIndex.put(pn, new HashSet<>());
+                            }
+                            inheritenceIndex.get(pn).add(object.getPath());
+                        });
+            }
+
         }
 
         @Override

@@ -1,7 +1,7 @@
 package org.geoint.acetate.model;
 
 import java.util.Collection;
-import org.geoint.acetate.codec.ObjectCodec;
+import org.geoint.acetate.data.transform.ObjectCodec;
 import org.geoint.acetate.model.attribute.Attributable;
 import org.geoint.acetate.model.constraint.Constrainable;
 
@@ -26,7 +26,7 @@ public interface ObjectModel<T> extends ModelComponent,
      *
      * @return child (composite) objects
      */
-    Collection<? extends ContextualComponent> getComposites();
+    Collection<ContextualComponent> getComposites();
 
     /**
      * Codec used to encode/decode this component as to/from bytes.

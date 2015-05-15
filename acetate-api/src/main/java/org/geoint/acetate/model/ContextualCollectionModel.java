@@ -6,7 +6,7 @@ package org.geoint.acetate.model;
  *
  * @param <T> collection data type
  */
-public interface ObjectCollectionModel<T> extends ContextualComponent {
+public interface ContextualCollectionModel<T> extends ContextualModelComponent<T> {
 
     ContextualObjectModel<T> getCollectionModel();
 }

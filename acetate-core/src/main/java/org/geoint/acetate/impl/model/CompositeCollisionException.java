@@ -1,6 +1,6 @@
 package org.geoint.acetate.impl.model;
 
-import org.geoint.acetate.model.ComponentPath;
+import org.geoint.acetate.model.ModelContextPath;
 
 /**
  * Thrown when there is a naming collision between two composites on a
@@ -8,20 +8,20 @@ import org.geoint.acetate.model.ComponentPath;
  */
 public class CompositeCollisionException extends ComponentCollisionException {
 
-    public CompositeCollisionException(ComponentPath contextPath) {
+    public CompositeCollisionException(ModelContextPath contextPath) {
         super(contextPath);
     }
 
-    public CompositeCollisionException(ComponentPath contextPath, String message) {
+    public CompositeCollisionException(ModelContextPath contextPath, String message) {
         super(contextPath, message);
     }
 
-    public CompositeCollisionException(ComponentPath contextPath,
+    public CompositeCollisionException(ModelContextPath contextPath,
             String message, Throwable cause) {
         super(contextPath, message, cause);
     }
 
-    public CompositeCollisionException(ComponentPath contextPath,
+    public CompositeCollisionException(ModelContextPath contextPath,
             Throwable cause) {
         super(contextPath, cause);
     }

@@ -1,13 +1,24 @@
 package org.geoint.acetate.impl.model;
 
+import org.geoint.acetate.data.transform.ObjectCodec;
 import org.geoint.acetate.model.OperationModel;
+import org.geoint.acetate.model.attribute.ComponentAttribute;
+import org.geoint.acetate.model.constraint.ComponentConstraint;
 
 /**
- * API to programmatically build a ComponentModel.
+ * API to programmatically build an {@link ObjectModel}.
  *
  * @param <T> component data type
  */
-public interface ComponentModelBuilder<T> extends ContextBuilder<T> {
+public interface ObjectModelBuilder<T> {
+
+    /**
+     * Sets the (optional) object model description.
+     *
+     * @param description description of the object model
+     * @return this builder (fluid interface)
+     */
+    ObjectModelBuilder<T> description(String description);
 
     /**
      * Indicates that the component inherits from the provided component name.
@@ -16,7 +27,7 @@ public interface ComponentModelBuilder<T> extends ContextBuilder<T> {
      * this component inherits
      * @return this builder (fluid interface)
      */
-    ComponentModelBuilder<T> specializes(String parentComponentName);
+    ObjectModelBuilder<T> specializes(String parentComponentName);
 
     /**
      * Add a component operation on the domain model.
@@ -24,7 +35,31 @@ public interface ComponentModelBuilder<T> extends ContextBuilder<T> {
      * @param operation component operation
      * @return this builder (fluid interface)
      */
-    ComponentModelBuilder<T> operation(OperationModel operation);
+    ObjectModelBuilder<T> operation(OperationModel operation);
+
+    /**
+     * Set the codec to use to convert to/from an object in this context.
+     *
+     * @param codec
+     * @return this builder (fluid interface)
+     */
+    ObjectModelBuilder<T> codec(ObjectCodec<T> codec);
+
+    /**
+     * Adds an attribute to this context.
+     *
+     * @param attribute
+     * @return this builder (fluid interface)
+     */
+    ObjectModelBuilder<T> attribute(ComponentAttribute attribute);
+
+    /**
+     * Add a constraint to this context.
+     *
+     * @param constraint
+     * @return this builder (fluid interface)
+     */
+    ObjectModelBuilder<T> constraint(ComponentConstraint constraint);
 
     /**
      * Add a composite component to this component.
@@ -33,7 +68,7 @@ public interface ComponentModelBuilder<T> extends ContextBuilder<T> {
      * @param componentName domain-unique component name for this composite type
      * @return composite context builder
      */
-    ContextBuilder<?> composite(String localName, String componentName);
+    ContextualObjectModelBuilder<?> composite(String localName, String componentName);
 
     /**
      * Add a multi-valued composite collection.
@@ -43,7 +78,7 @@ public interface ComponentModelBuilder<T> extends ContextBuilder<T> {
      * component types in the collection
      * @return composite context builder
      */
-    ContextBuilder<?> compositeCollection(String localName,
+    ContextualObjectModelBuilder<?> compositeCollection(String localName,
             String componentName);
 
     /**
@@ -56,7 +91,7 @@ public interface ComponentModelBuilder<T> extends ContextBuilder<T> {
      * of the map
      * @return composite context builder
      */
-    MapContextBuilder<?, ?> compositeMap(String localName,
+    ContextualObjectMapBuilder<?, ?> compositeMap(String localName,
             String keyComponentName, String valueComponentName);
 
 }

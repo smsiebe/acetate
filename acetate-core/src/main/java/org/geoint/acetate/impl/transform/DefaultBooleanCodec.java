@@ -1,23 +1,27 @@
-package org.geoint.acetate.impl.codec;
+package org.geoint.acetate.impl.transform;
 
 import java.io.IOException;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.geoint.acetate.codec.DataConversionException;
-import org.geoint.acetate.codec.ObjectCodec;
+import org.geoint.acetate.data.transform.DataConversionException;
+import org.geoint.acetate.data.transform.ObjectCodec;
 import org.geoint.acetate.io.ByteWriter;
 import org.geoint.acetate.io.ByteReader;
+import org.geoint.acetate.model.ModelContextPath;
+import org.geoint.acetate.model.DomainModel;
 
 /**
  * Default date type for {@link Boolean}.
  *
  */
-public final class DefaultBooleanCodec implements ObjectCodec<Boolean> {
+public final class DefaultBooleanCodec extends ObjectCodec<Boolean> {
 
     private static final byte FALSE = (byte) 0;
     private static final byte TRUE = (byte) 1;
+
+    public DefaultBooleanCodec(DomainModel model, ModelContextPath path) {
+        super(model, path);
+    }
 
     @Override
     public Boolean convert(ByteReader reader) throws DataConversionException {

@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import org.geoint.acetate.codec.ObjectCodec;
+import java.util.stream.Stream;
+import org.geoint.acetate.data.transform.ObjectCodec;
 import org.geoint.acetate.model.ContextualComponent;
 import org.geoint.acetate.model.Inheritable;
 import org.geoint.acetate.model.InheritedObjectModel;
+import org.geoint.acetate.model.ModelComponent;
 import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.model.OperationModel;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
@@ -22,18 +25,16 @@ public class ImmutableInheritedObjectModel<T> extends ImmutableObjectModel<T>
         implements InheritedObjectModel<T> {
 
     private final Collection<ObjectModel<? super T>> lineage;
-    private final Collection<Inheritable> inherited;
 
-    private ImmutableInheritedObjectModel(ImmutableComponentPath path,
+    private ImmutableInheritedObjectModel(ImmutableContextPath path,
             String name,
-            Optional<String> description,
+            String description,
             ObjectCodec<T> codec,
             Collection<ObjectModel<? super T>> lineage,
             Collection<ImmutableOperationModel> combinedOperations,
             Collection<ContextualComponent> combinedComposites,
             Collection<? extends ComponentConstraint> constraints,
-            Collection<? extends ComponentAttribute> attributes,
-            Collection<Inheritable> inherited) {
+            Collection<? extends ComponentAttribute> attributes) {
         super(path,
                 name,
                 description,
@@ -43,69 +44,79 @@ public class ImmutableInheritedObjectModel<T> extends ImmutableObjectModel<T>
                 constraints,
                 attributes);
         this.lineage = lineage;
-        this.inherited = inherited;
     }
 
-    public static <T> ImmutableInheritedObjectModel<T> inherited(
+    /**
+     * Create a "base" domain model object which inherits from other "based"
+     * domain model objects.
+     *
+     * @param <T>
+     * @param domainName
+     * @param version
+     * @param name
+     * @param description optional (nullable) object model description
+     * @param codec
+     * @param lineage models from which this model inherits
+     * @param localOperations
+     * @param localComposites
+     * @param constraints
+     * @param attributes
+     * @return
+     */
+    public static <T> ImmutableInheritedObjectModel<T> base(
             String domainName,
             long version,
             String name,
             String description,
             ObjectCodec<T> codec,
             Collection<ImmutableObjectModel<?>> lineage,
-            Collection<ImmutableOperationModel> localOperations,
+            Collection<OperationModel> localOperations,
             Collection<ContextualComponent> localComposites,
             Collection<? extends ComponentConstraint> constraints,
             Collection<? extends ComponentAttribute> attributes) {
-        final ImmutableComponentPath path
-                = ImmutableComponentPath.basePath(domainName, version, name);
+        final ImmutableContextPath path
+                = ImmutableContextPath.basePath(domainName, version, name);
 
-        //TODO move common algorithm to method and pass functions 
-        //TODO consider creating specialized Inerited* types instead of passing
+        //TODO consider creating specialized Inherited* types instead of passing
         //     a collection of inherited traits
-        Collection<Inheritable> inherited = new ArrayList<>();
-        Map<String, OperationModel> combinedOperations
-                = lineage.stream().flatMap((l) -> l.getOperations().stream())
+        Collection<OperationModel> combinedOperations
+                = inherit(lineage, localOperations,
+                        (l) -> l.getOperations().stream(),
+                        ModelComponent::getName);
+
+        Collection<ContextualComponent> combinedComposites
+                = inherit(lineage, localComposites,
+                        (l) -> l.getComposites().stream(),
+                        ModelComponent::getName);
+
+        return new ImmutableInheritedObjectModel(path, name, description,
+                codec, lineage, combinedOperations, combinedComposites,
+                constraints, attributes);
+    }
+
+    private static <I extends Inheritable> Collection<I> inherit(
+            Collection<ImmutableObjectModel<?>> lineage,
+            Collection<I> nativeComponents,
+            Function<ImmutableObjectModel<?>, Stream<I>> flattener,
+            Function<I, String> namer) {
+        Map<String, I> combined
+                = lineage.stream().flatMap((l) -> flattener.apply(l))
                 .filter((o) -> o.inherit())
                 .collect(Collectors.toMap(
-                                (i) -> i.getName(),
+                                (i) -> namer.apply(i),
                                 (i) -> i)
                 );
-        inherited.addAll(combinedOperations.values());
-        localOperations.stream()
-                .forEach((o) -> combinedOperations.put(o.getName(), o));
-
-        Map<String, ContextualComponent> combinedComposites
-                = lineage.stream().flatMap((l) -> l.getComposites().stream())
-                .filter((o) -> o.inherit())
-                .collect(Collectors.toMap(
-                                (i) -> i.getName(),
-                                (i) -> i)
+        nativeComponents.stream()
+                .forEach((l) -> combined.put(
+                                namer.apply(l),
+                                l)
                 );
-        inherited.addAll(combinedComposites.values());
-        localComposites.stream()
-                .forEach((c) -> combinedComposites.put(c.getName(), c));
-
-        return new ImmutableInheritedObjectModel(path,
-                name,
-                Optional.ofNullable(description),
-                codec,
-                lineage,
-                combinedOperations.values(),
-                combinedComposites.values(),
-                constraints,
-                attributes,
-                inherited);
+        return combined.values();
     }
 
     @Override
     public Collection<ObjectModel<? super T>> inheritsFrom() {
         return lineage;
-    }
-
-    @Override
-    public Collection<Inheritable> getInheritedTraits() {
-        return inherited;
     }
 
 }

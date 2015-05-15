@@ -1,4 +1,4 @@
-package org.geoint.acetate.codec;
+package org.geoint.acetate.data.transform;
 
 import gov.ic.geoint.acetate.AcetateException;
 

@@ -3,7 +3,7 @@ package org.geoint.acetate.impl.model;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
-import org.geoint.acetate.model.ComponentPath;
+import org.geoint.acetate.model.ModelContextPath;
 import org.geoint.acetate.model.ContextualComponent;
 import org.geoint.acetate.model.OperationModel;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
@@ -13,14 +13,14 @@ import org.geoint.acetate.model.attribute.ComponentAttribute;
  */
 public class ImmutableOperationModel implements OperationModel {
 
-    private final ComponentPath path;
+    private final ModelContextPath path;
     private final String name;
     private final Optional<String> description;
     private final Optional<ContextualComponent> returned;
     private final Collection<? extends ContextualComponent> params;
     private final Collection<? extends ComponentAttribute> attributes;
 
-    ImmutableOperationModel(ComponentPath path, String name,
+    ImmutableOperationModel(ModelContextPath path, String name,
             Optional<String> description,
             Optional<ContextualComponent> returned,
             Collection<? extends ContextualComponent> params,
@@ -34,7 +34,7 @@ public class ImmutableOperationModel implements OperationModel {
     }
 
     @Override
-    public ComponentPath getPath() {
+    public ModelContextPath getPath() {
         return path;
     }
 
