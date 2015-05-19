@@ -5,7 +5,6 @@ import java.util.Set;
 import org.geoint.acetate.impl.model.ImmutableContextPath;
 import org.geoint.acetate.model.DomainComponent;
 import org.geoint.acetate.model.DomainModel;
-import org.geoint.acetate.model.annotation.Domain;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
 import org.geoint.acetate.model.constraint.ComponentConstraint;
 
@@ -65,5 +64,6 @@ public abstract class AbstractComponentBuilder<T, B extends AbstractComponentBui
 
     abstract protected B self();
 
-    abstract public DomainComponent<T> build(DomainModel model);
+    abstract public DomainComponent<T> build(DomainModel model)
+            throws ComponentCollisionException, IncompleteModelException;
 }

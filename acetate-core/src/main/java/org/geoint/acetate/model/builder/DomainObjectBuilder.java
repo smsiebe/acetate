@@ -1,7 +1,9 @@
 package org.geoint.acetate.model.builder;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import org.geoint.acetate.impl.model.DomainObjectImpl;
 import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableObjectPath;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.DomainObject;
@@ -18,45 +20,49 @@ public class DomainObjectBuilder<T>
 
     protected final Set<String> parentObjects = new HashSet<>();
 
+    //Entity Object callout/flags
+    private String entityGuidComponent;
+    private String entityVersionComponent;
+
     public DomainObjectBuilder(ImmutableObjectPath path) {
         super(path);
     }
 
-    public DomainObject<T> build(DomainModel model) {
+    @Override
+    public DomainObject<T> build(DomainModel model)
+            throws ComponentCollisionException, IncompleteModelException {
 
-        final String componentName = cb.componentName;
-        final ImmutableContextPath objectPath
-                = ImmutableContextPath.basePath(name, version, componentName);
-
-        if (registry.findByName(componentName).isPresent()) {
+        final String objectName = this.path().getComponentName();
+        if (model.getComponents().findByName(objectName).isPresent()) {
             //registry already has a component by this name, don't even 
             //bother building
-            throw new ComponentCollisionException(objectPath);
+            throw new ComponentCollisionException(path);
         }
 
-        if (cb.inheritedComponents.isEmpty()) {
-            //non-inherited object model
-            return DomainObjectImpl.base(
-                    objectPath,
-                    componentName,
-                    cb.description,
-                    cb.codec,
-                    cb.operations.values(),
-                    cb.compositeComponents,
-                    cb.constraints,
-                    cb.attributes);
-        } else {
-            //inherited object model
-            return ImmutableInheritedObjectModel.base(
-                    objectPath,
-                    componentName,
-                    cb.description,
-                    cb.codec,
-                    cb.operations.values(),
-                    cb.compositeComponents,
-                    cb.constraints,
-                    cb.attributes);
+        if (entityGuidComponent != null) {
+            if (entityVersionComponent == null) {
+                throw new IncompleteModelException(path.getDomainName(),
+                        path.getDomainVersion(),
+                        "Domain Entity objects require both an GUID and version "
+                        + "component.");
+            }
+
+            return new DomainObjectImpl(model, path,
+                    this.path.getComponentName(),
+                    description,
+                    parentObjects,
+                    operations.values().stream().map((b) -> b.build(model))
+                    .collect(Collectors.toList()),
+                    composites.values().stream().map((b) -> b.build(model))
+                    .collect(Collectors.toList()),
+                    aggregates.values().stream().map((b) -> b.build(model))
+                    .collect(Collectors.toList()),
+                    constraints,
+                    attributes,
+                    binaryCodec,
+                    charCodec);
         }
+
     }
 
     /**
@@ -78,7 +84,18 @@ public class DomainObjectBuilder<T>
 
     @Override
     public Set<String> getDependencies() {
-        
+        Set<String> d = new HashSet<>();
+        d.addAll(this.parentObjects);
+        addAllDependencies(d, aggregates);
+        addAllDependencies(d, composites);
+        addAllDependencies(d, operations);
+        return d;
     }
 
+    private void addAllDependencies(Set<String> deps,
+            Map<String, ? extends DomainObjectDependentBuilder> depMap) {
+        depMap.entrySet().stream()
+                .map((e) -> e.getValue())
+                .forEach((a) -> deps.addAll(a.getDependencies()));
+    }
 }

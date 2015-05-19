@@ -28,6 +28,7 @@ package org.geoint.acetate.model;
  *
  * @param <T>
  */
-public interface DomainCompositeObject<T> extends DomainObject<T> {
+public interface DomainCompositeObject<T> extends DomainObject<T>, 
+        ComposableComponent {
 
 }

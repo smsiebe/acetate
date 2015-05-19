@@ -6,14 +6,15 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.geoint.acetate.model.attribute.AcetateDataAttribute;
 import org.geoint.acetate.model.attribute.AcetateDataAttribute.AcetateComponentAttributeConstructor;
 
 /**
- * Identifies a data component as the globally unique identifier for the data
- * item instance.
+ * Identifies the domain object at an EntityObject by identifying one of its 
+ * components as an entity id.
  *
- * All root data instances <b>MUST</b> have ComponentId; aggregates
- * <b>SHOULD</b> have a ComponentId.
+ * All root data instances <b>MUST</b> have EntityId; aggregates
+ <b>SHOULD</b> have a EntityId.
  *
  * @see AcetateDataAttribute.GUID
  */
@@ -22,6 +23,6 @@ import org.geoint.acetate.model.attribute.AcetateDataAttribute.AcetateComponentA
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Attribute(constructor = AcetateComponentAttributeConstructor.class)
-public @interface ComponentId {
+public @interface EntityId {
 
 }

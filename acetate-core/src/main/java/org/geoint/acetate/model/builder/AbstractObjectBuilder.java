@@ -13,13 +13,16 @@ import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableObjectPath;
  * @param <T> type of the domain model object
  * @param <B> concrete builder type, so builder API generics are happy
  */
-public abstract class AbstractObjectBuilder<T, B extends AbstractObjectBuilder>
+public abstract class AbstractObjectBuilder<T, B extends AbstractObjectBuilder<T, B>>
         extends AbstractComponentBuilder<T, B> {
 
+    //key = localname
     protected final Map<String, DomainOperationBuilder<?>> operations
             = new HashMap<>();
+    //key = localname
     protected final Map<String, DomainCompositeObjectBuilder<?>> composites
             = new HashMap<>();
+    //key = localname
     protected final Map<String, DomainAggregateObjectBuilder<?>> aggregates
             = new HashMap<>();
     protected BinaryCodec<T> binaryCodec;

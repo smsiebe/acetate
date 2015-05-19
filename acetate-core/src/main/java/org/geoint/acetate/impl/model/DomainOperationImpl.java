@@ -60,7 +60,7 @@ public class DomainOperationImpl<R> implements DomainOperation<R> {
     }
 
     @Override
-    public Collection<? extends ComponentAttribute> getAttributes() {
+    public Collection<ComponentAttribute> getAttributes() {
         return (Collection<ComponentAttribute>) attributes;
     }
 
@@ -72,6 +72,16 @@ public class DomainOperationImpl<R> implements DomainOperation<R> {
     @Override
     public Collection<DomainObject<?>> getParameterModels() {
         return params;
+    }
+
+    @Override
+    public DomainObject<?> getComposite() {
+
+    }
+
+    @Override
+    public String getLocalName() {
+
     }
 
     @Override

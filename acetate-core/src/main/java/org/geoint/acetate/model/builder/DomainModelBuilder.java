@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 import org.geoint.acetate.impl.model.DomainModelImpl;
 import org.geoint.acetate.impl.model.DomainUtil;
 import org.geoint.acetate.impl.model.ImmutableContextPath;
-import org.geoint.acetate.impl.transform.DefaultBooleanCodec;
-import org.geoint.acetate.impl.transform.DefaultIntegerCodec;
-import org.geoint.acetate.impl.transform.DefaultStringCodec;
+import org.geoint.acetate.impl.transform.DefaultBooleanBinaryCodec;
+import org.geoint.acetate.impl.transform.DefaultIntegerBinaryCodec;
+import org.geoint.acetate.impl.transform.DefaultStringBinaryCodec;
 import org.geoint.acetate.model.ModelContextPath;
 import org.geoint.acetate.model.DomainObject;
 import org.geoint.acetate.model.DomainModel;
@@ -104,6 +104,10 @@ public class DomainModelBuilder {
      * @return builder for this object model
      */
     public DomainObjectBuilder<?> object(String objectName) {
+        return object(objectName);
+    }
+
+    public <T> DomainObjectBuilder<T> object(String objectName, Class<T> type) {
         if (components.containsKey(objectName)) {
             components.put(objectName,
                     new DomainObjectBuilder(
@@ -111,7 +115,7 @@ public class DomainModelBuilder {
                                     version, objectName)
                     ));
         }
-        return components.get(objectName);
+        return (DomainObjectBuilder<T>) components.get(objectName);
     }
 
     /**
@@ -150,7 +154,6 @@ public class DomainModelBuilder {
         //iterate through the object builders, telling them to build themselves.
         //builders will recursively build their models, creating deferred 
         //objects if the component isn't yet available
-        Map<String, DomainObject<?>> objectModel = new HashMap<>();
         for (Entry<String, DomainObjectBuilder<?>> e : components.entrySet()) {
             final String objectName = e.getKey();
             final DomainObjectBuilder<?> ob = e.getValue();
@@ -164,9 +167,12 @@ public class DomainModelBuilder {
             throws ComponentCollisionException {
         if (DEFAULT_MODEL == null) {
             DomainModelBuilder db = new DomainModelBuilder("DEFAULT", 1);
-            db.component("java.util.String", new DefaultStringCodec());
-            db.component("java.lang.Integer", new DefaultIntegerCodec());
-            db.component("java.lang.Boolean", new DefaultBooleanCodec());
+            db.object("string", String.class)
+                    .codec(new DefaultStringBinaryCodec());
+            db.object("int", Integer.class)
+                    .codec(new DefaultIntegerBinaryCodec());
+            db.object("boolean", Boolean.class)
+                    .codec(new DefaultBooleanBinaryCodec());
 
             try {
                 //TODO add the rest
@@ -235,9 +241,8 @@ public class DomainModelBuilder {
                     });
 
             //add to inheritence index
-            if (object instanceof InheritedObjectModel) {
-                InheritedObjectModel<?> inheritedObject = (InheritedObjectModel) object;
-                inheritedObject.inheritsFrom()
+            if (!object.inheritsFrom().isEmpty()) {
+                object.inheritsFrom()
                         .stream() //parent components inherited from
                         .map((pc) -> pc.getPath())
                         .forEach((pn) -> {

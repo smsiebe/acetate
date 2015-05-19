@@ -6,6 +6,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.geoint.acetate.model.annotation.attribute.Attribute;
 import org.geoint.acetate.model.attribute.AcetateDataAttribute.AcetateComponentAttributeConstructor;
 
 /**

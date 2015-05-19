@@ -2,7 +2,10 @@ package org.geoint.acetate.model.builder;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableObjectPath;
+import org.geoint.acetate.model.DomainComponent;
+import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.event.DomainEntityEvent;
 
 /**
@@ -93,6 +96,15 @@ public class DomainEntityEventBuilder<T, E>
     @Override
     protected DomainEntityEventBuilder<T, E> self() {
         return this;
+    }
+
+    @Override
+    public DomainComponent<T> build(DomainModel model) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public Set<String> getDependencies() {
     }
 
 }

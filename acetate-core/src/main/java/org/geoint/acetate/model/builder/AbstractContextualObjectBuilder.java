@@ -11,12 +11,19 @@ import org.geoint.acetate.model.DomainObject;
  * @param <T>
  * @param <B>
  */
-public abstract class AbstractContextualObjectBuilder<T, B extends AbstractContextualObjectBuilder>
+public abstract class AbstractContextualObjectBuilder<T, B extends AbstractContextualObjectBuilder<T, B>>
         extends AbstractContextualComponentBuilder<T, B> {
+
+    protected final String baseComponentName;
+    protected final boolean isCollection;
+    protected BinaryCodec<T> binaryCodec;
+    protected CharacterCodec<T> charCodec;
 
     public AbstractContextualObjectBuilder(ImmutableObjectPath path,
             String baseComponentName, boolean isCollection) {
-        super(path, baseComponentName, isCollection);
+        super(path);
+        this.baseComponentName = baseComponentName;
+        this.isCollection = isCollection;
     }
 
     /**
@@ -26,9 +33,8 @@ public abstract class AbstractContextualObjectBuilder<T, B extends AbstractConte
      * @param codec
      * @return this builder (fluid interface)
      */
-    @Override
     public B codec(BinaryCodec<T> codec) {
-        super.codec(codec);
+        binaryCodec = codec;
         return self();
     }
 
@@ -39,9 +45,8 @@ public abstract class AbstractContextualObjectBuilder<T, B extends AbstractConte
      * @param codec
      * @return this builder (fluid interface)
      */
-    @Override
     public B codec(CharacterCodec<T> codec) {
-        super.codec(codec);
+        charCodec = codec;
         return self();
     }
 

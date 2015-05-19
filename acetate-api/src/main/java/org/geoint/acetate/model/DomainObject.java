@@ -16,7 +16,14 @@ import org.geoint.acetate.model.constraint.Constrainable;
  * @param <T> associated java data type
  */
 public interface DomainObject<T> extends DomainComponent,
-        Inherited<DomainObject<? super T>>, Attributable, Constrainable {
+        Attributable, Constrainable {
+
+    /**
+     * Domain model unique name of domain object model.
+     *
+     * @return domain model unique component name
+     */
+    String getObjectName();
 
     /**
      * Returns all model operations, including all those defined natively on

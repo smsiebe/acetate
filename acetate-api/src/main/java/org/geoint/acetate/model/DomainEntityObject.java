@@ -26,7 +26,7 @@ public interface DomainEntityObject<T> extends DomainObject<T> {
      * @return the aggregate/composite domain object which is the globally
      * unique identifier of the entity
      */
-    DomainObject<String> getGuid();
+    DomainObject<String> getGuidComponentName();
 
     /**
      * Entity object version identifier.
@@ -41,5 +41,5 @@ public interface DomainEntityObject<T> extends DomainObject<T> {
      * @return the aggregate/composite domain object which is the sequential
      * version of the entity
      */
-    DomainObject<Long> getVersion();
+    DomainObject<Long> getVersionComponentName();
 }

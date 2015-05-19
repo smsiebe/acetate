@@ -1,30 +1,39 @@
 package org.geoint.acetate.model.builder;
 
+import java.util.Set;
 import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableObjectPath;
-import org.geoint.acetate.model.DomainComponent;
 import org.geoint.acetate.model.DomainModel;
+import org.geoint.acetate.model.event.DomainEntityEvent;
 
 /**
  * Programmatic API to override the contextual traits of an Entity Event.
  *
- * @param <T>
+ * @param <T> object representation of the domain event
+ * @param <E> domain entity object type
  */
-public class ContextualEventBuilder<T>
-        extends AbstractContextualComponentBuilder<T, ContextualEventBuilder<T>> {
+public class ContextualEventBuilder<T, E>
+        extends AbstractContextualComponentBuilder<T, ContextualEventBuilder> {
+
+    protected final String eventDomainObjectName;
 
     public ContextualEventBuilder(ImmutableObjectPath path,
-            String baseComponentName) {
-        super(path, baseComponentName, false);
+            String eventDomainObjectName) {
+        super(path);
+        this.eventDomainObjectName = eventDomainObjectName;
     }
 
     @Override
-    public DomainComponent<T> build(DomainModel model) {
+    public DomainEntityEvent<T> build(DomainModel model) {
 
     }
 
     @Override
-    protected ContextualEventBuilder<T> self() {
+    protected ContextualEventBuilder<T, E> self() {
         return this;
+    }
+
+    @Override
+    public Set<String> getDependencies() {
     }
 
 }

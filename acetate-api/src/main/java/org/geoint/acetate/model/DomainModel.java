@@ -1,7 +1,7 @@
 package org.geoint.acetate.model;
 
 import java.util.Optional;
-import org.geoint.acetate.model.annotation.attribute.ComponentId;
+import org.geoint.acetate.model.annotation.attribute.EntityId;
 import org.geoint.acetate.model.annotation.attribute.Version;
 import org.geoint.acetate.model.annotation.constraint.NotNull;
 
@@ -19,7 +19,7 @@ public interface DomainModel {
      *
      * @return unique domain model identifier
      */
-    @ComponentId
+    @EntityId
     String getDomainId();
 
     /**

@@ -1,5 +1,6 @@
 package org.geoint.acetate.model.builder;
 
+import java.util.Set;
 import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableObjectPath;
 import org.geoint.acetate.model.DomainCompositeObject;
 import org.geoint.acetate.model.DomainModel;
@@ -30,6 +31,10 @@ public class DomainCompositeObjectBuilder<T>
     @Override
     protected DomainCompositeObjectBuilder<T> self() {
         return this;
+    }
+
+    @Override
+    public Set<String> getDependencies() {
     }
 
 }

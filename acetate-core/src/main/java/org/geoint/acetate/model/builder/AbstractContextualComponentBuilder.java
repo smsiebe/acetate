@@ -1,6 +1,10 @@
 package org.geoint.acetate.model.builder;
 
-import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableObjectPath;
+import java.util.HashSet;
+import java.util.Set;
+import org.geoint.acetate.impl.model.ImmutableContextPath;
+import org.geoint.acetate.model.DomainComponent;
+import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
 import org.geoint.acetate.model.constraint.ComponentConstraint;
 
@@ -11,18 +15,17 @@ import org.geoint.acetate.model.constraint.ComponentConstraint;
  * @param <B>
  */
 public abstract class AbstractContextualComponentBuilder<T, B extends AbstractContextualComponentBuilder>
-        extends AbstractObjectBuilder<T, B> {
+        implements DomainObjectDependentBuilder {
 
-    protected final String baseComponentName;
-    protected final boolean isCollection;
+    protected final ImmutableContextPath path;
+    protected String description;
+    protected Set<ComponentAttribute> attributes = new HashSet<>();
+    protected Set<ComponentConstraint> constraints = new HashSet<>();
     protected boolean inheritAttributes;
     protected boolean inheritConstraints;
 
-    public AbstractContextualComponentBuilder(ImmutableObjectPath path,
-            String baseComponentName, boolean isCollection) {
-        super(path);
-        this.baseComponentName = baseComponentName;
-        this.isCollection = isCollection;
+    public AbstractContextualComponentBuilder(ImmutableContextPath path) {
+        this.path = path;
     }
 
     /**
@@ -31,9 +34,8 @@ public abstract class AbstractContextualComponentBuilder<T, B extends AbstractCo
      * @param description description of the object model
      * @return this builder (fluid interface)
      */
-    @Override
     public B description(String description) {
-        super.description(description);
+        this.description = description;
         return self();
     }
 
@@ -46,9 +48,8 @@ public abstract class AbstractContextualComponentBuilder<T, B extends AbstractCo
      * @param attribute
      * @return this builder (fluid interface)
      */
-    @Override
     public B attribute(ComponentAttribute attribute) {
-        super.attribute(attribute);
+        this.attributes.add(attribute);
         return self();
     }
 
@@ -78,9 +79,8 @@ public abstract class AbstractContextualComponentBuilder<T, B extends AbstractCo
      * @param constraint
      * @return this builder (fluid interface)
      */
-    @Override
     public B constraint(ComponentConstraint constraint) {
-        super.constraint(constraint);
+        this.constraints.add(constraint);
         return self();
     }
 
@@ -100,4 +100,12 @@ public abstract class AbstractContextualComponentBuilder<T, B extends AbstractCo
         return self();
     }
 
+    protected ImmutableContextPath path() {
+        return path;
+    }
+
+    abstract protected B self();
+
+    abstract public DomainComponent<T> build(DomainModel model)
+            throws ComponentCollisionException, IncompleteModelException;
 }

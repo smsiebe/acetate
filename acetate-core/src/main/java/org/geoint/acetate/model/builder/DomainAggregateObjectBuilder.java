@@ -1,8 +1,9 @@
 package org.geoint.acetate.model.builder;
 
+import java.util.Set;
 import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableObjectPath;
+import org.geoint.acetate.model.DomainAggregateObject;
 import org.geoint.acetate.model.DomainModel;
-import org.geoint.acetate.model.DomainObject;
 
 /**
  * Programmatic API to define domain object aggregate relationship.
@@ -21,16 +22,18 @@ public class DomainAggregateObjectBuilder<T>
     }
 
     @Override
-    public DomainObject<T> build(DomainModel model) {
-        
+    public DomainAggregateObject<T> build(DomainModel model) {
+            
     }
 
-    public DomainAggregateObjectBuilder<T> relationshipOptionsComponent(String localName) {
+    public DomainAggregateObjectBuilder<T> relationshipOptionsComponent(
+            String localName) {
         this.relOptComponent = localName;
         return this;
     }
 
-    public DomainAggregateObjectBuilder<T> relationshipStateComponent(String localName) {
+    public DomainAggregateObjectBuilder<T> relationshipStateComponent(
+            String localName) {
         this.relStateComponent = localName;
         return this;
     }
@@ -38,6 +41,10 @@ public class DomainAggregateObjectBuilder<T>
     @Override
     protected DomainAggregateObjectBuilder<T> self() {
         return this;
+    }
+
+    @Override
+    public Set<String> getDependencies() {
     }
 
 }
