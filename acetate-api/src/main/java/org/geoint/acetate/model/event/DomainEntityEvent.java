@@ -3,6 +3,7 @@ package org.geoint.acetate.model.event;
 import java.time.ZonedDateTime;
 import org.geoint.acetate.model.DomainComponent;
 import org.geoint.acetate.model.DomainEntityObject;
+import org.geoint.acetate.model.DomainObject;
 
 /**
  * A specialized model component within a domain model which
@@ -21,14 +22,14 @@ public interface DomainEntityEvent<T, E> extends DomainComponent<T> {
      * @return the aggregate/composite domain object which is the globally
      * unique identifier of the entity
      */
-    DomainComponent<String> getGuidComponent();
+    DomainObject<String> getGuidComponent();
 
     /**
      * Entity event component which defines the time of the event.
      *
      * @return event model component which defines the time of the event
      */
-    DomainComponent<ZonedDateTime> getEventTimeComponent();
+    DomainObject<ZonedDateTime> getEventTimeComponent();
 
     /**
      * Entity event component which defines the GUID of the entity object for
@@ -36,7 +37,7 @@ public interface DomainEntityEvent<T, E> extends DomainComponent<T> {
      *
      * @return event model component containing the related entity object guid
      */
-    DomainComponent<String> getEntityGuidComponent();
+    DomainObject<String> getEntityGuidComponent();
 
     /**
      * Entity event component which defines the version of the entity object for
@@ -45,7 +46,7 @@ public interface DomainEntityEvent<T, E> extends DomainComponent<T> {
      * @return event model component containing the related entity object
      * version
      */
-    DomainComponent<Long> getEntityVersionComponent();
+    DomainObject<Long> getEntityVersionComponent();
 
     /**
      * Model of related domain entity object.

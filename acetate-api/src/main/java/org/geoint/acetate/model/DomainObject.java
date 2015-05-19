@@ -38,7 +38,7 @@ public interface DomainObject<T> extends DomainComponent,
      * @return component operations or empty collection if no behavior is found
      * on the component
      */
-    Collection<DomainObjectOperation> getOperations();
+    Collection<DomainOperation<?>> getOperations();
 
     /**
      * Return only the model operations which are native to this model; not
@@ -46,7 +46,7 @@ public interface DomainObject<T> extends DomainComponent,
      *
      * @return
      */
-    Collection<DomainObjectOperation> getNativeOperations();
+    Collection<DomainOperation<?>> getNativeOperations();
 
     /**
      * Aggregate objects which are defined natively or by a
@@ -57,7 +57,7 @@ public interface DomainObject<T> extends DomainComponent,
      *
      * @return child (composite) objects
      */
-    Collection<DomainAggregateObject> getAggregates();
+    Collection<DomainAggregateObject<?>> getAggregates();
 
     /**
      * Composites models from which this object model is comprised.
@@ -74,7 +74,7 @@ public interface DomainObject<T> extends DomainComponent,
      *
      * @return
      */
-    Collection<DomainCompositeObject> getComposites();
+    Collection<DomainCompositeObject<?>> getComposites();
 
     /**
      * Default character codec to use for this domain object.

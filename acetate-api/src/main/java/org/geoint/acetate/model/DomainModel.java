@@ -90,19 +90,4 @@ public interface DomainModel {
      * with no components will return an empty collection.
      */
     ObjectRegistry getComponents();
-//
-//    /**
-//     * Registry containing the codecs registered to this domain model.
-//     *
-//     * @return domain model codec registry
-//     */
-//    CodecRegistry getCodecs();
-//
-//    /**
-//     * Registry containing the object converters registered to this domain
-//     * model.
-//     *
-//     * @return domain model converter registry
-//     */
-//    ConverterRegistry getConverters();
 }

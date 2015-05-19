@@ -1,15 +1,16 @@
 package org.geoint.acetate.model;
 
 import java.util.Collection;
-import java.util.Optional;
 import org.geoint.acetate.model.attribute.Attributable;
+import org.geoint.acetate.model.event.DomainEntityEvent;
 
 /**
- * A behavior/operation of domain model component.
+ * An operation on a Entity Object which takes zero or more operation parameters
+ * and returns a DomainEntityEvent on success or throws an Exception on failure.
  *
  * @param <T> return type of the operation
  */
-public interface DomainObjectOperation<T> extends DomainComponent<T>,
+public interface DomainOperation<T> extends DomainComponent<T>,
         Attributable, Inheritable {
 
     /**
@@ -18,7 +19,7 @@ public interface DomainObjectOperation<T> extends DomainComponent<T>,
      * @return model of the returned type from the method or null if returns
      * void
      */
-    Optional<DomainObject<T>> getReturnModel();
+    DomainEntityEvent<T, ?> getReturnModel();
 
     /**
      * Domain models of the operation parameters, in declaration order.
