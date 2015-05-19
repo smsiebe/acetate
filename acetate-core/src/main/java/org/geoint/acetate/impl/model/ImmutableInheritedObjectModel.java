@@ -7,13 +7,13 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.geoint.acetate.data.transform.ObjectCodec;
+import org.geoint.acetate.data.transform.ComplexObjectCodec;
 import org.geoint.acetate.model.ContextualComponent;
 import org.geoint.acetate.model.Inheritable;
 import org.geoint.acetate.model.InheritedObjectModel;
-import org.geoint.acetate.model.ModelComponent;
-import org.geoint.acetate.model.ObjectModel;
-import org.geoint.acetate.model.OperationModel;
+import org.geoint.acetate.model.DomainComponent;
+import org.geoint.acetate.model.DomainObject;
+import org.geoint.acetate.model.DomainObjectOperation;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
 import org.geoint.acetate.model.constraint.ComponentConstraint;
 
@@ -24,13 +24,13 @@ import org.geoint.acetate.model.constraint.ComponentConstraint;
 public class ImmutableInheritedObjectModel<T> extends ImmutableObjectModel<T>
         implements InheritedObjectModel<T> {
 
-    private final Collection<ObjectModel<? super T>> lineage;
+    private final Collection<DomainObject<? super T>> lineage;
 
     private ImmutableInheritedObjectModel(ImmutableContextPath path,
             String name,
             String description,
-            ObjectCodec<T> codec,
-            Collection<ObjectModel<? super T>> lineage,
+            ComplexObjectCodec<T> codec,
+            Collection<DomainObject<? super T>> lineage,
             Collection<ImmutableOperationModel> combinedOperations,
             Collection<ContextualComponent> combinedComposites,
             Collection<? extends ComponentConstraint> constraints,
@@ -68,9 +68,9 @@ public class ImmutableInheritedObjectModel<T> extends ImmutableObjectModel<T>
             long version,
             String name,
             String description,
-            ObjectCodec<T> codec,
+            ComplexObjectCodec<T> codec,
             Collection<ImmutableObjectModel<?>> lineage,
-            Collection<OperationModel> localOperations,
+            Collection<DomainObjectOperation> localOperations,
             Collection<ContextualComponent> localComposites,
             Collection<? extends ComponentConstraint> constraints,
             Collection<? extends ComponentAttribute> attributes) {
@@ -79,15 +79,15 @@ public class ImmutableInheritedObjectModel<T> extends ImmutableObjectModel<T>
 
         //TODO consider creating specialized Inherited* types instead of passing
         //     a collection of inherited traits
-        Collection<OperationModel> combinedOperations
+        Collection<DomainObjectOperation> combinedOperations
                 = inherit(lineage, localOperations,
                         (l) -> l.getOperations().stream(),
-                        ModelComponent::getName);
+                        DomainComponent::getName);
 
         Collection<ContextualComponent> combinedComposites
                 = inherit(lineage, localComposites,
-                        (l) -> l.getComposites().stream(),
-                        ModelComponent::getName);
+                        (l) -> l.getAggregates().stream(),
+                        DomainComponent::getName);
 
         return new ImmutableInheritedObjectModel(path, name, description,
                 codec, lineage, combinedOperations, combinedComposites,
@@ -115,7 +115,7 @@ public class ImmutableInheritedObjectModel<T> extends ImmutableObjectModel<T>
     }
 
     @Override
-    public Collection<ObjectModel<? super T>> inheritsFrom() {
+    public Collection<DomainObject<? super T>> inheritsFrom() {
         return lineage;
     }
 

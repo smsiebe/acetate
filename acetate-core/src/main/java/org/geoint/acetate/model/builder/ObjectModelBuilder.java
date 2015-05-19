@@ -1,12 +1,12 @@
-package org.geoint.acetate.impl.model;
+package org.geoint.acetate.model.builder;
 
-import org.geoint.acetate.data.transform.ObjectCodec;
-import org.geoint.acetate.model.OperationModel;
+import org.geoint.acetate.data.transform.ComplexObjectCodec;
+import org.geoint.acetate.model.DomainObjectOperation;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
 import org.geoint.acetate.model.constraint.ComponentConstraint;
 
 /**
- * API to programmatically build an {@link ObjectModel}.
+ * API to programmatically build an {@link DomainObject}.
  *
  * @param <T> component data type
  */
@@ -35,15 +35,16 @@ public interface ObjectModelBuilder<T> {
      * @param operation component operation
      * @return this builder (fluid interface)
      */
-    ObjectModelBuilder<T> operation(OperationModel operation);
+    ObjectModelBuilder<T> operation(DomainObjectOperation operation);
 
     /**
-     * Set the codec to use to convert to/from an object in this context.
+     * Explicitly sets the codec to use to convert to/from an object in this
+     * context.
      *
      * @param codec
      * @return this builder (fluid interface)
      */
-    ObjectModelBuilder<T> codec(ObjectCodec<T> codec);
+    ObjectModelBuilder<T> codec(ComplexObjectCodec<T> codec);
 
     /**
      * Adds an attribute to this context.

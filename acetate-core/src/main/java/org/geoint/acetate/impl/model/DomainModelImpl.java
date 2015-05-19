@@ -1,41 +1,45 @@
 package org.geoint.acetate.impl.model;
 
-import java.util.Collection;
 import java.util.Optional;
-import org.geoint.acetate.model.ObjectModel;
+import org.geoint.acetate.data.transform.CodecRegistry;
+import org.geoint.acetate.data.transform.ConverterRegistry;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.ObjectRegistry;
 
 /**
- *
+ * The default domain model has fixed domain model (components of the core
+ * domain model cannot change after construction) but its does support the
+ * registration of contextual model variants (ie views).
  */
-public final class ImmutableDomainModel implements DomainModel {
+public final class DomainModelImpl implements DomainModel {
 
     private final String domainId;
     private final String name;
     private final long version;
     private final String displayName;
     private final Optional<String> description;
-    private final ObjectRegistry registry;
+    private final ObjectRegistry modelRegistry;
 
-    public ImmutableDomainModel(ObjectRegistry registry, String domainId,
+    public DomainModelImpl(ObjectRegistry registry, String domainId,
             String name, long version) {
         this(registry, domainId, name, version, null, null);
     }
 
-    public ImmutableDomainModel(ObjectRegistry registry, String domainId,
+    public DomainModelImpl(ObjectRegistry registry, String domainId,
             String name, long version, String displayName) {
         this(registry, domainId, name, version, displayName, null);
     }
 
-    public ImmutableDomainModel(ObjectRegistry registry, String domainId,
+    public DomainModelImpl(ObjectRegistry modelRegistry,
+            String domainId,
             String name, long version, String displayName, String description) {
+        this.modelRegistry = modelRegistry;
+
         this.domainId = domainId;
         this.name = name;
         this.version = version;
         this.displayName = displayName;
         this.description = Optional.ofNullable(description);
-        this.registry = registry;
     }
 
     @Override
@@ -64,8 +68,8 @@ public final class ImmutableDomainModel implements DomainModel {
     }
 
     @Override
-    public Collection<ObjectModel<?>> getComponents() {
-        return registry.findAll();
+    public ObjectRegistry getComponents() {
+        return modelRegistry;
     }
 
     @Override

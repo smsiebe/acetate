@@ -16,11 +16,4 @@ public interface Inherited<T> {
      */
     Collection<T> inheritsFrom();
 
-//    /**
-//     * Returns the traits that was inherited.
-//     *
-//     * @return inherited traits
-//     */
-//    Collection<Inheritable> getInheritedTraits();
-
 }

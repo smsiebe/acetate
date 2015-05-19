@@ -3,7 +3,7 @@ package org.geoint.acetate.model.constraint;
 import gov.ic.geoint.acetate.bind.AnnotationDataFactory;
 import gov.ic.geoint.acetate.bind.DataBindException;
 import java.lang.annotation.Annotation;
-import org.geoint.acetate.model.ObjectModel;
+import org.geoint.acetate.model.DomainObject;
 
 /**
  * Ensures that the data is not null.
@@ -23,7 +23,7 @@ public final class NotNullConstraint implements ComponentConstraint {
     }
 
     @Override
-    public <T> boolean validate(ObjectModel<T> model, T data) {
+    public <T> boolean validate(DomainObject<T> model, T data) {
         return data != null;
     }
 

@@ -13,6 +13,9 @@ import org.geoint.acetate.impl.transform.DefaultMapConverter.KeyValue;
  * Default {@link Map java.util.Map} converter, converting each map entry into a
  * domain object where the key is accessible from the <i>key</i>
  * component and the value from the <i>value</i> component.
+ *
+ * @param <K> key type
+ * @param <V> value type
  */
 public class DefaultMapConverter<K, V>
         implements Converter<Map<K, V>, Collection<KeyValue<K, V>>> {

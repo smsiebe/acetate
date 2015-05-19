@@ -1,26 +1,18 @@
+
 package org.geoint.acetate.io;
 
-import java.io.Closeable;
-import java.io.Flushable;
-import java.io.IOException;
-import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
-
 /**
- * Simple byte writer abstraction used by Acetate to support different binary
- * data outputs.
- *
- * Every ByteWriter instance must be thread-safe.
+ * Writer of character data
  */
-public interface ByteWriter extends Flushable, Closeable, AutoCloseable {
+public interface CharacterWriter extends Flushable, Closeable, AutoCloseable {
 
     /**
      * Writes the content of the byte array.
      *
-     * @param bytes data
+     * @param data data as String
      * @throws IOException thrown if there are problems writing the data
      */
-    void write(byte... bytes) throws IOException;
+    void write(String data) throws IOException;
 
     /**
      * Writes the content of the buffer.
@@ -28,7 +20,7 @@ public interface ByteWriter extends Flushable, Closeable, AutoCloseable {
      * @param buffer data
      * @throws IOException thrown if there are problems writing the data
      */
-    void write(ByteBuffer buffer) throws IOException;
+    void write(StringBuffer buffer) throws IOException;
 
     /**
      * Writes the defined buffer content.

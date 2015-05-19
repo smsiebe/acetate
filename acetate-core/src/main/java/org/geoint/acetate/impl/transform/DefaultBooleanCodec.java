@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import org.geoint.acetate.data.transform.DataConversionException;
-import org.geoint.acetate.data.transform.ObjectCodec;
+import org.geoint.acetate.data.transform.ComplexObjectCodec;
 import org.geoint.acetate.io.ByteWriter;
 import org.geoint.acetate.io.ByteReader;
 import org.geoint.acetate.model.ModelContextPath;
@@ -14,7 +14,7 @@ import org.geoint.acetate.model.DomainModel;
  * Default date type for {@link Boolean}.
  *
  */
-public final class DefaultBooleanCodec extends ObjectCodec<Boolean> {
+public final class DefaultBooleanCodec extends ComplexObjectCodec<Boolean> {
 
     private static final byte FALSE = (byte) 0;
     private static final byte TRUE = (byte) 1;

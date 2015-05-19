@@ -4,7 +4,7 @@ import gov.ic.geoint.acetate.bind.DataBindException;
 import java.io.IOException;
 import java.util.Optional;
 import org.geoint.acetate.io.ByteWriter;
-import org.geoint.acetate.model.ObjectModel;
+import org.geoint.acetate.model.DomainObject;
 import org.geoint.acetate.data.transform.DataConversionException;
 import org.geoint.acetate.io.ByteReader;
 
@@ -32,7 +32,7 @@ public interface DataNode<T> {
      *
      * @return component model for this data node
      */
-    ObjectModel<T> getModel();
+    DomainObject<T> getModel();
 
     /**
      * Attempt to convert the node value to a java object.

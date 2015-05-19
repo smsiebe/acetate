@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import org.geoint.acetate.data.transform.DataConversionException;
 import org.geoint.acetate.io.ByteWriter;
-import org.geoint.acetate.data.transform.ObjectCodec;
+import org.geoint.acetate.data.transform.ComplexObjectCodec;
 import org.geoint.acetate.io.ByteReader;
 import org.geoint.acetate.model.ModelContextPath;
 import org.geoint.acetate.model.DomainModel;
@@ -15,7 +15,7 @@ import org.geoint.acetate.model.DomainModel;
  *
  * Converts the entire content of the ByteReader to a UTF-8 String.
  */
-public final class DefaultStringCodec extends ObjectCodec<String> {
+public final class DefaultStringCodec extends ComplexObjectCodec<String> {
 
     public DefaultStringCodec(DomainModel model, ModelContextPath path) {
         super(model, path);

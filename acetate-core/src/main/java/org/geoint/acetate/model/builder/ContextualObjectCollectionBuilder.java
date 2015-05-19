@@ -1,4 +1,4 @@
-package org.geoint.acetate.impl.model;
+package org.geoint.acetate.model.builder;
 
 import org.geoint.acetate.model.ContextualCollectionModel;
 import org.geoint.acetate.model.attribute.ComponentAttribute;

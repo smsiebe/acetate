@@ -1,18 +1,10 @@
+
 package org.geoint.acetate.io;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.BufferOverflowException;
-import java.nio.ByteBuffer;
-
 /**
- * Simple byte reader abstraction used by Acetate to support different binary
- * data sources.
  *
- * Every ByteReader instance must be thread-safe.
  */
-public interface ByteReader extends Closeable, AutoCloseable {
+public interface CharacterReader extends Closeable, AutoCloseable  {
 
     /**
      * Reads all bytes into memory.

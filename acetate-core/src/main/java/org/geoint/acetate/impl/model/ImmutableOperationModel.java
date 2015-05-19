@@ -5,13 +5,13 @@ import java.util.Objects;
 import java.util.Optional;
 import org.geoint.acetate.model.ModelContextPath;
 import org.geoint.acetate.model.ContextualComponent;
-import org.geoint.acetate.model.OperationModel;
+import org.geoint.acetate.model.DomainObjectOperation;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
 
 /**
  *
  */
-public class ImmutableOperationModel implements OperationModel {
+public class ImmutableOperationModel implements DomainObjectOperation {
 
     private final ModelContextPath path;
     private final String name;

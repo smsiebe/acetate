@@ -1,14 +1,12 @@
 package org.geoint.acetate.model;
 
 import java.util.Optional;
-import org.geoint.acetate.data.transform.CodecRegistry;
-import org.geoint.acetate.data.transform.ConverterRegistry;
 import org.geoint.acetate.model.annotation.attribute.ComponentId;
 import org.geoint.acetate.model.annotation.attribute.Version;
 import org.geoint.acetate.model.annotation.constraint.NotNull;
 
 /**
- * Defines one or more {@link ObjectModel components} used to define the types
+ * Defines one or more {@link DomainObject components} used to define the types
  * of data with a data model.
  *
  * All DomainModel instances must be immutable and thread-safe.
@@ -52,19 +50,23 @@ public interface DomainModel {
     long getVersion();
 
     /**
-     * Human-readable, globally-unique, name of the domain model.
+     * Quasi-human-readable, globally-unique, name of the domain model.
      *
      * The name of the domain model, along with its version, is used to uniquely
      * identify a domain model and is used to form the domain models unique
      * identifier (though how this is done is unspecified).
-     *
+     * <p>
      * Models must identify itself with the same name across versions to be
      * related - and other models must not use the same name. It's highly
      * recommended for systems to utilize a model registry whenever possible.
+     * <p>
+     * The name of a domain model is treated as case-insensitive and must only
+     * contain alphanumeric characters, no spaces, special characters, etc.
      *
      * @return name of the data model
      */
     @NotNull
+    //TODO add constraint annotations for formatting requirements
     String getName();
 
     /**
@@ -88,19 +90,19 @@ public interface DomainModel {
      * with no components will return an empty collection.
      */
     ObjectRegistry getComponents();
-
-    /**
-     * Registry containing the codecs registered to this domain model.
-     *
-     * @return domain model codec registry
-     */
-    CodecRegistry getCodecs();
-
-    /**
-     * Registry containing the object converters registered to this domain
-     * model.
-     *
-     * @return domain model converter registry
-     */
-    ConverterRegistry getConverters();
+//
+//    /**
+//     * Registry containing the codecs registered to this domain model.
+//     *
+//     * @return domain model codec registry
+//     */
+//    CodecRegistry getCodecs();
+//
+//    /**
+//     * Registry containing the object converters registered to this domain
+//     * model.
+//     *
+//     * @return domain model converter registry
+//     */
+//    ConverterRegistry getConverters();
 }

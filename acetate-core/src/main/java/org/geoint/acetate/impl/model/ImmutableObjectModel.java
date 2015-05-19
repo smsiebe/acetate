@@ -3,11 +3,11 @@ package org.geoint.acetate.impl.model;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
-import org.geoint.acetate.data.transform.ObjectCodec;
+import org.geoint.acetate.data.transform.ComplexObjectCodec;
 import org.geoint.acetate.model.ModelContextPath;
 import org.geoint.acetate.model.ContextualComponent;
-import org.geoint.acetate.model.ObjectModel;
-import org.geoint.acetate.model.OperationModel;
+import org.geoint.acetate.model.DomainObject;
+import org.geoint.acetate.model.DomainObjectOperation;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
 import org.geoint.acetate.model.constraint.ComponentConstraint;
 
@@ -15,13 +15,13 @@ import org.geoint.acetate.model.constraint.ComponentConstraint;
  *
  * @param <T>
  */
-public class ImmutableObjectModel<T> implements ObjectModel<T> {
+public class ImmutableObjectModel<T> implements DomainObject<T> {
 
     private final ImmutableContextPath path;
     private final String name;
     private final Optional<String> description;
-    private final ObjectCodec<T> codec;
-    private final Collection<? extends OperationModel> operations;
+    private final ComplexObjectCodec<T> codec;
+    private final Collection<? extends DomainObjectOperation> operations;
     private final Collection<ContextualComponent> composites;
     private final Collection<? extends ComponentConstraint> constraints;
     private final Collection<? extends ComponentAttribute> attributes;
@@ -29,7 +29,7 @@ public class ImmutableObjectModel<T> implements ObjectModel<T> {
     protected ImmutableObjectModel(ImmutableContextPath path,
             String name,
             String description,
-            ObjectCodec<T> codec,
+            ComplexObjectCodec<T> codec,
             Collection<ImmutableOperationModel> operations,
             Collection<ContextualComponent> composites,
             Collection<? extends ComponentConstraint> constraints,
@@ -64,7 +64,7 @@ public class ImmutableObjectModel<T> implements ObjectModel<T> {
             long version,
             String name,
             String description,
-            ObjectCodec<T> codec,
+            ComplexObjectCodec<T> codec,
             Collection<ImmutableOperationModel> operations,
             Collection<ContextualComponent> composites,
             Collection<? extends ComponentConstraint> constraints,
@@ -93,7 +93,7 @@ public class ImmutableObjectModel<T> implements ObjectModel<T> {
             ImmutableContextPath path,
             String name,
             String description,
-            ObjectCodec<T> codec,
+            ComplexObjectCodec<T> codec,
             Collection<ImmutableOperationModel> operations,
             Collection<ContextualComponent> composites,
             Collection<? extends ComponentConstraint> constraints,
@@ -119,12 +119,12 @@ public class ImmutableObjectModel<T> implements ObjectModel<T> {
     }
 
     @Override
-    public Collection<OperationModel> getOperations() {
-        return (Collection<OperationModel>) operations;
+    public Collection<DomainObjectOperation> getOperations() {
+        return (Collection<DomainObjectOperation>) operations;
     }
 
     @Override
-    public Collection<ContextualComponent> getComposites() {
+    public Collection<ContextualComponent> getAggregates() {
         return composites;
     }
 
@@ -139,7 +139,7 @@ public class ImmutableObjectModel<T> implements ObjectModel<T> {
     }
 
     @Override
-    public ObjectCodec<T> getCodec() {
+    public ComplexObjectCodec<T> getCodec() {
         return codec;
     }
 

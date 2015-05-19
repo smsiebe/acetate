@@ -7,8 +7,9 @@ import org.geoint.acetate.model.attribute.Attributable;
 /**
  * A behavior/operation of domain model component.
  *
+ * @param <T> return type of the operation
  */
-public interface OperationModel extends ModelComponent,
+public interface DomainObjectOperation<T> extends DomainComponent<T>,
         Attributable, Inheritable {
 
     /**
@@ -17,7 +18,7 @@ public interface OperationModel extends ModelComponent,
      * @return model of the returned type from the method or null if returns
      * void
      */
-    Optional<ContextualComponent> getReturnModel();
+    Optional<DomainObject<T>> getReturnModel();
 
     /**
      * Domain models of the operation parameters, in declaration order.
@@ -25,6 +26,6 @@ public interface OperationModel extends ModelComponent,
      * @return models of the operation parameters; empty array if no parameters
      * are required for the operation
      */
-    Collection<? extends ContextualComponent> getParameterModels();
+    Collection<DomainObject<?>> getParameterModels();
 
 }

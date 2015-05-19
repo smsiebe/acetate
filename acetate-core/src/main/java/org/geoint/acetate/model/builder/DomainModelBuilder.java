@@ -1,4 +1,4 @@
-package org.geoint.acetate.impl.model;
+package org.geoint.acetate.model.builder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,23 +13,27 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import org.geoint.acetate.data.transform.ObjectCodec;
+import org.geoint.acetate.data.transform.ComplexObjectCodec;
+import org.geoint.acetate.impl.model.DomainModelImpl;
+import org.geoint.acetate.impl.model.DomainUtil;
+import org.geoint.acetate.impl.model.ImmutableContextPath;
 import org.geoint.acetate.impl.transform.DefaultBooleanCodec;
 import org.geoint.acetate.impl.transform.DefaultIntegerCodec;
 import org.geoint.acetate.impl.transform.DefaultStringCodec;
 import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableCollectionPath;
 import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableMapPath;
+import org.geoint.acetate.impl.model.ImmutableInheritedObjectModel;
+import org.geoint.acetate.impl.model.ImmutableObjectModel;
 import org.geoint.acetate.model.ModelContextPath;
 import org.geoint.acetate.model.ContextualComponent;
 import org.geoint.acetate.model.ContextualObjectModel;
 import org.geoint.acetate.model.constraint.ComponentConstraint;
-import org.geoint.acetate.model.ObjectModel;
-import org.geoint.acetate.model.OperationModel;
+import org.geoint.acetate.model.DomainObject;
+import org.geoint.acetate.model.DomainObjectOperation;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.InheritedObjectModel;
 import org.geoint.acetate.model.ModelException;
 import org.geoint.acetate.model.ContextualCollectionModel;
-import org.geoint.acetate.model.ObjectMapModel;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
 import org.geoint.acetate.model.ObjectRegistry;
 
@@ -122,7 +126,7 @@ public class DomainModelBuilder {
      * @return builder for this component model
      */
     public <T> ObjectModelBuilder<T> component(String componentName,
-            ObjectCodec<T> codec) {
+            ComplexObjectCodec<T> codec) {
         if (components.containsKey(componentName)) {
             components.put(componentName,
                     new ObjectModelBuilderImpl(componentName));
@@ -155,12 +159,12 @@ public class DomainModelBuilder {
         }
 
         //build the composite model definitions as needed
-        return new ImmutableDomainModel(objectRegistry,
+        return new DomainModelImpl(objectRegistry,
                 DomainUtil.uniqueDomainId(name, version),
                 this.name, this.version, this.name, this.description);
     }
 
-    private ObjectModel<?> buildObjectModel(
+    private DomainObject<?> buildObjectModel(
             final ObjectModelBuilderImpl cb,
             final ObjectRegistry registry)
             throws IncompleteModelException, ComponentCollisionException {
@@ -295,14 +299,14 @@ public class DomainModelBuilder {
 
         private final String componentName;
         private String description;
-        private ObjectCodec<T> codec;
+        private ComplexObjectCodec<T> codec;
         private final Set<ComponentConstraint> constraints = new HashSet<>();
         private final Set<ComponentAttribute> attributes = new HashSet<>();
         //key = local name, value = composite component name
         private final Map<String, ContextualBuilder> compositeComponents
                 = new TreeMap<>();
         private final Set<String> inheritedComponents = new HashSet<>();
-        private final Map<String, OperationModel> operations
+        private final Map<String, DomainObjectOperation> operations
                 = new HashMap<>();
 
         public ObjectModelBuilderImpl(String componentName) {
@@ -310,7 +314,7 @@ public class DomainModelBuilder {
         }
 
         public ObjectModelBuilderImpl(String componentName,
-                ObjectCodec<T> codec) {
+                ComplexObjectCodec<T> codec) {
             this.componentName = componentName;
             this.codec = codec;
         }
@@ -335,7 +339,7 @@ public class DomainModelBuilder {
         }
 
         @Override
-        public ObjectModelBuilder<T> codec(ObjectCodec<T> codec) {
+        public ObjectModelBuilder<T> codec(ComplexObjectCodec<T> codec) {
             this.codec = codec;
             return this;
         }
@@ -375,7 +379,7 @@ public class DomainModelBuilder {
         }
 
         @Override
-        public ObjectModelBuilder<T> operation(OperationModel operation) {
+        public ObjectModelBuilder<T> operation(DomainObjectOperation operation) {
             operations.put(operation.getName(), operation);
             return this;
         }
@@ -422,7 +426,7 @@ public class DomainModelBuilder {
             implements ContextualObjectModelBuilder<T> {
 
         private final String baseComponentName;
-        private ObjectCodec<T> codecOverride;
+        private ComplexObjectCodec<T> codecOverride;
         private final Set<String> ignoredOperation = new HashSet<>();
         private final Set<String> ignoredComposite = new HashSet<>();
 
@@ -433,7 +437,7 @@ public class DomainModelBuilder {
         }
 
         @Override
-        public ContextualObjectModelBuilderImpl<T> codec(ObjectCodec<T> codec) {
+        public ContextualObjectModelBuilderImpl<T> codec(ComplexObjectCodec<T> codec) {
             this.codecOverride = codec;
             return this;
         }
@@ -558,9 +562,9 @@ public class DomainModelBuilder {
 
         private final String domainName;
         private final long domainVersion;
-        private final Map<ModelContextPath, ObjectModel<?>> domainComponents
+        private final Map<ModelContextPath, DomainObject<?>> domainComponents
                 = new HashMap<>();
-        private final Map<Class<? extends ComponentAttribute>, Collection<ObjectModel<?>>> attributeIndex
+        private final Map<Class<? extends ComponentAttribute>, Collection<DomainObject<?>>> attributeIndex
                 = new HashMap<>();
         //key=parent component path
         //value=component path which inherit from key
@@ -572,7 +576,7 @@ public class DomainModelBuilder {
             this.domainVersion = domainVersion;
         }
 
-        private void register(ObjectModel<?> object)
+        private void register(DomainObject<?> object)
                 throws ComponentCollisionException {
             if (domainComponents.containsKey(object.getPath())) {
                 throw new ComponentCollisionException(
@@ -614,19 +618,19 @@ public class DomainModelBuilder {
         }
 
         @Override
-        public Collection<ObjectModel<?>> findAll() {
+        public Collection<DomainObject<?>> findAll() {
             return Collections.unmodifiableCollection(
                     domainComponents.values()
             );
         }
 
         @Override
-        public Optional<ObjectModel<?>> findByName(String componentName) {
+        public Optional<DomainObject<?>> findByName(String componentName) {
             return Optional.ofNullable(domainComponents.get(componentName));
         }
 
         @Override
-        public Collection<ObjectModel<?>> findByAttribute(
+        public Collection<DomainObject<?>> findByAttribute(
                 Class<? extends ComponentAttribute> attributeType) {
 
             if (!attributeIndex.containsKey(attributeType)) {
@@ -640,7 +644,7 @@ public class DomainModelBuilder {
         }
 
         @Override
-        public Collection<ObjectModel<?>> findSpecialized(
+        public Collection<DomainObject<?>> findSpecialized(
                 String parentComponentName) {
             if (!inheritenceIndex.containsKey(parentComponentName)) {
                 return Collections.EMPTY_LIST;

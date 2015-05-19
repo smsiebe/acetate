@@ -4,10 +4,10 @@ import org.geoint.acetate.io.ByteReader;
 import org.geoint.acetate.io.ByteWriter;
 
 /**
- * Transforms binary data to an alternative binary format.
+ * Transforms binary data from one binary form to another.
  */
 @FunctionalInterface
-public interface BinaryTransformer {
+public interface BinaryFormatter {
 
     /**
      * Converts a binary data representation from one format to another.
