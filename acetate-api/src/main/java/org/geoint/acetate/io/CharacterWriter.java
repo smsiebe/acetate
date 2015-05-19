@@ -1,5 +1,8 @@
-
 package org.geoint.acetate.io;
+
+import java.io.Closeable;
+import java.io.Flushable;
+import java.io.IOException;
 
 /**
  * Writer of character data
@@ -22,15 +25,4 @@ public interface CharacterWriter extends Flushable, Closeable, AutoCloseable {
      */
     void write(StringBuffer buffer) throws IOException;
 
-    /**
-     * Writes the defined buffer content.
-     *
-     * @param buffer data
-     * @param length number of bytes to read from the buffer
-     * @throws BufferUnderflowException thrown if there the number of bytes
-     * remaining in the buffer is less than the provided length
-     * @throws IOException thrown if there are problems writing the data
-     */
-    void write(ByteBuffer buffer, int length)
-            throws IOException, BufferUnderflowException;
 }

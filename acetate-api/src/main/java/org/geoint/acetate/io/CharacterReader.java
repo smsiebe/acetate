@@ -1,10 +1,13 @@
-
 package org.geoint.acetate.io;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**
  *
  */
-public interface CharacterReader extends Closeable, AutoCloseable  {
+public interface CharacterReader extends Closeable, AutoCloseable {
 
     /**
      * Reads all bytes into memory.
@@ -23,20 +26,16 @@ public interface CharacterReader extends Closeable, AutoCloseable  {
      * @return number of bytes read; -1 indicates there is no more bytes
      * @throws IOException thrown if there are problems reading from the data
      * source or the data cannot be written to the buffer
-     * @throws BufferOverflowException thrown if the remaining length of the
-     * provided buffer is 0 and there are more bytes available to read
      */
-    int read(ByteBuffer buffer) throws IOException, BufferOverflowException;
+    int read(StringBuffer buffer) throws IOException;
 
     /**
      * Fills the remaining buffer in the provided buffer.
      *
      * @param buffer destination buffer
      * @throws IOException thrown if there are problems reading
-     * @throws BufferOverflowException thrown if there are fewer than
-     * buffer.remaining bytes available from the reader
      */
-    void readAll(ByteBuffer buffer) throws IOException, BufferOverflowException;
+    void readAll(StringBuffer buffer) throws IOException;
 
     /**
      * Drains the reader to the output stream.
