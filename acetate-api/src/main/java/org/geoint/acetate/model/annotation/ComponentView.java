@@ -5,8 +5,10 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.geoint.acetate.data.transform.BinaryFormatter;
+import org.geoint.acetate.data.transform.BinaryCodec;
+import org.geoint.acetate.data.transform.CharacterCodec;
 import org.geoint.acetate.model.DomainModel;
+import org.geoint.acetate.model.annotation.attribute.Attribute;
 import org.geoint.acetate.model.annotation.constraint.Constraint;
 
 /**
@@ -16,9 +18,9 @@ import org.geoint.acetate.model.annotation.constraint.Constraint;
  * a {@link DomainModel}.
  */
 @Documented
-@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD})
+@Target({ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ModelComponent {
+public @interface ComponentView {
 
     /**
      * Relative path of the model component to change.
@@ -38,12 +40,26 @@ public @interface ModelComponent {
     Constraint[] constraints() default {};
 
     /**
-     * Optional explicitly defined chain of binary converter for this model
-     * component.
+     * Optional data attributes added to the model component.
      *
-     *
-     * @return optional binary converter chain
+     * @return attributes for this model
      */
-    Class<? extends BinaryFormatter>[] codec() default {};
+    Attribute[] attributes() default {};
+
+    /**
+     * Optional binary codec to use for this component, overriding the default
+     * codec defined by the domain model.
+     *
+     * @return optional binary codec which overrides the domain default
+     */
+    Class<BinaryCodec> binaryCodec() default BinaryCodec.class;
+
+    /**
+     * Optional character codec to use for this component, overridding the
+     * default codec defined by the domain model.
+     *
+     * @return optional character codec which overrides the domain default
+     */
+    Class<CharacterCodec> charCodec() default CharacterCodec.class;
 
 }

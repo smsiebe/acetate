@@ -7,7 +7,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Defines a contextual "view" of the domain model.
+ * Defines a contextual "view" of the domain model, altering the domain model
+ * definition of the model component the View annotates.
  *
  */
 @Documented
@@ -20,5 +21,5 @@ public @interface View {
      *
      * @return component-specific configuration
      */
-    ModelComponent[] components() default {};
+    ComponentView[] components() default {};
 }

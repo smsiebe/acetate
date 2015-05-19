@@ -1,10 +1,10 @@
 package org.geoint.acetate.model;
 
 import java.util.Collection;
-import org.geoint.acetate.data.transform.ObjectCodec;
+import org.geoint.acetate.data.transform.BinaryCodec;
+import org.geoint.acetate.data.transform.CharacterCodec;
 import org.geoint.acetate.model.attribute.Attributable;
 import org.geoint.acetate.model.constraint.Constrainable;
-import org.geoint.acetate.model.view.DomainObjectView;
 
 /**
  * The base model of an object used within a domain model, defining the common
@@ -77,16 +77,16 @@ public interface DomainObject<T> extends DomainComponent,
     Collection<DomainCompositeObject> getComposites();
 
     /**
-     * Codec used to encode/decode this component as to/from byte or character
-     * form.
-     * <p>
-     * Each domain model object must have a default codec capable of converting
-     * an data object instance to/from a character or binary stream. The codec
-     * may be overridden within the data model (ie aggregate definition) or
-     * within a {@link DomainObjectView}.
+     * Default character codec to use for this domain object.
      *
-     * @return component codec
+     * @return default character codec
      */
-    ObjectCodec<T> getCodec();
+    CharacterCodec<T> getCharacterCodec();
 
+    /**
+     * Default binary codec to use for this domain object.
+     *
+     * @return default binary codec
+     */
+    BinaryCodec<T> getBinaryCodec();
 }

@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 import org.geoint.acetate.model.DomainModel;
 
 /**
- * Defines the domain model for the respective objects.
+ * Defines the domain model for the model object.
  *
  * @see DomainModel
  */
@@ -17,7 +17,17 @@ import org.geoint.acetate.model.DomainModel;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Domain {
 
+    /**
+     * Name of the domain model.
+     *
+     * @return unique name of the domain model
+     */
     String name();
 
+    /**
+     * Domain model version this object is associated.
+     *
+     * @return domain model version
+     */
     long version();
 }

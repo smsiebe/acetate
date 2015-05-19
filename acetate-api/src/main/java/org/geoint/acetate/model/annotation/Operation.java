@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Explicitly identifies a method as an object behavior/operation.
+ * Explicitly defines a domain model operation.
  */
 @Documented
 @Target(ElementType.METHOD)
