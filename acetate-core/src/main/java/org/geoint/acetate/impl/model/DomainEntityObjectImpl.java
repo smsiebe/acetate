@@ -9,7 +9,6 @@ import org.geoint.acetate.model.DomainEntityObject;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.DomainObject;
 import org.geoint.acetate.model.DomainOperation;
-import org.geoint.acetate.model.attribute.AcetateDataAttribute;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
 import org.geoint.acetate.model.constraint.ComponentConstraint;
 
