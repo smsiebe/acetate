@@ -1,8 +1,5 @@
 package org.geoint.acetate.model.constraint;
 
-import gov.ic.geoint.acetate.bind.AnnotationDataFactory;
-import gov.ic.geoint.acetate.bind.DataBindException;
-import java.lang.annotation.Annotation;
 import org.geoint.acetate.model.DomainObject;
 
 /**
@@ -25,20 +22,6 @@ public final class NotNullConstraint implements ComponentConstraint {
     @Override
     public <T> boolean validate(DomainObject<T> model, T data) {
         return data != null;
-    }
-
-    /**
-     * Uses to construct an instance using the {@link NotNull} constraint 
-     * annotation.
-     */
-    public static class NotNullConstraintAnnotationConstructor
-            implements AnnotationDataFactory<ComponentConstraint> {
-
-        @Override
-        public ComponentConstraint getInstance(Annotation... annotations)
-                throws DataBindException {
-            return NotNullConstraint.INSTANCE;
-        }
     }
 
 }

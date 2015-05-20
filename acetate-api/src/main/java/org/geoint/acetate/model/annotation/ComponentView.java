@@ -1,5 +1,7 @@
 package org.geoint.acetate.model.annotation;
 
+import org.geoint.acetate.model.constraint.Constraint;
+import org.geoint.acetate.model.attribute.Attribute;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,8 +10,6 @@ import java.lang.annotation.Target;
 import org.geoint.acetate.data.transform.BinaryCodec;
 import org.geoint.acetate.data.transform.CharacterCodec;
 import org.geoint.acetate.model.DomainModel;
-import org.geoint.acetate.model.annotation.attribute.Attribute;
-import org.geoint.acetate.model.annotation.constraint.Constraint;
 
 /**
  * Use to augment the model of a individual model component.

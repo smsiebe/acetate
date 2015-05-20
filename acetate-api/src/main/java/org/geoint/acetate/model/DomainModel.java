@@ -1,9 +1,9 @@
 package org.geoint.acetate.model;
 
 import java.util.Optional;
-import org.geoint.acetate.model.annotation.attribute.EntityId;
-import org.geoint.acetate.model.annotation.attribute.Version;
-import org.geoint.acetate.model.annotation.constraint.NotNull;
+import org.geoint.acetate.model.attribute.EntityId;
+import org.geoint.acetate.model.attribute.Version;
+import org.geoint.acetate.model.constraint.NotNull;
 
 /**
  * Defines one or more {@link DomainObject components} used to define the types
