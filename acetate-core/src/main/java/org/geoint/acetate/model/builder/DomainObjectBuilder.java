@@ -3,7 +3,7 @@ package org.geoint.acetate.model.builder;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.geoint.acetate.impl.model.DomainObjectImpl;
+import org.geoint.acetate.impl.model.ImmutableDomainObject;
 import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableObjectPath;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.DomainObject;
@@ -47,7 +47,7 @@ public class DomainObjectBuilder<T>
                         + "component.");
             }
 
-            return new DomainObjectImpl(model, path,
+            return new ImmutableDomainObject(model, path,
                     this.path.getComponentName(),
                     description,
                     parentObjects,

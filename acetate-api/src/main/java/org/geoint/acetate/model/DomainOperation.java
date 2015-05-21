@@ -1,7 +1,6 @@
 package org.geoint.acetate.model;
 
 import java.util.Collection;
-import org.geoint.acetate.model.attribute.Attributable;
 import org.geoint.acetate.model.event.DomainEntityEvent;
 
 /**
@@ -11,7 +10,7 @@ import org.geoint.acetate.model.event.DomainEntityEvent;
  * @param <T> return type of the operation
  */
 public interface DomainOperation<T> extends DomainComponent<T>,
-        Attributable, ComposableComponent {
+        ComposableComponent {
 
     /**
      * Domain mode of the returned type.

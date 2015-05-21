@@ -1,25 +1,27 @@
 package org.geoint.acetate.model.attribute;
 
+import org.geoint.acetate.model.DomainObject;
+
 /**
- * Data component attribute indicating it was inherited, and where it was
- * inherited from.
+ * Data component attribute indicating the component was inherited, and where it
+ * was inherited from.
  *
  */
 public final class Inherited implements ComponentAttribute {
 
     /**
-     * Domain object name from which this component was inherited.
+     * Domain object model for the inherited object.
      *
-     * @return inherited (parent) component name
+     * @return inherited (parent) model
      */
-    private final String inheritedFrom;
+    private final DomainObject<?> inheritedModel;
 
-    public Inherited(String inheritedFrom) {
-        this.inheritedFrom = inheritedFrom;
+    public Inherited(DomainObject<?> inheritedModel) {
+        this.inheritedModel = inheritedModel;
     }
 
-    public String getInheritedFrom() {
-        return inheritedFrom;
+    public DomainObject<?> getInheritedModel() {
+        return inheritedModel;
     }
 
 }

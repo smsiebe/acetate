@@ -18,7 +18,7 @@ import org.geoint.acetate.impl.model.ImmutableContextPath;
 import org.geoint.acetate.impl.transform.DefaultBooleanBinaryCodec;
 import org.geoint.acetate.impl.transform.DefaultIntegerBinaryCodec;
 import org.geoint.acetate.impl.transform.DefaultStringBinaryCodec;
-import org.geoint.acetate.model.ModelContextPath;
+import org.geoint.acetate.model.ComponentContextPath;
 import org.geoint.acetate.model.DomainObject;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.ModelException;
@@ -207,13 +207,13 @@ public class DomainModelBuilder {
      */
     private class InternalObjectRegistry implements ObjectRegistry {
 
-        private final Map<ModelContextPath, DomainObject<?>> domainComponents
+        private final Map<ComponentContextPath, DomainObject<?>> domainComponents
                 = new HashMap<>();
         private final Map<Class<? extends ComponentAttribute>, Collection<DomainObject<?>>> attributeIndex
                 = new HashMap<>();
         //key=parent component path
         //value=component path which inherit from key
-        private final Map<ModelContextPath, Set<ModelContextPath>> inheritenceIndex
+        private final Map<ComponentContextPath, Set<ComponentContextPath>> inheritenceIndex
                 = new HashMap<>();
 
         private void register(DomainObject<?> object)
@@ -241,8 +241,8 @@ public class DomainModelBuilder {
                     });
 
             //add to inheritence index
-            if (!object.inheritsFrom().isEmpty()) {
-                object.inheritsFrom()
+            if (!object.getParentObjectNames().isEmpty()) {
+                object.getParentObjectNames()
                         .stream() //parent components inherited from
                         .map((pc) -> pc.getPath())
                         .forEach((pn) -> {

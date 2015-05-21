@@ -3,7 +3,7 @@ package org.geoint.acetate.impl.model;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
-import org.geoint.acetate.model.ModelContextPath;
+import org.geoint.acetate.model.ComponentContextPath;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.DomainObject;
 import org.geoint.acetate.model.DomainOperation;
@@ -14,17 +14,17 @@ import org.geoint.acetate.model.event.DomainEntityEvent;
  *
  * @param <R> operation retrun type
  */
-public class DomainOperationImpl<R> implements DomainOperation<R> {
+public class ImmutableDomainOperation<R> implements DomainOperation<R> {
 
     protected final DomainModel model;
-    protected final ModelContextPath path;
+    protected final ComponentContextPath path;
     protected final String operationName;
     protected final Optional<String> description;
     protected final DomainEntityEvent<R, ?> returned;
     protected final Collection<DomainObject<?>> params;
     protected final Collection<? extends ComponentAttribute> attributes;
 
-    DomainOperationImpl(DomainModel model, ModelContextPath path,
+    ImmutableDomainOperation(DomainModel model, ComponentContextPath path,
             String name,
             Optional<String> description,
             DomainEntityEvent<R, ?> returned,
@@ -45,7 +45,7 @@ public class DomainOperationImpl<R> implements DomainOperation<R> {
     }
 
     @Override
-    public ModelContextPath getPath() {
+    public ComponentContextPath getPath() {
         return path;
     }
 
@@ -104,7 +104,7 @@ public class DomainOperationImpl<R> implements DomainOperation<R> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final DomainOperationImpl other = (DomainOperationImpl) obj;
+        final ImmutableDomainOperation other = (ImmutableDomainOperation) obj;
         if (!Objects.equals(this.path, other.path)) {
             return false;
         }
