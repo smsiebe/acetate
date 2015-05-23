@@ -19,7 +19,7 @@ import org.geoint.acetate.model.ComposableComponent;
 import org.geoint.acetate.model.DomainAggregateObject;
 import org.geoint.acetate.model.DomainCompositeObject;
 import org.geoint.acetate.model.DomainModel;
-import org.geoint.acetate.model.ComponentContextPath;
+import org.geoint.acetate.model.ComponentAddress;
 import org.geoint.acetate.model.DomainObject;
 import org.geoint.acetate.model.DomainOperation;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
@@ -194,7 +194,7 @@ public abstract class ImmutableDomainObject<T> implements DomainObject<T> {
     }
 
     @Override
-    public ComponentContextPath getPath() {
+    public ComponentAddress getPath() {
         return path;
     }
 

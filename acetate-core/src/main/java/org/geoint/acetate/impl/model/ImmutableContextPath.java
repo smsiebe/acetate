@@ -1,12 +1,12 @@
 package org.geoint.acetate.impl.model;
 
 import java.util.Objects;
-import org.geoint.acetate.model.ComponentContextPath;
+import org.geoint.acetate.model.ComponentAddress;
 
 /**
  *
  */
-public abstract class ImmutableContextPath implements ComponentContextPath {
+public abstract class ImmutableContextPath implements ComponentAddress {
 
     private final String domainName;
     private final long domainVersion;

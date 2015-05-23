@@ -1,6 +1,7 @@
-package org.geoint.acetate.model;
+package org.geoint.acetate.model.util;
 
 import java.util.function.Predicate;
+import org.geoint.acetate.model.DomainComponent;
 import org.geoint.acetate.model.attribute.Composited;
 import org.geoint.acetate.model.attribute.Inherited;
 

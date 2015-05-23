@@ -6,7 +6,7 @@ import java.util.Collection;
  * A model component is capable of being constrained by one or more
  * {@link ComponentConstraint}.
  */
-public interface Constrainable {
+public interface Constrained {
 
     /**
      * Data constraints applied to this model component.

@@ -1,6 +1,6 @@
 package org.geoint.acetate.model.constraint;
 
-import org.geoint.acetate.model.Inheritable;
+import org.geoint.acetate.model.InheritableComponent;
 import org.geoint.acetate.model.DomainObject;
 
 /**
@@ -9,7 +9,7 @@ import org.geoint.acetate.model.DomainObject;
  *
  */
 @FunctionalInterface
-public interface ComponentConstraint extends Inheritable{
+public interface ComponentConstraint extends InheritableComponent{
 
     /**
      * Test if the data value validates against the constraint.

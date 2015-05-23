@@ -3,7 +3,7 @@ package org.geoint.acetate.impl.model;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
-import org.geoint.acetate.model.ComponentContextPath;
+import org.geoint.acetate.model.ComponentAddress;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.DomainObject;
 import org.geoint.acetate.model.DomainOperation;
@@ -17,14 +17,14 @@ import org.geoint.acetate.model.event.DomainEntityEvent;
 public class ImmutableDomainOperation<R> implements DomainOperation<R> {
 
     protected final DomainModel model;
-    protected final ComponentContextPath path;
+    protected final ComponentAddress path;
     protected final String operationName;
     protected final Optional<String> description;
     protected final DomainEntityEvent<R, ?> returned;
     protected final Collection<DomainObject<?>> params;
     protected final Collection<? extends ComponentAttribute> attributes;
 
-    ImmutableDomainOperation(DomainModel model, ComponentContextPath path,
+    ImmutableDomainOperation(DomainModel model, ComponentAddress path,
             String name,
             Optional<String> description,
             DomainEntityEvent<R, ?> returned,
@@ -45,7 +45,7 @@ public class ImmutableDomainOperation<R> implements DomainOperation<R> {
     }
 
     @Override
-    public ComponentContextPath getPath() {
+    public ComponentAddress getPath() {
         return path;
     }
 

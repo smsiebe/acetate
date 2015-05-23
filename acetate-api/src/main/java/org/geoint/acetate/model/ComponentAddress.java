@@ -4,10 +4,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * Context-unique path for a domain model component.
+ * A domain model component address uniquely identifies a model component. 
  *
  */
-public interface ComponentContextPath {
+public interface ComponentAddress {
 
     /**
      * Domain name of the component.

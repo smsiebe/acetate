@@ -4,11 +4,13 @@ import java.util.Collection;
 import org.geoint.acetate.data.transform.BinaryCodec;
 import org.geoint.acetate.data.transform.CharacterCodec;
 import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableObjectPath;
+import org.geoint.acetate.model.DomainComponent;
 import org.geoint.acetate.model.DomainEntityObject;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.DomainObject;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
 import org.geoint.acetate.model.attribute.EntityGuid;
+import org.geoint.acetate.model.attribute.EntityVersion;
 import org.geoint.acetate.model.builder.ComponentCollisionException;
 import org.geoint.acetate.model.builder.IncompleteModelException;
 import org.geoint.acetate.model.constraint.ComponentConstraint;
@@ -40,16 +42,35 @@ public class ImmutableDomainEntity<T> extends ImmutableDomainObject<T>
                 charCodec);
 
         //cache the entity GUID and version components
-        DomainObject<String> guid;
-        DomainObject<Long> version;
-        for (ImmutableDomainComposite a : composites) {
-            for (ComponentAttribute a : )
+        ImmutableDomainComposite<String> guid = null;
+        ImmutableDomainComposite<Long> version = null;
+        for (ImmutableDomainComposite c : composites) {
+            Collection<ComponentAttribute> cca = c.getAttributes();
+            for (ComponentAttribute ca : cca) {
+                if (ca.getClass().equals(EntityGuid.class)) {
+                    guid = deconflict(guid, c);
+                } else if (ca.getClass().equals(EntityVersion.class)) {
+
+                }
+            }
         }
-        this.getComposites().stream()
-                .filter((c) -> c.getAttributes().contains(AcetateDataAttribute.GUID))
-                .findFirst();
-        entityGuidComponent;
-        this.entityVersionComponent = entityVersionComponent;
+
+    }
+
+    /**
+     * Attempts to deconflict a component collision based by inheritance, either
+     * returning the component to use or throws an exception if the component
+     * collision could not be deconflicted.
+     *
+     * @param <C>
+     * @param existing
+     * @param other
+     * @return
+     * @throws ComponentCollisionException
+     */
+    private <C extends DomainComponent> C deconflict(C c1, C c2)
+            throws ComponentCollisionException {
+        
     }
 
     @Override

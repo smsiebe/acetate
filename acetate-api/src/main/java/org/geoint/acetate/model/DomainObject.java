@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.geoint.acetate.data.transform.BinaryCodec;
 import org.geoint.acetate.data.transform.CharacterCodec;
 import org.geoint.acetate.model.attribute.Composited;
-import org.geoint.acetate.model.constraint.Constrainable;
+import org.geoint.acetate.model.constraint.Constrained;
 
 /**
  * The base model of an object used within a domain model, defining the common
@@ -16,7 +16,7 @@ import org.geoint.acetate.model.constraint.Constrainable;
  * @see DomainAggregateObject
  * @param <T> associated java data type
  */
-public interface DomainObject<T> extends DomainComponent, Constrainable {
+public interface DomainObject<T> extends DomainComponent, Constrained {
 
     /**
      * Domain model object names from which this object extends.

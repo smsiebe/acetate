@@ -1,20 +1,11 @@
 package org.geoint.acetate.model;
 
 /**
- * A domain model component which is a component of another domain model object.
+ * A domain model component which can be a member (make up) of a 
+ * {@link ComposedComponent }.
  *
- * @see DomainAggregateObject
- * @see DomainCompositeObject
- * @
  */
-public interface ComposableComponent extends Inheritable {
-
-    /**
-     * The object model of the composite which contains this component.
-     *
-     * @return object model which contains this component
-     */
-    DomainObject<?> getComposite();
+public interface ComposableComponent {
 
     /**
      * Contextually-unique component name.
