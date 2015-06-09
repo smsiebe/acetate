@@ -3,12 +3,13 @@ package org.geoint.acetate.model.attribute;
 import org.geoint.acetate.model.DomainObject;
 
 /**
- * Data component attribute indicating the component was inherited from a parent
- * component.
+ * Data component attribute indicating the component was composed from a
+ * non-entry aggregate (composite) object.
  *
  * This attribute is added to a component by the aceteate framework.
+ *
  */
-public final class Inherited implements ComponentAttribute {
+public final class Composited implements ComponentAttribute {
 
     /**
      * Domain object model for the inherited object.
@@ -17,12 +18,11 @@ public final class Inherited implements ComponentAttribute {
      */
     private final DomainObject<?> inheritedModel;
 
-    public Inherited(DomainObject<?> inheritedModel) {
+    public Composited(DomainObject<?> inheritedModel) {
         this.inheritedModel = inheritedModel;
     }
 
     public DomainObject<?> getInheritedModel() {
         return inheritedModel;
     }
-
 }

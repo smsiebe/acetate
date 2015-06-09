@@ -7,6 +7,11 @@ package gov.ic.geoint.acetate.bind;
  */
 public interface CreationContext<T> {
 
+    /**
+     * Java class type to create.
+     *
+     * @return class type to create
+     */
     Class<T> getType();
 
 }

@@ -1,15 +1,18 @@
 package org.geoint.acetate.model.attribute;
 
-import gov.ic.geoint.acetate.bind.DataContextAnnotation;
+import gov.ic.geoint.acetate.bind.Factory;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.geoint.acetate.model.DomainEntityObject;
 
 /**
- * Identifies a field as the model instance version field.
+ * "Marker" attribute which identifiers the component of an
+ * {@link DomainEntityObject} as the {@link EntityVersion instance version
+ * field}.
  *
  * @see Version
  */
@@ -17,8 +20,7 @@ import java.lang.annotation.Target;
 @Inherited
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Attribute(
-        @DataContextAnnotation(type = EntityVersion.class))
+@Factory(type = EntityVersion.class)
 public @interface Version {
 
 }

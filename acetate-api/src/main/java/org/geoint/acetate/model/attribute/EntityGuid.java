@@ -1,8 +1,8 @@
 package org.geoint.acetate.model.attribute;
 
 /**
- * Identifies a data component as the globally unique identifier for the data
- * item instance.
+ * "Marker" annotation which is used to identity the globally unique identifier 
+ * of an {@link DomainEntityObject}.
  *
  * All Entity Objects (DomainEntityObject or DomainAggregateObject)
  * <b>MUST</b> specify one (and only one) GUID. DomainComponentObject

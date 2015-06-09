@@ -4,7 +4,6 @@ import java.lang.annotation.Inherited;
 import java.util.Collection;
 import org.geoint.acetate.data.transform.BinaryCodec;
 import org.geoint.acetate.data.transform.CharacterCodec;
-import org.geoint.acetate.model.attribute.Composited;
 import org.geoint.acetate.model.constraint.Constrained;
 
 /**
@@ -16,16 +15,7 @@ import org.geoint.acetate.model.constraint.Constrained;
  * @see DomainAggregateObject
  * @param <T> associated java data type
  */
-public interface DomainObject<T> extends DomainComponent, Constrained {
-
-    /**
-     * Domain model object names from which this object extends.
-     *
-     * @return collection of domain model object names which this object
-     * inherits from, or an empty collection if this object does not inherit
-     * from any domain model object
-     */
-    Collection<String> getParentObjectNames();
+public interface DomainObject<T> extends InheritableComponent<T>, Constrained {
 
     /**
      * Domain model unique name of domain object model.

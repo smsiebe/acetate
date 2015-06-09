@@ -9,7 +9,7 @@ package org.geoint.acetate.model;
  * unique identity (and version), from which its state and operations (defined
  * by composite and aggregate objects) may be accessed.
  *
- * @param <T>
+ * @param <T> java class of the entity
  */
 public interface DomainEntityObject<T> extends DomainObject<T> {
 
@@ -26,7 +26,7 @@ public interface DomainEntityObject<T> extends DomainObject<T> {
      * @return the aggregate/composite domain object which is the globally
      * unique identifier of the entity
      */
-    DomainObject<String> getGuidComponentName();
+    DomainObject<String> getGuidComponent();
 
     /**
      * Entity object version identifier.
@@ -41,5 +41,5 @@ public interface DomainEntityObject<T> extends DomainObject<T> {
      * @return the aggregate/composite domain object which is the sequential
      * version of the entity
      */
-    DomainObject<Long> getVersionComponentName();
+    DomainObject<Long> getVersionComponent();
 }

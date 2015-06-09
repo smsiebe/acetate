@@ -1,17 +1,17 @@
 package org.geoint.acetate.model;
 
 /**
- * A domain model component which can be a member (make up) of a 
+ * A domain model component which is a member of (make up) a
  * {@link ComposedComponent }.
  *
  */
-public interface ComposableComponent {
+public interface CompositeComponent {
 
     /**
      * Contextually-unique component name.
      *
      * The local name of a component is object-unique, no other
-     * ComposableComponent of a domain object may by have the same name.
+     * CompositeComponent of a domain object may by have the same name.
      *
      * @return
      */

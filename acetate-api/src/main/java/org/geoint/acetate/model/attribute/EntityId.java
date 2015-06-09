@@ -1,6 +1,6 @@
 package org.geoint.acetate.model.attribute;
 
-import gov.ic.geoint.acetate.bind.DataContextAnnotation;
+import gov.ic.geoint.acetate.bind.Factory;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -21,8 +21,7 @@ import java.lang.annotation.Target;
 @Inherited
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Attribute(
-        @DataContextAnnotation(type = EntityGuid.class))
+@Factory(type = EntityGuid.class)
 public @interface EntityId {
 
 }

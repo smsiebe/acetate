@@ -1,11 +1,14 @@
 package org.geoint.acetate.model;
 
+import java.util.Set;
+
 /**
  * Indicates that the model component is inheritable.
  *
  *
+ * @param <T> component type
  */
-public interface InheritableComponent {
+public interface InheritableComponent<T> extends DomainComponent<T> {
 
     /**
      * Determines if the model component instance was inherited or if it was
@@ -26,4 +29,10 @@ public interface InheritableComponent {
         return true;
     }
 
+    /**
+     * Domain components from which this component extends.
+     *
+     * @return set of domain components from which this component inherits
+     */
+    Set<DomainObject<? super T>> getLineage();
 }

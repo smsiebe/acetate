@@ -11,7 +11,7 @@ public final class NotNullConstraint implements ComponentConstraint {
 
     private static final NotNullConstraint INSTANCE = new NotNullConstraint();
 
-    private NotNullConstraint() {
+    public NotNullConstraint() {
 
     }
 

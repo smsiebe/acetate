@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * An Attributed model component can be associated with one or more
+ * An Attributable model component can be associated with one or more
  {@link ComponentAttribute attributes}.
  *
  * A model component attribute provides a point of extensibility to model
@@ -18,7 +18,7 @@ import java.util.Collection;
  * @see ComponentAttribute
  *
  */
-public interface Attributed {
+public interface Attributable {
 
     /**
      * Returns all the component attributes.

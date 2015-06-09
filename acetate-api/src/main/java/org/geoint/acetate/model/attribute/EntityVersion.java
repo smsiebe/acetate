@@ -20,7 +20,7 @@ package org.geoint.acetate.model.attribute;
  * <p>
  * The data type of the VersionAttribute component must be a <i>long</i>.
  */
-public class EntityVersion implements ComponentAttribute {
+public final class EntityVersion implements ComponentAttribute {
 
     public EntityVersion() {
     }

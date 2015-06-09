@@ -1,7 +1,8 @@
 package org.geoint.acetate.model;
 
 /**
- * A domain model component that is composed from other domain model components.
+ * A domain model component which may be composed from zero or more
+ * {@link CompositeComponent composite components}.
  */
 public interface ComposedComponent {
 

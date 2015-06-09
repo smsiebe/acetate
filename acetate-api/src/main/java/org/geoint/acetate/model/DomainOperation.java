@@ -10,7 +10,7 @@ import org.geoint.acetate.model.event.DomainEntityEvent;
  * @param <T> return type of the operation
  */
 public interface DomainOperation<T> extends DomainComponent<T>,
-        ComposableComponent {
+        CompositeComponent {
 
     /**
      * Domain mode of the returned type.

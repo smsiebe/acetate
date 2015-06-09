@@ -21,7 +21,7 @@ import java.util.Collection;
  * @param <T> type of the aggregated object
  */
 public interface DomainAggregateObject<T>
-        extends DomainEntityObject<T>, ComposableComponent {
+        extends DomainEntityObject<T>, CompositeComponent {
 
     /**
      * The domain component which defines the possible relationship types

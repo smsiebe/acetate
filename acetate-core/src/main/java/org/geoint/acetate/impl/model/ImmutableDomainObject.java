@@ -15,7 +15,7 @@ import java.util.logging.Logger;
 import org.geoint.acetate.data.transform.BinaryCodec;
 import org.geoint.acetate.data.transform.CharacterCodec;
 import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableObjectPath;
-import org.geoint.acetate.model.ComposableComponent;
+import org.geoint.acetate.model.CompositeComponent;
 import org.geoint.acetate.model.DomainAggregateObject;
 import org.geoint.acetate.model.DomainCompositeObject;
 import org.geoint.acetate.model.DomainModel;
@@ -150,7 +150,7 @@ public abstract class ImmutableDomainObject<T> implements DomainObject<T> {
 
     }
 
-    private <C extends ComposableComponent> Map<String, C> inherit(ImmutableObjectPath basePath,
+    private <C extends CompositeComponent> Map<String, C> inherit(ImmutableObjectPath basePath,
             Collection<C> localComponents, DomainObject parent,
             //            Collection<C> parentComponents,
             Function<DomainObject, Collection<C>> getParentComponents,

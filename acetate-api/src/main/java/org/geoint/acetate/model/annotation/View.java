@@ -21,5 +21,5 @@ public @interface View {
      *
      * @return component-specific configuration
      */
-    ComponentView[] components() default {};
+    Component[] components() default {};
 }

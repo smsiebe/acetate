@@ -1,7 +1,5 @@
 package org.geoint.acetate.model.attribute;
 
-import org.geoint.acetate.model.InheritableComponent;
-
 /**
  * Marker interface defining an attribute of a data model component.
  *
@@ -22,6 +20,6 @@ import org.geoint.acetate.model.InheritableComponent;
  * </ul>
  *
  */
-public interface ComponentAttribute extends InheritableComponent {
+public interface ComponentAttribute {
 
 }
