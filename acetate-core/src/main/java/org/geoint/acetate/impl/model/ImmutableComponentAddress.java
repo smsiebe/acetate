@@ -27,21 +27,26 @@ public abstract class ImmutableComponentAddress
         return new ImmutableBaseObjectAddress(domainName, domainVersion,
                 componentName);
     }
-    
+
     @Override
     public String asString() {
-        
+
     }
 
     public abstract class ImmutableObjectAddress extends ImmutableComponentAddress
             implements ObjectAddress {
 
-        private final List<ImmutableCompositeAddress> components;
-        public abstract ImmutableCompositeAddress composite(String localName);
+        public ImmutableCompositeAddress composite(String localName) {
+            return new ImmutableCompositeAddress(this, localName);
+        }
 
-        public abstract ImmutableCompositeAddress aggregate(String localName);
+        public ImmutableAggregateAddress aggregate(String localName) {
+            return new ImmutableAggregateAddress(this, localName);
+        }
 
-        public abstract OperationAddress operation(String localName);
+        public ImmutableOperationAddress operation(String localName) {
+            return new ImmutableOperationAddress(this, localName);
+        }
 
     }
 
@@ -82,73 +87,87 @@ public abstract class ImmutableComponentAddress
             return objectName;
         }
 
-
     }
 
     public static class ImmutableCompositeAddress
             extends ImmutableObjectAddress implements CompositeAddress {
+
+        private final ImmutableObjectAddress containerAddress;
+        private final String localName;
+
+        private ImmutableCompositeAddress(
+                ImmutableObjectAddress containerAddress,
+                String localName) {
+            this.containerAddress = containerAddress;
+            this.localName = localName;
+        }
+
+        @Override
+        public String getLocalName() {
+            return localName;
+        }
+
+        @Override
+        public String getObjectName() {
+            return localName;
+        }
+
+        @Override
+        public String getDomainName() {
+            return containerAddress.getDomainName();
+        }
+
+        @Override
+        public long getDomainVersion() {
+            return containerAddress.getDomainVersion();
+        }
 
     }
 
     public static class ImmutableOperationAddress
             extends ImmutableCompositeAddress implements OperationAddress {
 
-        public ObjectAddress parameter(String paramName) {
-
+        private ImmutableOperationAddress(
+                ImmutableBaseObjectAddress containerAddress,
+                String localName) {
+            super(containerAddress, localName);
         }
 
-        public ObjectAddress returned() {
+        public ImmutableCompositeAddress parameter(String paramName) {
+            return new ImmutableCompositeAddress(this, paramName);
+        }
+
+        public ImmutableEventAddress returns() {
 
         }
 
     }
 
-    private static class ImmutableCompositeAddress
-            extends ImmutableComponentAddress {
+    public static class ImmutableEventAddress extends ImmutableObjectAddress {
 
-        private final ImmutableComponentAddress parent;
-    }
+        private final ImmutableOperationAddress operationAddress;
+        private final String eventName;
 
-    private static class ImmutableAggregateAddress
-            extends ImmutableCompositeAddress {
-
-    }
-
-    private static class ImmutableOperationAddress
-            extends ImmutableCompositeAddress {
-
-    }
-
-    @Override
-    public String asString() {
-        return address;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 41 * hash + Objects.hashCode(this.domainName);
-        hash = 41 * hash + (int) (this.domainVersion ^ (this.domainVersion >>> 32));
-        hash = 41 * hash + Objects.hashCode(this.address);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
+        public ImmutableEventAddress(ImmutableOperationAddress operationAddress,
+                String eventName) {
+            this.operationAddress = operationAddress;
+            this.eventName = eventName;
         }
-        if (getClass() != obj.getClass()) {
-            return false;
+
+        @Override
+        public String getDomainName() {
+            return operationAddress.getDomainName();
         }
-        final ImmutableComponentAddress other = (ImmutableComponentAddress) obj;
-        if (!Objects.equals(this.domainName, other.domainName)) {
-            return false;
+
+        @Override
+        public long getDomainVersion() {
+            return operationAddress.getDomainVersion();
         }
-        if (this.domainVersion != other.domainVersion) {
-            return false;
+
+        @Override
+        public String getObjectName() {
+            return eventName;
         }
-        return Objects.equals(this.address, other.address);
 
     }
 
@@ -185,76 +204,6 @@ public abstract class ImmutableComponentAddress
 
         public String getSeparator() {
             return separator;
-        }
-
-    }
-
-    public static class ImmutableObjectAddress extends ImmutableObjectAddress {
-
-        private ImmutableObjectAddress(ImmutableComponentAddress baseContext,
-                ComponentType delimiter) {
-            super(baseContext, delimiter);
-        }
-
-        private ImmutableObjectAddress(String domainName, long domainVersion,
-                String objectName) {
-            super(domainName, domainVersion, objectName);
-        }
-
-        private ImmutableObjectAddress(ImmutableComponentAddress baseContext, String contextName) {
-            super(baseContext, ComponentType.OBJECT_COMPOSITE, contextName);
-        }
-
-        private ImmutableObjectAddress(ImmutableComponentAddress baseContext,
-                ComponentType delimiter, String contextName) {
-            super(baseContext, delimiter, contextName);
-        }
-
-        /**
-         * Creates a new context path for a composite object.
-         *
-         * @param compositeLocalName local composite name
-         * @return component context path for a component in a composite context
-         */
-        public ImmutableComponentAddress composite(String compositeLocalName) {
-            return new ImmutableComponentAddress(this, compositeLocalName);
-        }
-
-        /**
-         * Creates a new context path for an aggregate object.
-         *
-         * @param aggregateLocalName local composite name
-         * @return component context path for a component in a composite context
-         */
-        public ImmutableComponentAddress aggregate(String aggregateLocalName) {
-            return new ImmutableComponentAddress(this, aggregateLocalName);
-        }
-
-        /**
-         * Creates a new context path for an operation of this component.
-         *
-         * @param operationName
-         * @return context path of the component operation
-         */
-        public ImmutableOperationPath operation(String operationName) {
-            return new ImmutableOperationPath(this, operationName);
-        }
-    }
-
-    public static class ImmutableOperationPath extends ImmutableComponentAddress {
-
-        private ImmutableOperationPath(ImmutableComponentAddress baseContext,
-                String contextName) {
-            super(baseContext, ComponentType.OPERATION, contextName);
-        }
-
-        public ImmutableComponentAddress parameter(String paramName) {
-            return new ImmutableComponentAddress(this,
-                    ComponentType.OPERATION_PARAM, paramName);
-        }
-
-        public ImmutableComponentAddress returned() {
-            return new ImmutableComponentAddress(this, ComponentType.OPERATION_RETURN);
         }
 
     }
