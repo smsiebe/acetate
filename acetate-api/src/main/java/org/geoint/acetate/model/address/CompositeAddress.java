@@ -19,10 +19,4 @@ public interface CompositeAddress extends ComponentAddress, ObjectAddress {
      */
     String getLocalName();
 
-    /**
-     * Returns the address of the object which contains this composite object.
-     *
-     * @return address of the object which contains this composite object
-     */
-    ObjectAddress getContainerAddress();
 }
