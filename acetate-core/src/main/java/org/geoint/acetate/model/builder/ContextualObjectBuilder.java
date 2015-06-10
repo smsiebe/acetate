@@ -1,7 +1,7 @@
 package org.geoint.acetate.model.builder;
 
 import java.util.Set;
-import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableObjectPath;
+import org.geoint.acetate.impl.model.ImmutableComponentAddress.ImmutableComponentAddress;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.DomainObject;
 
@@ -12,7 +12,7 @@ import org.geoint.acetate.model.DomainObject;
 public class ContextualObjectBuilder<T>
         extends AbstractContextualObjectBuilder<T, ContextualObjectBuilder<T>> {
 
-    public ContextualObjectBuilder(ImmutableObjectPath path,
+    public ContextualObjectBuilder(ImmutableComponentAddress path,
             String baseDomainName, boolean isCollection) {
         super(path, baseDomainName, isCollection);
     }

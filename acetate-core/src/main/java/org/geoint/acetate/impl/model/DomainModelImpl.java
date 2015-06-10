@@ -2,7 +2,7 @@ package org.geoint.acetate.impl.model;
 
 import java.util.Optional;
 import org.geoint.acetate.model.DomainModel;
-import org.geoint.acetate.model.ObjectRegistry;
+import gov.ic.geoint.acetate.ObjectRegistry;
 
 /**
  * The default domain model has fixed domain model (components of the core

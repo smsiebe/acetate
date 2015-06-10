@@ -3,7 +3,7 @@ package org.geoint.acetate.impl.model;
 import java.util.Collection;
 import org.geoint.acetate.data.transform.BinaryCodec;
 import org.geoint.acetate.data.transform.CharacterCodec;
-import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableObjectPath;
+import org.geoint.acetate.impl.model.ImmutableComponentAddress.ImmutableComponentAddress;
 import org.geoint.acetate.model.DomainComponent;
 import org.geoint.acetate.model.DomainEntityObject;
 import org.geoint.acetate.model.DomainModel;
@@ -20,18 +20,18 @@ import org.geoint.acetate.model.constraint.ComponentConstraint;
  *
  * @param <T> java object type this model defines
  */
-public class ImmutableDomainEntity<T> extends ImmutableDomainObject<T>
+public class ImmutableEntity<T> extends ImmutableDomainObject<T>
         implements DomainEntityObject<T> {
 
     private final DomainObject<String> entityGuidComponent;
     private final DomainObject<Long> entityVersionComponent;
 
-    public ImmutableDomainEntity(DomainModel model,
-            ImmutableObjectPath path, String name, String description,
+    public ImmutableEntity(DomainModel model,
+            ImmutableComponentAddress path, String name, String description,
             Collection<String> parentObjectNames,
-            Collection<ImmutableDomainOperation<?>> operations,
-            Collection<ImmutableDomainComposite<?>> composites,
-            Collection<ImmutableDomainAggregate<?>> aggregates,
+            Collection<ImmutableOperation<?>> operations,
+            Collection<ImmutableCompositeObject<?>> composites,
+            Collection<ImmutableAggregate<?>> aggregates,
             Collection<ComponentConstraint> constraints,
             Collection<ComponentAttribute> attributes,
             BinaryCodec<T> binaryCodec,
@@ -42,9 +42,9 @@ public class ImmutableDomainEntity<T> extends ImmutableDomainObject<T>
                 charCodec);
 
         //cache the entity GUID and version components
-        ImmutableDomainComposite<String> guid = null;
-        ImmutableDomainComposite<Long> version = null;
-        for (ImmutableDomainComposite c : composites) {
+        ImmutableCompositeObject<String> guid = null;
+        ImmutableCompositeObject<Long> version = null;
+        for (ImmutableCompositeObject c : composites) {
             Collection<ComponentAttribute> cca = c.getAttributes();
             for (ComponentAttribute ca : cca) {
                 if (ca.getClass().equals(EntityGuid.class)) {

@@ -5,14 +5,14 @@ package org.geoint.acetate.model;
  * which my be used in the composition of
  * {@link EntityObjectModel full-fledged domain model objects}.
  * <p>
- * By comparison, a composite object model does not have any identity itself,
- * but rather encapsulates domain-significant state and operations. Composite
- * objects, therefore, can be though of as not maintain their own state or
- * executing their own behavior, but that on behalf of the entity object which
- * contains it. This means that a Composite Object can neither be used as an
- * Entity Object or referred to as an Aggregate Object within the model or
- * applications using this model. The implications of this must be defined at
- * the point of use of an DomainObject.
+ * In comparison to an aggregate object, a composite object model does not have
+ * any identity itself, but rather encapsulates domain-significant state and
+ * operations. Composite objects, therefore, can be though of as not maintain
+ * their own state or executing their own behavior, but that on behalf of the
+ * entity object which contains it. This means that a Composite Object can
+ * neither be used as an Entity Object or referred to as an Aggregate Object
+ * within the model or applications using this model. The implications of this
+ * must be defined at the point of use of an DomainObject.
  * <p>
  * From a model perspective, a Composite Object essentially an extension of the
  * EntityObject (or AggregateObject) which contains it. Operations and
@@ -26,9 +26,9 @@ package org.geoint.acetate.model;
  * Typically, Composite Objects will only be used by Entity Objects within the
  * same domain model, though this is not enforced by default.
  *
- * @param <T>
+ * @param <T> java data type of this domain object
  */
-public interface DomainCompositeObject<T> extends DomainObject<T>, 
-        CompositeComponent {
+public interface DomainCompositeObject<T> extends DomainObject<T>,
+        CompositeComponent<T> {
 
 }

@@ -1,7 +1,7 @@
 package org.geoint.acetate.model.builder;
 
 import java.util.Set;
-import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableObjectPath;
+import org.geoint.acetate.impl.model.ImmutableComponentAddress.ImmutableComponentAddress;
 import org.geoint.acetate.model.DomainAggregateObject;
 import org.geoint.acetate.model.DomainModel;
 
@@ -16,7 +16,7 @@ public class DomainAggregateObjectBuilder<T>
     private String relOptComponent;
     private String relStateComponent;
 
-    public DomainAggregateObjectBuilder(ImmutableObjectPath path,
+    public DomainAggregateObjectBuilder(ImmutableComponentAddress path,
             String baseComponentName, boolean isCollection) {
         super(path, baseComponentName, isCollection);
     }

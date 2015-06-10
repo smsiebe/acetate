@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.geoint.acetate.data.transform.BinaryCodec;
 import org.geoint.acetate.data.transform.CharacterCodec;
-import org.geoint.acetate.model.ComponentAddress;
+import org.geoint.acetate.model.address.ComponentAddress;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.DomainObject;
 import org.geoint.acetate.model.attribute.ComponentAttribute;

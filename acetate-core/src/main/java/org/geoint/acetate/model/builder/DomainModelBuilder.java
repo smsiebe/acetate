@@ -14,16 +14,16 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.geoint.acetate.impl.model.DomainModelImpl;
 import org.geoint.acetate.impl.model.DomainUtil;
-import org.geoint.acetate.impl.model.ImmutableContextPath;
+import org.geoint.acetate.impl.model.ImmutableComponentAddress;
 import org.geoint.acetate.impl.transform.DefaultBooleanBinaryCodec;
 import org.geoint.acetate.impl.transform.DefaultIntegerBinaryCodec;
 import org.geoint.acetate.impl.transform.DefaultStringBinaryCodec;
-import org.geoint.acetate.model.ComponentAddress;
+import org.geoint.acetate.model.address.ComponentAddress;
 import org.geoint.acetate.model.DomainObject;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.ModelException;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
-import org.geoint.acetate.model.ObjectRegistry;
+import gov.ic.geoint.acetate.ObjectRegistry;
 
 /**
  * API to programmatically build a DomainModel.
@@ -111,7 +111,7 @@ public class DomainModelBuilder {
         if (components.containsKey(objectName)) {
             components.put(objectName,
                     new DomainObjectBuilder(
-                            ImmutableContextPath.basePath(name,
+                            ImmutableComponentAddress.basePath(name,
                                     version, objectName)
                     ));
         }

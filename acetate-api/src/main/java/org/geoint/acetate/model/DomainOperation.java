@@ -7,10 +7,17 @@ import org.geoint.acetate.model.event.DomainEntityEvent;
  * An operation on a Entity Object which takes zero or more operation parameters
  * and returns a DomainEntityEvent on success or throws an Exception on failure.
  *
- * @param <T> return type of the operation
+ * @param <R> return type of the operation
  */
-public interface DomainOperation<T> extends DomainComponent<T>,
-        CompositeComponent {
+public interface DomainOperation<R> extends CompositeComponent<R> {
+
+    /**
+     * The name of the operation, which must be unique to the container the
+     * operation is defined.
+     *
+     * @return operation name
+     */
+    String getOperationName();
 
     /**
      * Domain mode of the returned type.
@@ -18,13 +25,13 @@ public interface DomainOperation<T> extends DomainComponent<T>,
      * @return model of the returned type from the method or null if returns
      * void
      */
-    DomainEntityEvent<T, ?> getReturnModel();
+    DomainEntityEvent<R, ?> getReturnModel();
 
     /**
      * Domain models of the operation parameters, in declaration order.
      *
-     * @return models of the operation parameters; empty array if no parameters
-     * are required for the operation
+     * @return models of the operation parameters in declaration order; empty
+     * collection if no parameters are required for the operation
      */
     Collection<DomainObject<?>> getParameterModels();
 

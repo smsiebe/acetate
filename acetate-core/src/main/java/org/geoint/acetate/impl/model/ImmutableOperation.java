@@ -3,7 +3,7 @@ package org.geoint.acetate.impl.model;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
-import org.geoint.acetate.model.ComponentAddress;
+import org.geoint.acetate.model.address.ComponentAddress;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.DomainObject;
 import org.geoint.acetate.model.DomainOperation;
@@ -11,27 +11,29 @@ import org.geoint.acetate.model.attribute.ComponentAttribute;
 import org.geoint.acetate.model.event.DomainEntityEvent;
 
 /**
+ * Business operation of the domain model.
  *
- * @param <R> operation retrun type
+ * @param <R> operation return type
  */
-public class ImmutableDomainOperation<R> implements DomainOperation<R> {
+public class ImmutableOperation<R> implements DomainOperation<R> {
 
     protected final DomainModel model;
-    protected final ComponentAddress path;
+    protected final ImmutableComponentAddress address;
     protected final String operationName;
     protected final Optional<String> description;
     protected final DomainEntityEvent<R, ?> returned;
     protected final Collection<DomainObject<?>> params;
     protected final Collection<? extends ComponentAttribute> attributes;
 
-    ImmutableDomainOperation(DomainModel model, ComponentAddress path,
+    ImmutableOperation(DomainModel model, 
+            ImmutableComponentAddress path,
             String name,
             Optional<String> description,
             DomainEntityEvent<R, ?> returned,
             Collection<DomainObject<?>> params,
             Collection<? extends ComponentAttribute> attributes) {
         this.model = model;
-        this.path = path;
+        this.address = path;
         this.operationName = name;
         this.description = description;
         this.returned = returned;
@@ -45,12 +47,17 @@ public class ImmutableDomainOperation<R> implements DomainOperation<R> {
     }
 
     @Override
-    public ComponentAddress getPath() {
-        return path;
+    public DomainObject<?> getDeclaringComponent() {
+
     }
 
     @Override
-    public String getName() {
+    public ComponentAddress getAddress() {
+        return address;
+    }
+
+    @Override
+    public String getLocalName() {
         return operationName;
     }
 
@@ -75,24 +82,14 @@ public class ImmutableDomainOperation<R> implements DomainOperation<R> {
     }
 
     @Override
-    public DomainObject<?> getComposite() {
-
-    }
-
-    @Override
-    public String getLocalName() {
-
-    }
-
-    @Override
     public String toString() {
-        return path.asString();
+        return address.asString();
     }
 
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 79 * hash + Objects.hashCode(this.path);
+        hash = 79 * hash + Objects.hashCode(this.address);
         return hash;
     }
 
@@ -104,11 +101,12 @@ public class ImmutableDomainOperation<R> implements DomainOperation<R> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ImmutableDomainOperation other = (ImmutableDomainOperation) obj;
-        if (!Objects.equals(this.path, other.path)) {
+        final ImmutableOperation other = (ImmutableOperation) obj;
+        if (!Objects.equals(this.address, other.address)) {
             return false;
         }
         return true;
     }
+
 
 }

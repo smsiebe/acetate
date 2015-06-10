@@ -2,8 +2,11 @@ package org.geoint.acetate.model;
 
 import java.lang.annotation.Inherited;
 import java.util.Collection;
+import java.util.Set;
 import org.geoint.acetate.data.transform.BinaryCodec;
 import org.geoint.acetate.data.transform.CharacterCodec;
+import org.geoint.acetate.model.attribute.Attributable;
+import org.geoint.acetate.model.attribute.Composited;
 import org.geoint.acetate.model.constraint.Constrained;
 
 /**
@@ -15,17 +18,26 @@ import org.geoint.acetate.model.constraint.Constrained;
  * @see DomainAggregateObject
  * @param <T> associated java data type
  */
-public interface DomainObject<T> extends InheritableComponent<T>, Constrained {
+public interface DomainObject<T> extends DomainComponent<T>,
+        Constrained, Attributable {
 
     /**
-     * Domain model unique name of domain object model.
+     * Domain model unique display name of domain object.
      *
      * @return domain model unique component name
      */
     String getObjectName();
 
     /**
-     * Returns all model operations, including all those defined natively on
+     * Domain object model(s) this object inherits from, potentially inheriting
+     * components.
+     *
+     * @return domain component from which this component is inherited
+     */
+    Set<DomainObject<? super T>> getParents();
+
+    /**
+     * Returns all object operations, including all those defined natively on
      * this object model, inherited from any parent object model, as well as any
      * defined by any composite model.
      *
@@ -39,7 +51,7 @@ public interface DomainObject<T> extends InheritableComponent<T>, Constrained {
      * @return component operations or empty collection if no behavior is found
      * on the component
      */
-    Collection<DomainOperation<?>> getOperations();
+    Collection<? extends DomainOperation<?>> getOperations();
 
     /**
      * Aggregate objects which are defined natively, inheritance, or by a
@@ -56,7 +68,7 @@ public interface DomainObject<T> extends InheritableComponent<T>, Constrained {
      *
      * @return all aggregate objects
      */
-    Collection<DomainAggregateObject<?>> getAggregates();
+    Collection<? extends DomainAggregateObject<?>> getAggregates();
 
     /**
      * Composites objects from which this object model is comprised.
@@ -80,7 +92,7 @@ public interface DomainObject<T> extends InheritableComponent<T>, Constrained {
      * @return collection of composite objects defined natively, through
      * composites, or inheritance
      */
-    Collection<DomainCompositeObject<?>> getComposites();
+    Collection<? extends CompositeComponent<?>> getComposites();
 
     /**
      * Default character codec to use for this domain object.

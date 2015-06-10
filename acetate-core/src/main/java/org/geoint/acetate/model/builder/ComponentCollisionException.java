@@ -1,6 +1,6 @@
 package org.geoint.acetate.model.builder;
 
-import org.geoint.acetate.model.ComponentAddress;
+import org.geoint.acetate.model.address.ComponentAddress;
 import org.geoint.acetate.model.ModelException;
 
 /**

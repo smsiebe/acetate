@@ -22,7 +22,7 @@ public interface DomainEntityEvent<T, E> extends DomainComponent<T> {
      * @return the aggregate/composite domain object which is the globally
      * unique identifier of the entity
      */
-    DomainObject<String> getGuidComponent();
+    DomainObject<String> getEventGuidComponent();
 
     /**
      * Entity event component which defines the time of the event.
@@ -53,6 +53,6 @@ public interface DomainEntityEvent<T, E> extends DomainComponent<T> {
      *
      * @return domain entity object model
      */
-    DomainEntityObject<E> getDomainEntityModel();
+    DomainEntityObject<E> getEntityModel();
 
 }

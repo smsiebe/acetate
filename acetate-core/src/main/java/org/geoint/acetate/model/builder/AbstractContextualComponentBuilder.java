@@ -2,7 +2,7 @@ package org.geoint.acetate.model.builder;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.geoint.acetate.impl.model.ImmutableContextPath;
+import org.geoint.acetate.impl.model.ImmutableComponentAddress;
 import org.geoint.acetate.model.DomainComponent;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
@@ -17,14 +17,14 @@ import org.geoint.acetate.model.constraint.ComponentConstraint;
 public abstract class AbstractContextualComponentBuilder<T, B extends AbstractContextualComponentBuilder>
         implements DomainObjectDependentBuilder {
 
-    protected final ImmutableContextPath path;
+    protected final ImmutableComponentAddress path;
     protected String description;
     protected Set<ComponentAttribute> attributes = new HashSet<>();
     protected Set<ComponentConstraint> constraints = new HashSet<>();
     protected boolean inheritAttributes;
     protected boolean inheritConstraints;
 
-    public AbstractContextualComponentBuilder(ImmutableContextPath path) {
+    public AbstractContextualComponentBuilder(ImmutableComponentAddress path) {
         this.path = path;
     }
 
@@ -100,7 +100,7 @@ public abstract class AbstractContextualComponentBuilder<T, B extends AbstractCo
         return self();
     }
 
-    protected ImmutableContextPath path() {
+    protected ImmutableComponentAddress path() {
         return path;
     }
 

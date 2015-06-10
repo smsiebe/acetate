@@ -2,7 +2,7 @@ package org.geoint.acetate.model.builder;
 
 import org.geoint.acetate.data.transform.BinaryCodec;
 import org.geoint.acetate.data.transform.CharacterCodec;
-import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableObjectPath;
+import org.geoint.acetate.impl.model.ImmutableComponentAddress.ImmutableComponentAddress;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.DomainObject;
 
@@ -19,7 +19,7 @@ public abstract class AbstractContextualObjectBuilder<T, B extends AbstractConte
     protected BinaryCodec<T> binaryCodec;
     protected CharacterCodec<T> charCodec;
 
-    public AbstractContextualObjectBuilder(ImmutableObjectPath path,
+    public AbstractContextualObjectBuilder(ImmutableComponentAddress path,
             String baseComponentName, boolean isCollection) {
         super(path);
         this.baseComponentName = baseComponentName;

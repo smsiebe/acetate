@@ -1,10 +1,15 @@
-package org.geoint.acetate.model;
+package org.geoint.acetate.model.address;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 
 /**
- * A domain model component address uniquely identifies a model component. 
+ * A component address uniquely identifies a model component with a domain
+ * model.
+ *
+ * @see ObjectAddress
+ * @see CompositeAddress
+ * @see OperationAddress
  *
  */
 public interface ComponentAddress {
@@ -22,13 +27,6 @@ public interface ComponentAddress {
      * @return Domain version of the component.
      */
     long getDomainVersion();
-
-    /**
-     * Contextually-unique component name.
-     *
-     * @return Contextually-unique component name.
-     */
-    String getComponentName();
 
     /**
      * Context path as a URI-formatted String.

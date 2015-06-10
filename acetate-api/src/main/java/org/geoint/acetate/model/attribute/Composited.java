@@ -16,13 +16,19 @@ public final class Composited implements ComponentAttribute {
      *
      * @return inherited (parent) model
      */
-    private final DomainObject<?> inheritedModel;
+    private final DomainObject<?> compositeModel;
 
     public Composited(DomainObject<?> inheritedModel) {
-        this.inheritedModel = inheritedModel;
+        this.compositeModel = inheritedModel;
     }
 
-    public DomainObject<?> getInheritedModel() {
-        return inheritedModel;
+    /**
+     * Return the object model that declared the component.
+     *
+     * @return the object model of the composite that declared the component
+     * this attribute decorates
+     */
+    public DomainObject<?> getCompositeModel() {
+        return compositeModel;
     }
 }

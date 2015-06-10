@@ -3,7 +3,7 @@ package org.geoint.acetate.model.builder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableObjectPath;
+import org.geoint.acetate.impl.model.ImmutableComponentAddress.ImmutableComponentAddress;
 import org.geoint.acetate.model.DomainComponent;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.event.DomainEntityEvent;
@@ -25,7 +25,7 @@ public class DomainEntityEventBuilder<T, E>
     private final Map<String, DomainCompositeObjectBuilder<?>> composites
             = new HashMap<>();
 
-    public DomainEntityEventBuilder(ImmutableObjectPath path,
+    public DomainEntityEventBuilder(ImmutableComponentAddress path,
             String eventDomainObjectName, String entityDomainObjectName) {
         super(path);
         this.eventDomainObjectName = eventDomainObjectName;
@@ -81,7 +81,7 @@ public class DomainEntityEventBuilder<T, E>
             return composites.get(localName);
         }
 
-        final ImmutableObjectPath cp = path().composite(localName);
+        final ImmutableComponentAddress cp = path().composite(localName);
         DomainCompositeObjectBuilder cb
                 = new DomainCompositeObjectBuilder(cp, objectName, isCollection);
         composites.put(localName, cb);
@@ -89,8 +89,8 @@ public class DomainEntityEventBuilder<T, E>
     }
 
     @Override
-    protected ImmutableObjectPath path() {
-        return (ImmutableObjectPath) super.path();
+    protected ImmutableComponentAddress path() {
+        return (ImmutableComponentAddress) super.path();
     }
 
     @Override

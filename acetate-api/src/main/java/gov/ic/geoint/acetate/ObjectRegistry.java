@@ -1,7 +1,10 @@
-package org.geoint.acetate.model;
+package gov.ic.geoint.acetate;
 
 import java.util.Collection;
 import java.util.Optional;
+import org.geoint.acetate.model.address.ComponentAddress;
+import org.geoint.acetate.model.DomainComponent;
+import org.geoint.acetate.model.DomainObject;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
 
 /**
@@ -18,12 +21,13 @@ public interface ObjectRegistry {
     Collection<DomainObject<?>> findAll();
 
     /**
-     * Returns a component by the requested domain-unique component name.
+     * Returns a component model by its unique domain address.
      *
-     * @param componentName case-insensitive component name
-     * @return component model, if found
+     * @param address domain model component address
+     * @return component model or null if the address does not resolve to a
+     * component
      */
-    Optional<DomainObject<?>> findByName(String componentName);
+    Optional<DomainComponent<?>> findByAddress(ComponentAddress address);
 
     /**
      * Returns an immutable collection of domain model components which are

@@ -3,29 +3,22 @@ package org.geoint.acetate.impl.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.geoint.acetate.data.transform.BinaryCodec;
 import org.geoint.acetate.data.transform.CharacterCodec;
-import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableObjectPath;
 import org.geoint.acetate.model.CompositeComponent;
-import org.geoint.acetate.model.DomainAggregateObject;
-import org.geoint.acetate.model.DomainCompositeObject;
 import org.geoint.acetate.model.DomainModel;
-import org.geoint.acetate.model.ComponentAddress;
+import org.geoint.acetate.model.address.ComponentAddress;
 import org.geoint.acetate.model.DomainObject;
-import org.geoint.acetate.model.DomainOperation;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
 import org.geoint.acetate.model.builder.ComponentCollisionException;
 import org.geoint.acetate.model.builder.IncompleteModelException;
 import org.geoint.acetate.model.constraint.ComponentConstraint;
+import org.geoint.acetate.model.util.ComponentFilters;
 
 /**
  * Base domain model object.
@@ -37,13 +30,13 @@ import org.geoint.acetate.model.constraint.ComponentConstraint;
 public abstract class ImmutableDomainObject<T> implements DomainObject<T> {
 
     private final DomainModel model;
-    private final ImmutableObjectPath path;
+    private final ImmutableComponentAddress address;
     private final String domainObjectName;
-    private final Set<String> parentObjectNames;
+    private final Set<DomainObject<? super T>> parents;
     private final Optional<String> description;
-    private final Collection<DomainOperation<?>> operations;
-    private final Collection<DomainCompositeObject<?>> composites;
-    private final Collection<DomainAggregateObject<?>> aggregates;
+    private final Collection<ImmutableOperation<?>> operations;
+    private final Collection<ImmutableCompositeObject<?>> composites;
+    private final Collection<ImmutableAggregate<?>> aggregates;
     private final Collection<ComponentConstraint> constraints;
     private final Collection<ComponentAttribute> attributes;
     private final BinaryCodec<T> binaryCodec;
@@ -61,146 +54,90 @@ public abstract class ImmutableDomainObject<T> implements DomainObject<T> {
      * This constructor <b>does not</b> perform any composite/inheritance
      * roll-up. Use builders for this.
      *
-     * @param model
-     * @param path
-     * @param name
-     * @param description
-     * @param parentObjectNames
-     * @param operations including native, inherited, composite
-     * @param composites including native, inherited, composite
-     * @param aggregates including native, inherited, composite
-     * @param constraints
-     * @param attributes
+     * @param model domain model this object belongs to
+     * @param address domain model component contextual address for the object
+     * @param name required domain-unique object display name
+     * @param description optional object description (may be null)
+     * @param parentObjectNames explictly defined object inheritance
+     * @param components all object components
+     * @param constraints constraints placed on this object
+     * @param attributes attributes defined for this object
      * @param binaryCodec
      * @param charCodec
      * @throws IncompleteModelException
      * @throws ComponentCollisionException
      */
     protected ImmutableDomainObject(DomainModel model,
-            ImmutableObjectPath path,
+            ImmutableComponentAddress address,
             String name,
             String description,
             Collection<String> parentObjectNames,
-            Collection<ImmutableDomainOperation<?>> operations, //includes inherited, composite
-            Collection<ImmutableDomainComposite<?>> composites, //includes inherited, composite
-            Collection<ImmutableDomainAggregate<?>> aggregates, //includes inherited, composite
+            Collection<CompositeComponent> components,
             Collection<ComponentConstraint> constraints,
             Collection<ComponentAttribute> attributes,
             BinaryCodec<T> binaryCodec,
             CharacterCodec<T> charCodec)
             throws IncompleteModelException, ComponentCollisionException {
         this.model = model;
-        this.path = path;
+        this.address = address;
         this.domainObjectName = name;
         this.description = Optional.ofNullable(description);
-        this.parentObjectNames
-                = Collections.unmodifiableSet(new HashSet<>(parentObjectNames));
-        this.operations
-                = Collections.unmodifiableCollection(new ArrayList<>(operations));
-        this.composites
-                = Collections.unmodifiableCollection(new ArrayList<>(composites));
-        this.aggregates
-                = Collections.unmodifiableCollection(new ArrayList<>(aggregates));
-        this.constraints
-                = Collections.unmodifiableCollection(new ArrayList<>(constraints));
-        this.attributes
-                = Collections.unmodifiableCollection(new ArrayList<>(attributes));
+
+        Set<DomainObject<? super T>> parentObjects = new HashSet<>();
+        Collection<ImmutableOperation<?>> ops = new HashSet<>();
+        Collection<ImmutableCompositeObject<?>> comps = new HashSet<>();
+        Collection<ImmutableAggregate<?>> aggs = new HashSet<>();
+
+        //add explictly defined parents
+        parentObjectNames.stream()
+                .map((pn) -> model.getComponents().findByName(pn))
+                .filter((o) -> o.isPresent())
+                .map((p) -> (DomainObject<? super T>) p.get())
+                .forEach((p) -> {
+                    logger.log(Level.FINE, () -> "Domain Object '"
+                            + address.asString()
+                            + "' inherits from '"
+                            + p.getObjectName());
+                    parentObjects.add(p);
+                });
+
+        for (CompositeComponent c : components) {
+
+            if (ComponentFilters.isInherited(c)) {
+                //add implict inheritence
+
+                if (parentObjects.add(c.getDeclaringComponent())) {
+                    logger.log(Level.FINE, () -> "Object '"
+                            + address.asString() + "' inherits from '"
+                            + c.getDeclaringComponent().getAddress().asString());
+                }
+            }
+
+            if (c instanceof ImmutableOperation) {
+                ops.add((ImmutableOperation<?>) c);
+            } else if (c instanceof ImmutableAggregate) {
+                aggs.add((ImmutableAggregate<?>) c);
+            } else if (c instanceof ImmutableCompositeObject) {
+                comps.add((ImmutableCompositeObject<?>) c);
+            } else {
+                throw new IncompleteModelException(model, "Unknown model component "
+                        + c.getClass().getName());
+            }
+        }
+
+        this.parents = Collections.unmodifiableSet(parentObjects);
+        this.operations = Collections.unmodifiableCollection(ops);
+        this.composites = Collections.unmodifiableCollection(comps);
+        this.aggregates = Collections.unmodifiableCollection(aggs);
+        this.constraints = Collections.unmodifiableCollection(new ArrayList<>(constraints));
+        this.attributes = Collections.unmodifiableCollection(new ArrayList<>(attributes));
         this.binaryCodec = binaryCodec;
         this.charCodec = charCodec;
     }
 
-    protected void inherit() {
-//         //inherit components and inheritable traits from each parent domain 
-//        //object.  parent domain objects do this themselves, exposing the results
-//        //through their interface, handling the recursion requirement
-//        final Set<String> localNames = new HashSet<>(); //ensure no collisions across component types
-//        for (String pn : parentComponents) {
-//            logger.log(Level.FINEST, "DomainObject ''{0}'' inheriting from "
-//                    + "parent ''{1}''", new Object[]{path.asString(), pn});
-//
-//            Optional<DomainObject<?>> optionalParentObject
-//                    = model.getComponents().findByName(pn);
-//            if (!optionalParentObject.isPresent()) {
-//                throw new IncompleteModelException(model, "Unable to retrieve "
-//                        + "parent object model '" + pn + "' from the domain "
-//                        + "registry.");
-//            }
-//            final DomainObject parent = optionalParentObject.get();
-//
-//            //for each parent, inherit any operations, composites, aggregates
-//            //and possibly constraints and attributes
-//            Map<String, DomainOperation<?>> combinedOps
-//                    = inherit(path, operations, parent, DomainObject::getOperations,
-//                            (basePath, inherited) -> {
-//                                return new DomainOperationBuilder(
-//                                        basePath.operation(inherited.getLocalName()),
-//                                        inherited)
-//                                .attribute(new Inherited(inherited.getComposite().getObjectName()))
-//                                .build(model);
-//                            });
-//        }
-////
-////        this.composites = inherit(composites, DomainObject::getComposites, collisionFilter);
-////        this.aggregates = inherit(aggregates, DomainObject::getAggregates, collisionFilter);
-////        //check if there were any composable local name collisions
-////
-////        //inhert data attributes and constraints
-////        this.constraints = inherit(constraints, DomainObject::getConstraints);
-////        this.attributes = inherit(attributes, DomainObject::getAttributes);
-
-    }
-
-    private <C extends CompositeComponent> Map<String, C> inherit(ImmutableObjectPath basePath,
-            Collection<C> localComponents, DomainObject parent,
-            //            Collection<C> parentComponents,
-            Function<DomainObject, Collection<C>> getParentComponents,
-            BiFunction<ImmutableObjectPath, C, C> createInherited)
-            throws ComponentCollisionException {
-
-        final Map<String, C> combinedComponents = new HashMap<>();
-
-        //add local components
-        for (final C lc : localComponents) {
-            final String ln = lc.getLocalName();
-            if (combinedComponents.containsKey(ln)) {
-                throw new ComponentCollisionException(basePath, "Object defines"
-                        + "two components with the same local name.");
-            }
-            combinedComponents.put(ln, lc);
-        }
-
-        //add any components which should be inherited
-        for (C pc : getParentComponents.apply(parent)) {
-
-            if (!pc.inherit()) {
-                continue;
-            }
-
-            final String pln = pc.getLocalName();
-            if (combinedComponents.containsKey(pln)) {
-                logger.log(Level.FINE, () -> "Parent '"
-                        + pc.getClass().getName() + "' component '"
-                        + pln + "' not added, local component overrides.");
-                continue;
-            }
-            C inheritedComponent = createInherited.apply(basePath, pc);
-            logger.log(Level.FINE, () -> "Domain Object '" + basePath.asString()
-                    + "' has inherited component '"
-                    + inheritedComponent.getLocalName());
-            combinedComponents.put(pln, inheritedComponent);
-        }
-
-        return combinedComponents;
-    }
-
     @Override
-    public ComponentAddress getPath() {
-        return path;
-    }
-
-    @Override
-    public Collection<String> getParentObjectNames() {
-        return parentObjectNames;
+    public ComponentAddress getAddress() {
+        return address;
     }
 
     @Override
@@ -214,17 +151,17 @@ public abstract class ImmutableDomainObject<T> implements DomainObject<T> {
     }
 
     @Override
-    public Collection<DomainOperation<?>> getOperations() {
+    public Collection<ImmutableOperation<?>> getOperations() {
         return operations;
     }
 
     @Override
-    public Collection<DomainAggregateObject<?>> getAggregates() {
+    public Collection<ImmutableAggregate<?>> getAggregates() {
         return aggregates;
     }
 
     @Override
-    public Collection<DomainCompositeObject<?>> getComposites() {
+    public Collection<ImmutableCompositeObject<?>> getComposites() {
         return composites;
     }
 
@@ -255,7 +192,7 @@ public abstract class ImmutableDomainObject<T> implements DomainObject<T> {
 
     @Override
     public String toString() {
-        return path.asString();
+        return address.asString();
     }
 
 }

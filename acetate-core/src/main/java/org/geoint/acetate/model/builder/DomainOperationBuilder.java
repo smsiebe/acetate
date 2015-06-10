@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableObjectPath;
-import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableOperationPath;
+import org.geoint.acetate.impl.model.ImmutableComponentAddress.ImmutableComponentAddress;
+import org.geoint.acetate.impl.model.ImmutableComponentAddress.ImmutableOperationPath;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.DomainOperation;
 import org.geoint.acetate.model.attribute.Inherited;
@@ -35,7 +35,7 @@ public class DomainOperationBuilder<R>
      * @return inherited instance
      */
     public static <R> DomainOperation<R> inherit(
-            ImmutableObjectPath compositePath,
+            ImmutableComponentAddress compositePath,
             DomainOperation<R> inherited) {
         DomainOperationBuilder<?> ob = new DomainOperationBuilder(
                 compositePath.operation(inherited.getLocalName()));
@@ -53,7 +53,7 @@ public class DomainOperationBuilder<R>
             return returned;
         }
 
-        ImmutableObjectPath rp = path().returned();
+        ImmutableComponentAddress rp = path().returned();
         returned = new ContextualEventBuilder(rp, objectName);
         return returned;
     }
@@ -64,7 +64,7 @@ public class DomainOperationBuilder<R>
             return params.get(paramName);
         }
 
-        final ImmutableObjectPath pp = path().parameter(paramName);
+        final ImmutableComponentAddress pp = path().parameter(paramName);
         ContextualObjectBuilder pb
                 = new ContextualObjectBuilder(pp, objectName, isCollection);
         params.put(paramName, pb);

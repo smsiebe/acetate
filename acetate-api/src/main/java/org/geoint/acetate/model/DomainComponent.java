@@ -1,5 +1,6 @@
 package org.geoint.acetate.model;
 
+import org.geoint.acetate.model.address.ComponentAddress;
 import java.util.Optional;
 import org.geoint.acetate.model.attribute.Attributable;
 
@@ -22,12 +23,11 @@ public interface DomainComponent<T> extends Attributable {
     DomainModel getDomainModel();
 
     /**
-     * Path of the domain model component within the context of the domain
-     * model.
+     * Unique component address within the domain model.
      *
-     * @return components contextual path
+     * @return components contextual address
      */
-    ComponentAddress getPath();
+    ComponentAddress getAddress();
 
     /**
      * Optional component description.

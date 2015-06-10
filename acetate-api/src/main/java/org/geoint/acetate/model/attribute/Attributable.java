@@ -5,7 +5,7 @@ import java.util.Collection;
 
 /**
  * An Attributable model component can be associated with one or more
- {@link ComponentAttribute attributes}.
+ * {@link ComponentAttribute attributes}.
  *
  * A model component attribute provides a point of extensibility to model
  * processing frameworks, allowing frameworks to create, and associate, their
@@ -27,6 +27,14 @@ public interface Attributable {
      */
     Collection<? extends ComponentAttribute> getAttributes();
 
+    /**
+     * Returns the attribute(s) for the requested ComponentAttribute type.
+     *
+     * @param <C> component attribute type
+     * @param type attribute type
+     * @return collection of attributes matching the provided type or an empty
+     * collection
+     */
     default <C extends ComponentAttribute> Collection<C> getAttributes(
             Class<C> type) {
         Collection<C> results = new ArrayList<>();

@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.geoint.acetate.impl.model.ImmutableDomainObject;
-import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableObjectPath;
+import org.geoint.acetate.impl.model.ImmutableComponentAddress.ImmutableComponentAddress;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.DomainObject;
 
@@ -24,7 +24,7 @@ public class DomainObjectBuilder<T>
     private String entityGuidComponent;
     private String entityVersionComponent;
 
-    public DomainObjectBuilder(ImmutableObjectPath path) {
+    public DomainObjectBuilder(ImmutableComponentAddress path) {
         super(path);
     }
 

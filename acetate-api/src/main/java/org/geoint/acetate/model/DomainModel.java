@@ -1,5 +1,6 @@
 package org.geoint.acetate.model;
 
+import gov.ic.geoint.acetate.ObjectRegistry;
 import java.util.Optional;
 import org.geoint.acetate.model.attribute.EntityId;
 import org.geoint.acetate.model.attribute.Version;

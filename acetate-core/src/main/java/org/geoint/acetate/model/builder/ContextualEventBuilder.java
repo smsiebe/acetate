@@ -1,7 +1,7 @@
 package org.geoint.acetate.model.builder;
 
 import java.util.Set;
-import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableObjectPath;
+import org.geoint.acetate.impl.model.ImmutableComponentAddress.ImmutableComponentAddress;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.event.DomainEntityEvent;
 
@@ -16,7 +16,7 @@ public class ContextualEventBuilder<T, E>
 
     protected final String eventDomainObjectName;
 
-    public ContextualEventBuilder(ImmutableObjectPath path,
+    public ContextualEventBuilder(ImmutableComponentAddress path,
             String eventDomainObjectName) {
         super(path);
         this.eventDomainObjectName = eventDomainObjectName;

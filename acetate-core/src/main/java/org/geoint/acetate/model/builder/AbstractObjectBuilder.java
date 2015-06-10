@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import org.geoint.acetate.data.transform.BinaryCodec;
 import org.geoint.acetate.data.transform.CharacterCodec;
-import org.geoint.acetate.impl.model.ImmutableContextPath;
-import org.geoint.acetate.impl.model.ImmutableContextPath.ImmutableObjectPath;
+import org.geoint.acetate.impl.model.ImmutableComponentAddress;
+import org.geoint.acetate.impl.model.ImmutableComponentAddress.ImmutableComponentAddress;
 
 /**
  * Abstract domain model object builder.
@@ -28,7 +28,7 @@ public abstract class AbstractObjectBuilder<T, B extends AbstractObjectBuilder<T
     protected BinaryCodec<T> binaryCodec;
     protected CharacterCodec<T> charCodec;
 
-    public AbstractObjectBuilder(ImmutableObjectPath path) {
+    public AbstractObjectBuilder(ImmutableComponentAddress path) {
         super(path);
     }
 
@@ -42,7 +42,7 @@ public abstract class AbstractObjectBuilder<T, B extends AbstractObjectBuilder<T
      */
     public DomainOperationBuilder<?> operation(String localName)
             throws ComponentCollisionException {
-        final ImmutableContextPath.ImmutableOperationPath op = path().operation(localName);
+        final ImmutableComponentAddress.ImmutableOperationPath op = path().operation(localName);
         return getOrCreate(op, () -> new DomainOperationBuilder(op),
                 operations, composites, aggregates);
     }
@@ -63,7 +63,7 @@ public abstract class AbstractObjectBuilder<T, B extends AbstractObjectBuilder<T
     public DomainCompositeObjectBuilder<?> composite(String localName,
             String objectName, boolean isCollection)
             throws ComponentCollisionException {
-        final ImmutableObjectPath cp = path().composite(localName);
+        final ImmutableComponentAddress cp = path().composite(localName);
         return getOrCreate(cp,
                 () -> new DomainCompositeObjectBuilder(cp, objectName, isCollection),
                 composites, operations, aggregates);
@@ -85,7 +85,7 @@ public abstract class AbstractObjectBuilder<T, B extends AbstractObjectBuilder<T
     public DomainAggregateObjectBuilder<?> aggregate(String localName,
             String objectName, boolean isCollection)
             throws ComponentCollisionException {
-        final ImmutableObjectPath ap = path().aggregate(localName);
+        final ImmutableComponentAddress ap = path().aggregate(localName);
         return getOrCreate(ap,
                 () -> new DomainAggregateObjectBuilder(ap, objectName, isCollection),
                 aggregates, composites, operations);
@@ -115,8 +115,8 @@ public abstract class AbstractObjectBuilder<T, B extends AbstractObjectBuilder<T
     }
 
     @Override
-    protected ImmutableObjectPath path() {
-        return (ImmutableObjectPath) path;
+    protected ImmutableComponentAddress path() {
+        return (ImmutableComponentAddress) path;
     }
 
     /*
@@ -124,7 +124,7 @@ public abstract class AbstractObjectBuilder<T, B extends AbstractObjectBuilder<T
      * if a different component type is using that name, else create new 
      * component, register and return.
      */
-    private <B> B getOrCreate(ImmutableContextPath path,
+    private <B> B getOrCreate(ImmutableComponentAddress path,
             BuilderFactory<B> factory,
             Map<String, B> checkMap,
             Map<String, ?>... otherComponents)
