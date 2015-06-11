@@ -3,11 +3,11 @@ package org.geoint.acetate.impl.model;
 import java.util.Collection;
 import org.geoint.acetate.data.transform.BinaryCodec;
 import org.geoint.acetate.data.transform.CharacterCodec;
-import org.geoint.acetate.impl.model.ImmutableComponentAddress.ImmutableComponentAddress;
-import org.geoint.acetate.model.DomainComponent;
-import org.geoint.acetate.model.DomainEntityObject;
+import org.geoint.acetate.impl.model.ImmutableObjectAddress.ImmutableComponentAddress;
+import org.geoint.acetate.model.ModelComponent;
+import org.geoint.acetate.model.EntityModel;
 import org.geoint.acetate.model.DomainModel;
-import org.geoint.acetate.model.DomainObject;
+import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
 import org.geoint.acetate.model.attribute.EntityGuid;
 import org.geoint.acetate.model.attribute.EntityVersion;
@@ -20,18 +20,18 @@ import org.geoint.acetate.model.constraint.ComponentConstraint;
  *
  * @param <T> java object type this model defines
  */
-public class ImmutableEntity<T> extends ImmutableDomainObject<T>
-        implements DomainEntityObject<T> {
+public class ImmutableEntityModel<T> extends ImmutableObjectModel<T>
+        implements EntityModel<T> {
 
-    private final DomainObject<String> entityGuidComponent;
-    private final DomainObject<Long> entityVersionComponent;
+    private final ObjectModel<String> entityGuidComponent;
+    private final ObjectModel<Long> entityVersionComponent;
 
-    public ImmutableEntity(DomainModel model,
+    public ImmutableEntityModel(DomainModel model,
             ImmutableComponentAddress path, String name, String description,
             Collection<String> parentObjectNames,
-            Collection<ImmutableOperation<?>> operations,
-            Collection<ImmutableCompositeObject<?>> composites,
-            Collection<ImmutableAggregate<?>> aggregates,
+            Collection<ImmutableOperationModel<?>> operations,
+            Collection<ImmutableCompositeModel<?>> composites,
+            Collection<ImmutableAggregateModel<?>> aggregates,
             Collection<ComponentConstraint> constraints,
             Collection<ComponentAttribute> attributes,
             BinaryCodec<T> binaryCodec,
@@ -42,9 +42,9 @@ public class ImmutableEntity<T> extends ImmutableDomainObject<T>
                 charCodec);
 
         //cache the entity GUID and version components
-        ImmutableCompositeObject<String> guid = null;
-        ImmutableCompositeObject<Long> version = null;
-        for (ImmutableCompositeObject c : composites) {
+        ImmutableCompositeModel<String> guid = null;
+        ImmutableCompositeModel<Long> version = null;
+        for (ImmutableCompositeModel c : composites) {
             Collection<ComponentAttribute> cca = c.getAttributes();
             for (ComponentAttribute ca : cca) {
                 if (ca.getClass().equals(EntityGuid.class)) {
@@ -68,18 +68,18 @@ public class ImmutableEntity<T> extends ImmutableDomainObject<T>
      * @return
      * @throws ComponentCollisionException
      */
-    private <C extends DomainComponent> C deconflict(C c1, C c2)
+    private <C extends ModelComponent> C deconflict(C c1, C c2)
             throws ComponentCollisionException {
         
     }
 
     @Override
-    public DomainObject<String> getGuidComponentName() {
+    public ObjectModel<String> getGuidComponentName() {
         return entityGuidComponent;
     }
 
     @Override
-    public DomainObject<Long> getVersionComponentName() {
+    public ObjectModel<Long> getVersionComponentName() {
         return entityVersionComponent;
     }
 

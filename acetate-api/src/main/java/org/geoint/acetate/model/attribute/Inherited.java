@@ -1,6 +1,6 @@
 package org.geoint.acetate.model.attribute;
 
-import org.geoint.acetate.model.DomainObject;
+import org.geoint.acetate.model.ObjectModel;
 
 /**
  * Data component attribute indicating the component was inherited from a parent
@@ -15,13 +15,13 @@ public final class Inherited implements ComponentAttribute {
      *
      * @return inherited (parent) model
      */
-    private final DomainObject<?> inheritedModel;
+    private final ObjectModel<?> inheritedModel;
 
-    public Inherited(DomainObject<?> inheritedModel) {
+    public Inherited(ObjectModel<?> inheritedModel) {
         this.inheritedModel = inheritedModel;
     }
 
-    public DomainObject<?> getInheritedModel() {
+    public ObjectModel<?> getInheritedModel() {
         return inheritedModel;
     }
 

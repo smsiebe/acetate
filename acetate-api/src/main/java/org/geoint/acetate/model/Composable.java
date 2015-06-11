@@ -6,13 +6,13 @@ package org.geoint.acetate.model;
  *
  * @param <T> data type of the component
  */
-public interface CompositeComponent<T> extends DomainComponent<T> {
+public interface Composable<T> extends ModelComponent<T> {
 
     /**
      * Contextually-unique component name.
      *
      * The local name of a component is object-unique, no other
-     * CompositeComponent of a domain object may by have the same name.
+ Composable of a domain object may by have the same name.
      *
      * @return contextually-unique composite component name
      */
@@ -24,6 +24,6 @@ public interface CompositeComponent<T> extends DomainComponent<T> {
      * @return object model of the component which declared this composite
      * component
      */
-    DomainObject<?> getDeclaringComponent();
+    ObjectModel<?> getDeclaringComponent();
 
 }

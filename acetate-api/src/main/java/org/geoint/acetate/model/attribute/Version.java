@@ -7,11 +7,11 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.geoint.acetate.model.DomainEntityObject;
+import org.geoint.acetate.model.EntityModel;
 
 /**
  * "Marker" attribute which identifiers the component of an
- * {@link DomainEntityObject} as the {@link EntityVersion instance version
+ * {@link EntityModel} as the {@link EntityVersion instance version
  * field}.
  *
  * @see Version

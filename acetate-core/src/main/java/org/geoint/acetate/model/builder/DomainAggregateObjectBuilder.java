@@ -1,8 +1,8 @@
 package org.geoint.acetate.model.builder;
 
 import java.util.Set;
-import org.geoint.acetate.impl.model.ImmutableComponentAddress.ImmutableComponentAddress;
-import org.geoint.acetate.model.DomainAggregateObject;
+import org.geoint.acetate.impl.model.ImmutableObjectAddress.ImmutableComponentAddress;
+import org.geoint.acetate.model.AggregateModel;
 import org.geoint.acetate.model.DomainModel;
 
 /**
@@ -22,7 +22,7 @@ public class DomainAggregateObjectBuilder<T>
     }
 
     @Override
-    public DomainAggregateObject<T> build(DomainModel model) {
+    public AggregateModel<T> build(DomainModel model) {
             
     }
 

@@ -15,10 +15,10 @@ import org.geoint.acetate.model.constraint.Constrained;
  *
  * @see DomailEntityObject
  * @see DomainCompositeObject
- * @see DomainAggregateObject
+ * @see AggregateModel
  * @param <T> associated java data type
  */
-public interface DomainObject<T> extends DomainComponent<T>,
+public interface ObjectModel<T> extends ModelComponent<T>,
         Constrained, Attributable {
 
     /**
@@ -34,7 +34,7 @@ public interface DomainObject<T> extends DomainComponent<T>,
      *
      * @return domain component from which this component is inherited
      */
-    Set<DomainObject<? super T>> getParents();
+    Set<ObjectModel<? super T>> getParents();
 
     /**
      * Returns all object operations, including all those defined natively on
@@ -51,7 +51,7 @@ public interface DomainObject<T> extends DomainComponent<T>,
      * @return component operations or empty collection if no behavior is found
      * on the component
      */
-    Collection<? extends DomainOperation<?>> getOperations();
+    Collection<? extends OperationModel<?>> getOperations();
 
     /**
      * Aggregate objects which are defined natively, inheritance, or by a
@@ -68,21 +68,21 @@ public interface DomainObject<T> extends DomainComponent<T>,
      *
      * @return all aggregate objects
      */
-    Collection<? extends DomainAggregateObject<?>> getAggregates();
+    Collection<? extends AggregateModel<?>> getAggregates();
 
     /**
      * Composites objects from which this object model is comprised.
      *
-     * A composite model is special in that the DomainObject essentially
-     * considers its model components (operations/aggregates/components)
-     * first-class components of its model, effectively combining a composite
-     * model within the composite objects "namespace".
-     * <p>
-     * Composite object models may "make up" this DomainObject, but does not
-     * "relate" to another object model instance the way that an
-     * AggregateObjectModel would. In other words, as DomainObject is "made up"
-     * of composite model components which it "relates to" aggregate objects.
-     * <p>
+     * A composite model is special in that the ObjectModel essentially
+ considers its model components (operations/aggregates/components)
+ first-class components of its model, effectively combining a composite
+ model within the composite objects "namespace".
+ <p>
+ Composite object models may "make up" this ObjectModel, but does not
+ "relate" to another object model instance the way that an
+ AggregateObjectModel would. In other words, as ObjectModel is "made up"
+ of composite model components which it "relates to" aggregate objects.
+ <p>
      * To receive a only composites that were natively declared, inherited, or
      * were brought in from a component relationship, you can check the data
      * component attributes of each composite returned from this method for
@@ -92,7 +92,7 @@ public interface DomainObject<T> extends DomainComponent<T>,
      * @return collection of composite objects defined natively, through
      * composites, or inheritance
      */
-    Collection<? extends CompositeComponent<?>> getComposites();
+    Collection<? extends Composable<?>> getComposites();
 
     /**
      * Default character codec to use for this domain object.

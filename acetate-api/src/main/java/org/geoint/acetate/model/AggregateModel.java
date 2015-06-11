@@ -5,8 +5,8 @@ package org.geoint.acetate.model;
  *
  * @param <T> type of the aggregated object
  */
-public interface DomainAggregateObject<T> extends DomainEntityObject<T>,
-        CompositeComponent<T> {
+public interface AggregateModel<T> extends EntityModel<T>,
+        Composable<T> {
 
     /**
      * Indicates if there can be more than one aggregate instance related (a

@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.util.Optional;
-import org.geoint.acetate.model.DomainObject;
+import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.data.transform.DataConversionException;
 
 /**
@@ -32,7 +32,7 @@ public interface DataNode<T> {
      *
      * @return component model for this data node
      */
-    DomainObject<T> getModel();
+    ObjectModel<T> getModel();
 
     /**
      * Converts the node value to a java object.

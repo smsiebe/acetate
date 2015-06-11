@@ -1,18 +1,18 @@
 package org.geoint.acetate.model.event;
 
 import java.time.ZonedDateTime;
-import org.geoint.acetate.model.DomainComponent;
-import org.geoint.acetate.model.DomainEntityObject;
-import org.geoint.acetate.model.DomainObject;
+import org.geoint.acetate.model.ModelComponent;
+import org.geoint.acetate.model.EntityModel;
+import org.geoint.acetate.model.ObjectModel;
 
 /**
  * A specialized model component within a domain model which
- * <i>relates to</i> a change to an {@link DomainEntityObject Entity} instance.
+ * <i>relates to</i> a change to an {@link EntityModel Entity} instance.
  *
  * @param <T> object representation of the domain event
  * @param <E> domain entity object type
  */
-public interface DomainEntityEvent<T, E> extends DomainComponent<T> {
+public interface DomainEntityEvent<T, E> extends ModelComponent<T> {
 
     /**
      * Entity Event component which defines its globally unique identifier.
@@ -22,14 +22,14 @@ public interface DomainEntityEvent<T, E> extends DomainComponent<T> {
      * @return the aggregate/composite domain object which is the globally
      * unique identifier of the entity
      */
-    DomainObject<String> getEventGuidComponent();
+    ObjectModel<String> getEventGuidComponent();
 
     /**
      * Entity event component which defines the time of the event.
      *
      * @return event model component which defines the time of the event
      */
-    DomainObject<ZonedDateTime> getEventTimeComponent();
+    ObjectModel<ZonedDateTime> getEventTimeComponent();
 
     /**
      * Entity event component which defines the GUID of the entity object for
@@ -37,7 +37,7 @@ public interface DomainEntityEvent<T, E> extends DomainComponent<T> {
      *
      * @return event model component containing the related entity object guid
      */
-    DomainObject<String> getEntityGuidComponent();
+    ObjectModel<String> getEntityGuidComponent();
 
     /**
      * Entity event component which defines the version of the entity object for
@@ -46,13 +46,13 @@ public interface DomainEntityEvent<T, E> extends DomainComponent<T> {
      * @return event model component containing the related entity object
      * version
      */
-    DomainObject<Long> getEntityVersionComponent();
+    ObjectModel<Long> getEntityVersionComponent();
 
     /**
      * Model of related domain entity object.
      *
      * @return domain entity object model
      */
-    DomainEntityObject<E> getEntityModel();
+    EntityModel<E> getEntityModel();
 
 }

@@ -2,15 +2,15 @@ package gov.ic.geoint.acetate;
 
 import java.util.Collection;
 import java.util.Optional;
-import org.geoint.acetate.model.address.ComponentAddress;
-import org.geoint.acetate.model.DomainComponent;
-import org.geoint.acetate.model.DomainObject;
+import org.geoint.acetate.model.ModelAddress;
+import org.geoint.acetate.model.ModelComponent;
+import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
 
 /**
  * Registry of component models within a domain model.
  */
-public interface ObjectRegistry {
+public interface ComponentRegistry {
 
     /**
      * Returns an immutable collection containing all the model components
@@ -18,16 +18,25 @@ public interface ObjectRegistry {
      *
      * @return all components within the domain model
      */
-    Collection<DomainObject<?>> findAll();
+    Collection<ObjectModel<?>> findAll();
 
     /**
-     * Returns a component model by its unique domain address.
+     * Returns the object model for the requested domain object.
+     *
+     * @param objectName domain-unique object name
+     * @return object model or null if no object model is registered with that
+     * name
+     */
+    Optional<ObjectModel<?>> findByObjectName(String objectName);
+
+    /**
+     * Returns a component model by its domain address.
      *
      * @param address domain model component address
      * @return component model or null if the address does not resolve to a
      * component
      */
-    Optional<DomainComponent<?>> findByAddress(ComponentAddress address);
+    Optional<ModelComponent<?>> findByAddress(ModelAddress address);
 
     /**
      * Returns an immutable collection of domain model components which are
@@ -38,7 +47,7 @@ public interface ObjectRegistry {
      * requested attribute, or an empty collection if not components have the
      * requested attribute
      */
-    Collection<DomainObject<?>> findByAttribute(
+    Collection<ObjectModel<?>> findByAttribute(
             Class<? extends ComponentAttribute> attributeType);
 
     /**
@@ -50,5 +59,5 @@ public interface ObjectRegistry {
      * @return collection of object models which specialize (inherit from) the
      * requested object, or an empty collection
      */
-    Collection<DomainObject<?>> findSpecialized(String parentObjectName);
+    Collection<ObjectModel<?>> findSpecialized(String parentObjectName);
 }

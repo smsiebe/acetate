@@ -9,7 +9,7 @@ import org.geoint.acetate.model.event.DomainEntityEvent;
  *
  * @param <R> return type of the operation
  */
-public interface DomainOperation<R> extends CompositeComponent<R> {
+public interface OperationModel<R> extends Composable<R> {
 
     /**
      * The name of the operation, which must be unique to the container the
@@ -33,6 +33,6 @@ public interface DomainOperation<R> extends CompositeComponent<R> {
      * @return models of the operation parameters in declaration order; empty
      * collection if no parameters are required for the operation
      */
-    Collection<DomainObject<?>> getParameterModels();
+    Collection<ObjectModel<?>> getParameterModels();
 
 }

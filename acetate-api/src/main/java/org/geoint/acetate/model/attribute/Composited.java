@@ -1,6 +1,6 @@
 package org.geoint.acetate.model.attribute;
 
-import org.geoint.acetate.model.DomainObject;
+import org.geoint.acetate.model.ObjectModel;
 
 /**
  * Data component attribute indicating the component was composed from a
@@ -16,9 +16,9 @@ public final class Composited implements ComponentAttribute {
      *
      * @return inherited (parent) model
      */
-    private final DomainObject<?> compositeModel;
+    private final ObjectModel<?> compositeModel;
 
-    public Composited(DomainObject<?> inheritedModel) {
+    public Composited(ObjectModel<?> inheritedModel) {
         this.compositeModel = inheritedModel;
     }
 
@@ -28,7 +28,7 @@ public final class Composited implements ComponentAttribute {
      * @return the object model of the composite that declared the component
      * this attribute decorates
      */
-    public DomainObject<?> getCompositeModel() {
+    public ObjectModel<?> getCompositeModel() {
         return compositeModel;
     }
 }

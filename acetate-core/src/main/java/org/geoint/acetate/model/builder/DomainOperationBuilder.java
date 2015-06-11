@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.geoint.acetate.impl.model.ImmutableComponentAddress.ImmutableComponentAddress;
-import org.geoint.acetate.impl.model.ImmutableComponentAddress.ImmutableOperationPath;
+import org.geoint.acetate.impl.model.ImmutableObjectAddress.ImmutableComponentAddress;
+import org.geoint.acetate.impl.model.ImmutableObjectAddress.ImmutableOperationPath;
 import org.geoint.acetate.model.DomainModel;
-import org.geoint.acetate.model.DomainOperation;
+import org.geoint.acetate.model.OperationModel;
 import org.geoint.acetate.model.attribute.Inherited;
 
 /**
@@ -34,9 +34,9 @@ public class DomainOperationBuilder<R>
      * @param inherited
      * @return inherited instance
      */
-    public static <R> DomainOperation<R> inherit(
+    public static <R> OperationModel<R> inherit(
             ImmutableComponentAddress compositePath,
-            DomainOperation<R> inherited) {
+            OperationModel<R> inherited) {
         DomainOperationBuilder<?> ob = new DomainOperationBuilder(
                 compositePath.operation(inherited.getLocalName()));
         return ob.attribute(new Inherited(inherited.getComposite().getObjectName()))
@@ -44,7 +44,7 @@ public class DomainOperationBuilder<R>
     }
 
     @Override
-    public DomainOperation<R> build(DomainModel model) {
+    public OperationModel<R> build(DomainModel model) {
 
     }
 

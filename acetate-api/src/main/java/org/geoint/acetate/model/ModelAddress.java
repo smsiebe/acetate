@@ -1,4 +1,4 @@
-package org.geoint.acetate.model.address;
+package org.geoint.acetate.model;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -12,7 +12,7 @@ import java.net.URISyntaxException;
  * @see OperationAddress
  *
  */
-public interface ComponentAddress {
+public interface ModelAddress {
 
     /**
      * Domain name of the component.

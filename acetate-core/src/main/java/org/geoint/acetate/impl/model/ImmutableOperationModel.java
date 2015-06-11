@@ -3,10 +3,11 @@ package org.geoint.acetate.impl.model;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
-import org.geoint.acetate.model.address.ComponentAddress;
+import org.geoint.acetate.impl.model.ImmutableObjectAddress.ImmutableCompositeAddress;
+import org.geoint.acetate.model.ModelAddress;
 import org.geoint.acetate.model.DomainModel;
-import org.geoint.acetate.model.DomainObject;
-import org.geoint.acetate.model.DomainOperation;
+import org.geoint.acetate.model.ObjectModel;
+import org.geoint.acetate.model.OperationModel;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
 import org.geoint.acetate.model.event.DomainEntityEvent;
 
@@ -15,22 +16,22 @@ import org.geoint.acetate.model.event.DomainEntityEvent;
  *
  * @param <R> operation return type
  */
-public class ImmutableOperation<R> implements DomainOperation<R> {
+public class ImmutableOperationModel<R> implements OperationModel<R> {
 
     protected final DomainModel model;
-    protected final ImmutableComponentAddress address;
+    protected final ImmutableObjectAddress address;
     protected final String operationName;
     protected final Optional<String> description;
     protected final DomainEntityEvent<R, ?> returned;
-    protected final Collection<DomainObject<?>> params;
+    protected final Collection<ObjectModel<?>> params;
     protected final Collection<? extends ComponentAttribute> attributes;
 
-    ImmutableOperation(DomainModel model, 
-            ImmutableComponentAddress path,
+    ImmutableOperationModel(DomainModel model, 
+            ImmutableObjectAddress path,
             String name,
             Optional<String> description,
             DomainEntityEvent<R, ?> returned,
-            Collection<DomainObject<?>> params,
+            Collection<ObjectModel<?>> params,
             Collection<? extends ComponentAttribute> attributes) {
         this.model = model;
         this.address = path;
@@ -47,12 +48,12 @@ public class ImmutableOperation<R> implements DomainOperation<R> {
     }
 
     @Override
-    public DomainObject<?> getDeclaringComponent() {
+    public ObjectModel<?> getDeclaringComponent() {
 
     }
 
     @Override
-    public ComponentAddress getAddress() {
+    public ModelAddress getAddress() {
         return address;
     }
 
@@ -77,7 +78,7 @@ public class ImmutableOperation<R> implements DomainOperation<R> {
     }
 
     @Override
-    public Collection<DomainObject<?>> getParameterModels() {
+    public Collection<ObjectModel<?>> getParameterModels() {
         return params;
     }
 
@@ -101,7 +102,7 @@ public class ImmutableOperation<R> implements DomainOperation<R> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ImmutableOperation other = (ImmutableOperation) obj;
+        final ImmutableOperationModel other = (ImmutableOperationModel) obj;
         if (!Objects.equals(this.address, other.address)) {
             return false;
         }
@@ -109,4 +110,22 @@ public class ImmutableOperation<R> implements DomainOperation<R> {
     }
 
 
+    public static class ImmutableOperationAddress
+            extends ImmutableCompositeAddress {
+
+        public ImmutableOperationAddress(
+                ImmutableObjectAddress containerAddress,
+                String operationName) {
+            super(containerAddress, operationName);
+        }
+
+        public ImmutableCompositeAddress parameter(String paramName) {
+            return new ImmutableCompositeAddress(this, paramName);
+        }
+
+        public ImmutableCompositeAddress returns() {
+
+        }
+
+    }
 }

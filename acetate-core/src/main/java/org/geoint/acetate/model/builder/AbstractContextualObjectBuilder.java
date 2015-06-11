@@ -2,9 +2,9 @@ package org.geoint.acetate.model.builder;
 
 import org.geoint.acetate.data.transform.BinaryCodec;
 import org.geoint.acetate.data.transform.CharacterCodec;
-import org.geoint.acetate.impl.model.ImmutableComponentAddress.ImmutableComponentAddress;
+import org.geoint.acetate.impl.model.ImmutableObjectAddress.ImmutableComponentAddress;
 import org.geoint.acetate.model.DomainModel;
-import org.geoint.acetate.model.DomainObject;
+import org.geoint.acetate.model.ObjectModel;
 
 /**
  *
@@ -51,5 +51,5 @@ public abstract class AbstractContextualObjectBuilder<T, B extends AbstractConte
     }
 
     @Override
-    abstract public DomainObject<T> build(DomainModel model);
+    abstract public ObjectModel<T> build(DomainModel model);
 }

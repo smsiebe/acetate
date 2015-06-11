@@ -2,7 +2,7 @@ package org.geoint.acetate.impl.model;
 
 import java.util.Optional;
 import org.geoint.acetate.model.DomainModel;
-import gov.ic.geoint.acetate.ObjectRegistry;
+import gov.ic.geoint.acetate.ComponentRegistry;
 
 /**
  * The default domain model has fixed domain model (components of the core
@@ -16,22 +16,22 @@ public final class DomainModelImpl implements DomainModel {
     private final long version;
     private final String displayName;
     private final Optional<String> description;
-    private final ObjectRegistry modelRegistry;
+    private final ComponentRegistry modelRegistry;
 
-    public DomainModelImpl(String domainId, ObjectRegistry modelRegistry,
+    public DomainModelImpl(String domainId, ComponentRegistry modelRegistry,
             String name,
             long version) {
         this(domainId, modelRegistry, name, version, null, null);
     }
 
-    public DomainModelImpl(String domainId, ObjectRegistry modelRegistry,
+    public DomainModelImpl(String domainId, ComponentRegistry modelRegistry,
             String name,
             long version,
             String displayName) {
         this(domainId, modelRegistry, name, version, displayName, null);
     }
 
-    public DomainModelImpl(String domainId, ObjectRegistry modelRegistry,
+    public DomainModelImpl(String domainId, ComponentRegistry modelRegistry,
             String name,
             long version,
             String displayName,
@@ -71,7 +71,7 @@ public final class DomainModelImpl implements DomainModel {
     }
 
     @Override
-    public ObjectRegistry getComponents() {
+    public ComponentRegistry getComponents() {
         return modelRegistry;
     }
 

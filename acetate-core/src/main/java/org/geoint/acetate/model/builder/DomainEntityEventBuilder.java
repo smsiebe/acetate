@@ -3,8 +3,8 @@ package org.geoint.acetate.model.builder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import org.geoint.acetate.impl.model.ImmutableComponentAddress.ImmutableComponentAddress;
-import org.geoint.acetate.model.DomainComponent;
+import org.geoint.acetate.impl.model.ImmutableObjectAddress.ImmutableComponentAddress;
+import org.geoint.acetate.model.ModelComponent;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.event.DomainEntityEvent;
 
@@ -99,7 +99,7 @@ public class DomainEntityEventBuilder<T, E>
     }
 
     @Override
-    public DomainComponent<T> build(DomainModel model) {
+    public ModelComponent<T> build(DomainModel model) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

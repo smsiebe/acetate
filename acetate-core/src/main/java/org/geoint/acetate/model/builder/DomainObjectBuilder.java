@@ -3,13 +3,13 @@ package org.geoint.acetate.model.builder;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.geoint.acetate.impl.model.ImmutableDomainObject;
-import org.geoint.acetate.impl.model.ImmutableComponentAddress.ImmutableComponentAddress;
+import org.geoint.acetate.impl.model.ImmutableObjectModel;
+import org.geoint.acetate.impl.model.ImmutableObjectAddress.ImmutableComponentAddress;
 import org.geoint.acetate.model.DomainModel;
-import org.geoint.acetate.model.DomainObject;
+import org.geoint.acetate.model.ObjectModel;
 
 /**
- * API to programmatically build an {@link DomainObject}.
+ * API to programmatically build an {@link ObjectModel}.
  *
  * This builder is <b>NOT</b> thread safe.
  *
@@ -29,7 +29,7 @@ public class DomainObjectBuilder<T>
     }
 
     @Override
-    public DomainObject<T> build(DomainModel model)
+    public ObjectModel<T> build(DomainModel model)
             throws ComponentCollisionException, IncompleteModelException {
 
         final String objectName = this.path().getComponentName();
@@ -47,7 +47,7 @@ public class DomainObjectBuilder<T>
                         + "component.");
             }
 
-            return new ImmutableDomainObject(model, path,
+            return new ImmutableObjectModel(model, path,
                     this.path.getComponentName(),
                     description,
                     parentObjects,

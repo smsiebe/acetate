@@ -1,19 +1,19 @@
 package org.geoint.acetate.model;
 
 /**
- * A Composite Object is a transient {@link DomainObject domain model object}
+ * A Composite Object is a transient {@link ObjectModel domain model object}
  * which my be used in the composition of
  * {@link EntityObjectModel full-fledged domain model objects}.
  * <p>
- * In comparison to an aggregate object, a composite object model does not have
- * any identity itself, but rather encapsulates domain-significant state and
- * operations. Composite objects, therefore, can be though of as not maintain
- * their own state or executing their own behavior, but that on behalf of the
- * entity object which contains it. This means that a Composite Object can
- * neither be used as an Entity Object or referred to as an Aggregate Object
- * within the model or applications using this model. The implications of this
- * must be defined at the point of use of an DomainObject.
- * <p>
+ In comparison to an aggregate object, a composite object model does not have
+ any identity itself, but rather encapsulates domain-significant state and
+ operations. Composite objects, therefore, can be though of as not maintain
+ their own state or executing their own behavior, but that on behalf of the
+ entity object which contains it. This means that a Composite Object can
+ neither be used as an Entity Object or referred to as an Aggregate Object
+ within the model or applications using this model. The implications of this
+ must be defined at the point of use of an ObjectModel.
+ <p>
  * From a model perspective, a Composite Object essentially an extension of the
  * EntityObject (or AggregateObject) which contains it. Operations and
  * aggregates defined by the Composite object can be though of as "namespaced"
@@ -28,7 +28,7 @@ package org.geoint.acetate.model;
  *
  * @param <T> java data type of this domain object
  */
-public interface DomainCompositeObject<T> extends DomainObject<T>,
-        CompositeComponent<T> {
+public interface CompositeModel<T> extends ObjectModel<T>,
+        Composable<T> {
 
 }

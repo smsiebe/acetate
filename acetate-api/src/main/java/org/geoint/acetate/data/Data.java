@@ -4,7 +4,7 @@ import gov.ic.geoint.acetate.bind.DataBindException;
 import java.util.Collection;
 import java.util.Optional;
 import org.geoint.acetate.data.transform.DataConversionException;
-import org.geoint.acetate.model.DomainObject;
+import org.geoint.acetate.model.ObjectModel;
 
 /**
  * Root of a generic data graph.
@@ -18,7 +18,7 @@ public interface Data<T> {
      *
      * @return
      */
-    DomainObject<T> getModel();
+    ObjectModel<T> getModel();
 
     /**
      * Return the root data node.

@@ -14,16 +14,16 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.geoint.acetate.impl.model.DomainModelImpl;
 import org.geoint.acetate.impl.model.DomainUtil;
-import org.geoint.acetate.impl.model.ImmutableComponentAddress;
+import org.geoint.acetate.impl.model.ImmutableObjectAddress;
 import org.geoint.acetate.impl.transform.DefaultBooleanBinaryCodec;
 import org.geoint.acetate.impl.transform.DefaultIntegerBinaryCodec;
 import org.geoint.acetate.impl.transform.DefaultStringBinaryCodec;
-import org.geoint.acetate.model.address.ComponentAddress;
-import org.geoint.acetate.model.DomainObject;
+import org.geoint.acetate.model.ModelAddress;
+import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.ModelException;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
-import gov.ic.geoint.acetate.ObjectRegistry;
+import gov.ic.geoint.acetate.ComponentRegistry;
 
 /**
  * API to programmatically build a DomainModel.
@@ -111,7 +111,7 @@ public class DomainModelBuilder {
         if (components.containsKey(objectName)) {
             components.put(objectName,
                     new DomainObjectBuilder(
-                            ImmutableComponentAddress.basePath(name,
+                            ImmutableObjectAddress.basePath(name,
                                     version, objectName)
                     ));
         }
@@ -205,18 +205,18 @@ public class DomainModelBuilder {
      *
      * This implementation is NOT thread-safe.
      */
-    private class InternalObjectRegistry implements ObjectRegistry {
+    private class InternalObjectRegistry implements ComponentRegistry {
 
-        private final Map<ComponentAddress, DomainObject<?>> domainComponents
+        private final Map<ModelAddress, ObjectModel<?>> domainComponents
                 = new HashMap<>();
-        private final Map<Class<? extends ComponentAttribute>, Collection<DomainObject<?>>> attributeIndex
+        private final Map<Class<? extends ComponentAttribute>, Collection<ObjectModel<?>>> attributeIndex
                 = new HashMap<>();
         //key=parent component path
         //value=component path which inherit from key
-        private final Map<ComponentAddress, Set<ComponentAddress>> inheritenceIndex
+        private final Map<ModelAddress, Set<ModelAddress>> inheritenceIndex
                 = new HashMap<>();
 
-        private void register(DomainObject<?> object)
+        private void register(ObjectModel<?> object)
                 throws ComponentCollisionException {
             if (domainComponents.containsKey(object.getPath())) {
                 throw new ComponentCollisionException(
@@ -257,19 +257,19 @@ public class DomainModelBuilder {
         }
 
         @Override
-        public Collection<DomainObject<?>> findAll() {
+        public Collection<ObjectModel<?>> findAll() {
             return Collections.unmodifiableCollection(
                     domainComponents.values()
             );
         }
 
         @Override
-        public Optional<DomainObject<?>> findByName(String componentName) {
+        public Optional<ObjectModel<?>> findByName(String componentName) {
             return Optional.ofNullable(domainComponents.get(componentName));
         }
 
         @Override
-        public Collection<DomainObject<?>> findByAttribute(
+        public Collection<ObjectModel<?>> findByAttribute(
                 Class<? extends ComponentAttribute> attributeType) {
 
             if (!attributeIndex.containsKey(attributeType)) {
@@ -283,7 +283,7 @@ public class DomainModelBuilder {
         }
 
         @Override
-        public Collection<DomainObject<?>> findSpecialized(
+        public Collection<ObjectModel<?>> findSpecialized(
                 String parentComponentName) {
             if (!inheritenceIndex.containsKey(parentComponentName)) {
                 return Collections.EMPTY_LIST;

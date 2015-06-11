@@ -1,6 +1,6 @@
 package org.geoint.acetate.model.constraint;
 
-import org.geoint.acetate.model.DomainObject;
+import org.geoint.acetate.model.ObjectModel;
 
 /**
  * Ensures that the data is not null.
@@ -20,7 +20,7 @@ public final class NotNullConstraint implements ComponentConstraint {
     }
 
     @Override
-    public <T> boolean validate(DomainObject<T> model, T data) {
+    public <T> boolean validate(ObjectModel<T> model, T data) {
         return data != null;
     }
 
