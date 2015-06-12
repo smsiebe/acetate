@@ -1,9 +1,6 @@
-package org.geoint.acetate.model.event;
+package org.geoint.acetate.model;
 
 import java.time.ZonedDateTime;
-import org.geoint.acetate.model.ModelComponent;
-import org.geoint.acetate.model.EntityModel;
-import org.geoint.acetate.model.ObjectModel;
 
 /**
  * A specialized model component within a domain model which
@@ -12,7 +9,7 @@ import org.geoint.acetate.model.ObjectModel;
  * @param <T> object representation of the domain event
  * @param <E> domain entity object type
  */
-public interface DomainEntityEvent<T, E> extends ModelComponent<T> {
+public interface EventModel<T, E> extends ModelComponent<T> {
 
     /**
      * Entity Event component which defines its globally unique identifier.

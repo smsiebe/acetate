@@ -4,17 +4,18 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import org.geoint.acetate.impl.model.ImmutableObjectAddress.ImmutableCompositeAddress;
+import org.geoint.acetate.impl.model.ImmutableObjectModel.ImmutableObjectAddress;
 import org.geoint.acetate.model.ModelAddress;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.model.OperationModel;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
-import org.geoint.acetate.model.event.DomainEntityEvent;
+import org.geoint.acetate.model.EventModel;
 
 /**
  * Business operation of the domain model.
  *
- * @param <R> operation return type
+ * @param <R> operation return event type
  */
 public class ImmutableOperationModel<R> implements OperationModel<R> {
 
@@ -22,7 +23,7 @@ public class ImmutableOperationModel<R> implements OperationModel<R> {
     protected final ImmutableObjectAddress address;
     protected final String operationName;
     protected final Optional<String> description;
-    protected final DomainEntityEvent<R, ?> returned;
+    protected final EventModel<R, ?> returned;
     protected final Collection<ObjectModel<?>> params;
     protected final Collection<? extends ComponentAttribute> attributes;
 
@@ -30,7 +31,7 @@ public class ImmutableOperationModel<R> implements OperationModel<R> {
             ImmutableObjectAddress path,
             String name,
             Optional<String> description,
-            DomainEntityEvent<R, ?> returned,
+            EventModel<R, ?> returned,
             Collection<ObjectModel<?>> params,
             Collection<? extends ComponentAttribute> attributes) {
         this.model = model;
@@ -73,7 +74,7 @@ public class ImmutableOperationModel<R> implements OperationModel<R> {
     }
 
     @Override
-    public DomainEntityEvent<R, ?> getReturnModel() {
+    public EventModel<R, ?> getReturnModel() {
         return returned;
     }
 
@@ -120,11 +121,11 @@ public class ImmutableOperationModel<R> implements OperationModel<R> {
         }
 
         public ImmutableCompositeAddress parameter(String paramName) {
-            return new ImmutableCompositeAddress(this, paramName);
+            return new ImmutableOperationParameterAddress(this, paramName);
         }
 
-        public ImmutableCompositeAddress returns() {
-
+        public ImmutableOperationAddress returns() {
+            return new 
         }
 
     }

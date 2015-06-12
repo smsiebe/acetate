@@ -3,7 +3,7 @@ package org.geoint.acetate.model.builder;
 import java.util.Set;
 import org.geoint.acetate.impl.model.ImmutableObjectAddress.ImmutableComponentAddress;
 import org.geoint.acetate.model.DomainModel;
-import org.geoint.acetate.model.event.DomainEntityEvent;
+import org.geoint.acetate.model.EventModel;
 
 /**
  * Programmatic API to override the contextual traits of an Entity Event.
@@ -23,7 +23,7 @@ public class ContextualEventBuilder<T, E>
     }
 
     @Override
-    public DomainEntityEvent<T> build(DomainModel model) {
+    public EventModel<T> build(DomainModel model) {
 
     }
 

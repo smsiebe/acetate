@@ -6,7 +6,7 @@ import java.util.Set;
 import org.geoint.acetate.impl.model.ImmutableObjectAddress.ImmutableComponentAddress;
 import org.geoint.acetate.model.ModelComponent;
 import org.geoint.acetate.model.DomainModel;
-import org.geoint.acetate.model.event.DomainEntityEvent;
+import org.geoint.acetate.model.EventModel;
 
 /**
  *
@@ -32,7 +32,7 @@ public class DomainEntityEventBuilder<T, E>
         this.entityDomainObjectName = entityDomainObjectName;
     }
 
-    public DomainEntityEvent<T, E> build() {
+    public EventModel<T, E> build() {
 
     }
 
