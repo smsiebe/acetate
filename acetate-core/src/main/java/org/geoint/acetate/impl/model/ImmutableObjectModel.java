@@ -1,5 +1,7 @@
 package org.geoint.acetate.impl.model;
 
+import org.geoint.acetate.impl.model.entity.ImmutableAggregateModel;
+import org.geoint.acetate.impl.model.entity.ImmutableOperationModel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,10 +14,10 @@ import java.util.logging.Logger;
 import org.geoint.acetate.data.transform.BinaryCodec;
 import org.geoint.acetate.data.transform.CharacterCodec;
 import org.geoint.acetate.impl.model.ImmutableCompositeModel.ImmutableCompositeAddress;
-import org.geoint.acetate.impl.model.ImmutableOperationModel.ImmutableOperationAddress;
-import org.geoint.acetate.model.Composable;
+import org.geoint.acetate.impl.model.entity.ImmutableOperationModel.ImmutableOperationAddress;
+import org.geoint.acetate.model.ComposableModelComponent;
 import org.geoint.acetate.model.DomainModel;
-import org.geoint.acetate.model.ModelAddress;
+import org.geoint.acetate.model.ComponentAddress;
 import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
 import org.geoint.acetate.model.builder.ComponentCollisionException;
@@ -34,7 +36,7 @@ public abstract class ImmutableObjectModel<T> implements ObjectModel<T> {
 
     private final DomainModel model;
     private final ImmutableObjectAddress address;
-    private final String domainObjectName;
+    private final String objectName;
     private final Set<ObjectModel<? super T>> parents;
     private final Optional<String> description;
     private final Collection<ImmutableOperationModel<?>> operations;
@@ -58,32 +60,25 @@ public abstract class ImmutableObjectModel<T> implements ObjectModel<T> {
      * roll-up. Use builders for this.
      *
      * @param model domain model this object belongs to
-     * @param address domain model component contextual address for the object
      * @param name required domain-unique object display name
      * @param description optional object description (may be null)
-     * @param parentObjectNames explictly defined object inheritance
      * @param components all object components
      * @param constraints constraints placed on this object
      * @param attributes attributes defined for this object
-     * @param binaryCodec codec used to convert object to/from binary
-     * @param charCodec codec used to convert object to/from UTF-8 characters
      * @throws IncompleteModelException
      * @throws ComponentCollisionException
      */
     protected ImmutableObjectModel(DomainModel model,
-            ImmutableObjectAddress address,
             String name,
             String description,
-            Collection<String> parentObjectNames,
-            Collection<Composable> components,
+            Collection<ComposableModelComponent> components,
             Collection<ComponentConstraint> constraints,
-            Collection<ComponentAttribute> attributes,
-            BinaryCodec<T> binaryCodec,
-            CharacterCodec<T> charCodec)
+            Collection<ComponentAttribute> attributes)
             throws IncompleteModelException, ComponentCollisionException {
         this.model = model;
-        this.address = address;
-        this.domainObjectName = name;
+        this.address = new ImmutableBaseObjectAddress(
+                model.getDomainId(), model.getVersion(), name);
+        this.objectName = name;
         this.description = Optional.ofNullable(description);
 
         Set<ObjectModel<? super T>> parentObjects = new HashSet<>();
@@ -91,28 +86,15 @@ public abstract class ImmutableObjectModel<T> implements ObjectModel<T> {
         Collection<ImmutableCompositeModel<?>> comps = new HashSet<>();
         Collection<ImmutableAggregateModel<?>> aggs = new HashSet<>();
 
-        //add explictly defined parents
-        parentObjectNames.stream()
-                .map((pn) -> model.getComponents().findByObjectName(pn))
-                .filter((o) -> o.isPresent())
-                .map((p) -> (ObjectModel<? super T>) p.get())
-                .forEach((p) -> {
-                    logger.log(Level.FINE, () -> "Domain Object '"
-                            + address.asString()
-                            + "' inherits from '"
-                            + p.getObjectName());
-                    parentObjects.add(p);
-                });
-
-        for (Composable c : components) {
+        for (ComposableModelComponent c : components) {
 
             if (ComponentFilters.isInherited(c)) {
                 //add implict inheritence
 
-                if (parentObjects.add(c.getDeclaringComponent())) {
+                if (parentObjects.add(c.getContainer())) {
                     logger.log(Level.FINE, () -> "Object '"
                             + address.asString() + "' inherits from '"
-                            + c.getDeclaringComponent().getAddress().asString());
+                            + c.getContainer().getAddress().asString());
                 }
             }
 
@@ -139,28 +121,23 @@ public abstract class ImmutableObjectModel<T> implements ObjectModel<T> {
     }
 
     @Override
-    public ModelAddress getAddress() {
+    public Set<ObjectModel<? super T>> getParents() {
+        return parents;
+    }
+
+    @Override
+    public ComponentAddress getAddress() {
         return address;
     }
 
     @Override
-    public String getObjectName() {
-        return domainObjectName;
+    public String getName() {
+        return objectName;
     }
 
     @Override
     public Optional<String> getDescription() {
         return description;
-    }
-
-    @Override
-    public Collection<ImmutableOperationModel<?>> getOperations() {
-        return operations;
-    }
-
-    @Override
-    public Collection<ImmutableAggregateModel<?>> getAggregates() {
-        return aggregates;
     }
 
     @Override
@@ -198,7 +175,7 @@ public abstract class ImmutableObjectModel<T> implements ObjectModel<T> {
         return address.asString();
     }
 
-    public abstract class ImmutableObjectAddress implements ModelAddress {
+    public static abstract class ImmutableObjectAddress implements ComponentAddress {
 
         protected static final char DOMAIN_VERSION_SEPARATOR = '-';
         protected static final char COMPONENT_SEPARATOR = '/';

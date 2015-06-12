@@ -12,7 +12,7 @@ import java.net.URISyntaxException;
  * @see OperationAddress
  *
  */
-public interface ModelAddress {
+public interface ComponentAddress {
 
     /**
      * Domain name of the component.

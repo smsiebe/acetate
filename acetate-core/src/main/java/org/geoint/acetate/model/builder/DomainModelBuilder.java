@@ -18,7 +18,7 @@ import org.geoint.acetate.impl.model.ImmutableObjectAddress;
 import org.geoint.acetate.impl.transform.DefaultBooleanBinaryCodec;
 import org.geoint.acetate.impl.transform.DefaultIntegerBinaryCodec;
 import org.geoint.acetate.impl.transform.DefaultStringBinaryCodec;
-import org.geoint.acetate.model.ModelAddress;
+import org.geoint.acetate.model.ComponentAddress;
 import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.ModelException;
@@ -207,13 +207,13 @@ public class DomainModelBuilder {
      */
     private class InternalObjectRegistry implements ComponentRegistry {
 
-        private final Map<ModelAddress, ObjectModel<?>> domainComponents
+        private final Map<ComponentAddress, ObjectModel<?>> domainComponents
                 = new HashMap<>();
         private final Map<Class<? extends ComponentAttribute>, Collection<ObjectModel<?>>> attributeIndex
                 = new HashMap<>();
         //key=parent component path
         //value=component path which inherit from key
-        private final Map<ModelAddress, Set<ModelAddress>> inheritenceIndex
+        private final Map<ComponentAddress, Set<ComponentAddress>> inheritenceIndex
                 = new HashMap<>();
 
         private void register(ObjectModel<?> object)

@@ -4,15 +4,14 @@ import java.util.Optional;
 import org.geoint.acetate.model.attribute.Attributable;
 
 /**
- * A data-defining component of a domain model.
+ * A component of a domain data model.
  *
- * A domain component defines a piece of data within a domain model. This may be
- * a primitive "field" of an object, a complex object composed of other objects
- * and with rich aggregation relationships, or somewhere in between.
+ * A domain component defines a piece of of a domain model.
  *
- * @param <T> java type which this domain component may be serialized into
+ * @see ObjectModel
+ * @see ValueModel
  */
-public interface ModelComponent<T> extends Attributable {
+public interface ModelComponent extends Attributable {
 
     /**
      * The DomainModel this component is a member of.
@@ -26,7 +25,14 @@ public interface ModelComponent<T> extends Attributable {
      *
      * @return components contextual address
      */
-    ModelAddress getAddress();
+    ComponentAddress getAddress();
+
+    /**
+     * Domain-model unique name of the component.
+     *
+     * @return unique component name
+     */
+    String getName();
 
     /**
      * Optional component description.

@@ -1,4 +1,4 @@
-package org.geoint.acetate.model;
+package org.geoint.acetate.model.attribute;
 
 import org.geoint.acetate.model.attribute.ComponentAttribute;
 import gov.ic.geoint.acetate.AcetateException;

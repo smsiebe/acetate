@@ -1,10 +1,11 @@
-package org.geoint.acetate.impl.model;
+package org.geoint.acetate.impl.model.entity;
 
 import java.util.Collection;
 import org.geoint.acetate.data.transform.BinaryCodec;
 import org.geoint.acetate.data.transform.CharacterCodec;
-import org.geoint.acetate.model.Composable;
-import org.geoint.acetate.model.AggregateModel;
+import org.geoint.acetate.impl.model.ImmutableObjectModel;
+import org.geoint.acetate.model.ComposableModelComponent;
+import org.geoint.acetate.model.entity.AggregateModel;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
@@ -24,7 +25,7 @@ public class ImmutableAggregateModel<T> extends ImmutableObjectModel<T>
             String name,
             String description,
             Collection<String> parentObjectNames,
-            Collection<Composable> components,
+            Collection<ComposableModelComponent> components,
             Collection<ComponentConstraint> constraints,
             Collection<ComponentAttribute> attributes,
             BinaryCodec<T> binaryCodec,

@@ -1,4 +1,7 @@
-package org.geoint.acetate.model;
+package org.geoint.acetate.model.entity;
+
+import java.util.Collection;
+import org.geoint.acetate.model.ObjectModel;
 
 /**
  * An Entity Object instance is a object with the domain model which is
@@ -42,4 +45,38 @@ public interface EntityModel<T> extends ObjectModel<T> {
      * version of the entity
      */
     ObjectModel<Long> getVersionComponent();
+
+    /**
+     * Aggregate objects which are defined natively, inheritance, or by a
+     * {@link DomainCompositeObject}.
+     *
+     * Aggregated objects are (other) Entity Objects which can be associated
+     * with this object through a model-defined relationship.
+     * <p>
+     * To receive a only aggregates that were natively declared, inherited, or
+     * were brought in from a component relationship, you can check the data
+     * component attributes of each aggregate returned from this method for
+     * either the {@link Inherited} or {@link Composited} attribute (the absence
+     * of either of these indicates that it was a native aggregate).
+     *
+     * @return all aggregate objects
+     */
+    Collection<? extends AggregateModel<?>> getAggregates();
+
+    /**
+     * Returns all Entity operations, including all those defined natively on
+     * this object model, inherited from any parent object model, as well as any
+     * defined by any composite model.
+     *
+     * To receive a only operations that were natively declared, inherited, or
+     * were brought in from a component relationship, you can check the data
+     * component attributes of each operation returned from this method for
+     * either the {@link Inherited} or {@link Composited} attribute (the absence
+     * of either of these indicates that it was a native operation).
+     *
+     * @see DomainCompositeObject
+     * @return component operations or empty collection if no behavior is found
+     * on the component
+     */
+    Collection<? extends OperationModel<?>> getOperations();
 }

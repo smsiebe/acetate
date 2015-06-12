@@ -7,7 +7,7 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.geoint.acetate.model.EntityModel;
+import org.geoint.acetate.model.entity.EntityModel;
 
 /**
  * "Marker" attribute which identifiers the component of an

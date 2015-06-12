@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.geoint.acetate.data.transform.BinaryCodec;
 import org.geoint.acetate.data.transform.CharacterCodec;
-import org.geoint.acetate.model.ModelAddress;
+import org.geoint.acetate.model.ComponentAddress;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
@@ -25,7 +25,7 @@ import org.geoint.acetate.model.constraint.ComponentConstraint;
 public @interface Component {
 
     /**
-     * {@link ModelAddress} URI of the model component to change.
+     * {@link ComponentAddress} URI of the model component to change.
      *
      * @return component address
      */

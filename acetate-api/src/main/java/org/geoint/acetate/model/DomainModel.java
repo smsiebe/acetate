@@ -1,7 +1,8 @@
 package org.geoint.acetate.model;
 
-import gov.ic.geoint.acetate.ComponentRegistry;
+import java.util.Collection;
 import java.util.Optional;
+import org.geoint.acetate.model.attribute.ComponentAttribute;
 import org.geoint.acetate.model.attribute.EntityId;
 import org.geoint.acetate.model.attribute.Version;
 import org.geoint.acetate.model.constraint.NotNull;
@@ -17,6 +18,8 @@ public interface DomainModel {
     /**
      * Unique domain model identifier.
      *
+     * The DomainID is deterministically generated from the model name and
+     * version.
      *
      * @return unique domain model identifier
      */
@@ -85,10 +88,51 @@ public interface DomainModel {
     Optional<String> getDescription();
 
     /**
-     * Registry containing the component models that make up this domain model.
+     * Returns an immutable collection containing all the model components
+     * within the domain model.
      *
-     * @return components of the data model, in no particular order. A model
-     * with no components will return an empty collection.
+     * @return all components within the domain model
      */
-    ComponentRegistry getComponents();
+    Collection<ModelComponent> findAll();
+
+    /**
+     * Returns a component model by its address.
+     *
+     * @param address domain model component address
+     * @return component model or null if the address does not resolve to a
+     * component
+     */
+    Optional<ModelComponent> find(ComponentAddress address);
+
+    /**
+     * Returns the model of the requested component.
+     *
+     * @param componentName component name
+     * @return component model or null if the provided name does not resolve to
+     * a component
+     */
+    Optional<ModelComponent> find(String componentName);
+
+    /**
+     * Returns an immutable collection of domain model components which are
+     * decorated with the specified attribute.
+     *
+     * @param attributeType attribute type
+     * @return collection of component models which are decorated with the
+     * requested attribute, or an empty collection if not components have the
+     * requested attribute
+     */
+    Collection<ObjectModel<?>> find(
+            Class<? extends ComponentAttribute> attributeType);
+
+    /**
+     * Returns an immutable collection of domain model objects which specialize
+     * (inherits from) the specified objects.
+     *
+     * @param parentComponentName component name to search for specialized
+     * components
+     * @return collection of object models which specialize (inherit from) the
+     * requested object, or an empty collection
+     */
+    Collection<ObjectModel<?>> findSpecialized(String parentComponentName);
 }

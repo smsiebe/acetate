@@ -1,11 +1,13 @@
-package org.geoint.acetate.impl.model;
+package org.geoint.acetate.impl.model.entity;
 
 import java.util.Collection;
 import org.geoint.acetate.data.transform.BinaryCodec;
 import org.geoint.acetate.data.transform.CharacterCodec;
+import org.geoint.acetate.impl.model.ImmutableCompositeModel;
 import org.geoint.acetate.impl.model.ImmutableObjectAddress.ImmutableComponentAddress;
+import org.geoint.acetate.impl.model.ImmutableObjectModel;
 import org.geoint.acetate.model.ModelComponent;
-import org.geoint.acetate.model.EntityModel;
+import org.geoint.acetate.model.entity.EntityModel;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
@@ -70,7 +72,17 @@ public class ImmutableEntityModel<T> extends ImmutableObjectModel<T>
      */
     private <C extends ModelComponent> C deconflict(C c1, C c2)
             throws ComponentCollisionException {
-        
+
+    }
+
+    @Override
+    public Collection<ImmutableOperationModel<?>> getOperations() {
+        return operations;
+    }
+
+    @Override
+    public Collection<ImmutableAggregateModel<?>> getAggregates() {
+        return aggregates;
     }
 
     @Override

@@ -2,7 +2,7 @@ package org.geoint.acetate.model.builder;
 
 import java.util.Set;
 import org.geoint.acetate.impl.model.ImmutableObjectAddress.ImmutableComponentAddress;
-import org.geoint.acetate.model.AggregateModel;
+import org.geoint.acetate.model.entity.AggregateModel;
 import org.geoint.acetate.model.DomainModel;
 
 /**

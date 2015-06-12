@@ -1,15 +1,15 @@
-package org.geoint.acetate.model;
+package org.geoint.acetate.model.entity;
 
 import java.time.ZonedDateTime;
+import org.geoint.acetate.model.ObjectModel;
 
 /**
- * A specialized model component within a domain model which
- * <i>relates to</i> a change to an {@link EntityModel Entity} instance.
+ * Model of an event resulting from a change to an {@link EntityModel Entity}
+ * instance.
  *
- * @param <T> object representation of the domain event
- * @param <E> domain entity object type
+ * @param <E> java data type of the entity event
  */
-public interface EventModel<T, E> extends ModelComponent<T> {
+public interface EventModel<E> extends ObjectModel<E> {
 
     /**
      * Entity Event component which defines its globally unique identifier.

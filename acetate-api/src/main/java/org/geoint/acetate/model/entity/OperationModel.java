@@ -1,23 +1,17 @@
-package org.geoint.acetate.model;
+package org.geoint.acetate.model.entity;
 
 import java.util.Collection;
+import org.geoint.acetate.model.ComposableModelComponent;
+import org.geoint.acetate.model.ObjectModel;
 
 /**
- * An operation on a Entity Object which takes zero or more operation parameters
- * and either returns an instance of an EventModel on success or (optionally)
- * throws an Exception on failure.
+ * An operation is composed of parameter and return models which represent a a
+ * behavior of an Entity.
  *
  * @param <R> return type of the operation
  */
-public interface OperationModel<R extends EventModel> extends Composable<R> {
-
-    /**
-     * The name of the operation, which must be unique to the container the
-     * operation is defined.
-     *
-     * @return operation name
-     */
-    String getOperationName();
+public interface OperationModel<R extends EventModel>
+        extends ComposableModelComponent {
 
     /**
      * Domain mode of the returned type.
@@ -25,7 +19,7 @@ public interface OperationModel<R extends EventModel> extends Composable<R> {
      * @return model of the returned type from the method or null if returns
      * void
      */
-    EventModel<R, ?> getReturnModel();
+    EventModel<?> getReturnModel();
 
     /**
      * Domain models of the operation parameters, in declaration order.
