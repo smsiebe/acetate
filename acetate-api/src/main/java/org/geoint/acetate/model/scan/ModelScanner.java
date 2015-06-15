@@ -5,14 +5,16 @@ package org.geoint.acetate.model.scan;
  * validated components.
  *
  */
+@FunctionalInterface
 public interface ModelScanner {
 
     /**
-     * Scans for domain model components and notifies listeners based on its
-     * contract.
+     * Scans for domain model components and notifies listeners based on it the
+     * scan listener lifecycle contract.
      *
-     * @param listener
+     * @param listeners scan lifecycle callback listeners
+     * @throws ModelScanException thrown if the scan could not complete
      */
-    void scan(ModelComponentListener listener);
+    void scan(ModelComponentListener... listeners) throws ModelScanException;
 
 }

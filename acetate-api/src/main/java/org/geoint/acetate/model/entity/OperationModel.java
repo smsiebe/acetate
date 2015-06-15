@@ -11,7 +11,7 @@ import org.geoint.acetate.model.ObjectModel;
  * @param <R> return type of the operation
  */
 public interface OperationModel<R extends EventModel>
-        extends ComposableModelComponent {
+        extends ComposableModelComponent<OperationModel<R>> {
 
     /**
      * Domain mode of the returned type.

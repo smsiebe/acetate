@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import org.geoint.acetate.impl.model.DomainModelImpl;
+import org.geoint.acetate.impl.model.InMemoryDomainModel;
 import org.geoint.acetate.impl.model.DomainUtil;
 import org.geoint.acetate.impl.model.ImmutableObjectAddress;
 import org.geoint.acetate.impl.transform.DefaultBooleanBinaryCodec;
@@ -131,7 +131,7 @@ public class DomainModelBuilder {
             ComponentCollisionException {
 
         final InternalObjectRegistry registry = new InternalObjectRegistry();
-        final DomainModelImpl model = new DomainModelImpl(
+        final InMemoryDomainModel model = new InMemoryDomainModel(
                 DomainUtil.uniqueDomainId(name, version),
                 registry, name, version, displayName, description);
 

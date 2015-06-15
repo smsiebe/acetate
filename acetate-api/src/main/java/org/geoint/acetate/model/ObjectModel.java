@@ -13,13 +13,14 @@ import org.geoint.acetate.model.constraint.Constrained;
  *
  * @param <T> associated java data type
  */
-public interface ObjectModel<T> extends ComposableModelComponent, Constrained {
+public interface ObjectModel<T> extends ModelComponent, Constrained {
 
     /**
      * Domain object model(s) this object inherits from, potentially inheriting
      * components.
      *
-     * @return domain component from which this component is inherited
+     * @return domain component from which this component is inherited or, if
+     * not inherited from other object models, returns an empty set
      */
     Set<ObjectModel<? super T>> getParents();
 
@@ -27,9 +28,8 @@ public interface ObjectModel<T> extends ComposableModelComponent, Constrained {
      * {@link ComposableModelComponent Components} from which this object model
      * is comprised.
      *
-     * @return collection of composite objects defined natively, through
+     * @return collection of composite components defined natively, through
      * composites, or inheritance
      */
-    Collection<? extends ContextualComponentModel> getComposites();
-
+    Collection<? extends ComposableModelComponent<?>> getComposites();
 }

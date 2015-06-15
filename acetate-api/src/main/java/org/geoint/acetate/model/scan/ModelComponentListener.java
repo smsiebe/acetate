@@ -1,7 +1,6 @@
 package org.geoint.acetate.model.scan;
 
 import org.geoint.acetate.model.ModelComponent;
-import org.geoint.acetate.model.ModelException;
 
 /**
  * A callback listener which is notified when model components that are
@@ -32,9 +31,8 @@ public interface ModelComponentListener {
      * @param component component to validate
      * @throws ModelComponentRejectedException thrown if the individual
      * component must not be included with the domain model
-     * @throws ModelException thrown if component must cause scanning to stop
      */
     default void validate(ModelComponent component)
-            throws ModelComponentRejectedException, ModelException {
+            throws ModelComponentRejectedException {
     }
 }

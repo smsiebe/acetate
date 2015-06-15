@@ -3,6 +3,8 @@ package gov.ic.geoint.acetate;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import org.geoint.acetate.model.DomainModel;
+import org.geoint.acetate.model.ModelException;
+import org.geoint.acetate.model.scan.ModelScanResults;
 import org.geoint.acetate.model.scan.ModelScanner;
 
 /**
@@ -22,9 +24,13 @@ public interface DomainRegistry {
      * for, and register, domain models with the registry (thread-safe
      * operation).
      *
-     * @return future containing this domain registry
+     * Upon successful completion of the scan (which may be checked by calling
+     * {@link Future#isDone() isDone} on the returned Future), the model will be
+     * registered with this registry.
+     *
+     * @return async results of the scan
      */
-    Future<DomainRegistry> scan();
+    Future<ModelScanResults> scan();
 
     /**
      * Asynchronously scan for all domain models discoverable by the provided
@@ -34,10 +40,14 @@ public interface DomainRegistry {
      * for, and register, domain models with the registry (thread-safe
      * operation).
      *
+     * Upon successful completion of the scan (which may be checked by calling
+     * {@link Future#isDone() isDone} on the returned Future), the model will be
+     * registered with this registry
+     *
      * @param scanner scanner used to discover domain models
-     * @return future containing this domain registry
+     * @return async results of the scan
      */
-    Future<DomainRegistry> scan(ModelScanner scanner);
+    Future<ModelScanResults> scan(ModelScanner scanner);
 
     /**
      * Check if the requested domain model is already registered.
@@ -57,4 +67,12 @@ public interface DomainRegistry {
      */
     Optional<DomainModel> getModel(String domainModelName, long version);
 
+    /**
+     * Register a domain model with the registry.
+     *
+     * @param model model to register
+     * @throws ModelException thrown if the provided model is invalid or
+     * conflicts with another model within the registry
+     */
+    void register(DomainModel model) throws ModelException;
 }

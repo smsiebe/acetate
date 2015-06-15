@@ -18,6 +18,7 @@ import org.geoint.acetate.impl.model.entity.ImmutableOperationModel.ImmutableOpe
 import org.geoint.acetate.model.ComposableModelComponent;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.ComponentAddress;
+import org.geoint.acetate.model.ContextualComponentModel;
 import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
 import org.geoint.acetate.model.builder.ComponentCollisionException;
@@ -32,20 +33,16 @@ import org.geoint.acetate.model.util.ComponentFilters;
  *
  * @param <T> data type of the object
  */
-public abstract class ImmutableObjectModel<T> implements ObjectModel<T> {
+public class ImmutableObjectModel<T> implements ObjectModel<T> {
 
     private final DomainModel model;
     private final ImmutableObjectAddress address;
     private final String objectName;
     private final Set<ObjectModel<? super T>> parents;
     private final Optional<String> description;
-    private final Collection<ImmutableOperationModel<?>> operations;
     private final Collection<ImmutableCompositeModel<?>> composites;
-    private final Collection<ImmutableAggregateModel<?>> aggregates;
     private final Collection<ComponentConstraint> constraints;
     private final Collection<ComponentAttribute> attributes;
-    private final BinaryCodec<T> binaryCodec;
-    private final CharacterCodec<T> charCodec;
 
     private final static Logger logger
             = Logger.getLogger("org.geoint.acetate.model");
@@ -62,7 +59,8 @@ public abstract class ImmutableObjectModel<T> implements ObjectModel<T> {
      * @param model domain model this object belongs to
      * @param name required domain-unique object display name
      * @param description optional object description (may be null)
-     * @param components all object components
+     * @param parents object models from which this model inherits
+     * @param composites all object components
      * @param constraints constraints placed on this object
      * @param attributes attributes defined for this object
      * @throws IncompleteModelException
@@ -71,7 +69,8 @@ public abstract class ImmutableObjectModel<T> implements ObjectModel<T> {
     protected ImmutableObjectModel(DomainModel model,
             String name,
             String description,
-            Collection<ComposableModelComponent> components,
+            Set<ObjectModel<? super T>> parents,
+            Collection<? extends ComposableModelComponent<?>> composites,
             Collection<ComponentConstraint> constraints,
             Collection<ComponentAttribute> attributes)
             throws IncompleteModelException, ComponentCollisionException {
@@ -82,15 +81,12 @@ public abstract class ImmutableObjectModel<T> implements ObjectModel<T> {
         this.description = Optional.ofNullable(description);
 
         Set<ObjectModel<? super T>> parentObjects = new HashSet<>();
-        Collection<ImmutableOperationModel<?>> ops = new HashSet<>();
         Collection<ImmutableCompositeModel<?>> comps = new HashSet<>();
-        Collection<ImmutableAggregateModel<?>> aggs = new HashSet<>();
 
-        for (ComposableModelComponent c : components) {
+        for (ComposableModelComponent c : composites) {
 
             if (ComponentFilters.isInherited(c)) {
-                //add implict inheritence
-
+                
                 if (parentObjects.add(c.getContainer())) {
                     logger.log(Level.FINE, () -> "Object '"
                             + address.asString() + "' inherits from '"
@@ -111,13 +107,9 @@ public abstract class ImmutableObjectModel<T> implements ObjectModel<T> {
         }
 
         this.parents = Collections.unmodifiableSet(parentObjects);
-        this.operations = Collections.unmodifiableCollection(ops);
         this.composites = Collections.unmodifiableCollection(comps);
-        this.aggregates = Collections.unmodifiableCollection(aggs);
         this.constraints = Collections.unmodifiableCollection(new ArrayList<>(constraints));
         this.attributes = Collections.unmodifiableCollection(new ArrayList<>(attributes));
-        this.binaryCodec = binaryCodec;
-        this.charCodec = charCodec;
     }
 
     @Override
@@ -141,11 +133,6 @@ public abstract class ImmutableObjectModel<T> implements ObjectModel<T> {
     }
 
     @Override
-    public Collection<ImmutableCompositeModel<?>> getComposites() {
-        return composites;
-    }
-
-    @Override
     public Collection<ComponentAttribute> getAttributes() {
         return attributes;
     }
@@ -156,23 +143,13 @@ public abstract class ImmutableObjectModel<T> implements ObjectModel<T> {
     }
 
     @Override
-    public CharacterCodec<T> getCharacterCodec() {
-        return charCodec;
-    }
-
-    @Override
-    public BinaryCodec<T> getBinaryCodec() {
-        return binaryCodec;
-    }
-
-    @Override
-    public DomainModel getDomainModel() {
-        return model;
-    }
-
-    @Override
     public String toString() {
         return address.asString();
+    }
+
+    @Override
+    public Collection<? extends ComposableModelComponent<?>> getComposites() {
+        return composites;
     }
 
     public static abstract class ImmutableObjectAddress implements ComponentAddress {

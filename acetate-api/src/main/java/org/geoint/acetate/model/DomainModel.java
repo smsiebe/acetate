@@ -2,6 +2,7 @@ package org.geoint.acetate.model;
 
 import java.util.Collection;
 import java.util.Optional;
+import org.geoint.acetate.model.attribute.Attributable;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
 import org.geoint.acetate.model.attribute.EntityId;
 import org.geoint.acetate.model.attribute.Version;
@@ -105,15 +106,6 @@ public interface DomainModel {
     Optional<ModelComponent> find(ComponentAddress address);
 
     /**
-     * Returns the model of the requested component.
-     *
-     * @param componentName component name
-     * @return component model or null if the provided name does not resolve to
-     * a component
-     */
-    Optional<ModelComponent> find(String componentName);
-
-    /**
      * Returns an immutable collection of domain model components which are
      * decorated with the specified attribute.
      *
@@ -122,17 +114,16 @@ public interface DomainModel {
      * requested attribute, or an empty collection if not components have the
      * requested attribute
      */
-    Collection<ObjectModel<?>> find(
+    Collection<Attributable> find(
             Class<? extends ComponentAttribute> attributeType);
 
     /**
      * Returns an immutable collection of domain model objects which specialize
      * (inherits from) the specified objects.
      *
-     * @param parentComponentName component name to search for specialized
-     * components
+     * @param parentAddress parent component address
      * @return collection of object models which specialize (inherit from) the
      * requested object, or an empty collection
      */
-    Collection<ObjectModel<?>> findSpecialized(String parentComponentName);
+    Collection<ObjectModel<?>> findSpecialized(ComponentAddress parentAddress);
 }

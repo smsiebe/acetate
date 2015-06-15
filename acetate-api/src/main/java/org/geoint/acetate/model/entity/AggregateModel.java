@@ -9,6 +9,6 @@ import org.geoint.acetate.model.ComposableModelComponent;
  * @param <T> java data type of the aggregated object
  */
 public interface AggregateModel<T> extends EntityModel<T>,
-        ComposableModelComponent {
+        ComposableModelComponent<EntityModel<T>> {
 
 }

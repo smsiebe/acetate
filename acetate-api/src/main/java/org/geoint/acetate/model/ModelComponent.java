@@ -13,13 +13,12 @@ import org.geoint.acetate.model.attribute.Attributable;
  */
 public interface ModelComponent extends Attributable {
 
-    /**
-     * The DomainModel this component is a member of.
-     *
-     * @return components domain model
-     */
-    DomainModel getDomainModel();
-
+//    /**
+//     * The DomainModel this component is a member of.
+//     *
+//     * @return components domain model
+//     */
+//    DomainModel getDomainModel();
     /**
      * Unique component address within the domain model.
      *

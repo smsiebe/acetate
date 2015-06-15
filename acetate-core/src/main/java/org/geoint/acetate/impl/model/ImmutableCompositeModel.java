@@ -6,6 +6,7 @@ import org.geoint.acetate.data.transform.CharacterCodec;
 import org.geoint.acetate.model.ComposableModelComponent;
 import org.geoint.acetate.model.ContextualAddress;
 import org.geoint.acetate.model.CompositeComponentModel;
+import org.geoint.acetate.model.ContextualComponentModel;
 import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
 import org.geoint.acetate.model.builder.ComponentCollisionException;
@@ -44,6 +45,17 @@ public class ImmutableCompositeModel<T> extends ImmutableObjectModel<T>
     public ContextualAddress getAddress() {
         return (ContextualAddress) super.getAddress();
     }
+
+    @Override
+    public Collection<? extends ContextualComponentModel> getComposites() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public boolean isCollection() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
 
     public static class ImmutableCompositeAddress
             extends ImmutableObjectAddress {
