@@ -1,7 +1,7 @@
 package org.geoint.acetate.impl.model.scan;
 
 import java.io.File;
-import org.geoint.acetate.model.scan.ModelComponentListener;
+import org.geoint.acetate.model.scan.ModelScanListener;
 import org.geoint.acetate.model.scan.ModelScanException;
 import org.geoint.acetate.model.scan.ModelScanner;
 
@@ -25,7 +25,7 @@ public class ClassModelScanner implements ModelScanner {
     }
 
     @Override
-    public void scan(ModelComponentListener... listeners)
+    public void scan(ModelScanListener... listeners)
             throws ModelScanException {
         throw new UnsupportedOperationException();
     }

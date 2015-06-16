@@ -1,195 +1,122 @@
 package org.geoint.acetate.impl.model.scan;
 
-import org.geoint.acetate.DomainRegistry;
-import java.time.Duration;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.geoint.acetate.model.DomainModel;
-import org.geoint.acetate.model.ModelComponent;
-import org.geoint.acetate.model.ModelException;
-import org.geoint.acetate.model.scan.ModelScanException;
+import org.geoint.acetate.model.scan.ModelScanListener;
 import org.geoint.acetate.model.scan.ModelScanResults;
 import org.geoint.acetate.model.scan.ModelScanner;
 
 /**
- * Manages asynchronous domain model scans.
+ * Manages asynchronous {@link ModelScanner domain model component scan} tasks.
+ *
+ * The provided executor is used both to execute scans as well as the management
+ * of the scan tasks.
  *
  * Instances of this class are thread-safe.
  */
-public class ModelScanManager implements Runnable {
+public class ModelScanManager {
 
-    private Map<ModelScanTask, Future<ModelScanResults>> runningTasks;
-    private final DomainRegistry registry;
-    private final DomainModelFactory dmf;
     private final ExecutorService executor;
+    private final Map<ModelScanTask, Future<? extends ModelScanResults>> runningTasks;
 
+    /**
+     * Used to determine if a scan task monitor is running
+     */
+    private static volatile boolean monitorRunning = false;
     private static final long DEFAULT_SCAN_TIMEOUT
             = TimeUnit.MINUTES.toMillis(5);
     private static final Logger logger
             = Logger.getLogger(ModelScanManager.class.getName());
 
-    public ModelScanManager(DomainRegistry registry, DomainModelFactory dmf,
-            ExecutorService executor) {
-        this.registry = registry;
-        this.dmf = dmf;
+    public ModelScanManager(ExecutorService executor) {
         this.executor = executor;
         runningTasks = new ConcurrentHashMap<>();
     }
 
-    /**
-     * model scanner management service
-     */
-    @Override
-    public void run() {
-        for (;;) {
-            try {
-                //attempt to shutdown any running task over its configured timeout
-                runningTasks.entrySet().stream()
-                        .filter((e) -> (System.currentTimeMillis() - e.getKey().startMillis)
-                                > e.getKey().timeoutMillis)
-                        .forEach((e) -> {
-                            logger.log(Level.FINE, "Attempting to shutdown task "
-                                    + "''{0}'', timeout.", e.getKey().toString());
-                            e.getValue().cancel(true);
-                        });
-                Thread.sleep(1000);
-            } catch (InterruptedException ex) {
-                if (Thread.interrupted()) {
-                    logger.log(Level.INFO, "Shutting down model scan mamanger; "
-                            + "[" + runningTasks.size() + "] scans pending.", ex);
-                    runningTasks.values().stream().forEach((t) -> t.cancel(true));
-                }
-            }
-        }
+    public Future<ModelScanResults> execute(
+            ModelScanner scanner, ModelScanListener... listeners) {
+        return execute(new ModelScanTask(DEFAULT_SCAN_TIMEOUT, scanner, listeners));
     }
 
     public Future<ModelScanResults> execute(
-            ModelScanner scanner) {
-        return execute(new ModelScanTask(scanner));
-    }
-
-    public Future<? extends ModelScanResults> execute(
-            ModelScanner scanner,
             long timeout,
-            TimeUnit timeoutUnit) {
-        return execute(new ModelScanTask(scanner,
-                timeoutUnit.toMillis(timeout))
-        );
+            TimeUnit timeoutUnit,
+            ModelScanner scanner,
+            ModelScanListener... listeners) {
+        return execute(new ModelScanTask(
+                timeoutUnit.toMillis(timeout),
+                scanner, listeners));
     }
 
     private Future<ModelScanResults> execute(ModelScanTask task) {
         final Future<ModelScanResults> scan = executor.submit(task);
-        logger.log(Level.FINE, "Scanning for model components " + scan.toString());
+
+        logger.log(Level.FINE, "Scanning for model components {0}",
+                scan.toString());
+
         runningTasks.put(task, scan);
+
+        //start task monitor, if not running already
+        if (!monitorRunning) {
+            monitorRunning = true;
+
+            //start monitor
+            executor.submit(new ScanTaskMonitor());
+        }
+
         return scan;
     }
 
     /**
-     * Task which executes the ModelScanner, registers domain model results with
-     * the provided registry, and provides the scan results.
+     * Scan monitor task which ensures tasks do not exceed its configured
+     * timeout.
      *
-     * ModelScanTask removes itself from the runningTasks when complete.
      */
-    private final class ModelScanTask
-            implements ModelScanResults, Callable<ModelScanResults> {
+    private class ScanTaskMonitor implements Runnable {
 
-        private final ModelScanner scanner;
-        private final long timeoutMillis;
-        private long startMillis;
-        private Duration duration;
-        private int numComponentsFound;
-        private Optional<Throwable> error;
-
-        public ModelScanTask(ModelScanner scanner) {
-            this(scanner, DEFAULT_SCAN_TIMEOUT);
-        }
-
-        private ModelScanTask(ModelScanner scanner,
-                long timeoutMillis) {
-            this.scanner = scanner;
-            this.timeoutMillis = timeoutMillis;
-        }
-
+        /**
+         * model scanner management service
+         */
         @Override
-        public ModelScanTask call() {
+        public void run() {
+            logger.log(Level.FINE, "Starting scan task monitor.");
 
-            final Collection<ModelComponent> components = new ArrayList<>();
+            while (!runningTasks.isEmpty()) {
+                try {
+                    //remove any running tasks that are done
+                    //attempt to shutdown any running task over its configured timeout
 
-            startMillis = System.currentTimeMillis();
-
-            try {
-                //do scan, adding components to components collection
-                scanner.scan((n, v, c) -> components.add(c));
-
-                //convert and register domain models
-                for (DomainModel dm : dmf.fromComponents(components)) {
-                    registry.register(dm);
+                    runningTasks.entrySet().stream()
+                            .filter((e) -> {
+                                if (e.getValue().isDone()) {
+                                    runningTasks.remove(e.getKey());
+                                    return false;
+                                }
+                                return true;
+                            })
+                            .filter((e) -> e.getKey().isTimeout())
+                            .forEach((e) -> {
+                                logger.log(Level.FINE, "Attempting to shutdown task "
+                                        + "''{0}'', timeout.", e.getKey().toString());
+                                e.getValue().cancel(true);
+                            });
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    if (Thread.interrupted()) {
+                        break; //shutdown
+                    }
                 }
-
-                //no errors
-                error = Optional.empty();  //no error
-            } catch (ModelScanException | ModelException ex) {
-                logger.log(Level.WARNING, "Unable to complete model scan task '"
-                        + this.toString() + "'", ex);
-                error = Optional.of(ex);
             }
 
-            //register results
-            this.duration = Duration.ofMillis(System.currentTimeMillis() - startMillis);
-            this.numComponentsFound = components.size();
-
-            //remove itself from running tasks
-            runningTasks.remove(this);
-
-            return this;
-        }
-
-        @Override
-        public boolean completedSuccessfully() {
-            return !error.isPresent();
-        }
-
-        @Override
-        public Optional<Throwable> getCause() {
-            return error;
-        }
-
-        @Override
-        public int getNumComponentsFound() {
-            return numComponentsFound;
-        }
-
-        @Override
-        public Duration getScanDuration() {
-            return duration;
-        }
-
-        @Override
-        public Class<? extends ModelScanner> getScannerType() {
-            return scanner.getClass();
-        }
-
-        @Override
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            sb.append("Model scanner '")
-                    .append(scanner.getClass().getName())
-                    .append("'");
-            if (startMillis > 0) {
-                sb.append(" started ")
-                        .append(Instant.ofEpochMilli(startMillis).toString());
-            }
-            return sb.toString();
+            //shutdown monitor 
+            logger.log(Level.INFO, "Shutting down model scan monitor; [{0}] "
+                    + "scans pending.", runningTasks.size());
+            runningTasks.values().stream().forEach((t) -> t.cancel(true));
         }
     }
 //    
@@ -203,7 +130,7 @@ public class ModelScanManager implements Runnable {
 //        private final Collection<ModelComponentListener> defensiveListeners;
 //
 //        public AsyncComponentNotifier(BlockingQueue<ModelComponent> queue,
-//                ModelComponentListener[] listeners) {
+//                ModelScanListener[] listeners) {
 //            this.queue = queue;
 //
 //            //defensive copy listeners to new collection, preventing 
@@ -226,7 +153,7 @@ public class ModelScanManager implements Runnable {
 //                    }
 //
 //                    //first validate each listener
-//                    for (ModelComponentListener l : defensiveListeners) {
+//                    for (ModelScanListener l : defensiveListeners) {
 //                        try {
 //                            l.validate(c);
 //                        } catch (ModelComponentRejectedException ex) {

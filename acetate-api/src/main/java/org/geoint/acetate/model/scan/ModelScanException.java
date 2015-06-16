@@ -3,20 +3,33 @@ package org.geoint.acetate.model.scan;
 import org.geoint.acetate.AcetateException;
 
 /**
- * Thrown if a model scan operation fails.
+ * Thrown when a {@link ModelScanner} terminally fails, explaining the cause.
  */
 public class ModelScanException extends AcetateException {
 
-    private final ModelScanResults scanResults;
+    private final Class<? extends ModelScanner> scannerType;
 
-    public ModelScanException(ModelScanResults scanResults) {
-        super("Scanner '" + scanResults.getScannerType() + "' failed scanning "
-                + "the domain model", scanResults.getCause().get());
-        this.scanResults = scanResults;
+    public ModelScanException(Class<? extends ModelScanner> scannerType) {
+        this.scannerType = scannerType;
     }
 
-    public ModelScanResults getScanResults() {
-        return scanResults;
+    public ModelScanException(Class<? extends ModelScanner> scannerType, String message) {
+        super(message);
+        this.scannerType = scannerType;
+    }
+
+    public ModelScanException(Class<? extends ModelScanner> scannerType, String message, Throwable cause) {
+        super(message, cause);
+        this.scannerType = scannerType;
+    }
+
+    public ModelScanException(Class<? extends ModelScanner> scannerType, Throwable cause) {
+        super(cause);
+        this.scannerType = scannerType;
+    }
+
+    public Class<? extends ModelScanner> getScannerType() {
+        return scannerType;
     }
 
 }

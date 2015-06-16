@@ -5,7 +5,6 @@ import org.geoint.acetate.data.transform.BinaryCodec;
 import org.geoint.acetate.data.transform.CharacterCodec;
 import org.geoint.acetate.model.ComposableModelComponent;
 import org.geoint.acetate.model.ContextualAddress;
-import org.geoint.acetate.model.CompositeComponentModel;
 import org.geoint.acetate.model.ContextualComponentModel;
 import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
@@ -14,15 +13,17 @@ import org.geoint.acetate.model.builder.IncompleteModelException;
 import org.geoint.acetate.model.constraint.ComponentConstraint;
 
 /**
+ * Model of a component contextually contained by (composes) another component.
  *
- * @param <T>
+ * @param <T> java type representation of the component
  */
-public class ImmutableCompositeModel<T> extends ImmutableObjectModel<T>
-        implements CompositeComponentModel<T> {
+public class ImmutableCompositeObjectModel<T> extends ImmutableObjectModel<T>
+        implements ComposableModelComponent<ObjectModel<T>> {
 
     private final ObjectModel<?> container;
-    
-    public ImmutableCompositeModel(
+    private final ObjectModel<T> baseModel;
+
+    public ImmutableCompositeObjectModel(
             String name,
             String description,
             Collection<String> parentObjectNames,
@@ -35,7 +36,7 @@ public class ImmutableCompositeModel<T> extends ImmutableObjectModel<T>
         super(model, address, name, description, parentObjectNames, components,
                 constraints, attributes, binaryCodec, charCodec);
     }
-    
+
     @Override
     public ObjectModel<?> getContainer() {
 
@@ -55,7 +56,6 @@ public class ImmutableCompositeModel<T> extends ImmutableObjectModel<T>
     public boolean isCollection() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-
 
     public static class ImmutableCompositeAddress
             extends ImmutableObjectAddress {

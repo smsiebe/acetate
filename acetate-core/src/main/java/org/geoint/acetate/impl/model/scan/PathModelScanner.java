@@ -13,7 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.geoint.acetate.model.scan.ModelComponentListener;
+import org.geoint.acetate.model.scan.ModelScanListener;
 import org.geoint.acetate.model.scan.ModelScanException;
 import org.geoint.acetate.model.scan.ModelScanner;
 
@@ -54,7 +54,7 @@ public class PathModelScanner implements ModelScanner {
     }
 
     @Override
-    public void scan(ModelComponentListener... listeners)
+    public void scan(ModelScanListener... listeners)
             throws ModelScanException {
         if (recursive) {
             logger.log(Level.FINE, "Recursively scanning ''{0}'' for model "
@@ -97,7 +97,7 @@ public class PathModelScanner implements ModelScanner {
         }
     }
 
-    private void scanFile(File f, ModelComponentListener... listeners) {
+    private void scanFile(File f, ModelScanListener... listeners) {
         ModelScanner scanner = getScannerForFile(f);
 
         if (scanner == null) {

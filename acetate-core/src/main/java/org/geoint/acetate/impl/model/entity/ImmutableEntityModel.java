@@ -3,7 +3,7 @@ package org.geoint.acetate.impl.model.entity;
 import java.util.Collection;
 import org.geoint.acetate.data.transform.BinaryCodec;
 import org.geoint.acetate.data.transform.CharacterCodec;
-import org.geoint.acetate.impl.model.ImmutableCompositeModel;
+import org.geoint.acetate.impl.model.ImmutableCompositeObjectModel;
 import org.geoint.acetate.impl.model.ImmutableObjectAddress.ImmutableComponentAddress;
 import org.geoint.acetate.impl.model.ImmutableObjectModel;
 import org.geoint.acetate.model.ModelComponent;
@@ -32,7 +32,7 @@ public class ImmutableEntityModel<T> extends ImmutableObjectModel<T>
             ImmutableComponentAddress path, String name, String description,
             Collection<String> parentObjectNames,
             Collection<ImmutableOperationModel<?>> operations,
-            Collection<ImmutableCompositeModel<?>> composites,
+            Collection<ImmutableCompositeObjectModel<?>> composites,
             Collection<ImmutableAggregateModel<?>> aggregates,
             Collection<ComponentConstraint> constraints,
             Collection<ComponentAttribute> attributes,
@@ -44,9 +44,9 @@ public class ImmutableEntityModel<T> extends ImmutableObjectModel<T>
                 charCodec);
 
         //cache the entity GUID and version components
-        ImmutableCompositeModel<String> guid = null;
-        ImmutableCompositeModel<Long> version = null;
-        for (ImmutableCompositeModel c : composites) {
+        ImmutableCompositeObjectModel<String> guid = null;
+        ImmutableCompositeObjectModel<Long> version = null;
+        for (ImmutableCompositeObjectModel c : composites) {
             Collection<ComponentAttribute> cca = c.getAttributes();
             for (ComponentAttribute ca : cca) {
                 if (ca.getClass().equals(EntityGuid.class)) {

@@ -22,7 +22,7 @@ public interface ObjectModel<T> extends ModelComponent, Constrained {
      * @return domain component from which this component is inherited or, if
      * not inherited from other object models, returns an empty set
      */
-    Set<ObjectModel<? super T>> getParents();
+    Set<ComponentAddress> getParents();
 
     /**
      * {@link ComposableModelComponent Components} from which this object model

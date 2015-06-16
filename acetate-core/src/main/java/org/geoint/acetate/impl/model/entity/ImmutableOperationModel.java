@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
 import jdk.nashorn.internal.ir.annotations.Immutable;
-import org.geoint.acetate.impl.model.ImmutableCompositeModel.ImmutableCompositeAddress;
+import org.geoint.acetate.impl.model.ImmutableCompositeObjectModel.ImmutableCompositeAddress;
 import org.geoint.acetate.impl.model.ImmutableObjectAddress.ImmutableCompositeAddress;
 import org.geoint.acetate.impl.model.ImmutableObjectModel.ImmutableObjectAddress;
 import org.geoint.acetate.model.ComponentAddress;

@@ -75,20 +75,6 @@ public interface DomainModel {
     String getName();
 
     /**
-     * Human-readable name of the domain model.
-     *
-     * @return display name of the domain model
-     */
-    String getDisplayName();
-
-    /**
-     * Optional human-readable description of the data model.
-     *
-     * @return optional human-readable description of the data model
-     */
-    Optional<String> getDescription();
-
-    /**
      * Returns an immutable collection containing all the model components
      * within the domain model.
      *

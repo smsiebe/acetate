@@ -1,46 +1,37 @@
 package org.geoint.acetate.impl.model;
 
-import org.geoint.acetate.impl.model.entity.ImmutableAggregateModel;
-import org.geoint.acetate.impl.model.entity.ImmutableOperationModel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.geoint.acetate.data.transform.BinaryCodec;
-import org.geoint.acetate.data.transform.CharacterCodec;
-import org.geoint.acetate.impl.model.ImmutableCompositeModel.ImmutableCompositeAddress;
+import org.geoint.acetate.impl.model.ImmutableCompositeObjectModel.ImmutableCompositeAddress;
 import org.geoint.acetate.impl.model.entity.ImmutableOperationModel.ImmutableOperationAddress;
-import org.geoint.acetate.model.ComposableModelComponent;
-import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.ComponentAddress;
-import org.geoint.acetate.model.ContextualComponentModel;
+import org.geoint.acetate.model.ComposableModelComponent;
 import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
+import org.geoint.acetate.model.attribute.Inherited;
 import org.geoint.acetate.model.builder.ComponentCollisionException;
 import org.geoint.acetate.model.builder.IncompleteModelException;
 import org.geoint.acetate.model.constraint.ComponentConstraint;
-import org.geoint.acetate.model.util.ComponentFilters;
 
 /**
- * Base domain model object.
+ * Domain model object.
  *
- * Implementations of this object must be immutable and thread-safe.
- *
- * @param <T> data type of the object
+ * @param <T> java object representation of this model
  */
 public class ImmutableObjectModel<T> implements ObjectModel<T> {
 
-    private final DomainModel model;
     private final ImmutableObjectAddress address;
     private final String objectName;
-    private final Set<ObjectModel<? super T>> parents;
+    private final Set<ComponentAddress> parents;
     private final Optional<String> description;
-    private final Collection<ImmutableCompositeModel<?>> composites;
+    private final Map<String, ImmutableCompositeObjectModel<?>> composites;
     private final Collection<ComponentConstraint> constraints;
     private final Collection<ComponentAttribute> attributes;
 
@@ -56,64 +47,80 @@ public class ImmutableObjectModel<T> implements ObjectModel<T> {
      * This constructor <b>does not</b> perform any composite/inheritance
      * roll-up. Use builders for this.
      *
-     * @param model domain model this object belongs to
-     * @param name required domain-unique object display name
+     * @param domainName
+     * @param domainVersion
+     * @param objectName required domain-unique object display name
      * @param description optional object description (may be null)
-     * @param parents object models from which this model inherits
+     * @param parents addresses to hierarchical parent object models from which
+     * this model extends
      * @param composites all object components
      * @param constraints constraints placed on this object
      * @param attributes attributes defined for this object
      * @throws IncompleteModelException
      * @throws ComponentCollisionException
      */
-    protected ImmutableObjectModel(DomainModel model,
-            String name,
+    public ImmutableObjectModel(
+            String domainName,
+            long domainVersion,
+            String objectName,
             String description,
-            Set<ObjectModel<? super T>> parents,
-            Collection<? extends ComposableModelComponent<?>> composites,
+            Set<ComponentAddress> parents,
+            Collection<ImmutableCompositeObjectModel> composites,
             Collection<ComponentConstraint> constraints,
             Collection<ComponentAttribute> attributes)
             throws IncompleteModelException, ComponentCollisionException {
-        this.model = model;
-        this.address = new ImmutableBaseObjectAddress(
-                model.getDomainId(), model.getVersion(), name);
-        this.objectName = name;
+        this.address = new ImmutableBaseObjectAddress(domainName,
+                domainVersion,
+                objectName);
+        this.objectName = objectName;
         this.description = Optional.ofNullable(description);
+        this.parents = Collections.unmodifiableSet(parents);
 
-        Set<ObjectModel<? super T>> parentObjects = new HashSet<>();
-        Collection<ImmutableCompositeModel<?>> comps = new HashSet<>();
+        //validate composites
+        Map<String, ImmutableCompositeObjectModel<?>> comps = new HashMap<>();
 
-        for (ComposableModelComponent c : composites) {
-
-            if (ComponentFilters.isInherited(c)) {
-                
-                if (parentObjects.add(c.getContainer())) {
-                    logger.log(Level.FINE, () -> "Object '"
-                            + address.asString() + "' inherits from '"
-                            + c.getContainer().getAddress().asString());
+        for (ImmutableCompositeObjectModel<?> c : composites) {
+            //ensure that inherited composites added to the model are from a 
+            //defined parent model
+            Collection<Inherited> inheritedFrom = c.getAttributes(Inherited.class);
+            if (!inheritedFrom.isEmpty()) {
+                for (Inherited ci : inheritedFrom) {
+                    if (!this.parents.contains(ci.getDefinedAddress())) {
+                        throw new IncompleteModelException(domainName,
+                                domainVersion, "Composite component '"
+                                + c.getAddress()
+                                + "' is inherited from '"
+                                + ci.getDefinedAddress()
+                                + "' but containing object model '"
+                                + this.address.toString()
+                                + "' does not inherit from this object.");
+                    }
                 }
             }
 
-            if (c instanceof ImmutableOperationModel) {
-                ops.add((ImmutableOperationModel<?>) c);
-            } else if (c instanceof ImmutableAggregateModel) {
-                aggs.add((ImmutableAggregateModel<?>) c);
-            } else if (c instanceof ImmutableCompositeModel) {
-                comps.add((ImmutableCompositeModel<?>) c);
-            } else {
-                throw new IncompleteModelException(model, "Unknown model component "
-                        + c.getClass().getName());
+            //ensure that there isn't a local composite name collision within
+            //the object
+            if (comps.containsKey(c.getName())) {
+                throw new ComponentCollisionException(c.getAddress(),
+                        "Unable to add composite '"
+                        + c.getAddress()
+                        + "' to object model due to component name collision "
+                        + "with '"
+                        + comps.get(c.getName()).getAddress()
+                        + "'.");
             }
+
+            //add composite
+            comps.put(c.getName(), c);
         }
 
-        this.parents = Collections.unmodifiableSet(parentObjects);
-        this.composites = Collections.unmodifiableCollection(comps);
+        this.composites = Collections.unmodifiableMap(comps);
         this.constraints = Collections.unmodifiableCollection(new ArrayList<>(constraints));
         this.attributes = Collections.unmodifiableCollection(new ArrayList<>(attributes));
     }
 
     @Override
-    public Set<ObjectModel<? super T>> getParents() {
+    public Set<ComponentAddress> getParents() {
         return parents;
     }
 
@@ -149,7 +156,7 @@ public class ImmutableObjectModel<T> implements ObjectModel<T> {
 
     @Override
     public Collection<? extends ComposableModelComponent<?>> getComposites() {
-        return composites;
+        return composites.values();
     }
 
     public static abstract class ImmutableObjectAddress implements ComponentAddress {
@@ -216,6 +223,60 @@ public class ImmutableObjectModel<T> implements ObjectModel<T> {
             return true;
         }
 
+    }
+
+    /**
+     * Address for a root domain model object.
+     */
+    public final class ImmutableBaseObjectAddress extends ImmutableObjectAddress {
+
+        private final String domainName;
+        private final long domainVersion;
+        private final String objectName;
+
+        private static final String OBJECT_SCHEME = "model://";
+
+        /**
+         * Create an address for a base domain model object.
+         *
+         * @param domainName
+         * @param domainVersion
+         * @param pathComponents
+         */
+        private ImmutableBaseObjectAddress(String domainName,
+                long domainVersion,
+                String objectName) {
+            this.domainName = domainName;
+            this.domainVersion = domainVersion;
+            this.objectName = objectName;
+        }
+
+        @Override
+        public String getDomainName() {
+            return domainName;
+        }
+
+        @Override
+        public long getDomainVersion() {
+            return domainVersion;
+        }
+
+        public String getObjectName() {
+            return objectName;
+        }
+
+        @Override
+        public String asString() {
+            return OBJECT_SCHEME
+                    + domainName
+                    + DOMAIN_VERSION_SEPARATOR
+                    + domainVersion
+                    + COMPONENT_SEPARATOR
+                    + objectName;
+        }
+
+    }
+
 //
 //    public static class ImmutableEventAddress extends ImmutableObjectAddress {
 //
@@ -281,57 +342,4 @@ public class ImmutableObjectModel<T> implements ObjectModel<T> {
 //        }
 //
 //    }
-    }
-
-    /**
-     * Address for a root domain model object.
-     */
-    public final class ImmutableBaseObjectAddress extends ImmutableObjectAddress {
-
-        private final String domainName;
-        private final long domainVersion;
-        private final String objectName;
-
-        private static final String OBJECT_SCHEME = "model://";
-
-        /**
-         * Create an address for a base domain model object.
-         *
-         * @param domainName
-         * @param domainVersion
-         * @param pathComponents
-         */
-        private ImmutableBaseObjectAddress(String domainName,
-                long domainVersion,
-                String objectName) {
-            this.domainName = domainName;
-            this.domainVersion = domainVersion;
-            this.objectName = objectName;
-        }
-
-        @Override
-        public String getDomainName() {
-            return domainName;
-        }
-
-        @Override
-        public long getDomainVersion() {
-            return domainVersion;
-        }
-
-        public String getObjectName() {
-            return objectName;
-        }
-
-        @Override
-        public String asString() {
-            return OBJECT_SCHEME
-                    + domainName
-                    + DOMAIN_VERSION_SEPARATOR
-                    + domainVersion
-                    + COMPONENT_SEPARATOR
-                    + objectName;
-        }
-
-    }
 }

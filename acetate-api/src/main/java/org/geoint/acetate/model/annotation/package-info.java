@@ -1,5 +1,5 @@
 /**
- * Annotations which may be used to augment the {@link DataModel} that is
- * derived from a class (object graph) definition.
+ * Annotations which may be used add meta data to Java classes to define, or 
+ * augment, domain model components.
  */
 package org.geoint.acetate.model.annotation;

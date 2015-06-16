@@ -1,76 +1,70 @@
 package org.geoint.acetate.impl.model;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import org.geoint.acetate.impl.model.scan.DomainModelFactory;
+import java.util.Optional;
+import org.geoint.acetate.model.ComponentAddress;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.ModelComponent;
 import org.geoint.acetate.model.ModelException;
+import org.geoint.acetate.model.ObjectModel;
+import org.geoint.acetate.model.attribute.Attributable;
+import org.geoint.acetate.model.attribute.ComponentAttribute;
 
 /**
  *
  */
-public final class ImmutableDomainModel extends InMemoryDomainModel {
+public final class ImmutableDomainModel implements DomainModel {
 
-    public ImmutableDomainModel(String name,
+    private final InMemoryDomainModel model;
+
+    private ImmutableDomainModel(String name,
             long version,
-            String displayName,
-            String description,
             Collection<ModelComponent> components)
             throws ModelException {
-        super(name, version, displayName, description, components);
-    }
-
-    /**
-     * Constructs instances of ImmutableDomainModel containing the provided
-     * components.
-     *
-     * This method intentionally implements the {@link DomainModelFactory}
-     * functional interface so that it may be passed by reference.
-     *
-     * @param components
-     * @return models
-     * @throws ModelException thrown if a domain model is invalid
-     */
-    public static Collection<DomainModel> fromComponents(
-            Collection<ModelComponent> components)
-            throws ModelException {
-
-        Map<String, Map<String, ModelComponent>> bucketized
-                = new HashMap<>();
+        this.model = new InMemoryDomainModel(name, version);
         for (ModelComponent c : components) {
-
-            String domainId = DomainUtil.uniqueDomainId(c.getAddress());
-            if (!bucketized.containsKey(domainId)) {
-                bucketized.put(domainId, new HashMap<>());
-            }
-
-            if (bucketized.get(domainId).containsKey(c.getName())) {
-                throw new ModelException(c.getAddress().getDomainName(),
-                        c.getAddress().getDomainVersion(),
-                        "Duplicate model component '"
-                        + c.getName() + "' was already found in "
-                        + "domain '" + domainId + "'.");
-            }
-
-            bucketized.get(domainId).put(c.getName(), c);
+            this.model.add(c);
         }
-
-        //TODO add validation to ensure domain model is complete
-        Collection<DomainModel> models = new ArrayList<>();
-        for (Entry<String, Map<String, ModelComponent>> e : bucketized.entrySet()) {
-            final Collection<ModelComponent> modelComponents = e.getValue().values();
-            if (modelComponents.isEmpty()) {
-                continue;
-            }
-            final ModelComponent sample = modelComponents.iterator().next();
-            final String name = sample.getAddress().getDomainName();
-            final long version = sample.getAddress().getDomainVersion();
-            models.add(new ImmutableDomainModel(name, version, null, null, components));
-        }
-        return models;
     }
+
+    @Override
+    public String getDomainId() {
+        return model.getDomainId();
+    }
+
+    @Override
+    public long getVersion() {
+        return model.getVersion();
+    }
+
+    @Override
+    public String getName() {
+        return model.getName();
+    }
+
+    @Override
+    public Collection<ModelComponent> findAll() {
+        return model.findAll();
+    }
+
+    @Override
+    public Optional<ModelComponent> find(ComponentAddress address) {
+        return model.find(address);
+    }
+
+    @Override
+    public Collection<Attributable> find(Class<? extends ComponentAttribute> attributeType) {
+        return model.find(attributeType);
+    }
+
+    @Override
+    public Collection<ObjectModel<?>> findSpecialized(ComponentAddress parentAddress) {
+        return model.findSpecialized(parentAddress);
+    }
+
+    @Override
+    public String toString() {
+        return model.toString();
+    }
+
 }

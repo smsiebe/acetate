@@ -1,10 +1,10 @@
 package org.geoint.acetate.model.attribute;
 
-import org.geoint.acetate.model.ObjectModel;
+import org.geoint.acetate.model.ComponentAddress;
 
 /**
  * Data component attribute indicating the component was composed from a
- * non-entry aggregate (composite) object.
+ * (composite) object relationship.
  *
  * This attribute is added to a component by the aceteate framework.
  *
@@ -12,23 +12,17 @@ import org.geoint.acetate.model.ObjectModel;
 public final class Composited implements ComponentAttribute {
 
     /**
-     * Domain object model for the inherited object.
+     * Address of the model component which defines this component.
      *
-     * @return inherited (parent) model
+     * @return composite model address
      */
-    private final ObjectModel<?> compositeModel;
+    private final ComponentAddress definedBy;
 
-    public Composited(ObjectModel<?> inheritedModel) {
-        this.compositeModel = inheritedModel;
+    public Composited(ComponentAddress definedBy) {
+        this.definedBy = definedBy;
     }
 
-    /**
-     * Return the object model that declared the component.
-     *
-     * @return the object model of the composite that declared the component
-     * this attribute decorates
-     */
-    public ObjectModel<?> getCompositeModel() {
-        return compositeModel;
+    public ComponentAddress getDefinedAddress() {
+        return definedBy;
     }
 }

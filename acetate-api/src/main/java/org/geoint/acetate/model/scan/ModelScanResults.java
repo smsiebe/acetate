@@ -2,7 +2,9 @@ package org.geoint.acetate.model.scan;
 
 import org.geoint.acetate.DomainRegistry;
 import java.time.Duration;
+import java.util.Collection;
 import java.util.Optional;
+import org.geoint.acetate.model.ModelComponent;
 
 /**
  * Results from a domain model scan operation.
@@ -27,12 +29,11 @@ public interface ModelScanResults {
     Optional<Throwable> getCause();
 
     /**
-     * Number of domain model components found by scanner.
+     * Components found by the scanner.
      *
-     * @return number of domain model components found, which may be incomplete
-     * if the result did not complete successfully
+     * @return scanner discovered components
      */
-    int getNumComponentsFound();
+    Collection<ModelComponent> getComponents();
 
     /**
      * How long the scanner took to complete.

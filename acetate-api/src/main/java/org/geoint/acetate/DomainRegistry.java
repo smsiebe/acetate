@@ -3,7 +3,6 @@ package org.geoint.acetate;
 import java.util.Optional;
 import java.util.concurrent.Future;
 import org.geoint.acetate.model.DomainModel;
-import org.geoint.acetate.model.ModelException;
 import org.geoint.acetate.model.scan.ModelScanResults;
 import org.geoint.acetate.model.scan.ModelScanner;
 
@@ -17,12 +16,17 @@ import org.geoint.acetate.model.scan.ModelScanner;
 public interface DomainRegistry {
 
     /**
-     * Asynchronously scan for all domain models discoverable by the registry
-     * default {@link ModelScanner}.
+     * Asynchronously scan for domain model components using the
+     * registry-default scanner.
      *
      * Calling this method starts an asynchronous scan operation which will scan
-     * for, and register, domain models with the registry (thread-safe
-     * operation).
+     * for, and register, domain model components with the registry (thread-safe
+     * operation). Scanners providing components of a new domain model must
+     * automatically create the new domain model within the registry. Registries
+     * may optionally add/update/remove domain model components of already
+     * registered domain models; rejection of a model component must be logged
+     * to the <i>org.geoint.acetate.DomainRegistry</i>
+     * {@link java.util.logging.Logger logger}.
      *
      * Upon successful completion of the scan (which may be checked by calling
      * {@link Future#isDone() isDone} on the returned Future), the model will be
@@ -37,8 +41,11 @@ public interface DomainRegistry {
      * {@link ModelScanner}.
      *
      * Calling this method starts an asynchronous scan operation which will scan
-     * for, and register, domain models with the registry (thread-safe
-     * operation).
+     * for, and register, domain model components with the registry (thread-safe
+     * operation). Scanners providing components of a new domain model must
+     * automatically create the new domain model within the registry. Registries
+     * may optionally add/update/remove domain model components of already
+     * registered domain models.
      *
      * Upon successful completion of the scan (which may be checked by calling
      * {@link Future#isDone() isDone} on the returned Future), the model will be
@@ -67,12 +74,4 @@ public interface DomainRegistry {
      */
     Optional<DomainModel> getModel(String domainModelName, long version);
 
-    /**
-     * Register one or more domain models atomically with the registry.
-     *
-     * @param models models to register
-     * @throws ModelException thrown if the provided model is invalid or
-     * conflicts with another model within the registry
-     */
-    void register(DomainModel... models) throws ModelException;
 }

@@ -7,8 +7,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Defines a contextual "view" of the domain model, altering the domain model
- * definition of the model component the View annotates.
+ * The View annotation allows developers to define a contextually augmented 
+ * "view" of a domain model component, providing a means to alter the domain 
+ * model within this declared context.
  *
  */
 @Documented
