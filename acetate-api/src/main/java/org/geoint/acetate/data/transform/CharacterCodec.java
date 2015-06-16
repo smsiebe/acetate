@@ -3,7 +3,7 @@ package org.geoint.acetate.data.transform;
 import java.nio.CharBuffer;
 
 /**
- * Converts a domain model object instance to/from a character stream.
+ * Converts a domain model component instance to/from character data.
  *
  * All codec implementations must be thread-safe.
  *
@@ -12,22 +12,23 @@ import java.nio.CharBuffer;
 public interface CharacterCodec<T> {
 
     /**
-     * Converts character data in expected format to an object instance.
+     * Converts character data to a domain model component instance.
      *
      * @param reader
      * @return data instance
-     * @throws DataConversionException thrown if the source could not be read or
+     * @throws DataTransformException thrown if the source could not be read or
      * the object could not be instantiated
      */
-    T convert(CharBuffer reader) throws DataConversionException;
+    T convert(ModelComponent<T> model, CharBuffer reader) throws DataTransformException;
 
     /**
      * Converts an object to expected character format.
      *
-     * @param data
-     * @param writer
-     * @throws DataConversionException DataConversionException throws if there
-     * are problems writing the object as as character string
+     * @param model component model
+     * @param data domain component instance
+     * @param writer 
+     * @throws DataTransformException DataTransformException throws if there are
+     * problems writing the object as as character string
      */
-    void invert(T data, CharBuffer writer) throws DataConversionException;
+    void invert(ModelComponent<T> model, T data, CharBuffer writer) throws DataTransformException;
 }

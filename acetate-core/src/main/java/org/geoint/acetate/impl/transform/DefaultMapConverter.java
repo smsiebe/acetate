@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import org.geoint.acetate.data.transform.Converter;
-import org.geoint.acetate.data.transform.DataConversionException;
+import org.geoint.acetate.data.transform.DataTransformException;
 import org.geoint.acetate.impl.transform.DefaultMapConverter.KeyValue;
 
 /**
@@ -22,7 +22,7 @@ public class DefaultMapConverter<K, V>
 
     @Override
     public Collection<KeyValue<K, V>> convert(Map<K, V> from)
-            throws DataConversionException {
+            throws DataTransformException {
         Collection<KeyValue<K, V>> coll = new ArrayList<>();
         from.entrySet().stream()
                 .map((e) -> new KeyValue(e.getKey(), e.getValue()))
@@ -32,7 +32,7 @@ public class DefaultMapConverter<K, V>
 
     @Override
     public Map<K, V> invert(Collection<KeyValue<K, V>> to)
-            throws DataConversionException {
+            throws DataTransformException {
         Map<K, V> map = new LinkedHashMap<>();
         to.stream().forEach((p) -> {
             map.put(p.key, p.value);

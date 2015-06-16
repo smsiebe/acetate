@@ -6,8 +6,9 @@
         <artifactId>acetate</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
-    <groupId>gov.ic.geoint</groupId>
-    <artifactId>acetate-xml</artifactId>
-    <version>1.0</version>
+    <artifactId>acetate-rdfxml</artifactId>
     <packaging>jar</packaging>
+    <name>acetate-rdfxml</name>
+    <description>data binding and model generation plugin for RDF/XML 
+        formatted data</description>
 </project>

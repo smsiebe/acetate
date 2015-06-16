@@ -18,7 +18,8 @@
         <module>acetate-api</module>
         <module>acetate-spi</module>
         <module>acetate-core</module>
-        <module>acetate-json</module>
-        <module>acetate-xml</module>
+        <module>acetate-jsonld</module>
+        <module>acetate-rdfxml</module>
+        <module>acetate-template</module>
     </modules>
 </project>

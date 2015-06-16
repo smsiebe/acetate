@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.util.Optional;
 import org.geoint.acetate.model.ObjectModel;
-import org.geoint.acetate.data.transform.DataConversionException;
+import org.geoint.acetate.data.transform.DataTransformException;
 
 /**
  * A basic node of the data graph.
@@ -38,21 +38,21 @@ public interface DataNode<T> {
      * Converts the node value to a java object.
      *
      * @return java object or null if the value was null
-     * @throws DataConversionException thrown if the binary data could not be
+     * @throws DataTransformException thrown if the binary data could not be
      * converted to the required format for the data type
      * @throws DataBindException thrown if the data could not be instantiated
      */
     Optional<T> asObject()
-            throws DataConversionException, DataBindException;
+            throws DataTransformException, DataBindException;
 
     /**
      * Returns the data as a String.
      *
      * @return value as String or null if the data was null
-     * @throws DataConversionException thrown if there was as problem converting
+     * @throws DataTransformException thrown if there was as problem converting
      * the data to a String
      */
-    String asString() throws DataConversionException;
+    String asString() throws DataTransformException;
 
     /**
      * Returns the content of the node as a String or the default value if the
@@ -60,21 +60,21 @@ public interface DataNode<T> {
      *
      * @param defaultValue default node value
      * @return node value or default value if content of node was null
-     * @throws DataConversionException thrown if there was as problem converting
+     * @throws DataTransformException thrown if there was as problem converting
      * the data to a String
      */
-    String asString(String defaultValue) throws DataConversionException;
+    String asString(String defaultValue) throws DataTransformException;
 
     /**
      * Write the data value as a character stream to the provided buffer.
      *
      * @param buffer to write the data
-     * @throws DataConversionException thrown if there was as problem converting
+     * @throws DataTransformException thrown if there was as problem converting
      * the data to characters
      * @throws IOException thrown if there were problems writing the characters
      * to the provided writer
      */
-    void asString(CharBuffer buffer) throws DataConversionException, IOException;
+    void asString(CharBuffer buffer) throws DataTransformException, IOException;
 
     /**
      * Writes the data of this node as characters to the provided writer, or
@@ -82,22 +82,22 @@ public interface DataNode<T> {
      *
      * @param buffer to write the data
      * @param defaultData default data if the data node value is null
-     * @throws DataConversionException thrown if there was as problem converting
+     * @throws DataTransformException thrown if there was as problem converting
      * the data to characters
      * @throws IOException thrown if there were problems writing to the provided
      * writer
      */
     void asString(CharBuffer buffer, String defaultData)
-            throws DataConversionException, IOException;
+            throws DataTransformException, IOException;
 
     /**
      * Returns the data value as bytes.
      *
      * @return value as bytes or null if the data was null
-     * @throws DataConversionException thrown if there was as problem converting
+     * @throws DataTransformException thrown if there was as problem converting
      * the data to bytes
      */
-    byte[] asBytes() throws DataConversionException;
+    byte[] asBytes() throws DataTransformException;
 
     /**
      * Returns the data value as bytes or the default data value if the data
@@ -105,21 +105,21 @@ public interface DataNode<T> {
      *
      * @param defaultValue default data value
      * @return value of data node or default data value if node was null
-     * @throws DataConversionException thrown if there was as problem converting
+     * @throws DataTransformException thrown if there was as problem converting
      * the data to bytes
      */
-    byte[] asBytes(byte[] defaultValue) throws DataConversionException;
+    byte[] asBytes(byte[] defaultValue) throws DataTransformException;
 
     /**
      * Write the data value as bytes to the provided writer.
      *
      * @param writer buffer to write the data
-     * @throws DataConversionException thrown if there was as problem converting
+     * @throws DataTransformException thrown if there was as problem converting
      * the data to bytes
      * @throws IOException thrown if there were problems writing the bytes to
      * the provided writer
      */
-    void asBytes(ByteBuffer writer) throws DataConversionException, IOException;
+    void asBytes(ByteBuffer writer) throws DataTransformException, IOException;
 
     /**
      * Writes the data of this node as bytes to the provided writer, or writes
@@ -127,11 +127,11 @@ public interface DataNode<T> {
      *
      * @param writer buffer to write the data
      * @param defaultData default data if the data node value is null
-     * @throws DataConversionException thrown if there was as problem converting
+     * @throws DataTransformException thrown if there was as problem converting
      * the data to bytes
      * @throws IOException thrown if there were problems writing to the provided
      * writer
      */
     void asBytes(ByteBuffer writer, byte[] defaultData)
-            throws DataConversionException, IOException;
+            throws DataTransformException, IOException;
 }

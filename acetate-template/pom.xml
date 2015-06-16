@@ -6,8 +6,10 @@
         <artifactId>acetate</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>acetate-json</artifactId>
-    <name>acetate-json</name>
+    <artifactId>acetate-template</artifactId>
+    <name>acetate-template</name>
     <packaging>jar</packaging>
-    <description>JSON template plugin for the acetate data binding library.</description>
+    
+    <description>bidirectional data binding to a template-defined data file 
+        for the acetate data model framework</description>
 </project>

@@ -6,7 +6,8 @@ import org.geoint.acetate.model.attribute.Composited;
 import org.geoint.acetate.model.attribute.Inherited;
 
 /**
- * Utility class providing common component filter predicate functional methods.
+ * Utility class providing common component filter predicates as functional
+ * methods.
  */
 public final class ComponentFilters {
 
@@ -22,10 +23,8 @@ public final class ComponentFilters {
      * composite)
      */
     public static boolean isLocal(Attributable component) {
-        return component.getAttributes().stream()
-                .map((a) -> a.getClass())
-                .anyMatch((ac) -> ac.equals(Inherited.class)
-                        || ac.equals(Composited.class));
+        return component.hasAttribute(Inherited.class)
+                        || component.hasAttribute(Composited.class);
     }
 
     /**

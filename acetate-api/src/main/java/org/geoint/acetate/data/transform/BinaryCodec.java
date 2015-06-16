@@ -7,28 +7,33 @@ import java.nio.ByteBuffer;
  *
  * All codec implementations must be thread-safe.
  *
- * @param <T> 
+ * @param <T>
  */
 public interface BinaryCodec<T> {
 
     /**
      * Convert binary data in expected format to an object instance.
      *
-     * @param reader byte source
+     * @param model component model
+     * @param reader data as bytes
      * @return data instance
-     * @throws DataConversionException thrown if the source could not be read or
+     * @throws DataTransformException thrown if the source could not be read or
      * the object could not be instantiated
+     * @throws
      */
-    T convert(ByteBuffer reader) throws DataConversionException;
+    T convert(ModelComponent<T> model, ByteBuffer reader)
+            throws DataTransformException;
 
     /**
      * Converts an object to expected binary format.
      *
+     * @param model component model
      * @param data source object
      * @param writer where the bytes are written
-     * @throws DataConversionException throws if there are problems writing the
+     * @throws DataTransformException throws if there are problems writing the
      * object as bytes
      */
-    void invert(T data, ByteBuffer writer) throws DataConversionException;
+    void invert(ModelComponent<T> model, T data, ByteBuffer writer)
+            throws DataTransformException;
 
 }
