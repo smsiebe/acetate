@@ -4,8 +4,8 @@ import java.util.Collection;
 import java.util.Optional;
 import org.geoint.acetate.model.attribute.Attributable;
 import org.geoint.acetate.model.attribute.ComponentAttribute;
-import org.geoint.acetate.model.attribute.EntityId;
-import org.geoint.acetate.model.attribute.Version;
+import org.geoint.acetate.model.entity.EntityId;
+import org.geoint.acetate.model.entity.Version;
 import org.geoint.acetate.model.constraint.NotNull;
 
 /**

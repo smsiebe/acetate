@@ -1,6 +1,6 @@
-package gov.ic.geoint.acetate.bind;
+package org.geoint.acetate.bind;
 
-import gov.ic.geoint.acetate.AcetateException;
+import org.geoint.acetate.AcetateException;
 
 /**
  * Thrown if there are problems instantiating a java object instance of the

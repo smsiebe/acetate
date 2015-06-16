@@ -22,7 +22,7 @@ import org.geoint.acetate.model.constraint.ComponentConstraint;
 @Documented
 @Target({ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Component {
+public @interface ComponentView {
 
     /**
      * {@link ComponentAddress} URI of the model component to change.

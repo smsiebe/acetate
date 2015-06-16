@@ -1,6 +1,6 @@
 package org.geoint.acetate.data;
 
-import gov.ic.geoint.acetate.bind.DataBindException;
+import org.geoint.acetate.bind.DataBindException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;

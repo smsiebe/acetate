@@ -1,6 +1,6 @@
 package org.geoint.acetate.model;
 
-import gov.ic.geoint.acetate.AcetateException;
+import org.geoint.acetate.AcetateException;
 
 /**
  *

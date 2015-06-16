@@ -1,6 +1,6 @@
-package org.geoint.acetate.model.attribute;
+package org.geoint.acetate.model.entity;
 
-import gov.ic.geoint.acetate.bind.Factory;
+import org.geoint.acetate.bind.Factory;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;

@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 import org.geoint.acetate.model.DomainModel;
 
 /**
- * Defines the domain model for the model object.
+ * Defines the class as domain model object.
  *
  * @see DomainModel
  */

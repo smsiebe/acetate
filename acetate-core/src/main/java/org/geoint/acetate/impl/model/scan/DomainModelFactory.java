@@ -6,7 +6,7 @@ import org.geoint.acetate.model.ModelComponent;
 import org.geoint.acetate.model.ModelException;
 
 /**
- *
+ * Creates domain models from a collection of model components.
  */
 @FunctionalInterface
 public interface DomainModelFactory {

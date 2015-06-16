@@ -1,6 +1,6 @@
 package org.geoint.acetate.model.scan;
 
-import gov.ic.geoint.acetate.AcetateException;
+import org.geoint.acetate.AcetateException;
 
 /**
  * Thrown if a model scan operation fails.

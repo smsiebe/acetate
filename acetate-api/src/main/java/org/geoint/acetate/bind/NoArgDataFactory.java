@@ -1,4 +1,4 @@
-package gov.ic.geoint.acetate.bind;
+package org.geoint.acetate.bind;
 
 import java.lang.reflect.InvocationTargetException;
 

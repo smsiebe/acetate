@@ -1,14 +1,14 @@
 package org.geoint.acetate.impl;
 
-import gov.ic.geoint.acetate.DomainRegistry;
-import java.util.Collection;
+import org.geoint.acetate.DomainRegistry;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import org.geoint.acetate.impl.model.entity.ImmutableDomainModel;
-import org.geoint.acetate.impl.model.scan.AsyncModelScanner;
-import org.geoint.acetate.impl.model.scan.ClassLoaderModelScanner;
+import org.geoint.acetate.impl.model.DomainUtil;
+import org.geoint.acetate.impl.model.ImmutableDomainModel;
 import org.geoint.acetate.impl.model.scan.ModelScanManager;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.ModelException;
@@ -20,16 +20,19 @@ import org.geoint.acetate.model.scan.ModelScanner;
  */
 public class DefaultDomainRegistry implements DomainRegistry {
 
-    private static ExecutorService exe;
-    private final ModelScanManager scans = new ModelScanManager();
+    private final ExecutorService exe;
+    private final ModelScanManager scans;
+    private final Map<String, DomainModel> models = new HashMap<>();
 
-    /**
-     * Sets the executor to use for all domain registry functions.
-     *
-     * @param executor
-     */
-    public static synchronized void setExecutor(ExecutorService executor) {
-        exe = executor;
+    public DefaultDomainRegistry() {
+        this(Executors.newCachedThreadPool());
+    }
+
+    public DefaultDomainRegistry(ExecutorService exe) {
+        this.exe = exe;
+        this.scans = new ModelScanManager(this,
+                ImmutableDomainModel::fromComponents,
+                exe);
     }
 
     /**
@@ -40,42 +43,47 @@ public class DefaultDomainRegistry implements DomainRegistry {
      */
     @Override
     public Future<ModelScanResults> scan() {
-        return executeScan(new ClassLoaderModelScanner());
+        //TODO add scanner which reads the annotation processer generated meta
+        throw new UnsupportedOperationException();
+        // return scans.execute(new AnnotationScanner());
     }
 
     @Override
     public Future<ModelScanResults> scan(ModelScanner scanner) {
-
+        return scans.execute(scanner);
     }
 
     @Override
     public boolean isRegistered(String domainModelName, long version) {
-
+        synchronized (models) {
+            return models.containsKey(DomainUtil.uniqueDomainId(domainModelName, version));
+        }
     }
 
     @Override
     public Optional<DomainModel> getModel(String domainModelName, long version) {
-
-    }
-
-    private Future<ModelScanResults> executeScan(ModelScanner scanner) {
-        ExecutorService e = getExecutor();
-        return scans.execute(e, new AsyncModelScanner(e,
-                ImmutableDomainModel::fromComponents,
-                scanner)
-        );
-    }
-
-    private static synchronized ExecutorService getExecutor() {
-        if (exe == null) {
-            exe = Executors.newCachedThreadPool();
+        synchronized (models) {
+            return Optional.ofNullable(models.get(
+                    DomainUtil.uniqueDomainId(domainModelName, version))
+            );
         }
-        return exe;
     }
 
     @Override
-    public void register(DomainModel model) throws ModelException {
+    public void register(DomainModel... newModels) throws ModelException {
+        synchronized (models) {
+            for (DomainModel m : newModels) {
+                if (models.containsKey(m.getDomainId())) {
+                    throw new ModelException(m.getDisplayName(), m.getVersion(),
+                            "Domain model "
+                            + m.getDomainId()
+                            + " is already registered."
+                    );
+                }
 
+                models.put(m.getDomainId(), m);
+            }
+        }
     }
 
 }

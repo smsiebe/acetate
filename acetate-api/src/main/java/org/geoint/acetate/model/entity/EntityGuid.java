@@ -1,4 +1,6 @@
-package org.geoint.acetate.model.attribute;
+package org.geoint.acetate.model.entity;
+
+import org.geoint.acetate.model.attribute.ComponentAttribute;
 
 /**
  * "Marker" annotation which is used to identity the globally unique identifier 

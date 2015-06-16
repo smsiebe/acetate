@@ -1,4 +1,4 @@
-package gov.ic.geoint.acetate;
+package org.geoint.acetate;
 
 import java.util.Optional;
 import java.util.concurrent.Future;
@@ -68,11 +68,11 @@ public interface DomainRegistry {
     Optional<DomainModel> getModel(String domainModelName, long version);
 
     /**
-     * Register a domain model with the registry.
+     * Register one or more domain models atomically with the registry.
      *
-     * @param model model to register
+     * @param models models to register
      * @throws ModelException thrown if the provided model is invalid or
      * conflicts with another model within the registry
      */
-    void register(DomainModel model) throws ModelException;
+    void register(DomainModel... models) throws ModelException;
 }

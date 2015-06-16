@@ -1,6 +1,6 @@
 package org.geoint.acetate.data.transform;
 
-import gov.ic.geoint.acetate.AcetateException;
+import org.geoint.acetate.AcetateException;
 
 /**
  * Thrown if there was a problem converting data from one type to another.

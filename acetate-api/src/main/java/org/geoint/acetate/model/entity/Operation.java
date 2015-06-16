@@ -1,4 +1,4 @@
-package org.geoint.acetate.model.annotation;
+package org.geoint.acetate.model.entity;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

@@ -1,4 +1,4 @@
-package gov.ic.geoint.acetate.bind;
+package org.geoint.acetate.bind;
 
 /**
  * Defines the context to create the object instance.

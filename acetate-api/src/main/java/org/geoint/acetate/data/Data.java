@@ -1,6 +1,6 @@
 package org.geoint.acetate.data;
 
-import gov.ic.geoint.acetate.bind.DataBindException;
+import org.geoint.acetate.bind.DataBindException;
 import java.util.Collection;
 import java.util.Optional;
 import org.geoint.acetate.data.transform.DataConversionException;

@@ -1,4 +1,6 @@
-package org.geoint.acetate.model.attribute;
+package org.geoint.acetate.model.entity;
+
+import org.geoint.acetate.model.attribute.ComponentAttribute;
 
 /**
  * Identifies a field as the model instance version field.

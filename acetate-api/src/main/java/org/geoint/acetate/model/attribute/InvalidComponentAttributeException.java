@@ -1,7 +1,7 @@
 package org.geoint.acetate.model.attribute;
 
 import org.geoint.acetate.model.attribute.ComponentAttribute;
-import gov.ic.geoint.acetate.AcetateException;
+import org.geoint.acetate.AcetateException;
 
 /**
  * Thrown if a data component attribute could not be resolved for a model.

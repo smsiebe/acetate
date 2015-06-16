@@ -1,117 +1,155 @@
 package org.geoint.acetate.impl.model.scan;
 
-import gov.ic.geoint.acetate.DomainRegistry;
+import org.geoint.acetate.DomainRegistry;
 import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.geoint.acetate.model.ComponentAddress;
+import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.ModelComponent;
-import org.geoint.acetate.model.attribute.ComponentAttribute;
-import org.geoint.acetate.model.scan.ModelComponentListener;
-import org.geoint.acetate.model.scan.ModelComponentRejectedException;
+import org.geoint.acetate.model.ModelException;
 import org.geoint.acetate.model.scan.ModelScanException;
 import org.geoint.acetate.model.scan.ModelScanResults;
 import org.geoint.acetate.model.scan.ModelScanner;
 
 /**
- * Manages multiple domain model on a separate thread.
+ * Manages asynchronous domain model scans.
  *
  * Instances of this class are thread-safe.
  */
-public class ModelScanManager {
+public class ModelScanManager implements Runnable {
 
-    private Collection<Future<ModelScanTask>> runningTasks;
+    private Map<ModelScanTask, Future<ModelScanResults>> runningTasks;
+    private final DomainRegistry registry;
+    private final DomainModelFactory dmf;
+    private final ExecutorService executor;
 
+    private static final long DEFAULT_SCAN_TIMEOUT
+            = TimeUnit.MINUTES.toMillis(5);
     private static final Logger logger
             = Logger.getLogger(ModelScanManager.class.getName());
 
-    public Future<? extends ModelScanResults> execute(ExecutorService exec,
-            DomainRegistry registry,
-            DomainModelFactory dmf,
+    public ModelScanManager(DomainRegistry registry, DomainModelFactory dmf,
+            ExecutorService executor) {
+        this.registry = registry;
+        this.dmf = dmf;
+        this.executor = executor;
+        runningTasks = new ConcurrentHashMap<>();
+    }
+
+    /**
+     * model scanner management service
+     */
+    @Override
+    public void run() {
+        for (;;) {
+            try {
+                //attempt to shutdown any running task over its configured timeout
+                runningTasks.entrySet().stream()
+                        .filter((e) -> (System.currentTimeMillis() - e.getKey().startMillis)
+                                > e.getKey().timeoutMillis)
+                        .forEach((e) -> {
+                            logger.log(Level.FINE, "Attempting to shutdown task "
+                                    + "''{0}'', timeout.", e.getKey().toString());
+                            e.getValue().cancel(true);
+                        });
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                if (Thread.interrupted()) {
+                    logger.log(Level.INFO, "Shutting down model scan mamanger; "
+                            + "[" + runningTasks.size() + "] scans pending.", ex);
+                    runningTasks.values().stream().forEach((t) -> t.cancel(true));
+                }
+            }
+        }
+    }
+
+    public Future<ModelScanResults> execute(
             ModelScanner scanner) {
-        return execute(exec, new ModelScanTask(scanner, registry, dmf));
+        return execute(new ModelScanTask(scanner));
     }
 
     public Future<? extends ModelScanResults> execute(
-            ExecutorService exec,
-            DomainRegistry registry,
-            DomainModelFactory dmf,
             ModelScanner scanner,
             long timeout,
             TimeUnit timeoutUnit) {
-        return execute(exec,
-                new ModelScanTask(scanner,
-                        timeoutUnit.toMillis(timeout),
-                        registry,
-                        dmf)
+        return execute(new ModelScanTask(scanner,
+                timeoutUnit.toMillis(timeout))
         );
-
     }
 
-    private Future<ModelScanTask> execute(ExecutorService exec,
-            ModelScanTask task) {
-        final Future<ModelScanTask> scan = exec.submit(task);
-        runningTasks.add(scan);
+    private Future<ModelScanResults> execute(ModelScanTask task) {
+        final Future<ModelScanResults> scan = executor.submit(task);
+        logger.log(Level.FINE, "Scanning for model components " + scan.toString());
+        runningTasks.put(task, scan);
         return scan;
     }
 
-    private static final class ModelScanTask
-            implements ModelScanResults, Callable<ModelScanTask> {
+    /**
+     * Task which executes the ModelScanner, registers domain model results with
+     * the provided registry, and provides the scan results.
+     *
+     * ModelScanTask removes itself from the runningTasks when complete.
+     */
+    private final class ModelScanTask
+            implements ModelScanResults, Callable<ModelScanResults> {
 
         private final ModelScanner scanner;
         private final long timeoutMillis;
-        private final DomainRegistry registry;
-        private final DomainModelFactory dmf;
+        private long startMillis;
         private Duration duration;
         private int numComponentsFound;
         private Optional<Throwable> error;
 
-        private static final long DEFAULT_SCAN_TIMEOUT
-                = TimeUnit.MINUTES.toMillis(5);
-
-        public ModelScanTask(ModelScanner scanner,
-                DomainRegistry registry, DomainModelFactory dmf) {
-            this(scanner, DEFAULT_SCAN_TIMEOUT, registry, dmf);
+        public ModelScanTask(ModelScanner scanner) {
+            this(scanner, DEFAULT_SCAN_TIMEOUT);
         }
 
         private ModelScanTask(ModelScanner scanner,
-                long timeoutMillis,
-                DomainRegistry registry,
-                DomainModelFactory dmf) {
+                long timeoutMillis) {
             this.scanner = scanner;
             this.timeoutMillis = timeoutMillis;
-            this.registry = registry;
-            this.dmf = dmf;
         }
 
         @Override
-        public ModelScanTask call() throws Exception {
+        public ModelScanTask call() {
 
             final Collection<ModelComponent> components = new ArrayList<>();
 
-            final long startMillis = System.currentTimeMillis();
-            
-            //do scan
-            scanner.scan((n,v,c) -> components.add(c));
-            
-            while (!scan.isDone()) {
-                long duration = System.currentTimeMillis() - startMillis;
-                if (duration > scanTimeoutMillis) {
-                    throw new ModelScanException(new AysncTimeoutScanResults(
-                            scanner.getClass(), duration));
+            startMillis = System.currentTimeMillis();
+
+            try {
+                //do scan, adding components to components collection
+                scanner.scan((n, v, c) -> components.add(c));
+
+                //convert and register domain models
+                for (DomainModel dm : dmf.fromComponents(components)) {
+                    registry.register(dm);
                 }
-                Thread.sleep(1000);
+
+                //no errors
+                error = Optional.empty();  //no error
+            } catch (ModelScanException | ModelException ex) {
+                logger.log(Level.WARNING, "Unable to complete model scan task '"
+                        + this.toString() + "'", ex);
+                error = Optional.of(ex);
             }
+
+            //register results
+            this.duration = Duration.ofMillis(System.currentTimeMillis() - startMillis);
+            this.numComponentsFound = components.size();
+
+            //remove itself from running tasks
+            runningTasks.remove(this);
 
             return this;
         }
@@ -141,6 +179,18 @@ public class ModelScanManager {
             return scanner.getClass();
         }
 
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Model scanner '")
+                    .append(scanner.getClass().getName())
+                    .append("'");
+            if (startMillis > 0) {
+                sb.append(" started ")
+                        .append(Instant.ofEpochMilli(startMillis).toString());
+            }
+            return sb.toString();
+        }
     }
 //    
 //    /*

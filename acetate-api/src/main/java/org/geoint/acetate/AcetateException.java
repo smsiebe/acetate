@@ -1,4 +1,4 @@
-package gov.ic.geoint.acetate;
+package org.geoint.acetate;
 
 /**
  * Base exception class for all acetate checked exceptions.

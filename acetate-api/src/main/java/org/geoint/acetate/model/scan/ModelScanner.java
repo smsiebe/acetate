@@ -12,6 +12,9 @@ public interface ModelScanner {
      * Scans for domain model components and notifies listeners based on it the
      * scan listener lifecycle contract.
      *
+     * Long-running scan tasks should perodically check the threads interrupt to
+     * see if has been requested to shutdown.
+     *
      * @param listeners scan lifecycle callback listeners
      * @throws ModelScanException thrown if the scan could not complete
      */

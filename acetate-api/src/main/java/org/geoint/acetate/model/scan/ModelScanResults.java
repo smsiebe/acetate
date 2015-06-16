@@ -1,6 +1,6 @@
 package org.geoint.acetate.model.scan;
 
-import gov.ic.geoint.acetate.DomainRegistry;
+import org.geoint.acetate.DomainRegistry;
 import java.time.Duration;
 import java.util.Optional;
 
