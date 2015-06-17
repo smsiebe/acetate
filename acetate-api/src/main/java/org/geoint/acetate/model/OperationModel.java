@@ -1,17 +1,17 @@
 package org.geoint.acetate.model;
 
 import java.util.Collection;
-import org.geoint.acetate.model.annotation.Domain;
+import org.geoint.acetate.model.annotation.Model;
 
 /**
  * Models behavior of an Entity.
  *
  */
-@Domain(name = "acetate", version = 1)
+@Model(name="", domainName="acetate", domainVersion=1)
 public interface OperationModel extends ModelComponent {
 
     /**
-     * Domain mode of the returned type.
+     * Model mode of the returned type.
      *
      * @return model of the returned type from the method or null if returns
      * void
@@ -19,7 +19,7 @@ public interface OperationModel extends ModelComponent {
     ReturnModel getReturnModel();
 
     /**
-     * Domain models of the operation parameters, in declaration order.
+     * Model models of the operation parameters, in declaration order.
      *
      * @return models of the operation parameters in declaration order; empty
      * collection if no parameters are required for the operation

@@ -1,13 +1,13 @@
 package org.geoint.acetate.impl.transform;
 
 import java.nio.ByteBuffer;
-import org.geoint.acetate.data.transform.BinaryCodec;
-import org.geoint.acetate.data.transform.DataTransformException;
+import org.geoint.acetate.bind.transform.BufferedCodec;
+import org.geoint.acetate.bind.transform.DataTransformException;
 
 /**
  * Default data type for {@link Integer}.
  */
-public final class DefaultIntegerBinaryCodec implements BinaryCodec<Integer> {
+public final class DefaultIntegerBinaryCodec implements BufferedCodec<Integer> {
 
     @Override
     public Integer convert(ByteBuffer reader) throws DataTransformException {

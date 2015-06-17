@@ -1,8 +1,8 @@
 package org.geoint.acetate.impl.model.entity;
 
 import java.util.Collection;
-import org.geoint.acetate.data.transform.BinaryCodec;
-import org.geoint.acetate.data.transform.CharacterCodec;
+import org.geoint.acetate.bind.transform.BufferedCodec;
+import org.geoint.acetate.bind.transform.CharacterCodec;
 import org.geoint.acetate.impl.model.ImmutableCompositeObjectModel;
 import org.geoint.acetate.impl.model.ImmutableObjectAddress.ImmutableComponentAddress;
 import org.geoint.acetate.impl.model.ImmutableObjectModel;
@@ -36,7 +36,7 @@ public class ImmutableEntityModel<T> extends ImmutableObjectModel<T>
             Collection<ImmutableAggregateModel<?>> aggregates,
             Collection<DataConstraint> constraints,
             Collection<ModelAttribute> attributes,
-            BinaryCodec<T> binaryCodec,
+            BufferedCodec<T> binaryCodec,
             CharacterCodec<T> charCodec)
             throws IncompleteModelException, ComponentCollisionException {
         super(model, path, name, description, parentObjectNames, operations,

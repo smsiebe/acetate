@@ -1,11 +1,11 @@
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.model.annotation.Domain;
+import org.geoint.acetate.model.annotation.Model;
 
 /**
  * Models a composite relationship between two data model components.
  */
-@Domain(name = "acetate", version = 1)
+@Model(name="", domainName="acetate", domainVersion=1)
 public interface CompositeModel {
 
     /**

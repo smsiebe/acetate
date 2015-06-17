@@ -21,12 +21,18 @@ import org.geoint.acetate.model.annotation.EntityVersion;
  *
  * <p>
  * The data type of the VersionAttribute component must be a <i>long</i>.
- * 
+ *
  * @see EntityVersion
  */
 public final class EntityVersionAttribute implements ModelAttribute {
 
-    public EntityVersionAttribute() {
+    private static final EntityVersionAttribute INSTANCE
+            = new EntityVersionAttribute();
+
+    private EntityVersionAttribute() {
     }
 
+    public EntityVersionAttribute getInstance() {
+        return INSTANCE;
+    }
 }

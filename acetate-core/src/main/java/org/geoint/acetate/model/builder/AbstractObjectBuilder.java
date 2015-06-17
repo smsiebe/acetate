@@ -2,8 +2,8 @@ package org.geoint.acetate.model.builder;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.geoint.acetate.data.transform.BinaryCodec;
-import org.geoint.acetate.data.transform.CharacterCodec;
+import org.geoint.acetate.bind.transform.BufferedCodec;
+import org.geoint.acetate.bind.transform.CharacterCodec;
 import org.geoint.acetate.impl.model.ImmutableObjectAddress;
 import org.geoint.acetate.impl.model.ImmutableObjectAddress.ImmutableComponentAddress;
 
@@ -25,7 +25,7 @@ public abstract class AbstractObjectBuilder<T, B extends AbstractObjectBuilder<T
     //key = localname
     protected final Map<String, DomainAggregateObjectBuilder<?>> aggregates
             = new HashMap<>();
-    protected BinaryCodec<T> binaryCodec;
+    protected BufferedCodec<T> binaryCodec;
     protected CharacterCodec<T> charCodec;
 
     public AbstractObjectBuilder(ImmutableObjectAddress path) {
@@ -98,7 +98,7 @@ public abstract class AbstractObjectBuilder<T, B extends AbstractObjectBuilder<T
      * @param codec
      * @return this builder (fluid interface)
      */
-    public B codec(BinaryCodec<T> codec) {
+    public B codec(BufferedCodec<T> codec) {
         this.binaryCodec = codec;
         return self();
     }

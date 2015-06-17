@@ -2,7 +2,7 @@ package org.geoint.acetate.model;
 
 import java.time.ZonedDateTime;
 import java.util.Set;
-import org.geoint.acetate.model.annotation.Domain;
+import org.geoint.acetate.model.annotation.Model;
 
 /**
  * Model of an event resulting from a change to an {@link EntityModel Entity}
@@ -13,7 +13,7 @@ import org.geoint.acetate.model.annotation.Domain;
  *
  * @param <E> java data type of the entity event
  */
-@Domain(name = "acetate", version = 1)
+@Model(name="", domainName="acetate", domainVersion=1)
 public interface EventModel<E> extends ComposedModel<E> {
 
     /**

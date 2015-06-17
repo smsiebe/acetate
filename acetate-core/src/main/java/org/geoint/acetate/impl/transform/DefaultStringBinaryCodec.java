@@ -2,15 +2,15 @@ package org.geoint.acetate.impl.transform;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
-import org.geoint.acetate.data.transform.BinaryCodec;
-import org.geoint.acetate.data.transform.DataTransformException;
+import org.geoint.acetate.bind.transform.BufferedCodec;
+import org.geoint.acetate.bind.transform.DataTransformException;
 
 /**
  * Default data type for {@link String}.
  *
  * Converts the entire content of the ByteReader to a UTF-8 String.
  */
-public final class DefaultStringBinaryCodec implements BinaryCodec<String> {
+public final class DefaultStringBinaryCodec implements BufferedCodec<String> {
 
     @Override
     public String convert(ByteBuffer reader)

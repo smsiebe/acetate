@@ -1,4 +1,4 @@
-package org.geoint.acetate.model.annotation;
+package org.geoint.acetate.bind.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -7,14 +7,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Repeatable wrapper for {@link Model}.
- *
- * @see Model
+ * Identifies the model component as non-bindable.
  */
 @Documented
-@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Domains {
+@Target({ElementType.METHOD, ElementType.TYPE_USE})
+public @interface NoBind {
 
-    Model[] value();
 }

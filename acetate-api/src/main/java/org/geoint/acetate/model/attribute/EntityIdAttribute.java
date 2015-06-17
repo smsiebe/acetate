@@ -49,7 +49,12 @@ import org.geoint.acetate.model.annotation.EntityId;
  */
 public final class EntityIdAttribute implements ModelAttribute {
 
-    public EntityIdAttribute() {
+    private static final EntityIdAttribute INSTANCE = new EntityIdAttribute();
+
+    private EntityIdAttribute() {
     }
 
+    public static EntityIdAttribute getInstance() {
+        return INSTANCE;
+    }
 }

@@ -1,12 +1,12 @@
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.model.annotation.Domain;
+import org.geoint.acetate.model.annotation.Model;
 
 /**
  * Models an Exception.
  * @param <T>
  */
-@Domain(name = "acetate", version = 1)
+@Model(name="", domainName="acetate", domainVersion=1)
 public interface ExceptionModel<T extends Throwable> extends ComposedModel<T> {
 
 }

@@ -1,14 +1,14 @@
 package org.geoint.acetate.impl.transform;
 
 import java.nio.ByteBuffer;
-import org.geoint.acetate.data.transform.BinaryCodec;
-import org.geoint.acetate.data.transform.DataTransformException;
+import org.geoint.acetate.bind.transform.BufferedCodec;
+import org.geoint.acetate.bind.transform.DataTransformException;
 
 /**
  * Default date type for {@link Boolean}.
  *
  */
-public final class DefaultBooleanBinaryCodec implements BinaryCodec<Boolean> {
+public final class DefaultBooleanBinaryCodec implements BufferedCodec<Boolean> {
 
     private static final byte FALSE = (byte) 0;
     private static final byte TRUE = (byte) 1;

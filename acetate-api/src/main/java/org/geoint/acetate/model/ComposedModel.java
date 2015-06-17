@@ -1,7 +1,7 @@
 package org.geoint.acetate.model;
 
 import java.util.Collection;
-import org.geoint.acetate.model.annotation.Domain;
+import org.geoint.acetate.model.annotation.Model;
 
 /**
  * A data model component which is composed from other data model components
@@ -9,7 +9,7 @@ import org.geoint.acetate.model.annotation.Domain;
  *
  * @param <T> java class representation of component
  */
-@Domain(name = "acetate", version = 1)
+@Model(name="", domainName="acetate", domainVersion=1)
 public interface ComposedModel<T> extends DataModel<T> {
 
     /**

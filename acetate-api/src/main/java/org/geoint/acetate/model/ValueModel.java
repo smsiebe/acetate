@@ -1,9 +1,9 @@
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.data.transform.BinaryCodec;
-import org.geoint.acetate.data.transform.CharacterCodec;
-import org.geoint.acetate.model.annotation.Domain;
-import org.geoint.acetate.model.constraint.Constrained;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import org.geoint.acetate.bind.transform.BufferedCodec;
+import org.geoint.acetate.model.annotation.Model;
 
 /**
  * Data-bearing data model component.
@@ -13,20 +13,20 @@ import org.geoint.acetate.model.constraint.Constrained;
  *
  * @param <T> java class of the data value
  */
-@Domain(name = "acetate", version = 1)
-public interface ValueModel<T> extends DataModel<T>, Constrained {
+@Model(name = "value", domainName = "acetate", domainVersion = 1)
+public interface ValueModel<T> extends DataModel<T> {
 
     /**
      * Default character codec to use for this domain object.
      *
      * @return default character codec
      */
-    CharacterCodec<T> getCharacterCodec();
+    BufferedCodec<T, CharBuffer> getCharacterCodec();
 
     /**
      * Default binary codec to use for this domain object.
      *
      * @return default binary codec
      */
-    BinaryCodec<T> getBinaryCodec();
+    BufferedCodec<T, ByteBuffer> getBinaryCodec();
 }

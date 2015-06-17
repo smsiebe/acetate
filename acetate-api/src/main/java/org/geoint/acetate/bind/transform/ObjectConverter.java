@@ -1,22 +1,21 @@
-package org.geoint.acetate.data.transform;
+package org.geoint.acetate.bind.transform;
 
 import java.util.Optional;
 import org.geoint.acetate.model.DataModel;
-import org.geoint.acetate.model.ModelComponent;
 
 /**
- * Converts a non-domain model Object to a domain model object.
+ * Converts a java object to/from a domain model object.
  *
  * Converters may be used in several different ways. One common use us to teach
- * a domain model how to handle objects it encounters which are not "known" to
- * the domain model.
+ * a domain model how to handle objects it encounters which are not domain model
+ * components.
  *
  * All converter implementations must be thread-safe.
  *
  * @param <F> source type (from)
  * @param <T> destination type (to)
  */
-public interface Converter<F, T> {
+public interface ObjectConverter<F, T> {
 
     /**
      * Convert from a non-domain model Object to a domain model object instance.
@@ -27,7 +26,7 @@ public interface Converter<F, T> {
      * @throws DataTransformException thrown if there were unexpected problems
      * converting the object
      */
-    Optional<T> convert(DataModel<T> model, F obj) 
+    Optional<T> convert(DataModel<T> model, F obj)
             throws DataTransformException;
 
     /**
@@ -40,6 +39,6 @@ public interface Converter<F, T> {
      * @throws DataTransformException thrown if there were unexpected problems
      * converting the object back to its original form
      */
-    Optional<F> invert(DataModel<T> model, T modeled) 
+    Optional<F> invert(DataModel<T> model, T modeled)
             throws DataTransformException;
 }

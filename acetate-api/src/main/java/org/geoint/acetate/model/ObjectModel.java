@@ -2,7 +2,7 @@ package org.geoint.acetate.model;
 
 import java.util.Collection;
 import java.util.Set;
-import org.geoint.acetate.model.annotation.Domain;
+import org.geoint.acetate.model.annotation.Model;
 
 /**
  * An ObjectModel is a data model component which is composed of zero or more
@@ -18,12 +18,12 @@ import org.geoint.acetate.model.annotation.Domain;
  *
  * @param <T> associated java data type
  */
-@Domain(name = "acetate", version = 1)
+@Model(name="", domainName="acetate", domainVersion=1)
 public interface ObjectModel<T> extends DataModel<T> {
 
     /**
-     * Domain object model(s) this model inherits from, potentially inheriting
-     * components.
+     * Model object model(s) this model inherits from, potentially inheriting
+ components.
      *
      * @return domain component from which this component is inherited or, if
      * not inherited from other object models, returns an empty set
@@ -31,7 +31,7 @@ public interface ObjectModel<T> extends DataModel<T> {
     Set<ObjectModel<? super T>> getParents();
 
     /**
-     * Domain object model(s) which specialize (inherit from) this model.
+     * Model object model(s) which specialize (inherit from) this model.
      *
      * @return models which inherit from this model
      */

@@ -1,7 +1,7 @@
 package org.geoint.acetate.model;
 
 import java.util.Optional;
-import org.geoint.acetate.model.annotation.Domain;
+import org.geoint.acetate.model.annotation.Model;
 import org.geoint.acetate.model.attribute.Attributed;
 
 /**
@@ -9,7 +9,7 @@ import org.geoint.acetate.model.attribute.Attributed;
  *
  *
  */
-@Domain(name = "acetate", version = 1)
+@Model(name="", domainName="acetate", domainVersion=1)
 public interface ModelComponent extends Attributed {
 
     /**
@@ -20,7 +20,7 @@ public interface ModelComponent extends Attributed {
     DomainModel getDomainModel();
 
     /**
-     * Domain-model unique name of the component.
+     * Model-model unique name of the component.
      *
      * @return unique component name
      */

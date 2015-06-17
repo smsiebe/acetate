@@ -1,6 +1,6 @@
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.model.annotation.Domain;
+import org.geoint.acetate.model.annotation.Model;
 
 /**
  * When in context of another model component, a data model may be defined as a
@@ -12,7 +12,7 @@ import org.geoint.acetate.model.annotation.Domain;
  * @see ContextualCollectionModel
  * @see ContextualInstanceModel
  */
-@Domain(name = "acetate", version = 1)
+@Model(name="", domainName="acetate", domainVersion=1)
 public interface ContextualDataModel extends ContextualModel {
 
 }

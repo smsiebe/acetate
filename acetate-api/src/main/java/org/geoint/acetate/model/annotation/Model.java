@@ -9,27 +9,34 @@ import java.lang.annotation.Target;
 import org.geoint.acetate.model.DomainModel;
 
 /**
- * Declares a class as a component of a domain model.
+ * Declares a class as a domain model component.
  *
  * @see DomainModel
  */
 @Documented
-@Target({ElementType.TYPE, ElementType.PACKAGE})
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Repeatable(Domains.class)
-public @interface Domain {
+public @interface Model {
 
     /**
-     * Name of the domain model.
+     * Domain model unique component name.
      *
-     * @return unique name of the domain model
+     * @return unique name of the domain model component
      */
     String name();
+
+    /**
+     * Name of the domain model this component belongs to.
+     *
+     * @return domain model name
+     */
+    String domainName();
 
     /**
      * Domain model version this object is associated.
      *
      * @return domain model version
      */
-    long version();
+    long domainVersion();
 }

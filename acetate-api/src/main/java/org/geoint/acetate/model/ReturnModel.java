@@ -1,12 +1,12 @@
 package org.geoint.acetate.model;
 
 import java.util.Set;
-import org.geoint.acetate.model.annotation.Domain;
+import org.geoint.acetate.model.annotation.Model;
 
 /**
  * Contextual model of the return type of an Operation.
  */
-@Domain(name = "acetate", version = 1)
+@Model(name="", domainName="acetate", domainVersion=1)
 public interface ReturnModel extends ContextualModel {
 
     /**

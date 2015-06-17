@@ -1,14 +1,15 @@
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.model.annotation.Domain;
+import org.geoint.acetate.model.annotation.Model;
+import org.geoint.acetate.model.constraint.Constrained;
 
 /**
  * Data-bearing domain model component.
  * 
  * @param <T> java class representation of component
  */
-@Domain(name = "acetate", version = 1)
-public interface DataModel<T> extends ModelComponent {
+@Model(name="", domainName="acetate", domainVersion=1)
+public interface DataModel<T> extends ModelComponent, Constrained {
 
     /**
      * Java class representation of the data held by this component.
@@ -17,4 +18,10 @@ public interface DataModel<T> extends ModelComponent {
      */
     Class<T> getDataClass();
     
+    /**
+     * Hierarchically visits each data model component on the data model graph.
+     * 
+     * @param visitor data model visitor callback
+     */
+    void visit (DataModelVisitor visitor);
 }

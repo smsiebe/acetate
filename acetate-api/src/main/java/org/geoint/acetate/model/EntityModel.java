@@ -1,6 +1,6 @@
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.model.annotation.Domain;
+import org.geoint.acetate.model.annotation.Model;
 
 /**
  * An Entity special domain model object whereby each Entity instance must have
@@ -10,7 +10,7 @@ import org.geoint.acetate.model.annotation.Domain;
  *
  * @param <T> java class of the entity
  */
-@Domain(name = "acetate", version = 1)
+@Model(name="", domainName="acetate", domainVersion=1)
 public interface EntityModel<T> extends ObjectModel<T> {
 
     /**

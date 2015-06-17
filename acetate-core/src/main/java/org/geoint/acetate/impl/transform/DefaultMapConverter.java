@@ -5,8 +5,8 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
-import org.geoint.acetate.data.transform.Converter;
-import org.geoint.acetate.data.transform.DataTransformException;
+import org.geoint.acetate.bind.transform.ObjectConverter;
+import org.geoint.acetate.bind.transform.DataTransformException;
 import org.geoint.acetate.impl.transform.DefaultMapConverter.KeyValue;
 
 /**
@@ -18,7 +18,7 @@ import org.geoint.acetate.impl.transform.DefaultMapConverter.KeyValue;
  * @param <V> value type
  */
 public class DefaultMapConverter<K, V>
-        implements Converter<Map<K, V>, Collection<KeyValue<K, V>>> {
+        implements ObjectConverter<Map<K, V>, Collection<KeyValue<K, V>>> {
 
     @Override
     public Collection<KeyValue<K, V>> convert(Map<K, V> from)

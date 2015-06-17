@@ -2,7 +2,7 @@ package org.geoint.acetate.model.attribute;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.geoint.acetate.model.annotation.Domain;
+import org.geoint.acetate.model.annotation.Model;
 
 /**
  * An Attributed model component can be associated with one or more
@@ -19,7 +19,7 @@ import org.geoint.acetate.model.annotation.Domain;
  * @see ModelAttribute
  *
  */
-@Domain(name = "acetate", version = 1)
+@Model(name="", domainName="acetate", domainVersion=1)
 public interface Attributed {
 
     /**

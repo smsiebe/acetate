@@ -1,7 +1,5 @@
 package org.geoint.acetate.model.attribute;
 
-import org.geoint.acetate.model.annotation.Domain;
-
 /**
  * Marker interface defining an attribute of a data model component.
  *
@@ -22,7 +20,6 @@ import org.geoint.acetate.model.annotation.Domain;
  * </ul>
  *
  */
-@Domain(name = "acetate", version = 1)
 public interface ModelAttribute {
 
 }

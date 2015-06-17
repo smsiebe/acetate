@@ -1,7 +1,7 @@
 package org.geoint.acetate.model.builder;
 
-import org.geoint.acetate.data.transform.BinaryCodec;
-import org.geoint.acetate.data.transform.CharacterCodec;
+import org.geoint.acetate.bind.transform.BufferedCodec;
+import org.geoint.acetate.bind.transform.CharacterCodec;
 import org.geoint.acetate.impl.model.ImmutableObjectAddress.ImmutableComponentAddress;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.ObjectModel;
@@ -16,7 +16,7 @@ public abstract class AbstractContextualObjectBuilder<T, B extends AbstractConte
 
     protected final String baseComponentName;
     protected final boolean isCollection;
-    protected BinaryCodec<T> binaryCodec;
+    protected BufferedCodec<T> binaryCodec;
     protected CharacterCodec<T> charCodec;
 
     public AbstractContextualObjectBuilder(ImmutableComponentAddress path,
@@ -33,7 +33,7 @@ public abstract class AbstractContextualObjectBuilder<T, B extends AbstractConte
      * @param codec
      * @return this builder (fluid interface)
      */
-    public B codec(BinaryCodec<T> codec) {
+    public B codec(BufferedCodec<T> codec) {
         binaryCodec = codec;
         return self();
     }
