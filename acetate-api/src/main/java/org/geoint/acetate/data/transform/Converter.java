@@ -1,6 +1,8 @@
 package org.geoint.acetate.data.transform;
 
 import java.util.Optional;
+import org.geoint.acetate.model.DataModel;
+import org.geoint.acetate.model.ModelComponent;
 
 /**
  * Converts a non-domain model Object to a domain model object.
@@ -25,7 +27,7 @@ public interface Converter<F, T> {
      * @throws DataTransformException thrown if there were unexpected problems
      * converting the object
      */
-    Optional<T> convert(ModelComponent<T> model, F obj) 
+    Optional<T> convert(DataModel<T> model, F obj) 
             throws DataTransformException;
 
     /**
@@ -38,6 +40,6 @@ public interface Converter<F, T> {
      * @throws DataTransformException thrown if there were unexpected problems
      * converting the object back to its original form
      */
-    Optional<F> invert(ModelComponent<T> model, T modeled) 
+    Optional<F> invert(DataModel<T> model, T modeled) 
             throws DataTransformException;
 }

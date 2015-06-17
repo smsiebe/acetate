@@ -1,4 +1,4 @@
-package org.geoint.acetate.model.entity;
+package org.geoint.acetate.model.annotation;
 
 import org.geoint.acetate.bind.Factory;
 import java.lang.annotation.Documented;
@@ -7,20 +7,18 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.geoint.acetate.model.entity.EntityModel;
+import org.geoint.acetate.model.attribute.EntityVersionAttribute;
 
 /**
- * "Marker" attribute which identifiers the component of an
- * {@link EntityModel} as the {@link EntityVersion instance version
- * field}.
+ * Identifies the Entity version component.
  *
- * @see Version
+ * @see EntityVersion
  */
 @Documented
 @Inherited
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Factory(type = EntityVersion.class)
-public @interface Version {
+@Factory(type = EntityVersionAttribute.class)
+public @interface EntityVersion {
 
 }

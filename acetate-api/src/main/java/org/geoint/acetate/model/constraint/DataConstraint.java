@@ -8,7 +8,7 @@ import org.geoint.acetate.model.ObjectModel;
  *
  */
 @FunctionalInterface
-public interface ComponentConstraint {
+public interface DataConstraint {
 
     /**
      * Test if the data value validates against the constraint.

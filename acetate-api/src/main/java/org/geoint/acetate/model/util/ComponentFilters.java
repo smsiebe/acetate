@@ -1,8 +1,7 @@
 package org.geoint.acetate.model.util;
 
 import java.util.function.Predicate;
-import org.geoint.acetate.model.attribute.Attributable;
-import org.geoint.acetate.model.attribute.Composited;
+import org.geoint.acetate.model.attribute.Attributed;
 import org.geoint.acetate.model.attribute.Inherited;
 
 /**
@@ -12,7 +11,7 @@ import org.geoint.acetate.model.attribute.Inherited;
 public final class ComponentFilters {
 
     /**
-     * Determines if the {@link Attributable} component is locally defined based
+     * Determines if the {@link Attributed} component is locally defined based
      * on the component attributes.
      *
      * This method is designed to be used as a method reference by implementing
@@ -22,24 +21,8 @@ public final class ComponentFilters {
      * @return true if the component was declared locally (not inherited or from
      * composite)
      */
-    public static boolean isLocal(Attributable component) {
-        return component.hasAttribute(Inherited.class)
-                        || component.hasAttribute(Composited.class);
-    }
-
-    /**
-     * Determines if the {@link Attributable} component is defined by a
-     * composite component of its object model.
-     *
-     * This method is designed to be used as a method reference by implementing
-     * the {@link Predicate} signature.
-     *
-     * @param component component to check
-     * @return true if the component is defined on a composite component of the
-     * object
-     */
-    public static boolean isComposite(Attributable component) {
-        return component.hasAttribute(Composited.class);
+    public static boolean isLocal(Attributed component) {
+        return !component.hasAttribute(Inherited.class);
     }
 
     /**
@@ -51,7 +34,7 @@ public final class ComponentFilters {
      * @param component component to check
      * @return true if the component is inherited from a parent object model
      */
-    public static boolean isInherited(Attributable component) {
+    public static boolean isInherited(Attributed component) {
         return component.hasAttribute(Inherited.class);
     }
 }

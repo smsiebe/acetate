@@ -2,34 +2,45 @@ package org.geoint.acetate.model;
 
 import java.util.Collection;
 import java.util.Set;
-import org.geoint.acetate.model.constraint.Constrained;
+import org.geoint.acetate.model.annotation.Domain;
 
 /**
- * A Object is a data model component which is composed of zero or more
- * {@link CompositeComponentModel composite} components.
+ * An ObjectModel is a data model component which is composed of zero or more
+ * {@link CompositeModel composite} components.
  *
- * An Object support multiple inheritance, inheriting composite components from
- * its parent(s).
+ * An ObjectModel supports multiple inheritance, inheriting composite components
+ * from its parent(s). Despite this flexibility, an ObjectModel must have
+ * uniquely-named composite components. If composites have a name collision
+ * component model equality will be checked - if they are identical model
+ * components the newly found component is discarded. If it's found that the
+ * component models are different, the domain model is invalid and a
+ * {@link ModelException} must be thrown.
  *
  * @param <T> associated java data type
  */
-public interface ObjectModel<T> extends ModelComponent, Constrained {
+@Domain(name = "acetate", version = 1)
+public interface ObjectModel<T> extends DataModel<T> {
 
     /**
-     * Domain object model(s) this object inherits from, potentially inheriting
+     * Domain object model(s) this model inherits from, potentially inheriting
      * components.
      *
      * @return domain component from which this component is inherited or, if
      * not inherited from other object models, returns an empty set
      */
-    Set<ComponentAddress> getParents();
+    Set<ObjectModel<? super T>> getParents();
 
     /**
-     * {@link ComposableModelComponent Components} from which this object model
-     * is comprised.
+     * Domain object model(s) which specialize (inherit from) this model.
      *
-     * @return collection of composite components defined natively, through
-     * composites, or inheritance
+     * @return models which inherit from this model
      */
-    Collection<? extends ComposableModelComponent<?>> getComposites();
+    Set<ObjectModel<? extends T>> getSpecialized();
+
+    /**
+     * Operations defined by this object model.
+     *
+     * @return object operations
+     */
+    Collection<OperationModel> getOperations();
 }

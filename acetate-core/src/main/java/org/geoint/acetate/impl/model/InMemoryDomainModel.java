@@ -16,8 +16,8 @@ import org.geoint.acetate.model.ComponentAddress;
 import org.geoint.acetate.model.ModelComponent;
 import org.geoint.acetate.model.ModelException;
 import org.geoint.acetate.model.ObjectModel;
-import org.geoint.acetate.model.attribute.Attributable;
-import org.geoint.acetate.model.attribute.ComponentAttribute;
+import org.geoint.acetate.model.attribute.Attributed;
+import org.geoint.acetate.model.attribute.ModelAttribute;
 import org.geoint.acetate.model.builder.ComponentCollisionException;
 import org.geoint.acetate.model.builder.IncompleteModelException;
 
@@ -30,7 +30,7 @@ public class InMemoryDomainModel implements DomainModel {
     private final String name;
     private final long version;
     private final Map<ComponentAddress, ModelComponent> components;
-    private final Map<Class<? extends ComponentAttribute>, Collection<Attributable>> attributedComponents;
+    private final Map<Class<? extends ModelAttribute>, Collection<Attributed>> attributedComponents;
     private final Map<ComponentAddress, Collection<ObjectModel<?>>> specializedComponents;
 
     private static final Logger logger
@@ -124,8 +124,8 @@ public class InMemoryDomainModel implements DomainModel {
     }
 
     @Override
-    public Collection<Attributable> find(
-            Class<? extends ComponentAttribute> attributeType) {
+    public Collection<Attributed> find(
+            Class<? extends ModelAttribute> attributeType) {
         return findMatches(attributedComponents, attributeType);
     }
 

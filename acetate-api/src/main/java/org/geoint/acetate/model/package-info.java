@@ -22,4 +22,8 @@
  * referenced by a structure or data instance must include all the components
  * defined by that structure/data instance.
  */
+@Domain(name = "acetate", version = 1)
 package org.geoint.acetate.model;
+
+import org.geoint.acetate.model.annotation.Domain;
+

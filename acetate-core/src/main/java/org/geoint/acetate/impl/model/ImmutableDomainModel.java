@@ -7,8 +7,8 @@ import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.ModelComponent;
 import org.geoint.acetate.model.ModelException;
 import org.geoint.acetate.model.ObjectModel;
-import org.geoint.acetate.model.attribute.Attributable;
-import org.geoint.acetate.model.attribute.ComponentAttribute;
+import org.geoint.acetate.model.attribute.Attributed;
+import org.geoint.acetate.model.attribute.ModelAttribute;
 
 /**
  *
@@ -53,7 +53,7 @@ public final class ImmutableDomainModel implements DomainModel {
     }
 
     @Override
-    public Collection<Attributable> find(Class<? extends ComponentAttribute> attributeType) {
+    public Collection<Attributed> find(Class<? extends ModelAttribute> attributeType) {
         return model.find(attributeType);
     }
 

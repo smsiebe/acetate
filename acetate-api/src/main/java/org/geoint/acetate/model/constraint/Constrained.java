@@ -3,8 +3,8 @@ package org.geoint.acetate.model.constraint;
 import java.util.Collection;
 
 /**
- * A model component is capable of being constrained by one or more
- * {@link ComponentConstraint}.
+ * A model component is capable of being constrained by
+ * {@link DataConstraint constraints}.
  */
 public interface Constrained {
 
@@ -13,5 +13,5 @@ public interface Constrained {
      *
      * @return immutable collection of constraints for this model component
      */
-    Collection<ComponentConstraint> getConstraints();
+    Collection<DataConstraint> getConstraints();
 }

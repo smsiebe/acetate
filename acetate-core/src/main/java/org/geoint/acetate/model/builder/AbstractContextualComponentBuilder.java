@@ -5,8 +5,8 @@ import java.util.Set;
 import org.geoint.acetate.impl.model.ImmutableObjectAddress;
 import org.geoint.acetate.model.ModelComponent;
 import org.geoint.acetate.model.DomainModel;
-import org.geoint.acetate.model.attribute.ComponentAttribute;
-import org.geoint.acetate.model.constraint.ComponentConstraint;
+import org.geoint.acetate.model.attribute.ModelAttribute;
+import org.geoint.acetate.model.constraint.DataConstraint;
 
 /**
  * Base domain model object builder used override default "base model" traits.
@@ -19,8 +19,8 @@ public abstract class AbstractContextualComponentBuilder<T, B extends AbstractCo
 
     protected final ImmutableObjectAddress path;
     protected String description;
-    protected Set<ComponentAttribute> attributes = new HashSet<>();
-    protected Set<ComponentConstraint> constraints = new HashSet<>();
+    protected Set<ModelAttribute> attributes = new HashSet<>();
+    protected Set<DataConstraint> constraints = new HashSet<>();
     protected boolean inheritAttributes;
     protected boolean inheritConstraints;
 
@@ -48,7 +48,7 @@ public abstract class AbstractContextualComponentBuilder<T, B extends AbstractCo
      * @param attribute
      * @return this builder (fluid interface)
      */
-    public B attribute(ComponentAttribute attribute) {
+    public B attribute(ModelAttribute attribute) {
         this.attributes.add(attribute);
         return self();
     }
@@ -79,7 +79,7 @@ public abstract class AbstractContextualComponentBuilder<T, B extends AbstractCo
      * @param constraint
      * @return this builder (fluid interface)
      */
-    public B constraint(ComponentConstraint constraint) {
+    public B constraint(DataConstraint constraint) {
         this.constraints.add(constraint);
         return self();
     }

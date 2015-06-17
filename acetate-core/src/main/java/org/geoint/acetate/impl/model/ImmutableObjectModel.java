@@ -12,13 +12,13 @@ import java.util.logging.Logger;
 import org.geoint.acetate.impl.model.ImmutableCompositeObjectModel.ImmutableCompositeAddress;
 import org.geoint.acetate.impl.model.entity.ImmutableOperationModel.ImmutableOperationAddress;
 import org.geoint.acetate.model.ComponentAddress;
-import org.geoint.acetate.model.ComposableModelComponent;
+import org.geoint.acetate.model.ContextualModelComponent;
 import org.geoint.acetate.model.ObjectModel;
-import org.geoint.acetate.model.attribute.ComponentAttribute;
+import org.geoint.acetate.model.attribute.ModelAttribute;
 import org.geoint.acetate.model.attribute.Inherited;
 import org.geoint.acetate.model.builder.ComponentCollisionException;
 import org.geoint.acetate.model.builder.IncompleteModelException;
-import org.geoint.acetate.model.constraint.ComponentConstraint;
+import org.geoint.acetate.model.constraint.DataConstraint;
 
 /**
  * Domain model object.
@@ -32,8 +32,8 @@ public class ImmutableObjectModel<T> implements ObjectModel<T> {
     private final Set<ComponentAddress> parents;
     private final Optional<String> description;
     private final Map<String, ImmutableCompositeObjectModel<?>> composites;
-    private final Collection<ComponentConstraint> constraints;
-    private final Collection<ComponentAttribute> attributes;
+    private final Collection<DataConstraint> constraints;
+    private final Collection<ModelAttribute> attributes;
 
     private final static Logger logger
             = Logger.getLogger("org.geoint.acetate.model");
@@ -66,8 +66,8 @@ public class ImmutableObjectModel<T> implements ObjectModel<T> {
             String description,
             Set<ComponentAddress> parents,
             Collection<ImmutableCompositeObjectModel> composites,
-            Collection<ComponentConstraint> constraints,
-            Collection<ComponentAttribute> attributes)
+            Collection<DataConstraint> constraints,
+            Collection<ModelAttribute> attributes)
             throws IncompleteModelException, ComponentCollisionException {
         this.address = new ImmutableBaseObjectAddress(domainName,
                 domainVersion,
@@ -140,12 +140,12 @@ public class ImmutableObjectModel<T> implements ObjectModel<T> {
     }
 
     @Override
-    public Collection<ComponentAttribute> getAttributes() {
+    public Collection<ModelAttribute> getAttributes() {
         return attributes;
     }
 
     @Override
-    public Collection<ComponentConstraint> getConstraints() {
+    public Collection<DataConstraint> getConstraints() {
         return constraints;
     }
 
@@ -155,7 +155,7 @@ public class ImmutableObjectModel<T> implements ObjectModel<T> {
     }
 
     @Override
-    public Collection<? extends ComposableModelComponent<?>> getComposites() {
+    public Collection<? extends ContextualModelComponent<?>> getComposites() {
         return composites.values();
     }
 

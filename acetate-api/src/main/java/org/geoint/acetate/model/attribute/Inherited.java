@@ -1,6 +1,6 @@
 package org.geoint.acetate.model.attribute;
 
-import org.geoint.acetate.model.ComponentAddress;
+import org.geoint.acetate.model.ModelComponent;
 
 /**
  * Component attribute indicating the component model was inherited from a
@@ -8,20 +8,20 @@ import org.geoint.acetate.model.ComponentAddress;
  *
  * This attribute is added to a component by the aceteate framework.
  */
-public final class Inherited implements ComponentAttribute {
+public final class Inherited implements ModelAttribute {
 
     /**
-     * Address of the model component which defines this component.
+     * Model which defines this component.
      *
      * @return inherited model address
      */
-    private final ComponentAddress definedBy;
+    private final ModelComponent definedBy;
 
-    public Inherited(ComponentAddress definedBy) {
+    public Inherited(ModelComponent definedBy) {
         this.definedBy = definedBy;
     }
 
-    public ComponentAddress getDefinedAddress() {
+    public ModelComponent getDefinedAddress() {
         return definedBy;
     }
 

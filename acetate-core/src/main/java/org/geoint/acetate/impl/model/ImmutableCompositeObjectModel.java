@@ -3,14 +3,14 @@ package org.geoint.acetate.impl.model;
 import java.util.Collection;
 import org.geoint.acetate.data.transform.BinaryCodec;
 import org.geoint.acetate.data.transform.CharacterCodec;
-import org.geoint.acetate.model.ComposableModelComponent;
+import org.geoint.acetate.model.ContextualModelComponent;
 import org.geoint.acetate.model.ContextualAddress;
 import org.geoint.acetate.model.ContextualComponentModel;
 import org.geoint.acetate.model.ObjectModel;
-import org.geoint.acetate.model.attribute.ComponentAttribute;
+import org.geoint.acetate.model.attribute.ModelAttribute;
 import org.geoint.acetate.model.builder.ComponentCollisionException;
 import org.geoint.acetate.model.builder.IncompleteModelException;
-import org.geoint.acetate.model.constraint.ComponentConstraint;
+import org.geoint.acetate.model.constraint.DataConstraint;
 
 /**
  * Model of a component contextually contained by (composes) another component.
@@ -18,7 +18,7 @@ import org.geoint.acetate.model.constraint.ComponentConstraint;
  * @param <T> java type representation of the component
  */
 public class ImmutableCompositeObjectModel<T> extends ImmutableObjectModel<T>
-        implements ComposableModelComponent<ObjectModel<T>> {
+        implements ContextualModelComponent<ObjectModel<T>> {
 
     private final ObjectModel<?> container;
     private final ObjectModel<T> baseModel;
@@ -27,9 +27,9 @@ public class ImmutableCompositeObjectModel<T> extends ImmutableObjectModel<T>
             String name,
             String description,
             Collection<String> parentObjectNames,
-            Collection<ComposableModelComponent> components,
-            Collection<ComponentConstraint> constraints,
-            Collection<ComponentAttribute> attributes,
+            Collection<ContextualModelComponent> components,
+            Collection<DataConstraint> constraints,
+            Collection<ModelAttribute> attributes,
             BinaryCodec<T> binaryCodec,
             CharacterCodec<T> charCodec)
             throws IncompleteModelException, ComponentCollisionException {

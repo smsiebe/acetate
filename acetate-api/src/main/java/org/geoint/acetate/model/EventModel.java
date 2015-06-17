@@ -1,32 +1,41 @@
-package org.geoint.acetate.model.entity;
+package org.geoint.acetate.model;
 
 import java.time.ZonedDateTime;
-import org.geoint.acetate.model.ObjectModel;
+import java.util.Set;
+import org.geoint.acetate.model.annotation.Domain;
 
 /**
  * Model of an event resulting from a change to an {@link EntityModel Entity}
  * instance.
  *
+ * Operations which complete successfully return an Event detailing the effects
+ * of the operation.
+ *
  * @param <E> java data type of the entity event
  */
-public interface EventModel<E> extends ObjectModel<E> {
+@Domain(name = "acetate", version = 1)
+public interface EventModel<E> extends ComposedModel<E> {
 
     /**
-     * Entity Event component which defines its globally unique identifier.
+     * EventModel components from which this model inherits.
      *
-     * Every event instance will have a globally unique identifier.
-     *
-     * @return the aggregate/composite domain object which is the globally
-     * unique identifier of the entity
+     * @return parent models
      */
-    ObjectModel<String> getEventGuidComponent();
+    Set<EventModel<? super E>> getParents();
+
+    /**
+     * EventModel components which inherit from this model.
+     *
+     * @return specialized models
+     */
+    Set<EventModel<? extends E>> getSpecialized();
 
     /**
      * Entity event component which defines the time of the event.
      *
      * @return event model component which defines the time of the event
      */
-    ObjectModel<ZonedDateTime> getEventTimeComponent();
+    ValueModel<ZonedDateTime> getCommitTime();
 
     /**
      * Entity event component which defines the GUID of the entity object for
@@ -34,7 +43,7 @@ public interface EventModel<E> extends ObjectModel<E> {
      *
      * @return event model component containing the related entity object guid
      */
-    ObjectModel<String> getEntityGuidComponent();
+    ValueModel<String> getEntityGuid();
 
     /**
      * Entity event component which defines the version of the entity object for
@@ -43,13 +52,6 @@ public interface EventModel<E> extends ObjectModel<E> {
      * @return event model component containing the related entity object
      * version
      */
-    ObjectModel<Long> getEntityVersionComponent();
-
-    /**
-     * Model of related domain entity object.
-     *
-     * @return domain entity object model
-     */
-    EntityModel<E> getEntityModel();
+    ValueModel<Long> getEntityVersion();
 
 }

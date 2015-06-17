@@ -1,15 +1,13 @@
-package org.geoint.acetate.model.entity;
+package org.geoint.acetate.model.attribute;
 
-import org.geoint.acetate.model.attribute.ComponentAttribute;
+import org.geoint.acetate.model.EntityModel;
+import org.geoint.acetate.model.annotation.EntityId;
 
 /**
- * "Marker" annotation which is used to identity the globally unique identifier 
- * of an {@link DomainEntityObject}.
+ * "Marker" annotation which is used to identity the globally unique identifier
+ * of an {@link EntityModel}.
  *
- * All Entity Objects (DomainEntityObject or DomainAggregateObject)
- * <b>MUST</b> specify one (and only one) GUID. DomainComponentObject
- * <b>MUST NOT</b> have a GUID defined, or it will be considered an Aggregate
- * Object.
+ * All Entity Objects <b>MUST</b> specify one (and only one) GUID.
  *
  * <p>
  * A GUID is a generic term; the resultant field can be in any format so long as
@@ -31,9 +29,8 @@ import org.geoint.acetate.model.attribute.ComponentAttribute;
  * <p>
  * Applications should be aware, however, of conflicting constraints defined by
  * specifications they intend to use within their application architecture. For
- * example, the
- * {@link https://www.ietf.org/rfc/rfc4122.txt UUID specification (RFC 4122)}
- * conflicts with the {@link W3C Extensible Markup Language (XML) Version 1.0}
+ * example, the https://www.ietf.org/rfc/rfc4122.txt UUID specification (RFC
+ * 4122) conflicts with the W3C Extensible Markup Language (XML) Version 1.0
  * specification for the xml:id attribute. The UUID specification allows any
  * hexadecimal digit as the first character of the UUID, while xml:id must not
  * start with a ASCII digit. Frameworks using acetate may accommodate this,
@@ -47,10 +44,12 @@ import org.geoint.acetate.model.attribute.ComponentAttribute;
  * words, if a class extends another, and both define a GUID field, the GUID
  * field identified by the child class wins - the parent class field identified
  * as a GUID is treated as a normal field.
+ *
+ * @see EntityId
  */
-public final class EntityGuid implements ComponentAttribute {
+public final class EntityIdAttribute implements ModelAttribute {
 
-    public EntityGuid() {
+    public EntityIdAttribute() {
     }
 
 }

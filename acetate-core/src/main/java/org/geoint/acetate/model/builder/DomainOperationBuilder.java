@@ -7,7 +7,7 @@ import java.util.Set;
 import org.geoint.acetate.impl.model.ImmutableObjectAddress.ImmutableComponentAddress;
 import org.geoint.acetate.impl.model.ImmutableObjectAddress.ImmutableOperationPath;
 import org.geoint.acetate.model.DomainModel;
-import org.geoint.acetate.model.entity.OperationModel;
+import org.geoint.acetate.model.OperationModel;
 import org.geoint.acetate.model.attribute.Inherited;
 
 /**

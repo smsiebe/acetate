@@ -1,9 +1,9 @@
-package org.geoint.acetate.model.entity;
+package org.geoint.acetate.model.attribute;
 
-import org.geoint.acetate.model.attribute.ComponentAttribute;
+import org.geoint.acetate.model.annotation.EntityVersion;
 
 /**
- * Identifies a field as the model instance version field.
+ * Identifies a component as the model instance version field.
  *
  * <p>
  * A root data instance <b>MUST</b> specify one (and only one) version field
@@ -21,10 +21,12 @@ import org.geoint.acetate.model.attribute.ComponentAttribute;
  *
  * <p>
  * The data type of the VersionAttribute component must be a <i>long</i>.
+ * 
+ * @see EntityVersion
  */
-public final class EntityVersion implements ComponentAttribute {
+public final class EntityVersionAttribute implements ModelAttribute {
 
-    public EntityVersion() {
+    public EntityVersionAttribute() {
     }
 
 }

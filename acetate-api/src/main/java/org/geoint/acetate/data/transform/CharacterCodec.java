@@ -1,6 +1,7 @@
 package org.geoint.acetate.data.transform;
 
 import java.nio.CharBuffer;
+import org.geoint.acetate.model.DataModel;
 
 /**
  * Converts a domain model component instance to/from character data.
@@ -14,12 +15,13 @@ public interface CharacterCodec<T> {
     /**
      * Converts character data to a domain model component instance.
      *
+     * @param model
      * @param reader
      * @return data instance
      * @throws DataTransformException thrown if the source could not be read or
      * the object could not be instantiated
      */
-    T convert(ModelComponent<T> model, CharBuffer reader) throws DataTransformException;
+    T convert(DataModel<T> model, CharBuffer reader) throws DataTransformException;
 
     /**
      * Converts an object to expected character format.
@@ -30,5 +32,5 @@ public interface CharacterCodec<T> {
      * @throws DataTransformException DataTransformException throws if there are
      * problems writing the object as as character string
      */
-    void invert(ModelComponent<T> model, T data, CharBuffer writer) throws DataTransformException;
+    void invert(DataModel<T> model, T data, CharBuffer writer) throws DataTransformException;
 }

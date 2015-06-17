@@ -2,16 +2,19 @@ package org.geoint.acetate.model;
 
 import org.geoint.acetate.data.transform.BinaryCodec;
 import org.geoint.acetate.data.transform.CharacterCodec;
+import org.geoint.acetate.model.annotation.Domain;
+import org.geoint.acetate.model.constraint.Constrained;
 
 /**
- * A simple data-bearing component of the data model.
+ * Data-bearing data model component.
  *
- * A Value differs from an Object in that it can be simply represented by a
- * single data value.
+ * A Value differs from an Object in that a ValueModel does not contain other
+ * data model components - it simply models a data value itself.
  *
- * @param <T>
+ * @param <T> java class of the data value
  */
-public interface ValueModel<T> extends ComposableModelComponent {
+@Domain(name = "acetate", version = 1)
+public interface ValueModel<T> extends DataModel<T>, Constrained {
 
     /**
      * Default character codec to use for this domain object.

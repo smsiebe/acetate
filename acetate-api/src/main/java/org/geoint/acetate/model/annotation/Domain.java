@@ -14,7 +14,7 @@ import org.geoint.acetate.model.DomainModel;
  * @see DomainModel
  */
 @Documented
-@Target({ElementType.TYPE})
+@Target({ElementType.TYPE, ElementType.PACKAGE})
 @Retention(RetentionPolicy.RUNTIME)
 @Repeatable(Domains.class)
 public @interface Domain {

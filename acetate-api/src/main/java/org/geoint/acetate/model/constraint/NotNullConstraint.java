@@ -7,7 +7,7 @@ import org.geoint.acetate.model.ObjectModel;
  *
  * This class is thread-safe.
  */
-public final class NotNullConstraint implements ComponentConstraint {
+public final class NotNullConstraint implements DataConstraint {
 
     private static final NotNullConstraint INSTANCE = new NotNullConstraint();
 

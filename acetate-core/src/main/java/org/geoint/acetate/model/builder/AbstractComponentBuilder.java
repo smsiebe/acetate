@@ -5,8 +5,8 @@ import java.util.Set;
 import org.geoint.acetate.impl.model.ImmutableObjectAddress;
 import org.geoint.acetate.model.ModelComponent;
 import org.geoint.acetate.model.DomainModel;
-import org.geoint.acetate.model.attribute.ComponentAttribute;
-import org.geoint.acetate.model.constraint.ComponentConstraint;
+import org.geoint.acetate.model.attribute.ModelAttribute;
+import org.geoint.acetate.model.constraint.DataConstraint;
 
 /**
  *
@@ -18,8 +18,8 @@ public abstract class AbstractComponentBuilder<T, B extends AbstractComponentBui
 
     protected final ImmutableObjectAddress path;
     protected String description;
-    protected Set<ComponentAttribute> attributes = new HashSet<>();
-    protected Set<ComponentConstraint> constraints = new HashSet<>();
+    protected Set<ModelAttribute> attributes = new HashSet<>();
+    protected Set<DataConstraint> constraints = new HashSet<>();
 
     public AbstractComponentBuilder(ImmutableObjectAddress path) {
         this.path = path;
@@ -42,7 +42,7 @@ public abstract class AbstractComponentBuilder<T, B extends AbstractComponentBui
      * @param attribute
      * @return this builder (fluid interface)
      */
-    public B attribute(ComponentAttribute attribute) {
+    public B attribute(ModelAttribute attribute) {
         this.attributes.add(attribute);
         return self();
     }
@@ -53,7 +53,7 @@ public abstract class AbstractComponentBuilder<T, B extends AbstractComponentBui
      * @param constraint
      * @return this builder (fluid interface)
      */
-    public B constraint(ComponentConstraint constraint) {
+    public B constraint(DataConstraint constraint) {
         this.constraints.add(constraint);
         return self();
     }

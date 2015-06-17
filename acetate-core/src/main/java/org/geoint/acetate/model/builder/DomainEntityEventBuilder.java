@@ -6,7 +6,7 @@ import java.util.Set;
 import org.geoint.acetate.impl.model.ImmutableObjectAddress.ImmutableComponentAddress;
 import org.geoint.acetate.model.ModelComponent;
 import org.geoint.acetate.model.DomainModel;
-import org.geoint.acetate.model.entity.EventModel;
+import org.geoint.acetate.model.EventModel;
 
 /**
  *

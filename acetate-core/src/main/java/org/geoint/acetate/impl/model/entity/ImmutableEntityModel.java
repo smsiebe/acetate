@@ -7,15 +7,15 @@ import org.geoint.acetate.impl.model.ImmutableCompositeObjectModel;
 import org.geoint.acetate.impl.model.ImmutableObjectAddress.ImmutableComponentAddress;
 import org.geoint.acetate.impl.model.ImmutableObjectModel;
 import org.geoint.acetate.model.ModelComponent;
-import org.geoint.acetate.model.entity.EntityModel;
+import org.geoint.acetate.model.EntityModel;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.ObjectModel;
-import org.geoint.acetate.model.attribute.ComponentAttribute;
-import org.geoint.acetate.model.entity.EntityGuid;
-import org.geoint.acetate.model.entity.EntityVersion;
+import org.geoint.acetate.model.attribute.ModelAttribute;
+import org.geoint.acetate.model.attribute.EntityIdAttribute;
+import org.geoint.acetate.model.attribute.EntityVersionAttribute;
 import org.geoint.acetate.model.builder.ComponentCollisionException;
 import org.geoint.acetate.model.builder.IncompleteModelException;
-import org.geoint.acetate.model.constraint.ComponentConstraint;
+import org.geoint.acetate.model.constraint.DataConstraint;
 
 /**
  * Immutable Entity Object.
@@ -34,8 +34,8 @@ public class ImmutableEntityModel<T> extends ImmutableObjectModel<T>
             Collection<ImmutableOperationModel<?>> operations,
             Collection<ImmutableCompositeObjectModel<?>> composites,
             Collection<ImmutableAggregateModel<?>> aggregates,
-            Collection<ComponentConstraint> constraints,
-            Collection<ComponentAttribute> attributes,
+            Collection<DataConstraint> constraints,
+            Collection<ModelAttribute> attributes,
             BinaryCodec<T> binaryCodec,
             CharacterCodec<T> charCodec)
             throws IncompleteModelException, ComponentCollisionException {
@@ -47,11 +47,11 @@ public class ImmutableEntityModel<T> extends ImmutableObjectModel<T>
         ImmutableCompositeObjectModel<String> guid = null;
         ImmutableCompositeObjectModel<Long> version = null;
         for (ImmutableCompositeObjectModel c : composites) {
-            Collection<ComponentAttribute> cca = c.getAttributes();
-            for (ComponentAttribute ca : cca) {
-                if (ca.getClass().equals(EntityGuid.class)) {
+            Collection<ModelAttribute> cca = c.getAttributes();
+            for (ModelAttribute ca : cca) {
+                if (ca.getClass().equals(EntityIdAttribute.class)) {
                     guid = deconflict(guid, c);
-                } else if (ca.getClass().equals(EntityVersion.class)) {
+                } else if (ca.getClass().equals(EntityVersionAttribute.class)) {
 
                 }
             }

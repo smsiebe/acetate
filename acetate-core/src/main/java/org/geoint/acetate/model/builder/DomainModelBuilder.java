@@ -22,7 +22,7 @@ import org.geoint.acetate.model.ComponentAddress;
 import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.ModelException;
-import org.geoint.acetate.model.attribute.ComponentAttribute;
+import org.geoint.acetate.model.attribute.ModelAttribute;
 import gov.ic.geoint.acetate.ComponentRegistry;
 
 /**
@@ -209,7 +209,7 @@ public class DomainModelBuilder {
 
         private final Map<ComponentAddress, ObjectModel<?>> domainComponents
                 = new HashMap<>();
-        private final Map<Class<? extends ComponentAttribute>, Collection<ObjectModel<?>>> attributeIndex
+        private final Map<Class<? extends ModelAttribute>, Collection<ObjectModel<?>>> attributeIndex
                 = new HashMap<>();
         //key=parent component path
         //value=component path which inherit from key
@@ -232,7 +232,7 @@ public class DomainModelBuilder {
             //add to attribute index, creating multi-map bucket as necessary
             object.getAttributes().stream()
                     .forEach((a) -> {
-                        final Class<? extends ComponentAttribute> aClass
+                        final Class<? extends ModelAttribute> aClass
                         = a.getClass();
                         if (!attributeIndex.containsKey(aClass)) {
                             attributeIndex.put(aClass, new ArrayList<>());
@@ -270,7 +270,7 @@ public class DomainModelBuilder {
 
         @Override
         public Collection<ObjectModel<?>> findByAttribute(
-                Class<? extends ComponentAttribute> attributeType) {
+                Class<? extends ModelAttribute> attributeType) {
 
             if (!attributeIndex.containsKey(attributeType)) {
                 //no components with that attribute

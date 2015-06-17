@@ -3,9 +3,9 @@ package org.geoint.acetate.model;
 import org.geoint.acetate.AcetateException;
 
 /**
- *
+ * Thrown if the domain model is invalid.
  */
-public class ModelException extends AcetateException {
+public abstract class ModelException extends AcetateException {
 
     private final String domainModelName;
     private final long modelVersion;

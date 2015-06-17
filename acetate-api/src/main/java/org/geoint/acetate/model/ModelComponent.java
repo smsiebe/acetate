@@ -1,30 +1,23 @@
 package org.geoint.acetate.model;
 
 import java.util.Optional;
-import org.geoint.acetate.model.attribute.Attributable;
+import org.geoint.acetate.model.annotation.Domain;
+import org.geoint.acetate.model.attribute.Attributed;
 
 /**
  * A component of a domain data model.
  *
- * A domain component defines a piece of of a domain model.
  *
- * @see ObjectModel
- * @see ValueModel
  */
-public interface ModelComponent extends Attributable {
+@Domain(name = "acetate", version = 1)
+public interface ModelComponent extends Attributed {
 
-//    /**
-//     * The DomainModel this component is a member of.
-//     *
-//     * @return components domain model
-//     */
-//    DomainModel getDomainModel();
     /**
-     * Unique component address within the domain model.
+     * The domain model of which this component belongs.
      *
-     * @return components contextual address
+     * @return domain model containing this component
      */
-    ComponentAddress getAddress();
+    DomainModel getDomainModel();
 
     /**
      * Domain-model unique name of the component.

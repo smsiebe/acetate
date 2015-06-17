@@ -1,4 +1,4 @@
-package org.geoint.acetate.model.entity;
+package org.geoint.acetate.model.annotation;
 
 import org.geoint.acetate.bind.Factory;
 import java.lang.annotation.Documented;
@@ -7,21 +7,21 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.geoint.acetate.model.attribute.EntityIdAttribute;
 
 /**
- * Identifies the domain object at an EntityObject by identifying one of its
- * components as an entity id.
+ * Identifies the entity id component of an Entity.
  *
  * All root data instances <b>MUST</b> have an entity id; aggregates
  * <b>SHOULD</b> have a entity id.
  *
- * @see EntityGuid
+ * @see EntityIdAttribute
  */
 @Documented
 @Inherited
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-@Factory(type = EntityGuid.class)
+@Factory(type = EntityIdAttribute.class)
 public @interface EntityId {
 
 }

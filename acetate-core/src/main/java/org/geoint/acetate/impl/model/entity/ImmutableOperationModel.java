@@ -10,9 +10,9 @@ import org.geoint.acetate.impl.model.ImmutableObjectModel.ImmutableObjectAddress
 import org.geoint.acetate.model.ComponentAddress;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.ObjectModel;
-import org.geoint.acetate.model.entity.OperationModel;
-import org.geoint.acetate.model.attribute.ComponentAttribute;
-import org.geoint.acetate.model.entity.EventModel;
+import org.geoint.acetate.model.OperationModel;
+import org.geoint.acetate.model.attribute.ModelAttribute;
+import org.geoint.acetate.model.EventModel;
 
 /**
  * Business operation of the domain model.
@@ -27,7 +27,7 @@ public class ImmutableOperationModel<R> implements OperationModel<R> {
     protected final Optional<String> description;
     protected final EventModel<R, ?> returned;
     protected final Collection<ObjectModel<?>> params;
-    protected final Collection<? extends ComponentAttribute> attributes;
+    protected final Collection<? extends ModelAttribute> attributes;
 
     ImmutableOperationModel(DomainModel model,
             ImmutableObjectAddress path,
@@ -35,7 +35,7 @@ public class ImmutableOperationModel<R> implements OperationModel<R> {
             Optional<String> description,
             EventModel<R, ?> returned,
             Collection<ObjectModel<?>> params,
-            Collection<? extends ComponentAttribute> attributes) {
+            Collection<? extends ModelAttribute> attributes) {
         this.model = model;
         this.address = path;
         this.operationName = name;
@@ -71,8 +71,8 @@ public class ImmutableOperationModel<R> implements OperationModel<R> {
     }
 
     @Override
-    public Collection<ComponentAttribute> getAttributes() {
-        return (Collection<ComponentAttribute>) attributes;
+    public Collection<ModelAttribute> getAttributes() {
+        return (Collection<ModelAttribute>) attributes;
     }
 
     @Override
