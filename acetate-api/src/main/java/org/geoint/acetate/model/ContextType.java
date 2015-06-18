@@ -6,7 +6,7 @@ import org.geoint.acetate.model.annotation.Model;
  * Contextual domain model relationship types.
  *
  */
-@Model(name="", domainName="acetate", domainVersion=1)
+@Model(name="contextType", domainName="acetate", domainVersion=1)
 public enum ContextType {
 
     /**

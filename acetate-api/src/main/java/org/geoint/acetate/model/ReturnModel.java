@@ -6,7 +6,7 @@ import org.geoint.acetate.model.annotation.Model;
 /**
  * Contextual model of the return type of an Operation.
  */
-@Model(name="", domainName="acetate", domainVersion=1)
+@Model(name="return", domainName="acetate", domainVersion=1)
 public interface ReturnModel extends ContextualModel {
 
     /**

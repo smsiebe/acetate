@@ -1,7 +1,6 @@
 package org.geoint.acetate.model;
 
 import java.time.ZonedDateTime;
-import java.util.Set;
 import org.geoint.acetate.model.annotation.Model;
 
 /**
@@ -13,22 +12,8 @@ import org.geoint.acetate.model.annotation.Model;
  *
  * @param <E> java data type of the entity event
  */
-@Model(name="", domainName="acetate", domainVersion=1)
+@Model(name="event", domainName="acetate", domainVersion=1)
 public interface EventModel<E> extends ComposedModel<E> {
-
-    /**
-     * EventModel components from which this model inherits.
-     *
-     * @return parent models
-     */
-    Set<EventModel<? super E>> getParents();
-
-    /**
-     * EventModel components which inherit from this model.
-     *
-     * @return specialized models
-     */
-    Set<EventModel<? extends E>> getSpecialized();
 
     /**
      * Entity event component which defines the time of the event.

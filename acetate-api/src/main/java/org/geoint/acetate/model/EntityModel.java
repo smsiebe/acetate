@@ -10,7 +10,7 @@ import org.geoint.acetate.model.annotation.Model;
  *
  * @param <T> java class of the entity
  */
-@Model(name="", domainName="acetate", domainVersion=1)
+@Model(name="entity", domainName="acetate", domainVersion=1)
 public interface EntityModel<T> extends ObjectModel<T> {
 
     /**

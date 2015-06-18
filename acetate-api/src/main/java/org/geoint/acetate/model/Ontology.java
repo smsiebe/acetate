@@ -6,7 +6,7 @@ import org.geoint.acetate.model.annotation.Model;
 /**
  * A data model consisting of other data models.
  */
-@Model(name = "Ontology", domainName = "acetate", domainVersion = 1)
+@Model(name = "ontology", domainName = "acetate", domainVersion = 1)
 public interface Ontology extends DataModel {
 
     /**

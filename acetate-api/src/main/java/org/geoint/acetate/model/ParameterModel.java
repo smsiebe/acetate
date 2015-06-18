@@ -5,7 +5,7 @@ import org.geoint.acetate.model.annotation.Model;
 /**
  * Model of an operation parameter.
  */
-@Model(name="", domainName="acetate", domainVersion=1)
+@Model(name="parameter", domainName="acetate", domainVersion=1)
 public interface ParameterModel extends ContextualModel {
 
     /**

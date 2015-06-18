@@ -7,7 +7,7 @@ import org.geoint.acetate.model.annotation.Model;
  * of another domain model component.
  *
  */
-@Model(name = "Contextual Model", domainName = "acetate", domainVersion = 1)
+@Model(name = "contextualModel", domainName = "acetate", domainVersion = 1)
 public interface ContextualModel extends ModelComponent {
 
     /**

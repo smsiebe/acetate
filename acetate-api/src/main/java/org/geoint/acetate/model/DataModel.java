@@ -8,7 +8,7 @@ import org.geoint.acetate.model.constraint.Constrained;
  * 
  * @param <T> java class representation of component
  */
-@Model(name="", domainName="acetate", domainVersion=1)
+@Model(name="data", domainName="acetate", domainVersion=1)
 public interface DataModel<T> extends ModelComponent, Constrained {
 
     /**

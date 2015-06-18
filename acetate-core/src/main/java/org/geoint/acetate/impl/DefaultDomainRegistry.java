@@ -83,14 +83,14 @@ public class DefaultDomainRegistry implements DomainRegistry {
         synchronized (models) {
             for (DomainModel m : newModels) {
 
-                if (models.containsKey(m.getDomainId())) {
+                if (models.containsKey(m.getId())) {
                     //TODO merge domain models
                     logger.log(Level.SEVERE, "Domain model {0} is already "
-                            + "registered.", m.getDomainId());
+                            + "registered.", m.getId());
                     continue;
                 }
 
-                models.put(m.getDomainId(), m);
+                models.put(m.getId(), m);
             }
         }
     }
@@ -110,48 +110,7 @@ public class DefaultDomainRegistry implements DomainRegistry {
         @Override
         public void scanComplete(ModelScanner scanner, ModelScanResults results) {
 
-            //register "complete" domain models
-            Map<String, Map<String, ModelComponent>> bucketized
-                    = new HashMap<>();
-            for (ModelComponent c : results.getComponents()) {
-
-                String domainId = DomainUtil.uniqueDomainId(c.getAddress());
-                if (!bucketized.containsKey(domainId)) {
-                    bucketized.put(domainId, new HashMap<>());
-                }
-
-                if (bucketized.get(domainId).containsKey(c.getName())) {
-                    logger.log(Level.SEVERE,
-                            "Duplicate model component ''{0}"
-                            + "'' was already found in " + "domain ''{1}"
-                            + "''; domain model will not be "
-                            + "registered.", new Object[]{c.getName(), domainId});
-                }
-
-                bucketized.get(domainId).put(c.getName(), c);
-            }
-
-            //TODO add validation to ensure domain model is complete
-            Collection<DomainModel> newModels = new ArrayList<>();
-            for (Entry<String, Map<String, ModelComponent>> e : bucketized.entrySet()) {
-                final Collection<ModelComponent> modelComponents = e.getValue().values();
-                if (modelComponents.isEmpty()) {
-                    continue;
-                }
-                final ModelComponent sample = modelComponents.iterator().next();
-                final String name = sample.getAddress().getDomainName();
-                final long version = sample.getAddress().getDomainVersion();
-                DomainModel model;
-                try {
-                    model = new ImmutableDomainModel(name, version, modelComponents);
-                    newModels.add(model); //add to models to register
-                } catch (ModelException ex) {
-                    logger.log(Level.SEVERE, "Problems creating domain model '"
-                            + DomainUtil.uniqueDomainId(name, version)
-                            + "'; domain will not be registered.", ex);
-                    continue; //do not register
-                }
-            }
+            
             register(newModels);
         }
 

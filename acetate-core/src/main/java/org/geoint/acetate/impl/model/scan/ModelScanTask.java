@@ -93,7 +93,7 @@ public class ModelScanTask
         private long startMillis;
         private Duration duration;
         private Optional<Throwable> error = Optional.empty();
-        private Collection<ModelComponent> components = new ArrayList<>();
+        private Map<String, ModelComponent> components = new ArrayList<>();
 
         public ModelScanTaskResults() {
             startMillis = System.currentTimeMillis();
@@ -125,7 +125,7 @@ public class ModelScanTask
         }
 
         @Override
-        public Collection<ModelComponent> getComponents() {
+        public Collection<DomainModel> getModels() {
             return components;
         }
 

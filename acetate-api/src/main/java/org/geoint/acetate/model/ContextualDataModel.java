@@ -12,7 +12,7 @@ import org.geoint.acetate.model.annotation.Model;
  * @see ContextualCollectionModel
  * @see ContextualInstanceModel
  */
-@Model(name="", domainName="acetate", domainVersion=1)
-public interface ContextualDataModel extends ContextualModel {
+@Model(name="contextualData", domainName="acetate", domainVersion=1)
+public interface ContextualDataModel  {
 
 }

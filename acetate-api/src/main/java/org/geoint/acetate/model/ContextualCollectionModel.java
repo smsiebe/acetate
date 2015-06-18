@@ -5,7 +5,7 @@ import org.geoint.acetate.model.annotation.Model;
 /**
  * Defines the contextual model for a Collection of data.
  */
-@Model(name="", domainName="acetate", domainVersion=1)
+@Model(name="collection", domainName="acetate", domainVersion=1)
 public interface ContextualCollectionModel extends ContextualDataModel {
 
     /**

@@ -5,7 +5,7 @@ import org.geoint.acetate.model.annotation.Model;
 /**
  * Defines the contextual model for a Map of data.
  */
-@Model(name="", domainName="acetate", domainVersion=1)
+@Model(name = "map", domainName = "acetate", domainVersion = 1)
 public interface ContextualMapModel extends ContextualDataModel {
 
     /**

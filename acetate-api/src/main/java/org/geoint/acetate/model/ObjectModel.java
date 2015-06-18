@@ -18,24 +18,8 @@ import org.geoint.acetate.model.annotation.Model;
  *
  * @param <T> associated java data type
  */
-@Model(name="", domainName="acetate", domainVersion=1)
+@Model(name = "object", domainName = "acetate", domainVersion = 1)
 public interface ObjectModel<T> extends DataModel<T> {
-
-    /**
-     * Model object model(s) this model inherits from, potentially inheriting
- components.
-     *
-     * @return domain component from which this component is inherited or, if
-     * not inherited from other object models, returns an empty set
-     */
-    Set<ObjectModel<? super T>> getParents();
-
-    /**
-     * Model object model(s) which specialize (inherit from) this model.
-     *
-     * @return models which inherit from this model
-     */
-    Set<ObjectModel<? extends T>> getSpecialized();
 
     /**
      * Operations defined by this object model.

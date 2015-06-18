@@ -9,7 +9,7 @@ import org.geoint.acetate.model.attribute.Attributed;
  *
  *
  */
-@Model(name="", domainName="acetate", domainVersion=1)
+@Model(name="component", domainName="acetate", domainVersion=1)
 public interface ModelComponent extends Attributed {
 
     /**

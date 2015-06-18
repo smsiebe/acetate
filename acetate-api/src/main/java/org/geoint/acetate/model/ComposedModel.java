@@ -1,6 +1,7 @@
 package org.geoint.acetate.model;
 
 import java.util.Collection;
+import java.util.Set;
 import org.geoint.acetate.model.annotation.Model;
 
 /**
@@ -9,8 +10,22 @@ import org.geoint.acetate.model.annotation.Model;
  *
  * @param <T> java class representation of component
  */
-@Model(name="", domainName="acetate", domainVersion=1)
+@Model(name = "composed", domainName = "acetate", domainVersion = 1)
 public interface ComposedModel<T> extends DataModel<T> {
+
+    /**
+     * EventModel components from which this model inherits.
+     *
+     * @return parent models
+     */
+    Set<ComposedModel<? super T>> getParents();
+
+    /**
+     * EventModel components which inherit from this model.
+     *
+     * @return specialized models
+     */
+    Set<ComposedModel<? extends T>> getSpecialized();
 
     /**
      * Composite data model components that make up this model.

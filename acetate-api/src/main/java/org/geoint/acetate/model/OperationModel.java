@@ -7,7 +7,7 @@ import org.geoint.acetate.model.annotation.Model;
  * Models behavior of an Entity.
  *
  */
-@Model(name="", domainName="acetate", domainVersion=1)
+@Model(name="operation", domainName="acetate", domainVersion=1)
 public interface OperationModel extends ModelComponent {
 
     /**

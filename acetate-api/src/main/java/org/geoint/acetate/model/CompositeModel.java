@@ -5,7 +5,7 @@ import org.geoint.acetate.model.annotation.Model;
 /**
  * Models a composite relationship between two data model components.
  */
-@Model(name="", domainName="acetate", domainVersion=1)
+@Model(name="composite", domainName="acetate", domainVersion=1)
 public interface CompositeModel {
 
     /**

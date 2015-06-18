@@ -15,7 +15,7 @@ import org.geoint.acetate.model.annotation.EntityVersion;
  *
  * All DomainModel instances must be immutable and thread-safe.
  */
-@Model(name="Domain Model", domainName="acetate", domainVersion=1)
+@Model(name="domain", domainName="acetate", domainVersion=1)
 public interface DomainModel {
 
     /**

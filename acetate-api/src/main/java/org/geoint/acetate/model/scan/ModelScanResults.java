@@ -4,7 +4,7 @@ import org.geoint.acetate.DomainRegistry;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.Optional;
-import org.geoint.acetate.model.ModelComponent;
+import org.geoint.acetate.model.DomainModel;
 
 /**
  * Results from a domain model scan operation.
@@ -29,11 +29,14 @@ public interface ModelScanResults {
     Optional<Throwable> getCause();
 
     /**
-     * Components found by the scanner.
+     * Domain models found by the scanner.
      *
-     * @return scanner discovered components
+     * Domain models returned by a scanner are not
+     * {@link DomainRegistry registered}.
+     *
+     * @return unregistered scanner discovered domain models
      */
-    Collection<ModelComponent> getComponents();
+    Collection<DomainModel> getModels();
 
     /**
      * How long the scanner took to complete.
