@@ -1,14 +1,11 @@
 package org.geoint.acetate.impl.model.scan;
 
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.geoint.acetate.model.ModelComponent;
 import org.geoint.acetate.model.scan.ModelScanException;
 import org.geoint.acetate.model.scan.ModelScanListener;
 import org.geoint.acetate.model.scan.ModelScanResults;
@@ -47,12 +44,12 @@ public class ModelScanTask
         results = new ModelScanTaskResults();
 
         try {
-            //do scan, adding listener to capture all model components 
-            //in collection
-            ModelScanListener[] withCollector
+            //do scan, adding listener to count components
+            ModelScanListener[] withCounter
                     = Arrays.copyOf(listeners, listeners.length + 1);
-            withCollector[withCollector.length] = (n, v, c) -> results.components.add(c);
-            scanner.scan(withCollector);
+            //withCollector[withCollector.length] = (n, v, c) -> results.components.add(c);
+            withCounter[withCounter.length] = (c) -> results.incrementComponentCount();
+            scanner.scan(withCounter);
 
         } catch (ModelScanException ex) {
             logger.log(Level.WARNING, "Unable to complete model scan task '"
@@ -93,7 +90,7 @@ public class ModelScanTask
         private long startMillis;
         private Duration duration;
         private Optional<Throwable> error = Optional.empty();
-        private Map<String, ModelComponent> components = new ArrayList<>();
+        private int numComponents = 0;
 
         public ModelScanTaskResults() {
             startMillis = System.currentTimeMillis();
@@ -124,10 +121,13 @@ public class ModelScanTask
             return scanner.getClass();
         }
 
-        @Override
-        public Collection<DomainModel> getModels() {
-            return components;
+        private void incrementComponentCount() {
+            numComponents++;
         }
 
+        @Override
+        public int getNumComponentsDiscovered() {
+            return numComponents;
+        }
     }
 }

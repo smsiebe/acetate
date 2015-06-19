@@ -1,4 +1,4 @@
-package org.geoint.acetate.impl.model.entity;
+package org.geoint.acetate.impl.model;
 
 import java.util.Collection;
 import org.geoint.acetate.bind.transform.BufferedCodec;

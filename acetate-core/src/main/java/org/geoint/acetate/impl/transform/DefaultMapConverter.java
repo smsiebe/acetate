@@ -5,9 +5,11 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import org.geoint.acetate.bind.transform.ObjectConverter;
 import org.geoint.acetate.bind.transform.DataTransformException;
 import org.geoint.acetate.impl.transform.DefaultMapConverter.KeyValue;
+import org.geoint.acetate.model.DataModel;
 
 /**
  * Default {@link Map java.util.Map} converter, converting each map entry into a
@@ -21,23 +23,25 @@ public class DefaultMapConverter<K, V>
         implements ObjectConverter<Map<K, V>, Collection<KeyValue<K, V>>> {
 
     @Override
-    public Collection<KeyValue<K, V>> convert(Map<K, V> from)
+    public Optional<Collection<KeyValue<K, V>>> convert(
+            DataModel<Collection<KeyValue<K, V>>> model, Map<K, V> obj)
             throws DataTransformException {
         Collection<KeyValue<K, V>> coll = new ArrayList<>();
-        from.entrySet().stream()
+        obj.entrySet().stream()
                 .map((e) -> new KeyValue(e.getKey(), e.getValue()))
                 .forEach((kv) -> coll.add(kv));
-        return coll;
+        return Optional.ofNullable(coll);
     }
 
     @Override
-    public Map<K, V> invert(Collection<KeyValue<K, V>> to)
+    public Optional<Map<K, V>> invert(
+            DataModel<Collection<KeyValue<K, V>>> model, Collection<KeyValue<K, V>> modeled)
             throws DataTransformException {
         Map<K, V> map = new LinkedHashMap<>();
-        to.stream().forEach((p) -> {
+        modeled.stream().forEach((p) -> {
             map.put(p.key, p.value);
         });
-        return map;
+        return Optional.ofNullable(map);
     }
 
     /**

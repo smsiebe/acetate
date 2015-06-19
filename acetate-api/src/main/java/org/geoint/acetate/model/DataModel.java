@@ -18,10 +18,4 @@ public interface DataModel<T> extends ModelComponent, Constrained {
      */
     Class<T> getDataClass();
     
-    /**
-     * Hierarchically visits each data model component on the data model graph.
-     * 
-     * @param visitor data model visitor callback
-     */
-    void visit (DataModelVisitor visitor);
 }

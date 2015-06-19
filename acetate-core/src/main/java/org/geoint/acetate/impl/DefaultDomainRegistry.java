@@ -14,9 +14,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.geoint.acetate.impl.model.DomainUtil;
 import org.geoint.acetate.impl.model.ImmutableDomainModel;
+import org.geoint.acetate.model.ImmutableModelComponent;
 import org.geoint.acetate.impl.model.scan.ModelScanManager;
+import org.geoint.acetate.model.DomainId;
 import org.geoint.acetate.model.DomainModel;
-import org.geoint.acetate.model.ModelComponent;
 import org.geoint.acetate.model.ModelException;
 import org.geoint.acetate.model.scan.ModelScanListener;
 import org.geoint.acetate.model.scan.ModelScanResults;
@@ -51,14 +52,13 @@ public class DefaultDomainRegistry implements DomainRegistry {
      */
     @Override
     public Future<ModelScanResults> scan() {
-        //TODO add scanner which reads the annotation processer generated meta
-        throw new UnsupportedOperationException();
-        // return scans.execute(new AnnotationScanner());
+        return scans.execute(new MetaModelScanner(),
+                new ModelScanCompleteRegister());
     }
 
     @Override
     public Future<ModelScanResults> scan(ModelScanner scanner) {
-        return scans.execute(scanner);
+        return scans.execute(scanner, new ModelScanCompleteRegister());
     }
 
     @Override
@@ -100,20 +100,32 @@ public class DefaultDomainRegistry implements DomainRegistry {
      */
     private final class ModelScanCompleteRegister implements ModelScanListener {
 
+        private final Map<DomainId, Collection<ImmutableModelComponent>> components
+                = new HashMap<>();
+
         @Override
-        public void component(String modelName, long modelVersion,
-                ModelComponent component) {
-            //do nothing here
-            //TODO add ability to add components to a domain model after registration
+        public void component(ImmutableModelComponent component) {
+            final DomainId id = component.getDomainId();
+            if (!components.containsKey(id)) {
+                components.put(id, new ArrayList<>());
+            }
+            components.get(id).add(component);
         }
 
         @Override
         public void scanComplete(ModelScanner scanner, ModelScanResults results) {
 
-            
-            register(newModels);
+            Collection<DomainModel> models = new ArrayList<>();
+            for (Entry<DomainId, Collection<ImmutableModelComponent>> e
+                    : components.entrySet()) {
+                try {
+                    models.add(new ImmutableDomainModel(e.getKey(), e.getValue()));
+                } catch (ModelException ex) {
+                    logger.log(Level.SEVERE, "Unable to register domain '"
+                            + e.getKey().asString(), ex);
+                }
+            }
+            register(models);
         }
-
     }
-
 }

@@ -6,7 +6,7 @@ import java.time.ZonedDateTime;
  * Visitor callback used to {@link DataModel#visit(DataModelVisitor) visit the
  * domain model components}.
  */
-public interface DataModelVisitor {
+public interface ModelVisitor {
 
     /**
      * Called for a value component model.

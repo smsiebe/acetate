@@ -9,7 +9,7 @@ import org.geoint.acetate.model.attribute.Attributed;
  *
  *
  */
-@Model(name="component", domainName="acetate", domainVersion=1)
+@Model(name = "component", domainName = "acetate", domainVersion = 1)
 public interface ModelComponent extends Attributed {
 
     /**
@@ -17,7 +17,7 @@ public interface ModelComponent extends Attributed {
      *
      * @return domain model containing this component
      */
-    DomainModel getDomainModel();
+    DomainId getDomainId();
 
     /**
      * Model-model unique name of the component.
@@ -33,4 +33,10 @@ public interface ModelComponent extends Attributed {
      */
     Optional<String> getDescription();
 
+    /**
+     * Hierarchically visits each model component.
+     *
+     * @param visitor model visitor callback
+     */
+    void visit(ModelVisitor visitor);
 }

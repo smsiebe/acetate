@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
 import org.geoint.acetate.impl.model.ImmutableCompositeObjectModel.ImmutableCompositeAddress;
-import org.geoint.acetate.impl.model.entity.ImmutableOperationModel.ImmutableOperationAddress;
+import org.geoint.acetate.impl.model.ImmutableOperationModel.ImmutableOperationAddress;
 import org.geoint.acetate.model.ComponentAddress;
 import org.geoint.acetate.model.ContextualModelComponent;
 import org.geoint.acetate.model.ObjectModel;

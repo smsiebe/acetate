@@ -1,6 +1,9 @@
 package org.geoint.acetate.model;
 
+import java.lang.ref.WeakReference;
+import java.util.Map;
 import java.util.Objects;
+import java.util.WeakHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,6 +17,9 @@ public final class DomainId {
     private String name;
     private long version;
 
+    private static final Map<String, WeakReference<DomainId>> cache
+            = new WeakHashMap<>();
+
     private static final char SEPARATOR = ':';
     private static final Pattern PARSER = Pattern.compile("(.*):(\\d)");
 
@@ -21,12 +27,44 @@ public final class DomainId {
      *
      * @param domainName
      * @param domainVersion version increment >= 0
+     * @return domain id instance
      * @throws NullPointerException throws if domainName was null
      * @throws IllegalArgumentException if the version is less than 0
      */
-    public DomainId(String domainName, long domainVersion)
+    public static DomainId getInstance(String domainName, long domainVersion)
             throws NullPointerException, IllegalArgumentException {
-        this(generateId(domainName, domainVersion), domainName, domainVersion);
+        final String domainId = generateId(domainName, domainVersion);
+
+        synchronized (cache) {
+            if (!cache.containsKey(domainId)) {
+                cache(domainId, domainName, domainVersion);
+            }
+        }
+        return cache.get(domainId).get();
+    }
+
+    /**
+     * Creates an instance from a {@link #asString() formatted string}.
+     *
+     *
+     * @param domainId
+     * @return instance id
+     * @throws InvalidDomainIdentifierException thrown if the provided string
+     * was not formatted properly
+     */
+    public static DomainId valueOf(String domainId)
+            throws InvalidDomainIdentifierException {
+
+        if (cache.containsKey(domainId)) {
+            return cache.get(domainId).get();
+        }
+
+        Matcher m = PARSER.matcher(domainId);
+        if (!m.matches()) {
+            throw new InvalidDomainIdentifierException("domainId", "Invalid "
+                    + "domainId format.");
+        }
+        return cache(domainId, m.group(1), Long.valueOf(m.group(2)));
     }
 
     private DomainId(String domainId, String domainName, long domainVersion)
@@ -41,28 +79,11 @@ public final class DomainId {
                     + "than or equal to 0.");
         }
 
+        //intern the domainId and name, as it'll be shared in a significant number
+        //of domain model components
         this.domainId = domainId;
         this.name = domainName;
         this.version = domainVersion;
-    }
-
-    /**
-     * Creates an instance from a {@link #asString() formatted string}.
-     *
-     *
-     * @param domainId
-     * @return instance id
-     * @throws InvalidDomainIdentifierException thrown if the provided string
-     * was not formatted properly
-     */
-    public static DomainId valueOf(String domainId)
-            throws InvalidDomainIdentifierException {
-        Matcher m = PARSER.matcher(domainId);
-        if (!m.matches()) {
-            throw new InvalidDomainIdentifierException("domainId", "Invalid "
-                    + "domainId format.");
-        }
-        return new DomainId(domainId, m.group(1), Long.valueOf(m.group(2)));
     }
 
     public String getDomainId() {
@@ -106,6 +127,12 @@ public final class DomainId {
     @Override
     public String toString() {
         return domainId;
+    }
+
+    private static DomainId cache(String domainId, String name, long version) {
+        final DomainId id = new DomainId(domainId, name, version);
+        cache.put(domainId, new WeakReference(id));
+        return id;
     }
 
     private static String generateId(String name, long version) {

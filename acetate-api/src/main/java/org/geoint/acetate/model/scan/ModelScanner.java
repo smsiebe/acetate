@@ -19,6 +19,9 @@ public interface ModelScanner {
      * Long-running scan tasks should perodically check the threads interrupt to
      * see if has been requested to shutdown.
      *
+     * Of note, all scanners must provide immutable and thread-safe model
+     * components to listeners.
+     *
      * @param listeners scan lifecycle callback listeners
      * @throws ModelScanException thrown if the scan could not complete
      */

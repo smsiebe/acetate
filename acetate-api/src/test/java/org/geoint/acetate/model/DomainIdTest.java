@@ -10,27 +10,27 @@ public class DomainIdTest {
 
     @Test(expected = NullPointerException.class)
     public void testNullDomainName() throws Exception {
-        DomainId domainId = new DomainId(null, 0);
+        DomainId domainId = DomainId.getInstance(null, 0);
     }
 
     @Test(expected = NullPointerException.class)
     public void testEmptyDomainName() throws Exception {
-        DomainId domainId = new DomainId("", 0);
+        DomainId domainId = DomainId.getInstance("", 0);
     }
 
     @Test
     public void testZeroDomainVersion() throws Exception {
-        DomainId domainId = new DomainId("test", 0);
+        DomainId domainId = DomainId.getInstance("test", 0);
     }
 
     @Test
     public void testPositiveDomainVersion() throws Exception {
-        DomainId domainId = new DomainId("test", 1);
+        DomainId domainId = DomainId.getInstance("test", 1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testNegativeDomainVersion() throws Exception {
-        DomainId domainId = new DomainId("test", -1);
+        DomainId domainId = DomainId.getInstance("test", -1);
     }
 
     @Test

@@ -1,6 +1,7 @@
 package org.geoint.acetate.model.scan;
 
 import org.geoint.acetate.DomainRegistry;
+import org.geoint.acetate.model.ImmutableModelComponent;
 import org.geoint.acetate.model.ModelComponent;
 
 /**
@@ -29,23 +30,20 @@ public interface ModelScanListener {
      * throwing a ModelComponentRejectedException, explaining the cause for
      * rejection in the exception message.
      *
-     * @param component component to validate
+     * @param component immutable component to validate
      * @throws ModelComponentRejectedException thrown if the individual
      * component must not be included with the domain model
      */
-    default void validate(ModelComponent component)
+    default void validate(ImmutableModelComponent component)
             throws ModelComponentRejectedException {
     }
 
     /**
      * Called for "accepted" components.
      *
-     * @param modelName
-     * @param modelVersion
-     * @param component
+     * @param component immutable component of the model
      */
-    void component(String modelName, long modelVersion,
-            ModelComponent component);
+    void component(ImmutableModelComponent component);
 
     /**
      * Called to indicate that the scanner has completed scanning.

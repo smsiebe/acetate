@@ -1,7 +1,6 @@
 package org.geoint.acetate.model;
 
 import java.util.Collection;
-import java.util.Set;
 import org.geoint.acetate.model.annotation.Model;
 
 /**
@@ -19,7 +18,7 @@ import org.geoint.acetate.model.annotation.Model;
  * @param <T> associated java data type
  */
 @Model(name = "object", domainName = "acetate", domainVersion = 1)
-public interface ObjectModel<T> extends DataModel<T> {
+public interface ObjectModel<T> extends ComposedModel<T> {
 
     /**
      * Operations defined by this object model.
