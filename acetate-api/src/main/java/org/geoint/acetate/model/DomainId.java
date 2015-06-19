@@ -1,6 +1,7 @@
 package org.geoint.acetate.model;
 
 import java.util.Objects;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -14,25 +15,54 @@ public final class DomainId {
     private long version;
 
     private static final char SEPARATOR = ':';
-    private static final Pattern PARSER = Pattern.compile(".*:\\d");
+    private static final Pattern PARSER = Pattern.compile("(.*):(\\d)");
 
-    public DomainId(String domainName, long domainVersion) {
+    /**
+     *
+     * @param domainName
+     * @param domainVersion version increment >= 0
+     * @throws NullPointerException throws if domainName was null
+     * @throws IllegalArgumentException if the version is less than 0
+     */
+    public DomainId(String domainName, long domainVersion)
+            throws NullPointerException, IllegalArgumentException {
         this(generateId(domainName, domainVersion), domainName, domainVersion);
     }
 
-    private DomainId(String domainId, String domainName, long domainVersion) {
+    private DomainId(String domainId, String domainName, long domainVersion)
+            throws NullPointerException, IllegalArgumentException {
+
+        if (domainName == null || domainName.isEmpty()) {
+            throw new NullPointerException("Domain name must not be null.");
+        }
+
+        if (domainVersion < 0) {
+            throw new IllegalArgumentException("Domain version must be greater "
+                    + "than or equal to 0.");
+        }
+
         this.domainId = domainId;
         this.name = domainName;
         this.version = domainVersion;
     }
 
     /**
-     * Creates an instance 
+     * Creates an instance from a {@link #asString() formatted string}.
+     *
+     *
      * @param domainId
-     * @return 
+     * @return instance id
+     * @throws InvalidDomainIdentifierException thrown if the provided string
+     * was not formatted properly
      */
-    public static DomainId valueOf(String domainId) {
-
+    public static DomainId valueOf(String domainId)
+            throws InvalidDomainIdentifierException {
+        Matcher m = PARSER.matcher(domainId);
+        if (!m.matches()) {
+            throw new InvalidDomainIdentifierException("domainId", "Invalid "
+                    + "domainId format.");
+        }
+        return new DomainId(domainId, m.group(1), Long.valueOf(m.group(2)));
     }
 
     public String getDomainId() {
@@ -48,7 +78,7 @@ public final class DomainId {
     }
 
     /**
-     * Returns a contractually defined string format uniquely identifying a 
+     * Returns a contractually defined string format uniquely identifying a
      * domain model by name/version.
      *
      * This method provides a contract that it will always format the DomainId
