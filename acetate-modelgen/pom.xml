@@ -8,10 +8,34 @@
     </parent>
     <artifactId>acetate-modelgen</artifactId>
     <name>acetate-modelgen</name>
-    <description>acetate annotation processor validates domain models at 
-        compile time and generates metamodel to aid in discovery and performance 
-        of modeling and data binding.</description>
+    <description>acetate annotation processor which processes annotationed 
+        classes, validating and generating the metamodel and compile time.
+    </description>
     <packaging>jar</packaging>
+    
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <verbose>true</verbose>
+                    <fork>true</fork>
+                    <compilerVersion>1.8</compilerVersion>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <compilerArgument>-proc:none</compilerArgument>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>

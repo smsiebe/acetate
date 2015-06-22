@@ -6,30 +6,26 @@
         <artifactId>acetate</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>acetate-core</artifactId>
-    <name>acetate-core</name>
-    <description>acetate metamodel framework core implementation</description>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
+    <artifactId>acetate-domain</artifactId>
+    <name>acetate-domain</name>
+    <description>API to define and introspect a domain model using acetate 
+        metamodeling</description>
     <packaging>jar</packaging>
     
     <dependencies>
+        
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>acetate-meta</artifactId>
             <version>${project.version}</version>
         </dependency>
         
-        
+        <!-- **************** TEST DEPENDENCIES ************** -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.12</version>
+            <version>4.10</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
-    
 </project>
