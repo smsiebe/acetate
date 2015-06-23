@@ -3,7 +3,7 @@ package org.geoint.acetate.spi;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.ServiceLoader;
-import org.geoint.acetate.meta.model.MetaModel;
+import org.geoint.acetate.meta.model.ObjectModel;
 
 /**
  * Metamodel provider.
@@ -20,12 +20,12 @@ import org.geoint.acetate.meta.model.MetaModel;
 public interface MetaProvider {
 
     /**
-     * Returns all the meta models found by this provider.
+     * Returns all the object models found by this provider.
      *
      * @return meta models found by this provider; if no metamodels are found,
      * returns empy collection
      */
-    Collection<MetaModel> getModels();
+    Collection<ObjectModel> getModels();
 
     /**
      * Returns the requested metamodel, if registered.
@@ -34,6 +34,6 @@ public interface MetaProvider {
      * @param modelVersion
      * @return metamodel model, if registered
      */
-    Optional<MetaModel> getModel(String modelName, String modelVersion);
+    Optional<ObjectModel> getModel(String modelName, String modelVersion);
 
 }

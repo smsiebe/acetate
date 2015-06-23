@@ -1,7 +1,8 @@
 package org.geoint.acetate.meta.model;
 
 import java.util.Collection;
-import org.geoint.acetate.meta.MetaVersion;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Object metadata as identified by the acetate metamodel framework.
@@ -18,11 +19,19 @@ public interface ObjectModel<T> {
     Class<T> getObjectType();
 
     /**
-     * Version of the object model.
+     * Metamodel attributes assigned to this object model.
      *
-     * @return object model version
+     * @return attributes defined by metamodels
      */
-    MetaVersion getVersion();
+    Map<String, String> getAttributes();
+
+    /**
+     * Retrieve a specific metamodel attribute.
+     *
+     * @param attributeName
+     * @return metamodel attribute value or null if attribute was not set
+     */
+    Optional<String> getAttribute(String attributeName);
 
     /**
      * Object operations.

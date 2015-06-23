@@ -13,7 +13,7 @@ import org.geoint.acetate.impl.model.IncorrectModelAssignementException;
 import org.geoint.acetate.model.DomainId;
 import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.model.ModelComponent;
-import org.geoint.acetate.model.ModelException;
+import org.geoint.acetate.meta.model.ModelException;
 import org.geoint.acetate.model.attribute.Attributed;
 import org.geoint.acetate.model.attribute.ModelAttribute;
 

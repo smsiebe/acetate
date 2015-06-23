@@ -1,98 +1,61 @@
 package org.geoint.acetate.model.reflect;
 
+import java.lang.annotation.Annotation;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import org.geoint.acetate.meta.MetaVersion;
+import java.util.stream.Collectors;
+import org.geoint.acetate.impl.meta.model.ImmutableObjectModel;
+import org.geoint.acetate.impl.meta.model.ModelBuilder;
+import org.geoint.acetate.impl.meta.model.ObjectModelBuilder;
+import org.geoint.acetate.meta.annotation.Meta;
+import org.geoint.acetate.meta.model.MetaModel;
 import org.geoint.acetate.meta.model.ObjectModel;
-import org.geoint.acetate.meta.model.OperationModel;
 
 /**
- * Uses reflection to create object model.
+ * Reflects on the provided classes to create metamodel(s) based on the
+ * annotated classes.
  *
  */
 public class ReflectionModeler {
 
-    private static final Map<Class<?>, WeakReference<ObjectModel<?>>> modelCache
-            = new WeakHashMap<>();
-    private static final ExecutorService executor
-            = Executors.newCachedThreadPool();
-
     /**
-     * Model the provided class using reflection.
+     * Model the classes as zero or more meta models.
      *
-     * @param <T>
-     * @param toModel
-     * @return object meta model or null if class is not defined as a model
+     * @param classes
+     * @return metamodels discovered or an empty collection
      */
-    public static <T> ObjectModel<T> model(Class<T> toModel) {
-        synchronized (modelCache) {
-            if (!modelCache.containsKey(toModel)) {
-                modelCache.put(toModel, new WeakReference(
-                        ObjectModelReflector.reflect(toModel)));
-            }
+    public static Collection<ObjectModel> model(Class<?>... classes) {
+
+        
+        ModelBuilder builder = new ModelBuilder();
+        
+        for (Class<?> toModel : classes) {
+            ObjectModelBuilder<?> ob = builder.forClass(toModel);
+            
         }
-        return (ObjectModel<T>) modelCache.get(toModel).get();
+
+        return (modelCache.get(toModel) != null)
+                ? (ImmutableObjectModel<T>) modelCache.get(toModel).get()
+                : null;
     }
 
-    private static class ObjectModelReflector<T> implements ObjectModel<T>, Runnable {
-
-        private volatile Future<?> running;
-        private final Class<T> type;
-        
-        //asynchronously set by thread
-        private MetaVersion version;
-        private Collection<OperationModel> operations;
-        private Collection<ObjectModel<? super T>> parents;
-        private Collection<ObjectModel<? extends T>> specialized;
-        
-        public ObjectModelReflector(Class<T> type) {
-            this.type = type;
+    private static <T> ObjectModelBuilder<T> reflect(Class<T> toModel) {
+        //check if this class has annotated with a Meta annotation, 
+        //otherwise return null because this object is not part of a model
+        Collection<Annotation> objMetaAnnotations = getMeta(toModel);
+        if (objMetaAnnotations.isEmpty()) {
+            return null;
         }
 
-        private static <T> ObjectModel<T> reflect(
-                Class<T> toModel) {
-            ObjectModelReflector<T> model = new ObjectModelReflector(toModel);
-            model.running = executor.submit(model);
-            return model;
-        }
+    }
 
-        @Override
-        public void run () {
-            
-        }
-        
-        @Override
-        public Class<T> getObjectType() {
-            return type;
-        }
-
-        @Override
-        public MetaVersion getVersion() {
-
-        }
-
-        @Override
-        public Collection<OperationModel> getOperations() {
-
-        }
-
-        @Override
-        public Collection<ObjectModel<? super T>> getParents() {
-
-        }
-
-        @Override
-        public Collection<ObjectModel<? extends T>> getSpecialized() {
-
-        }
-
-        private <T> whenComplete (Function<T> asyncFunction) {
-            
-        }
+    private static Collection<Annotation> getMeta(Class<?> toModel) {
+        return Arrays.stream(toModel.getAnnotations())
+                .filter((a) -> a.getClass().isAnnotationPresent(Meta.class))
+                .collect(Collectors.toList());
     }
 }

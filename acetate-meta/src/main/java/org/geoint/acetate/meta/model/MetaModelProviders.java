@@ -44,11 +44,11 @@ public abstract class MetaModelProviders {
     }
 
     /**
-     * Returns all the meta models from all providers.
+     * Returns all the object meta models from all providers.
      *
      * @return meta models found by all providers
      */
-    public static Set<MetaModel> getModels() {
+    public static Set<ObjectModel> getModels() {
         return getProviders().parallelStream()
                 .flatMap((p) -> p.getModels().stream())
                 .collect(Collectors.toSet());
@@ -62,7 +62,7 @@ public abstract class MetaModelProviders {
      * @param modelVersion
      * @return metamodel model, if registered
      */
-    public static Optional<MetaModel> getModel(String modelName,
+    public static Optional<ObjectModel> getModel(String modelName,
             String modelVersion) {
         return getProviders().parallelStream()
                 .map((p) -> p.getModel(modelName, modelVersion))
