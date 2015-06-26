@@ -1,6 +1,7 @@
 package org.geoint.acetate.impl.meta.model;
 
 import java.lang.ref.WeakReference;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -8,6 +9,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import org.geoint.acetate.meta.model.ModelException;
+import org.geoint.acetate.meta.model.ObjectModel;
 
 /**
  * Fluid API to programmatically create one or more ObjectModel instances.
@@ -47,6 +50,17 @@ public final class ModelBuilder {
             }
         }
         return objects.get(objectType).get();
+    }
+
+    /**
+     * Build the object models.
+     *
+     * @return object models created with this builder
+     * @throws ModelException thrown if there is an invalid model
+     */
+    public Collection<ObjectModel> buildObjectModels()
+            throws ModelException {
+
     }
 
     private class ObjectBuilderImpl<T> implements ObjectModelBuilder<T> {

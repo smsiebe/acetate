@@ -16,7 +16,7 @@ public interface ObjectModelBuilder<T> {
     ObjectModelBuilder<T> specializes(Class<? super T> parentClass);
 
     /**
-     * Add a metamodel attribute to this object model.
+     * Add a {@link Meta metamodel attribute} to this object model.
      * 
      * @param name
      * @param value
