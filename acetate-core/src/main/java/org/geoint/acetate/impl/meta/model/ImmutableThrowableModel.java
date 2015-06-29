@@ -7,7 +7,8 @@ import org.geoint.acetate.meta.model.ThrowableModel;
  *
  * @param <E>
  */
-public final class ImmutableThrowableModel<E> implements ThrowableModel<E> {
+public final class ImmutableThrowableModel<E extends Throwable>
+        implements ThrowableModel<E> {
 
     private final Class<E> throwableType;
 
