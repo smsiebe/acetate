@@ -10,24 +10,30 @@ import org.geoint.acetate.meta.model.ThrowableModel;
 /**
  *
  */
-public final class ImmutableReturnModel<R> implements ReturnModel<R> {
+final class ImmutableReturnModel implements ReturnModel {
 
-    private final ObjectModel<R> model;
-    private final Set<ThrowableModel<?>> exceptionModels;
+    private final ObjectModel model;
+    private final Set<ThrowableModel> exceptionModels;
 
-    public ImmutableReturnModel(ObjectModel<R> model,
-            Set<ImmutableThrowableModel<?>> exceptionModels) {
+    public ImmutableReturnModel(ObjectModel model,
+            Set<ImmutableThrowableModel> exceptionModels) {
         this.model = model;
         this.exceptionModels = Collections.unmodifiableSet(exceptionModels);
     }
 
+    public ImmutableReturnModel(DeferredImmutableObjectModel deferred,
+            Set<ImmutableThrowableModel> exceptionModels) {
+        this.model = deferred;
+        this.exceptionModels = Collections.unmodifiableSet(exceptionModels);
+    }
+
     @Override
-    public ObjectModel<R> getModel() {
+    public ObjectModel getModel() {
         return model;
     }
 
     @Override
-    public Set<ThrowableModel<?>> getExceptions() {
+    public Set<ThrowableModel> getExceptions() {
         return exceptionModels;
     }
 
@@ -47,7 +53,7 @@ public final class ImmutableReturnModel<R> implements ReturnModel<R> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final ImmutableReturnModel<?> other = (ImmutableReturnModel<?>) obj;
+        final ImmutableReturnModel other = (ImmutableReturnModel) obj;
         if (!Objects.equals(this.model, other.model)) {
             return false;
         }

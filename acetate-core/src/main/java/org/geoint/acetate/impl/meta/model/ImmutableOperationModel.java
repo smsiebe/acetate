@@ -1,4 +1,3 @@
-
 package org.geoint.acetate.impl.meta.model;
 
 import java.util.Collections;
@@ -9,33 +8,34 @@ import org.geoint.acetate.meta.model.ReturnModel;
 
 /**
  *
+ * @param <R>
  */
-public final class ImmutableOperationModel<R> implements OperationModel<R>{
+final class ImmutableOperationModel implements OperationModel {
 
     private final String name;
-    private final Map<String, ParameterModel<?>> parameterModels;
+    private final Map<String, ParameterModel> parameterModels;
     private final ReturnModel returnModel;
 
-    public ImmutableOperationModel(String name, 
-            Map<String, ImmutableParameterModel<?>> parameterModels, 
+    public ImmutableOperationModel(String name,
+            Map<String, ImmutableParameterModel> parameterModels,
             ImmutableReturnModel returnModel) {
         this.name = name;
         this.parameterModels = Collections.unmodifiableMap(parameterModels);
         this.returnModel = returnModel;
     }
-    
+
     @Override
     public String getOperationName() {
         return name;
     }
 
     @Override
-    public Map<String, ParameterModel<?>> getParameterModels() {
+    public Map<String, ParameterModel> getParameterModels() {
         return parameterModels;
     }
 
     @Override
-    public ReturnModel<R> getReturnModel() {
+    public ReturnModel getReturnModel() {
         return returnModel;
     }
 

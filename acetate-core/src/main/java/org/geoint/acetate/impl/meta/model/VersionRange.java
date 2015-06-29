@@ -1,4 +1,4 @@
-package org.geoint.acetate.impl.meta;
+package org.geoint.acetate.impl.meta.model;
 
 import java.io.Serializable;
 

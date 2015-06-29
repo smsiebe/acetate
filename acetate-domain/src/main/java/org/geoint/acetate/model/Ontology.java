@@ -1,5 +1,6 @@
 package org.geoint.acetate.model;
 
+import org.geoint.acetate.meta.model.DomainModel;
 import java.util.Collection;
 import org.geoint.acetate.model.annotation.Model;
 

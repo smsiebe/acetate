@@ -1,5 +1,6 @@
-package org.geoint.acetate.impl.meta;
+package org.geoint.acetate.impl.meta.model;
 
+import org.geoint.acetate.impl.meta.model.ModelVersion;
 import org.geoint.acetate.meta.VersionQualifier;
 import java.util.Random;
 import org.junit.Test;

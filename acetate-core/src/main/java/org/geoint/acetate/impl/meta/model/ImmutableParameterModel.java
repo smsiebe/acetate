@@ -6,14 +6,20 @@ import org.geoint.acetate.meta.model.ParameterModel;
 /**
  *
  */
-public final class ImmutableParameterModel<T> implements ParameterModel<T> {
+final class ImmutableParameterModel implements ParameterModel {
 
     private final String name;
-    private final ImmutableObjectModel<T> model;
+    private final ObjectModel model;
 
-    public ImmutableParameterModel(String name, ImmutableObjectModel<T> model) {
+    public ImmutableParameterModel(String name, ImmutableObjectModel model) {
         this.name = name;
         this.model = model;
+    }
+
+    public ImmutableParameterModel(String name,
+            DeferredImmutableObjectModel deferred) {
+        this.name = name;
+        this.model = deferred;
     }
 
     @Override
@@ -22,7 +28,7 @@ public final class ImmutableParameterModel<T> implements ParameterModel<T> {
     }
 
     @Override
-    public ObjectModel<T> getModel() {
+    public ObjectModel getModel() {
         return model;
     }
 

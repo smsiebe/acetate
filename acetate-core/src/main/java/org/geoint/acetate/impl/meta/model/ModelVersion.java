@@ -1,4 +1,4 @@
-package org.geoint.acetate.impl.meta;
+package org.geoint.acetate.impl.meta.model;
 
 import org.geoint.acetate.meta.VersionQualifier;
 import java.io.Serializable;
@@ -19,7 +19,7 @@ public final class ModelVersion implements Serializable, MetaVersion,
     private final Optional<Integer> buildNumber;
     private static final String VERSION_SEPARATOR = ".";
     private static final String QUALIFIER_SEPARATOR = "-";
-    private static final Pattern VERSION_PATTERN
+    static final Pattern VERSION_PATTERN
             = Pattern.compile("(\\d+?)\\.(\\d+?)((\\.)(\\d*?))?\\-(\\w*)((\\-)(\\d+))?");
 
     public ModelVersion(int majorVersion,
@@ -99,22 +99,27 @@ public final class ModelVersion implements Serializable, MetaVersion,
         );
     }
 
+    @Override
     public int getMajorVersion() {
         return majorVersion;
     }
 
+    @Override
     public int getMinorVersion() {
         return minorVersion;
     }
 
+    @Override
     public Optional<Integer> getIncrement() {
         return increment;
     }
 
+    @Override
     public VersionQualifier getQualifier() {
         return qualifier;
     }
 
+    @Override
     public Optional<Integer> getBuildNumber() {
         return buildNumber;
     }

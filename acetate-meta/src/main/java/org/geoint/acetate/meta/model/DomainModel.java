@@ -1,13 +1,8 @@
-package org.geoint.acetate.model;
+package org.geoint.acetate.meta.model;
 
 import java.util.Collection;
 import java.util.Optional;
-import org.geoint.acetate.model.annotation.Model;
-import org.geoint.acetate.model.attribute.Attributed;
-import org.geoint.acetate.model.attribute.ModelAttribute;
-import org.geoint.acetate.model.annotation.EntityId;
-import org.geoint.acetate.model.constraint.NotNull;
-import org.geoint.acetate.model.annotation.EntityVersion;
+import org.geoint.acetate.meta.MetaVersion;
 
 /**
  * Defines one or more {@link DomainObject components} used to define the types
@@ -15,19 +10,7 @@ import org.geoint.acetate.model.annotation.EntityVersion;
  *
  * All DomainModel instances must be immutable and thread-safe.
  */
-@Model(name="domain", domainName="acetate", domainVersion=1)
 public interface DomainModel {
-
-    /**
-     * Unique domain model identifier.
-     *
-     * The DomainID is deterministically generated from the model name and
-     * version.
-     *
-     * @return unique domain model identifier
-     */
-    @EntityId
-    String getId();
 
     /**
      * Quasi-human-readable, globally-unique, name of the domain model.
@@ -45,7 +28,6 @@ public interface DomainModel {
      *
      * @return name of the data model
      */
-    @NotNull
     //TODO add constraint annotations for formatting requirements
     String getName();
 
@@ -72,9 +54,7 @@ public interface DomainModel {
      *
      * @return domain model version
      */
-    @EntityVersion
-    @NotNull
-    long getVersion();
+    MetaVersion getVersion();
 
     /**
      * Returns an immutable collection containing all the model components
@@ -82,7 +62,7 @@ public interface DomainModel {
      *
      * @return all components within the domain model
      */
-    Collection<ModelComponent> findAll();
+    Collection<ObjectModel> findAll();
 
     /**
      * Returns a component model by its address.
@@ -91,18 +71,17 @@ public interface DomainModel {
      * @return component model or null if the address does not resolve to a
      * component
      */
-    Optional<ModelComponent> find(String componentName);
+    Optional<ObjectModel> find(String componentName);
 
     /**
      * Returns an immutable collection of domain model components which are
      * decorated with the specified attribute.
      *
-     * @param attributeType attribute type
+     * @param attributeName attribute name
      * @return collection of component models which are decorated with the
      * requested attribute, or an empty collection if not components have the
      * requested attribute
      */
-    Collection<Attributed> find(
-            Class<? extends ModelAttribute> attributeType);
+    Collection<ObjectModel> findByAttribute(String attributeName);
 
 }

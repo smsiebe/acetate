@@ -17,10 +17,10 @@ import org.geoint.acetate.meta.model.ObjectModel;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
-public @interface Meta {
+public @interface Domain {
 
     /**
-     * Metamodel name, providing context for the meta attributes.
+     * Metamodel domain name, providing context for the meta attributes.
      *
      * A metamodel may define zero or more metamodel annotations; metamodel
      * annotations must share the same model name.

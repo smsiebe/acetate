@@ -6,7 +6,7 @@ import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.geoint.acetate.model.DomainModel;
+import org.geoint.acetate.meta.model.DomainModel;
 
 /**
  * Declares a class as a domain model component.

@@ -1,35 +1,47 @@
 package org.geoint.acetate.impl.meta.model;
 
+import org.geoint.acetate.meta.MetaVersion;
+
 /**
  * Fluid API to create an ObjectModel instance.
  *
- * @param <T>
  */
-public interface ObjectModelBuilder<T> {
+public interface ObjectModelBuilder {
 
     /**
      * Add a parent model to the object model.
-     * 
-     * @param parentClass
+     *
+     * @param objectName
      * @return this builder
      */
-    ObjectModelBuilder<T> specializes(Class<? super T> parentClass);
+    ObjectModelBuilder specializes(String objectName);
+
+    /**
+     * Add a parent model, possibly from another domain.
+     *
+     * @param domainId
+     * @param domainVersion
+     * @param objectName
+     * @return this builder
+     */
+    ObjectModelBuilder specializes(String domainId, MetaVersion domainVersion,
+            String objectName);
 
     /**
      * Add a {@link Meta metamodel attribute} to this object model.
-     * 
+     *
      * @param name
      * @param value
      * @return this builder
      */
-    ObjectModelBuilder<T> withAttribute(String name, String value);
+    ObjectModelBuilder withAttribute(String name, String value);
 
     /**
      * Add an operation to this object model.
-     * 
+     *
      * @param operationName
      * @return new operation builder
      */
-    OperationModelBuilder<?> withOperation(String operationName);
+    OperationModelBuilder withOperation(String operationName);
 
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import org.geoint.acetate.meta.MetaVersion;
 import org.geoint.acetate.meta.model.ModelException;
 import org.geoint.acetate.meta.model.ObjectModel;
 
@@ -19,41 +20,66 @@ import org.geoint.acetate.meta.model.ObjectModel;
  */
 public final class ModelBuilder {
 
-    private final Map<Class<?>, WeakReference<ObjectBuilderImpl>> objects
+    private final Map<DomainId, WeakReference<ObjectBuilderImpl>> objects
             = new WeakHashMap<>();
 
     /**
      * Return ObjectModelBuilder to programmatically create an ObjectModel for a
      * java class.
      *
-     * @param <T>
-     * @param type
+     * @param domainName
+     * @param domainVersion
+     * @param objectName
      * @return object model builder
      */
-    public <T> ObjectModelBuilder<T> forClass(Class<T> type) {
-        return (ObjectModelBuilder<T>) registerObjectType(type);
+    public ObjectModelBuilder forObject(String domainName,
+            MetaVersion domainVersion, String objectName) {
+        return registerObjectType(
+                DomainId.getInstance(domainName, domainVersion, objectName)
+        );
+    }
+
+    public ObjectModelBuilder forObject(DomainId domainId) {
+        return registerObjectType(domainId);
     }
 
     /**
      * Creates and caches a new ObjectModel builder if one does not already
      * exist for this class.
      *
-     * @param objectType
+     * @param objectName
      */
-    private ObjectBuilderImpl<?> registerObjectType(Class<?> objectType) {
+    private ObjectBuilderImpl registerObjectType(DomainId domainId) {
+        return registerObjectType(domainId);
+    }
+
+    private ObjectBuilderImpl registerObjectType(String domainAddress)
+            throws InvalidDomainIdentifierException {
+        final DomainId domainId = DomainId.valueOf(domainAddress);
         synchronized (objects) {
             //register parent class model builder if it hasn't been already
-            if (!objects.containsKey(objectType)) {
-                ObjectBuilderImpl builder = new ObjectBuilderImpl(objectType);
-                objects.put(objectType, new WeakReference(builder));
+            if (!objects.containsKey(domainId)) {
+                ObjectBuilderImpl builder = new ObjectBuilderImpl(domainId);
+                objects.put(domainId, new WeakReference(builder));
                 return builder;
             }
         }
-        return objects.get(objectType).get();
+        return objects.get(domainAddress).get();
     }
 
     /**
      * Build the object models.
+     *
+     * Returns all the ObjectModel instances created with this builder, throwing
+     * a ModelException if the models do not meet the following validity
+     * requirements:
+     *
+     * <ul>
+     * <li>All models contain values, default or explicitly set, for all
+     * required attributed.</li>
+     * <li>All ObjectModel dependencies (ie referencing other object models) are
+     * present.</li>
+     * </ul>
      *
      * @return object models created with this builder
      * @throws ModelException thrown if there is an invalid model
@@ -61,113 +87,181 @@ public final class ModelBuilder {
     public Collection<ObjectModel> buildObjectModels()
             throws ModelException {
 
+        final Map<String, ObjectModel> models = new HashMap<>();
+        for (WeakReference<ObjectBuilderImpl> oref : objects.values()) {
+            final ObjectBuilderImpl ob = oref.get();
+            //ask each object model builder to validate itself.  since each 
+            //object references (ie operation param/return/exception) is 
+            //registered, they will throw an exception if they are not fully 
+            //modeled 
+            ob.validate();
+
+            //build the (immutable) object models by iterating through the 
+            //object model builders, deferring build of related models to 
+            //prevent deadlocks
+            final Set<ObjectModel> parents = new HashSet<>();
+
+        }
+        return models.values();
     }
 
-    private class ObjectBuilderImpl<T> implements ObjectModelBuilder<T> {
+    private class ObjectBuilderImpl implements ObjectModelBuilder {
 
-        private final Class<T> type;
+        private final DomainId domainId;
         private final Map<String, String> attributes
                 = new ConcurrentHashMap<>();
         private final Map<String, OperationBuilderImpl> operations
                 = new HashMap<>();
-        private final Set<Class<?>> parents
+        private final Set<DomainId> parents
                 = Collections.synchronizedSet(new HashSet<>());
-        private final Set<Class<?>> specializations
+        private final Set<DomainId> specializations
                 = Collections.synchronizedSet(new HashSet<>());
 
-        public ObjectBuilderImpl(Class<T> type) {
-            this.type = type;
+        public ObjectBuilderImpl(String domainName,
+                MetaVersion domainVersion,
+                String objectName) {
+            this(DomainId.getInstance(domainName, domainVersion, objectName));
+        }
+
+        public ObjectBuilderImpl(DomainId domainId) {
+            this.domainId = domainId;
         }
 
         @Override
-        public ObjectModelBuilder<T> specializes(Class<? super T> parentClass) {
-            registerObjectType(parentClass);
+        public ObjectModelBuilder specializes(String parentObjectName) {
+            final DomainId parentId = DomainId.getInstance(
+                    domainId.getDomainName(),
+                    domainId.getDomainVersion(),
+                    parentObjectName);
 
-            //tell the parent class model builder that this specializes
-            objects.get(parentClass).get().specializations.add(type);
-            //tell this model builder that it has a parent
-            this.parents.add(parentClass);
+            final ObjectBuilderImpl parentClassBuilder
+                    = registerObjectType(parentId);
+            //tell the parent model builder that this object specializes it
+            parentClassBuilder.specializations.add(this.domainId);
+
+            //tell this model about the parent object model
+            this.parents.add(parentId);
 
             return this;
         }
 
         @Override
-        public ObjectModelBuilder<T> withAttribute(String name, String value) {
+        public ObjectModelBuilder withAttribute(String name, String value) {
             this.attributes.put(name, value);
             return this;
         }
 
         @Override
-        public OperationModelBuilder<?> withOperation(String operationName) {
+        public OperationModelBuilder withOperation(String operationName) {
             //return existing operation builder, if exists
             synchronized (operations) {
                 if (operations.containsKey(operationName)) {
                     return operations.get(operationName);
                 }
-                OperationBuilderImpl<?> opBuilder
-                        = new OperationBuilderImpl(type, operationName);
+                OperationBuilderImpl opBuilder
+                        = new OperationBuilderImpl(operationName);
                 operations.put(operationName, opBuilder);
                 return opBuilder;
             }
         }
+
+        private void validate() throws ModelException {
+            //validate itself 
+            for (DomainId s : specializations) {
+                //verfiy there aren't any circular dependencies 
+                if (this.parents.contains(s)) {
+                    throw new ModelInheritanceException(this.domainId,
+                            "Specialized class '" + s.asString() + "' cannot also be "
+                            + "a parent to the object model '"
+                            + this.domainId.asString() + "'");
+                }
+            }
+
+            //validate referenced models
+            for (DomainId p : parents) {
+                WeakReference<ObjectBuilderImpl> pref = objects.get(p);
+                if (pref == null) {
+                    throw new ModelInheritanceException(this.domainId, "Unable "
+                            + "to find parent model '" + p.asString() + "'");
+                }
+                pref.get().validate();
+            }
+            
+            
+        }
+
+        private void validate()
     }
 
-    private class OperationBuilderImpl<R> implements OperationModelBuilder<R> {
+    private class OperationBuilderImpl implements OperationModelBuilder {
 
-        private final Class<?> contextClass;
+        private final DomainId containerId;
         private final String operationName;
-        private final Map<String, Class<?>> parameters = new ConcurrentHashMap<>();
-        private Class<?> returnType;
-        private final Set<Class<? extends Throwable>> exceptions
+        private String description; //can be null
+        private final Map<String, DomainId> parameters = new ConcurrentHashMap<>();
+        private DomainId returnType; //can be null, indicating Void return 
+        private final Set<DomainId> exceptions
                 = Collections.synchronizedSet(new HashSet<>());
+        private ModelException buildException; //null if builder had no problem during construction
 
-        public OperationBuilderImpl(Class<?> contextClass,
-                String operationName) {
-            this.contextClass = contextClass;
+        public OperationBuilderImpl(DomainId containerId, String operationName) {
+            this.containerId = containerId;
             this.operationName = operationName;
         }
 
         @Override
-        public OperationModelBuilder<R> withParameter(String param,
-                Class<?> model) throws DuplicateParametersException {
-            if (parameters.containsKey(param)) {
-                if (!parameters.get(param).equals(model)) {
-                    throw new DuplicateParametersException(contextClass, param,
-                            parameters.get(param), model);
+        public OperationModelBuilder withDescription(String desc) {
+            this.description = desc;
+            return this;
+        }
+
+        @Override
+        public OperationModelBuilder withParameter(String paramName,
+                DomainId paramModelId) throws DuplicateParametersException {
+            if (parameters.containsKey(paramName)) {
+                if (!parameters.get(paramName).equals(paramModelId)) {
+                    buildException = new DuplicateParametersException(
+                            containerId, paramName, parameters.get(paramName), paramModelId);
+                    throw (DuplicateParametersException) buildException;
                 }
             } else {
                 //parameter hasn't previously been registered, ensure it is 
                 //registered as an ObjectModel
-                registerObjectType(model);
-                parameters.put(param, model);
+                registerObjectType(paramModelId);
+                parameters.put(paramName, paramModelId);
             }
             return this;
         }
 
         @Override
-        public OperationModelBuilder<R> withReturn(Class<?> model) {
-            if (returnType != null && returnType.equals(model)) {
-                return this;
-            }
-
-            //ensure return class type is registered
-            registerObjectType(model);
-            returnType = model;
+        public OperationModelBuilder withReturn(DomainId returnModel) {
+            registerObjectType(returnModel);
+            returnType = returnModel;
             return this;
         }
 
         @Override
-        public OperationModelBuilder<R> voidReturn() {
+        public OperationModelBuilder voidReturn() {
             returnType = null;
             return this;
         }
 
         @Override
-        public OperationModelBuilder<R> withException(
-                Class<? extends Throwable> throwableType) {
-            registerObjectType(throwableType);
-            exceptions.add(throwableType);
+        public OperationModelBuilder withException(DomainId exceptionModel) {
+            registerObjectType(exceptionModel);
+            exceptions.add(exceptionModel);
             return this;
         }
+
+        private void validate() throws ModelException {
+            if (buildException != null) {
+                throw buildException;
+            }
+
+            if (operationName == null || operationName.isEmpty()) {
+                throw new InvalidOperationNameException(operationName);
+            }
+        }
+
     }
 }

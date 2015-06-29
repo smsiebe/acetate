@@ -1,12 +1,17 @@
 package org.geoint.acetate.meta.model;
 
+import org.geoint.acetate.meta.MetaVersion;
+
 /**
  * Model of a Throwable type.
  *
- * @param <T>
  */
-public interface ThrowableModel<T extends Throwable> {
+public interface ThrowableModel {
 
-    Class<T> getExceptionClass();
+    String getName();
+
+    String getDomainName();
+
+    MetaVersion getDomainVersion();
 
 }

@@ -8,56 +8,56 @@ import org.geoint.acetate.meta.model.ModelException;
  */
 public class DuplicateParametersException extends ModelException {
 
-    private final Class<?> type;
+    private final DomainId domainId;
     private final String parameterName;
-    private final Class<?> existingParameterType;
-    private final Class<?> collisionParameterType;
+    private final DomainId existingParameterModel;
+    private final DomainId collisionParameterModel;
 
-    public DuplicateParametersException(Class<?> type, String parameterName, Class<?> existingParameterType, Class<?> collisionParameterType) {
-        this.type = type;
+    public DuplicateParametersException(DomainId domainId, String parameterName, DomainId existingParameterModel, DomainId collisionParameterModel) {
+        this.domainId = domainId;
         this.parameterName = parameterName;
-        this.existingParameterType = existingParameterType;
-        this.collisionParameterType = collisionParameterType;
+        this.existingParameterModel = existingParameterModel;
+        this.collisionParameterModel = collisionParameterModel;
     }
 
-    public DuplicateParametersException(Class<?> type, String parameterName, Class<?> existingParameterType, Class<?> collisionParameterType, String message) {
+    public DuplicateParametersException(DomainId domainId, String parameterName, DomainId existingParameterModel, DomainId collisionParameterModel, String message) {
         super(message);
-        this.type = type;
+        this.domainId = domainId;
         this.parameterName = parameterName;
-        this.existingParameterType = existingParameterType;
-        this.collisionParameterType = collisionParameterType;
+        this.existingParameterModel = existingParameterModel;
+        this.collisionParameterModel = collisionParameterModel;
     }
 
-    public DuplicateParametersException(Class<?> type, String parameterName, Class<?> existingParameterType, Class<?> collisionParameterType, String message, Throwable cause) {
+    public DuplicateParametersException(DomainId domainId, String parameterName, DomainId existingParameterModel, DomainId collisionParameterModel, String message, Throwable cause) {
         super(message, cause);
-        this.type = type;
+        this.domainId = domainId;
         this.parameterName = parameterName;
-        this.existingParameterType = existingParameterType;
-        this.collisionParameterType = collisionParameterType;
+        this.existingParameterModel = existingParameterModel;
+        this.collisionParameterModel = collisionParameterModel;
     }
 
-    public DuplicateParametersException(Class<?> type, String parameterName, Class<?> existingParameterType, Class<?> collisionParameterType, Throwable cause) {
+    public DuplicateParametersException(DomainId domainId, String parameterName, DomainId existingParameterModel, DomainId collisionParameterModel, Throwable cause) {
         super(cause);
-        this.type = type;
+        this.domainId = domainId;
         this.parameterName = parameterName;
-        this.existingParameterType = existingParameterType;
-        this.collisionParameterType = collisionParameterType;
+        this.existingParameterModel = existingParameterModel;
+        this.collisionParameterModel = collisionParameterModel;
     }
 
-    public Class<?> getType() {
-        return type;
+    public DomainId getDomainId() {
+        return domainId;
     }
 
     public String getParameterName() {
         return parameterName;
     }
 
-    public Class<?> getExistingParameterType() {
-        return existingParameterType;
+    public DomainId getExistingParameterModel() {
+        return existingParameterModel;
     }
 
-    public Class<?> getCollisionParameterType() {
-        return collisionParameterType;
+    public DomainId getCollisionParameterModel() {
+        return collisionParameterModel;
     }
 
 }

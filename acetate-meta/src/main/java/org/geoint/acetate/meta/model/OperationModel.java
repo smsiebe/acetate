@@ -14,9 +14,8 @@ import java.util.Map;
  *
  * Operations are inherited from {@link ObjectModel#getParents() parent models}.
  *
- * @param <R> return type of the operation
  */
-public interface OperationModel<R> {
+public interface OperationModel {
 
     /**
      * Name of the operation.
@@ -30,13 +29,13 @@ public interface OperationModel<R> {
      *
      * @return parameter models
      */
-    Map<String, ParameterModel<?>> getParameterModels();
+    Map<String, ParameterModel> getParameterModels();
 
     /**
      * Operation return model.
      *
      * @return return model
      */
-    ReturnModel<R> getReturnModel();
+    ReturnModel getReturnModel();
 
 }

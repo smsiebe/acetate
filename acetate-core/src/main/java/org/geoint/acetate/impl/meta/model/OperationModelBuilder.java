@@ -3,29 +3,36 @@ package org.geoint.acetate.impl.meta.model;
 /**
  * Fluid API to create an OperationModel.
  *
- * @param <R> operation return type
  */
-public interface OperationModelBuilder<R> {
+public interface OperationModelBuilder {
+
+    /**
+     * Sets the optional operation description.
+     *
+     * @param desc optional description, may be null
+     * @return this builder
+     */
+    OperationModelBuilder withDescription(String desc);
 
     /**
      * Add a parameter to the operation.
      *
-     * @param param
-     * @param model
+     * @param paramName
+     * @param paramModel
      * @return this builder
      * @throws DuplicateParametersException thrown if this parameter name is
      * already in use for this operation
      */
-    OperationModelBuilder<R> withParameter(String param, Class<?> model)
+    OperationModelBuilder withParameter(String paramName, DomainId paramModel)
             throws DuplicateParametersException;
 
     /**
      * Specify the return type of the operation.
      *
-     * @param model
+     * @param returnModel
      * @return this builder
      */
-    OperationModelBuilder<R> withReturn(Class<?> model);
+    OperationModelBuilder withReturn(DomainId returnModel);
 
     /**
      * Indicate the return type is <i>void</i>.
@@ -35,14 +42,14 @@ public interface OperationModelBuilder<R> {
      *
      * @return this builder
      */
-    OperationModelBuilder<R> voidReturn();
+    OperationModelBuilder voidReturn();
 
     /**
-     * Add a Throwable type this operation can throw.
+     * Add an exception type this operation can throw.
      *
-     * @param throwableType
+     * @param exceptionModel
      * @return this builder
      */
-    OperationModelBuilder<R> withException(Class<? extends Throwable> throwableType);
+    OperationModelBuilder withException(DomainId exceptionModel);
 
 }

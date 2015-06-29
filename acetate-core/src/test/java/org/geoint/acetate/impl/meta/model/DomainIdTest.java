@@ -1,4 +1,4 @@
-package org.geoint.acetate.model;
+package org.geoint.acetate.impl.meta.model;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -36,15 +36,15 @@ public class DomainIdTest {
     @Test
     public void testParseProperlyFormatted() throws Exception {
         DomainId domainId = DomainId.valueOf("test:0");
-        assertEquals("test", domainId.getName());
-        assertEquals(0, domainId.getVersion());
+        assertEquals("test", domainId.getDomainName());
+        assertEquals(0, domainId.getDomainVersion());
     }
 
     @Test
     public void testParseDomainNameWithColon() throws Exception {
         DomainId domainId = DomainId.valueOf("te:st:0");
-        assertEquals("te:st", domainId.getName());
-        assertEquals(0, domainId.getVersion());
+        assertEquals("te:st", domainId.getDomainName());
+        assertEquals(0, domainId.getDomainVersion());
     }
 
     @Test(expected = InvalidDomainIdentifierException.class)

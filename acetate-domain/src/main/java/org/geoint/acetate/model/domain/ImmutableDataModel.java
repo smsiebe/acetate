@@ -5,7 +5,7 @@ import java.util.Collections;
 import org.geoint.acetate.impl.model.ImmutableModelComponent;
 import org.geoint.acetate.model.DataModel;
 import org.geoint.acetate.model.ModelVisitor;
-import org.geoint.acetate.model.DomainId;
+import org.geoint.acetate.impl.meta.model.DomainId;
 import org.geoint.acetate.model.ModelVisitorResult;
 import org.geoint.acetate.model.attribute.ModelAttribute;
 import org.geoint.acetate.model.constraint.DataConstraint;

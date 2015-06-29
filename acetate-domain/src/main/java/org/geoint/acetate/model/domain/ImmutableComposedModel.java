@@ -3,7 +3,7 @@ package org.geoint.acetate.model.domain;
 import java.util.Collection;
 import org.geoint.acetate.model.ComposedModel;
 import org.geoint.acetate.model.ContextualModel;
-import org.geoint.acetate.model.DomainId;
+import org.geoint.acetate.impl.meta.model.DomainId;
 import org.geoint.acetate.model.ModelVisitor;
 import org.geoint.acetate.model.attribute.ModelAttribute;
 import org.geoint.acetate.model.constraint.DataConstraint;

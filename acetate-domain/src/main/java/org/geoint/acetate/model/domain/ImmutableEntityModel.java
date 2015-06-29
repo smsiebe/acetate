@@ -11,7 +11,7 @@ import org.geoint.acetate.impl.model.ImmutableObjectModel;
 import org.geoint.acetate.impl.model.ImmutableOperationModel;
 import org.geoint.acetate.model.ModelComponent;
 import org.geoint.acetate.model.EntityModel;
-import org.geoint.acetate.model.DomainModel;
+import org.geoint.acetate.meta.model.DomainModel;
 import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.model.attribute.ModelAttribute;
 import org.geoint.acetate.model.attribute.EntityIdAttribute;

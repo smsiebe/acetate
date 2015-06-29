@@ -1,46 +1,38 @@
 package org.geoint.acetate.impl.meta.model;
 
-import java.util.Objects;
+import org.geoint.acetate.meta.MetaVersion;
 import org.geoint.acetate.meta.model.ThrowableModel;
 
 /**
  *
  * @param <E>
  */
-public final class ImmutableThrowableModel<E extends Throwable>
-        implements ThrowableModel<E> {
+final class ImmutableThrowableModel implements ThrowableModel {
 
-    private final Class<E> throwableType;
+    private final String name;
+    private final String domainName;
+    private final MetaVersion domainVersion;
 
-    public ImmutableThrowableModel(Class<E> throwableType) {
-        this.throwableType = throwableType;
+    public ImmutableThrowableModel(String domainName, MetaVersion domainVersion,
+            String exceptionName) {
+        this.domainName = domainName;
+        this.domainVersion = domainVersion;
+        this.name = exceptionName;
     }
 
     @Override
-    public Class<E> getExceptionClass() {
-        return throwableType;
+    public String getName() {
+        return name;
     }
 
     @Override
-    public int hashCode() {
-        int hash = 3;
-        hash = 53 * hash + Objects.hashCode(this.throwableType);
-        return hash;
+    public String getDomainName() {
+        return domainName;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final ImmutableThrowableModel<?> other = (ImmutableThrowableModel<?>) obj;
-        if (!Objects.equals(this.throwableType, other.throwableType)) {
-            return false;
-        }
-        return true;
+    public MetaVersion getDomainVersion() {
+        return domainVersion;
     }
 
 }

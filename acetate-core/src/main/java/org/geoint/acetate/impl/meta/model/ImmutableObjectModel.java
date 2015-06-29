@@ -4,6 +4,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.geoint.acetate.meta.MetaVersion;
 import org.geoint.acetate.meta.model.ObjectModel;
 import org.geoint.acetate.meta.model.OperationModel;
 
@@ -11,29 +14,46 @@ import org.geoint.acetate.meta.model.OperationModel;
  *
  * @param <T>
  */
-public class ImmutableObjectModel<T> implements ObjectModel<T> {
+class ImmutableObjectModel implements ObjectModel {
 
-    private final Class<T> type;
+    private final DomainId domainId;
     private final Map<String, String> attributes;
-    private final Collection<OperationModel> operations;
-    private final Collection<ObjectModel<? super T>> parents;
-    private final Collection<ObjectModel<? extends T>> specialized;
+    private final Map<String, OperationModel> declaredOperations;
+    private Map<String, OperationModel> allOperations;
+    private final Collection<ObjectModel> parents;
+    private final Collection<ObjectModel> specialized;
 
-    public ImmutableObjectModel(Class<T> type,
+    public ImmutableObjectModel(String domainName,
+            MetaVersion domainVersion,
+            String objectName,
             Map<String, String> attributes,
-            Collection<ImmutableOperationModel> operations,
-            Collection<ImmutableObjectModel<? super T>> parents,
-            Collection<ImmutableObjectModel<? extends T>> specialized) {
-        this.type = type;
+            Collection<ImmutableOperationModel> declaredOperations,
+            Collection<ImmutableObjectModel> parents,
+            Collection<ImmutableObjectModel> specialized) {
+        this.domainId = DomainId.getInstance(domainName, domainVersion, objectName);
         this.attributes = Collections.unmodifiableMap(attributes);
-        this.operations = Collections.unmodifiableCollection(operations);
+        this.declaredOperations = Collections.unmodifiableMap(
+                declaredOperations.stream().collect(
+                        Collectors.toMap((o) -> o.getOperationName(), (o) -> o))
+        );
+
         this.parents = Collections.unmodifiableCollection(parents);
         this.specialized = Collections.unmodifiableCollection(specialized);
     }
 
     @Override
-    public Class<T> getObjectType() {
-        return type;
+    public String getName() {
+        return this.domainId.getObjectName();
+    }
+
+    @Override
+    public String getDomainName() {
+        return this.domainId.getDomainName();
+    }
+
+    @Override
+    public MetaVersion getDomainVersion() {
+        return this.domainId.getDomainVersion();
     }
 
     @Override
@@ -47,17 +67,35 @@ public class ImmutableObjectModel<T> implements ObjectModel<T> {
     }
 
     @Override
-    public Collection<OperationModel> getOperations() {
-        return operations;
+    public Collection<OperationModel> getDeclaredOperations() {
+        return declaredOperations.values();
     }
 
     @Override
-    public Collection<ObjectModel<? super T>> getParents() {
+    public synchronized Collection<OperationModel> getOperations() {
+
+        if (allOperations == null) {
+            //if all operations have not been cached yet, create cache
+            this.allOperations = Collections.unmodifiableMap(
+                    Stream.concat(declaredOperations.values().stream(),
+                            parents.stream().flatMap(
+                                    (p) -> p.getOperations().stream()
+                            )
+                            //if the subclass 'overrides' this operation, ignore it
+                            .filter((o) -> !this.declaredOperations.containsKey(o.getOperationName()))
+                    )
+                    .collect(Collectors.toMap((o) -> o.getOperationName(), (o) -> o)));
+        }
+        return allOperations.values();
+    }
+
+    @Override
+    public Collection<ObjectModel> getParents() {
         return parents;
     }
 
     @Override
-    public Collection<ObjectModel<? extends T>> getSpecialized() {
+    public Collection<ObjectModel> getSpecialized() {
         return specialized;
     }
 
