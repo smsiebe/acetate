@@ -8,8 +8,9 @@
     </parent>
     <artifactId>acetate-modelgen</artifactId>
     <name>acetate-modelgen</name>
-    <description>acetate annotation processor which processes annotationed 
-        classes, validating and generating the metamodel and compile time.
+    <description>
+        metamodel annotation processor providing compile-time model validation 
+        and code generation code generation to improve runtime performance
     </description>
     <packaging>jar</packaging>
     
@@ -30,7 +31,7 @@
                     <compilerVersion>1.8</compilerVersion>
                     <source>1.8</source>
                     <target>1.8</target>
-                    <compilerArgument>-proc:none</compilerArgument>
+                    <compilerArgument>-proc:none</compilerArgument> <!-- KEEP THIS HERE...THIS PROJECT CONTAINS ANNOTATION PROCESSOR(S) -->
                 </configuration>
             </plugin>
         </plugins>

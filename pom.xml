@@ -7,12 +7,12 @@
     <name>acetate</name>
     <packaging>pom</packaging>
     <description>
-        Template-based bidirectional data binding framework for Java.
+        Metamodel framework
     </description>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+    <properties>        
+        
+        <!-- dependency version properties -->
+        <junit.version>4.12</junit.version>
     </properties>
     <modules>
         <!-- acetete core framework modules -->
@@ -22,13 +22,11 @@
         <!-- acetate provided framework implemenetations/extensions -->
         <!-- TODO consider moving these projects outside the reactor to promote 
         independent development       -->
-        
         <module>acetate-modelgen</module>
-        <module>acetate-domain</module>
+        <module>acetate-entity</module>
         <module>acetate-bind</module>
+        <module>acetate-template</module>
         <module>acetate-jsonld</module>
         <module>acetate-rdfxml</module>
-        <module>acetate-template</module>
-        
     </modules>
 </project>
