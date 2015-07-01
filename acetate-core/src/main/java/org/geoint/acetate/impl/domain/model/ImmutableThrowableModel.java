@@ -2,7 +2,7 @@ package org.geoint.acetate.impl.domain.model;
 
 import java.util.Objects;
 import org.geoint.acetate.domain.model.ExceptionModel;
-import org.geoint.acetate.domain.model.MetaVersion;
+import org.geoint.acetate.meta.MetaVersion;
 
 /**
  *

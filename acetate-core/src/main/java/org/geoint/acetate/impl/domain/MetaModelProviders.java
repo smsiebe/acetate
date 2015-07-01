@@ -1,6 +1,5 @@
 package org.geoint.acetate.impl.domain;
 
-import org.geoint.acetate.domain.model.ObjectModel;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,9 +11,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.geoint.acetate.domain.model.DomainModel;
-import org.geoint.acetate.domain.model.MetaVersion;
+import org.geoint.acetate.domain.model.ObjectModel;
 import org.geoint.acetate.impl.domain.model.DomainId;
 import org.geoint.acetate.impl.domain.model.ImmutableDomainModel;
+import org.geoint.acetate.meta.MetaVersion;
 import org.geoint.acetate.spi.MetaProvider;
 
 /**

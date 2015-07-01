@@ -6,7 +6,9 @@ import org.geoint.acetate.domain.annotation.Object;
  * Model of an Operation parameter.
  *
  */
-@Object(name="operationParameter", domainName="acetate", domainVersion="1.0-BETA")
+@Object(name="operationParameter",
+        domainName = DomainModel.ACETATE_DOMAIN_NAME,
+        domainVersion = DomainModel.ACETATE_DOMAIN_VERSION)
 public interface ParameterModel {
 
     String getName();

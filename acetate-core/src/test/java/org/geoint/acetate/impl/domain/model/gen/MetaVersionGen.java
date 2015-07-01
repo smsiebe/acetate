@@ -1,9 +1,8 @@
 package org.geoint.acetate.impl.domain.model.gen;
 
-import java.util.Optional;
-import org.geoint.acetate.domain.model.MetaVersion;
-import org.geoint.acetate.domain.model.VersionQualifier;
 import org.geoint.acetate.impl.domain.model.MetaVersionImpl;
+import org.geoint.acetate.meta.MetaVersion;
+import org.geoint.acetate.meta.VersionQualifier;
 
 /**
  * Mock meta version generator.

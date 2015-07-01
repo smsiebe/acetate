@@ -9,7 +9,9 @@ import org.geoint.acetate.domain.annotation.Object;
  * operation}.
  *
  */
-@Object(name = "operationReturn", domainName = "acetate", domainVersion = "1.0-BETA")
+@Object(name = "operationReturn",
+        domainName = DomainModel.ACETATE_DOMAIN_NAME,
+        domainVersion = DomainModel.ACETATE_DOMAIN_VERSION)
 public interface ReturnModel {
 
     /**

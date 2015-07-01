@@ -9,9 +9,9 @@ import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.geoint.acetate.domain.model.DomainModel;
-import org.geoint.acetate.domain.model.MetaVersion;
 import org.geoint.acetate.domain.model.ObjectModel;
 import org.geoint.acetate.domain.model.Ontology;
+import org.geoint.acetate.meta.MetaVersion;
 
 /**
  *

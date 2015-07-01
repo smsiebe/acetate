@@ -7,7 +7,7 @@ import java.util.WeakHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.geoint.acetate.domain.model.DomainModel;
-import org.geoint.acetate.domain.model.MetaVersion;
+import org.geoint.acetate.meta.MetaVersion;
 
 /**
  * Unique identity of a domain model/ontology.

@@ -1,7 +1,8 @@
-package org.geoint.acetate.domain.model;
+package org.geoint.acetate.meta;
 
 import java.util.Optional;
 import org.geoint.acetate.domain.annotation.Object;
+import org.geoint.acetate.domain.model.DomainModel;
 
 /**
  * Version metadata.
@@ -10,7 +11,9 @@ import org.geoint.acetate.domain.annotation.Object;
  * qualifier is considered a required component of the version and is considered
  * when calculating {@link VersionRange ranges}.
  */
-@Object(name = "version", domainName = "acetate", domainVersion = "1.0-BETA")
+@Object(name = "version",
+        domainName = DomainModel.ACETATE_DOMAIN_NAME,
+        domainVersion = DomainModel.ACETATE_DOMAIN_VERSION)
 public interface MetaVersion {
 
     /**

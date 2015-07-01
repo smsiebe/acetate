@@ -4,12 +4,15 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import org.geoint.acetate.domain.annotation.Object;
+import org.geoint.acetate.meta.MetaVersion;
 
 /**
  * Object metadata as identified by the acetate metamodel framework.
  *
  */
-@Object(name="object", domainName="acetate", domainVersion="1.0-BETA")
+@Object(name = "object",
+        domainName = DomainModel.ACETATE_DOMAIN_NAME,
+        domainVersion = DomainModel.ACETATE_DOMAIN_VERSION)
 public interface ObjectModel {
 
     public static final String META_OBJECT_NAME = "acetate.object.name";
@@ -23,14 +26,14 @@ public interface ObjectModel {
 
     /**
      * Object model name of the object.
-     * 
+     *
      * @return domain model name
      */
     String getDomainName();
 
     /**
      * Object model version of the object.
-     * 
+     *
      * @return domain model version
      */
     MetaVersion getDomainVersion();

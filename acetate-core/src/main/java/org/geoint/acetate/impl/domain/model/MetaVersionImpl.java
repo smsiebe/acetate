@@ -1,13 +1,13 @@
 package org.geoint.acetate.impl.domain.model;
 
 import java.io.Serializable;
-import org.geoint.acetate.domain.model.VersionQualifier;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.geoint.acetate.domain.model.DomainModel;
-import org.geoint.acetate.domain.model.MetaVersion;
+import org.geoint.acetate.meta.MetaVersion;
+import org.geoint.acetate.meta.VersionQualifier;
 
 public final class MetaVersionImpl
         implements Serializable, MetaVersion, Comparable<MetaVersionImpl> {

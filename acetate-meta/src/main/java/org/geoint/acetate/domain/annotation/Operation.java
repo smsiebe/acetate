@@ -5,6 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.geoint.acetate.domain.model.DomainModel;
 import org.geoint.acetate.domain.model.OperationModel;
 import org.geoint.acetate.meta.annotation.Meta;
 import org.geoint.acetate.meta.annotation.MetaModel;
@@ -15,7 +16,8 @@ import org.geoint.acetate.meta.annotation.MetaModel;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@MetaModel(name = "acetate", version = "1.0-BETA")
+@MetaModel(name = DomainModel.ACETATE_DOMAIN_NAME,
+        version = DomainModel.ACETATE_DOMAIN_VERSION)
 public @interface Operation {
 
     /**

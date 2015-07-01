@@ -23,7 +23,8 @@ import org.geoint.acetate.meta.annotation.MetaModel;
 @Documented
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@MetaModel(name = "acetate", version = "1.0-BETA")
+@MetaModel(name = DomainModel.ACETATE_DOMAIN_NAME,
+        version = DomainModel.ACETATE_DOMAIN_VERSION)
 public @interface Object {
 
     /**

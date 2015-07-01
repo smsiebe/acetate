@@ -5,8 +5,9 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.geoint.acetate.domain.model.DomainModel;
 import org.geoint.acetate.domain.model.ObjectModel;
-import org.geoint.acetate.domain.model.MetaVersion;
+import org.geoint.acetate.meta.MetaVersion;
 
 /**
  * Annotation which identifies annotation as one that defines a specialized

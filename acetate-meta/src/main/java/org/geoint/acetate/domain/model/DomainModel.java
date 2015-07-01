@@ -3,6 +3,8 @@ package org.geoint.acetate.domain.model;
 import java.util.Collection;
 import java.util.Optional;
 import org.geoint.acetate.domain.annotation.Object;
+import org.geoint.acetate.meta.MetaVersion;
+import org.geoint.acetate.meta.VersionQualifier;
 
 /**
  * Defines one or more {@link DomainObject components} used to define the types
@@ -10,7 +12,9 @@ import org.geoint.acetate.domain.annotation.Object;
  *
  * All DomainModel instances must be immutable and thread-safe.
  */
-@Object(name = "domainModel", domainName = "acetate", domainVersion = "1.0-BETA")
+@Object(name = "domainModel",
+        domainName = DomainModel.ACETATE_DOMAIN_NAME,
+        domainVersion = DomainModel.ACETATE_DOMAIN_VERSION)
 public interface DomainModel {
 
     /**
@@ -25,6 +29,15 @@ public interface DomainModel {
      */
     public static final String META_DOMAIN_VERSION = "acetate.domain.version";
 
+    /**
+     * The domain model name used by the acetate domain model metamodel.
+     */
+    public static final String ACETATE_DOMAIN_NAME = "acetate.domain";
+    /**
+     * The current version of the acetate domain model metamodel.
+     *
+     */
+    public static final String ACETATE_DOMAIN_VERSION = "1.0-BETA";
     /**
      * Default domain name used when no domain model is defined.
      *

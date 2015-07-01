@@ -2,8 +2,8 @@ package org.geoint.acetate.impl.domain.model;
 
 import java.io.Serializable;
 import java.util.Optional;
-import org.geoint.acetate.domain.model.MetaVersion;
-import org.geoint.acetate.domain.model.VersionQualifier;
+import org.geoint.acetate.meta.MetaVersion;
+import org.geoint.acetate.meta.VersionQualifier;
 
 /**
  * Defines an [un]bounded {@link MetaVersion} range.

@@ -26,21 +26,21 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import org.geoint.acetate.impl.domain.model.DomainBuilder;
-import org.geoint.acetate.impl.domain.model.ObjectModelBuilder;
-import org.geoint.acetate.impl.domain.model.OperationModelBuilder;
 import org.geoint.acetate.domain.annotation.DoNotModel;
-import org.geoint.acetate.meta.annotation.MetaModel;
-import org.geoint.acetate.meta.annotation.Meta;
 import org.geoint.acetate.domain.annotation.Operation;
 import org.geoint.acetate.domain.model.DomainModel;
-import org.geoint.acetate.meta.ModelException;
 import org.geoint.acetate.domain.model.ObjectModel;
+import org.geoint.acetate.impl.domain.model.DomainBuilder;
 import org.geoint.acetate.impl.domain.model.DomainId;
 import org.geoint.acetate.impl.domain.model.DuplicateParametersException;
 import org.geoint.acetate.impl.domain.model.MetaVersionImpl;
 import org.geoint.acetate.impl.domain.model.ObjectId;
+import org.geoint.acetate.impl.domain.model.ObjectModelBuilder;
+import org.geoint.acetate.impl.domain.model.OperationModelBuilder;
 import org.geoint.acetate.impl.domain.model.UnknownDomainObjectException;
+import org.geoint.acetate.meta.ModelException;
+import org.geoint.acetate.meta.annotation.Meta;
+import org.geoint.acetate.meta.annotation.MetaModel;
 
 /**
  * Reflects on the provided classes to create domain model(s) based on

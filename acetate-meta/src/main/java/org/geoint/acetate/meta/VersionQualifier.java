@@ -1,4 +1,4 @@
-package org.geoint.acetate.domain.model;
+package org.geoint.acetate.meta;
 
 import org.geoint.acetate.domain.annotation.Object;
 

@@ -10,10 +10,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.geoint.acetate.domain.model.DomainModel;
-import org.geoint.acetate.domain.model.MetaVersion;
 import org.geoint.acetate.impl.domain.MetaModelProviders;
 import org.geoint.acetate.impl.domain.model.DomainBuilder;
 import org.geoint.acetate.impl.domain.model.DomainId;
+import org.geoint.acetate.meta.MetaVersion;
 import org.geoint.acetate.spi.MetaProvider;
 
 /**
@@ -36,7 +36,7 @@ public final class DomainRegistry {
 
     private final Map<DomainId, DomainModel> domainCache
             = new ConcurrentHashMap<>();
-    private ExecutorService searchExecutor;
+    private final ExecutorService searchExecutor;
 
     /**
      * Return the default domain registry instance.

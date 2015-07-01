@@ -17,11 +17,11 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.geoint.acetate.domain.model.DomainModel;
-import org.geoint.acetate.domain.model.MetaVersion;
-import org.geoint.acetate.meta.ModelException;
 import org.geoint.acetate.domain.model.ObjectModel;
 import org.geoint.acetate.domain.model.OperationModel;
 import org.geoint.acetate.domain.model.ParameterModel;
+import org.geoint.acetate.meta.MetaVersion;
+import org.geoint.acetate.meta.ModelException;
 
 /**
  * Fluid API to programmatically create one or more ObjectModel instances.

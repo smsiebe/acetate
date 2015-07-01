@@ -4,9 +4,9 @@ import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import org.geoint.acetate.domain.model.ExceptionModel;
 import org.geoint.acetate.domain.model.ObjectModel;
 import org.geoint.acetate.domain.model.ReturnModel;
-import org.geoint.acetate.domain.model.ExceptionModel;
 
 /**
  *
