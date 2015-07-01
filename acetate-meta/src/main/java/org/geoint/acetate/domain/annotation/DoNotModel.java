@@ -7,8 +7,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation used to specifically indicate that the class/method should not be
- * included in the model.
+ * Annotation used to specifically indicate that the annotated type should not
+ * be included in the model.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)

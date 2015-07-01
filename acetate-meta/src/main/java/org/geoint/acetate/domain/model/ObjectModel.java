@@ -3,14 +3,14 @@ package org.geoint.acetate.domain.model;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import org.geoint.acetate.domain.annotation.Object;
+import org.geoint.acetate.domain.annotation.Model;
 import org.geoint.acetate.meta.MetaVersion;
 
 /**
- * Object metadata as identified by the acetate metamodel framework.
+ * Model metadata as identified by the acetate metamodel framework.
  *
  */
-@Object(name = "object",
+@Model(name = "object",
         domainName = DomainModel.ACETATE_DOMAIN_NAME,
         domainVersion = DomainModel.ACETATE_DOMAIN_VERSION)
 public interface ObjectModel {
@@ -18,21 +18,21 @@ public interface ObjectModel {
     public static final String META_OBJECT_NAME = "acetate.object.name";
 
     /**
-     * Object model unique name of the object.
+     * Model model unique name of the object.
      *
      * @return
      */
     String getName();
 
     /**
-     * Object model name of the object.
+     * Model model name of the object.
      *
      * @return domain model name
      */
     String getDomainName();
 
     /**
-     * Object model version of the object.
+     * Model model version of the object.
      *
      * @return domain model version
      */
@@ -54,7 +54,7 @@ public interface ObjectModel {
     Optional<String> getAttribute(String attributeName);
 
     /**
-     * Object operations that were declared directly by this object model.
+     * Model operations that were declared directly by this object model.
      *
      * @return object operation models declared by this model
      */
@@ -69,14 +69,14 @@ public interface ObjectModel {
     Collection<OperationModel> getOperations();
 
     /**
-     * Object model classes from which this model extends.
+     * Model model classes from which this model extends.
      *
      * @return parent object models
      */
     Collection<ObjectModel> getParents();
 
     /**
-     * Object model classes that extends this model.
+     * Model model classes that extends this model.
      *
      * @return specialized types of this model
      */

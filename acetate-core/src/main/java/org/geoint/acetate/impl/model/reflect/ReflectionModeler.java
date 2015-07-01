@@ -1,4 +1,4 @@
-package org.geoint.acetate.model.reflect;
+package org.geoint.acetate.impl.model.reflect;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
@@ -58,35 +58,49 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
             = Logger.getLogger(ReflectionModeler.class.getName());
     private static final int PERIOD_INTVAL = '.';
 
-    public ReflectionModeler(Class<?>... classes)
+    private ReflectionModeler(Class<?>... classes)
             throws ModelException {
         baseClasses = classes;
     }
 
     /**
-     * Create object models from the array of class names by loading the classes
-     * using the context classloader.
+     * Synchronously (on requesting thread) create object models for the
+     * specified classes.
+     *
+     * @param classes
+     * @return object models
+     * @throws ModelException thrown if there is an error in modeling
+     */
+    public static Collection<ObjectModel> model(Class<?>... classes)
+            throws ModelException {
+        ReflectionModeler modeler = new ReflectionModeler(classes);
+        return modeler.call();
+    }
+
+    /**
+     * Synchronously (on requesting thread) create object models from the array
+     * of class names by loading the classes using the context classloader.
      *
      * @param classNames
      * @return modeler
      * @throws ModelException thrown if there is an error in modeling
      */
-    public static ReflectionModeler modelClasses(String... classNames)
+    public static Collection<ObjectModel> model(String... classNames)
             throws ModelException {
-        return modelClasses(Thread.currentThread().getContextClassLoader(),
+        return model(Thread.currentThread().getContextClassLoader(),
                 classNames);
     }
 
     /**
-     * Create the object model from the array of class names using the specified
-     * classloader.
+     * Synchronously (on requesting thread) create the object model from the
+     * array of class names using the specified classloader.
      *
      * @param cl
      * @param classNames
      * @return modeler
      * @throws ModelException thrown if there is an error in modeling
      */
-    public static ReflectionModeler modelClasses(ClassLoader cl,
+    public static Collection<ObjectModel> model(ClassLoader cl,
             String... classNames) throws ModelException {
         Class[] classes = new Class[classNames.length];
         for (int i = 0; i < classNames.length; i++) {
@@ -101,7 +115,7 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
                         + "skipped.", ex);
             }
         }
-        return new ReflectionModeler(classes);
+        return model(classes);
     }
 
     /**

@@ -7,12 +7,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.geoint.acetate.domain.model.DomainModel;
 import org.geoint.acetate.domain.model.ObjectModel;
+import org.geoint.acetate.meta.MetaVersion;
 import org.geoint.acetate.meta.annotation.Meta;
 import org.geoint.acetate.meta.annotation.MetaModel;
 
 /**
- * Annotation used to declare a Java class as a basic {@link ObjectModel
- * domain model object} that will be included in the specified domain model.
+ * Annotation used to declare a Java class (or all classes within a package)
+ * component(s) of the specified domain model.
  *
  * Most frameworks will define their own metamodels, often defining their own
  * {@link MetaModel annotations} which their frameworks can use to easily
@@ -21,14 +22,14 @@ import org.geoint.acetate.meta.annotation.MetaModel;
  * @see DomainModel
  */
 @Documented
-@Target({ElementType.TYPE})
+@Target({ElementType.TYPE, ElementType.PACKAGE})
 @Retention(RetentionPolicy.RUNTIME)
 @MetaModel(name = DomainModel.ACETATE_DOMAIN_NAME,
         version = DomainModel.ACETATE_DOMAIN_VERSION)
-public @interface Object {
+public @interface Model {
 
     /**
-     * Object model unique component name.
+     * Domain model unique component name.
      *
      * @return unique name of the domain model component
      */
@@ -44,7 +45,7 @@ public @interface Object {
     String domainName();
 
     /**
-     * Object model version this object is associated.
+     * Model model version this object is associated.
      *
      * @see MetaVersion
      * @return domain model version

@@ -2,14 +2,14 @@ package org.geoint.acetate.domain.model;
 
 import java.util.Optional;
 import java.util.Set;
-import org.geoint.acetate.domain.annotation.Object;
+import org.geoint.acetate.domain.annotation.Model;
 
 /**
  * Models what may be returned from the execution of an {@link OperationModel
  * operation}.
  *
  */
-@Object(name = "operationReturn",
+@Model(name = "operationReturn",
         domainName = DomainModel.ACETATE_DOMAIN_NAME,
         domainVersion = DomainModel.ACETATE_DOMAIN_VERSION)
 public interface ReturnModel {

@@ -1,12 +1,12 @@
 package org.geoint.acetate.domain.model;
 
 import java.util.Collection;
-import org.geoint.acetate.domain.annotation.Object;
+import org.geoint.acetate.domain.annotation.Model;
 
 /**
  * A data model consisting of other data models.
  */
-@Object(name = "ontology",
+@Model(name = "ontology",
         domainName = DomainModel.ACETATE_DOMAIN_NAME,
         domainVersion = DomainModel.ACETATE_DOMAIN_VERSION)
 public interface Ontology extends DomainModel {

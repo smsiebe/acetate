@@ -1,4 +1,4 @@
-package org.geoint.acetate.model.reflect;
+package org.geoint.acetate.impl.model.reflect;
 
 import org.geoint.acetate.meta.ModelException;
 

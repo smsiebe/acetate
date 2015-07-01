@@ -1,11 +1,11 @@
 package org.geoint.acetate.domain.model;
 
 import java.util.Map;
-import org.geoint.acetate.domain.annotation.Object;
+import org.geoint.acetate.domain.annotation.Model;
 import org.geoint.acetate.domain.annotation.DoNotModel;
 
 /**
- * Model of an Object operation.
+ * Model of an Model operation.
  *
  * An object operation is one which meets the following requirements:
  * <ul>
@@ -17,7 +17,7 @@ import org.geoint.acetate.domain.annotation.DoNotModel;
  * Operations are inherited from {@link ObjectModel#getParents() parent models}.
  *
  */
-@Object(name="operation",
+@Model(name="operation",
         domainName = DomainModel.ACETATE_DOMAIN_NAME,
         domainVersion = DomainModel.ACETATE_DOMAIN_VERSION)
 public interface OperationModel {

@@ -2,7 +2,7 @@ package org.geoint.acetate.domain.model;
 
 import java.util.Collection;
 import java.util.Optional;
-import org.geoint.acetate.domain.annotation.Object;
+import org.geoint.acetate.domain.annotation.Model;
 import org.geoint.acetate.meta.MetaVersion;
 import org.geoint.acetate.meta.VersionQualifier;
 
@@ -12,7 +12,7 @@ import org.geoint.acetate.meta.VersionQualifier;
  *
  * All DomainModel instances must be immutable and thread-safe.
  */
-@Object(name = "domainModel",
+@Model(name = "domainModel",
         domainName = DomainModel.ACETATE_DOMAIN_NAME,
         domainVersion = DomainModel.ACETATE_DOMAIN_VERSION)
 public interface DomainModel {
