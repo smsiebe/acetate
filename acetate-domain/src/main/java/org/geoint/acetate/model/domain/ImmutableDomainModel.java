@@ -11,9 +11,9 @@ import java.util.logging.Logger;
 import org.geoint.acetate.DomainRegistry;
 import org.geoint.acetate.impl.model.IncorrectModelAssignementException;
 import org.geoint.acetate.impl.meta.model.DomainId;
-import org.geoint.acetate.meta.model.DomainModel;
+import org.geoint.acetate.domain.model.DomainModel;
 import org.geoint.acetate.model.ModelComponent;
-import org.geoint.acetate.meta.model.ModelException;
+import org.geoint.acetate.meta.ModelException;
 import org.geoint.acetate.model.attribute.Attributed;
 import org.geoint.acetate.model.attribute.ModelAttribute;
 

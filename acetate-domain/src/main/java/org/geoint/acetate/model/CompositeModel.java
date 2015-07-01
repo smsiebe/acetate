@@ -1,6 +1,6 @@
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.model.annotation.Model;
+import org.geoint.acetate.meta.annotation.Model;
 
 /**
  * Models a composite relationship between two data model components.

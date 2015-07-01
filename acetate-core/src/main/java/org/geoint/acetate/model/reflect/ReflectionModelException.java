@@ -1,6 +1,6 @@
 package org.geoint.acetate.model.reflect;
 
-import org.geoint.acetate.meta.model.ModelException;
+import org.geoint.acetate.meta.ModelException;
 
 /**
  * Thrown if there was a problem (ie security) attempting to generate the

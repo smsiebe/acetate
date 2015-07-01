@@ -2,7 +2,7 @@ package org.geoint.acetate.model;
 
 import java.util.Collection;
 import java.util.Set;
-import org.geoint.acetate.model.annotation.Model;
+import org.geoint.acetate.meta.annotation.Model;
 
 /**
  * A data model component which is composed from other data model components

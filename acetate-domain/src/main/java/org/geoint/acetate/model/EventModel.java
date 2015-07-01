@@ -1,7 +1,7 @@
 package org.geoint.acetate.model;
 
 import java.time.ZonedDateTime;
-import org.geoint.acetate.model.annotation.Model;
+import org.geoint.acetate.meta.annotation.Model;
 
 /**
  * Model of an event resulting from a change to an {@link EntityModel Entity}

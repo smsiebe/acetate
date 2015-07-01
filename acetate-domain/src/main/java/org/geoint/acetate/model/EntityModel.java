@@ -1,6 +1,6 @@
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.model.annotation.Model;
+import org.geoint.acetate.meta.annotation.Model;
 
 /**
  * An Entity special domain model object whereby each Entity instance must have

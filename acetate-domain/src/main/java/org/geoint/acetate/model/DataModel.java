@@ -1,6 +1,6 @@
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.model.annotation.Model;
+import org.geoint.acetate.meta.annotation.Model;
 import org.geoint.acetate.model.constraint.Constrained;
 
 /**

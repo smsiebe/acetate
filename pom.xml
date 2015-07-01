@@ -22,11 +22,13 @@
         <!-- acetate provided framework implemenetations/extensions -->
         <!-- TODO consider moving these projects outside the reactor to promote 
         independent development       -->
+        <!--
         <module>acetate-modelgen</module>
         <module>acetate-domain</module>
         <module>acetate-bind</module>
         <module>acetate-jsonld</module>
         <module>acetate-rdfxml</module>
         <module>acetate-template</module>
+        -->
     </modules>
 </project>

@@ -1,7 +1,7 @@
 package org.geoint.acetate.model;
 
 import java.util.Collection;
-import org.geoint.acetate.model.annotation.Model;
+import org.geoint.acetate.meta.annotation.Model;
 
 /**
  * An ObjectModel is a data model component which is composed of zero or more

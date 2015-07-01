@@ -2,7 +2,7 @@ package org.geoint.acetate.model.attribute;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.geoint.acetate.model.annotation.Model;
+import org.geoint.acetate.meta.annotation.Model;
 
 /**
  * An Attributed model component can be associated with one or more

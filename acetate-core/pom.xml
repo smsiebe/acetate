@@ -17,13 +17,18 @@
     <packaging>jar</packaging>
     
     <dependencies>
+        <!-- 3rd party dependencies -->
+        <!-- As this is a framwork, the goal here is to have zero 3rd party
+        dependencies -->
+        
+        <!-- 1st party dependencies -->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>acetate-meta</artifactId>
             <version>${project.version}</version>
         </dependency>
         
-        
+        <!-- test dependencies -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

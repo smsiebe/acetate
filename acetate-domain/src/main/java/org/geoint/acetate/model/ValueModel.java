@@ -3,7 +3,7 @@ package org.geoint.acetate.model;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import org.geoint.acetate.bind.transform.BufferedCodec;
-import org.geoint.acetate.model.annotation.Model;
+import org.geoint.acetate.meta.annotation.Model;
 
 /**
  * Data-bearing data model component.

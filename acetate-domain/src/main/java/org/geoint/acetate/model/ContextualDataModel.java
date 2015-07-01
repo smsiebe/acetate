@@ -1,6 +1,6 @@
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.model.annotation.Model;
+import org.geoint.acetate.meta.annotation.Model;
 
 /**
  * When in context of another model component, a data model may be defined as a

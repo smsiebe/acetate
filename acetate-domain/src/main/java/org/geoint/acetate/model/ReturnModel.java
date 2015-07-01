@@ -1,7 +1,7 @@
 package org.geoint.acetate.model;
 
 import java.util.Set;
-import org.geoint.acetate.model.annotation.Model;
+import org.geoint.acetate.meta.annotation.Model;
 
 /**
  * Contextual model of the return type of an Operation.

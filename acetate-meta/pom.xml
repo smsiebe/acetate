@@ -8,6 +8,6 @@
     </parent>
     <artifactId>acetate-meta</artifactId>
     <name>acetate-meta</name>
-    <description>Base Object metamodel framework.</description>
+    <description>Object metamodel framework.</description>
     <packaging>jar</packaging>
 </project>
