@@ -3,11 +3,11 @@ package org.geoint.acetate.impl.domain;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.geoint.acetate.domain.model.DomainModel;
@@ -23,8 +23,7 @@ import org.geoint.acetate.spi.MetaProvider;
 public abstract class MetaModelProviders {
 
     private static final Collection<MetaProvider> providers;
-    private static final Map<DomainId, DomainModel> domains
-            = new ConcurrentHashMap<>();
+    private static final Map<DomainId, DomainModel> domains = new HashMap<>();
 
     private static final Logger logger
             = Logger.getLogger(MetaModelProviders.class.getName());
@@ -77,7 +76,8 @@ public abstract class MetaModelProviders {
 
         synchronized (domainId) {
             if (!domains.containsKey(domainId)) {
-                Collection<ObjectModel> domainObjects = getProviders().parallelStream()
+                Collection<ObjectModel> domainObjects
+                        = getProviders().parallelStream()
                         .map((p) -> p.find(domainName, domainVersion))
                         .flatMap((o) -> o.stream())
                         .collect(Collectors.toList());

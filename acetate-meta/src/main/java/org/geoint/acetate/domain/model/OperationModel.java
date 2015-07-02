@@ -17,7 +17,7 @@ import org.geoint.acetate.domain.annotation.DoNotModel;
  * Operations are inherited from {@link ObjectModel#getParents() parent models}.
  *
  */
-@Model(name="operation",
+@Model(name="Operation Model",
         domainName = DomainModel.ACETATE_DOMAIN_NAME,
         domainVersion = DomainModel.ACETATE_DOMAIN_VERSION)
 public interface OperationModel {

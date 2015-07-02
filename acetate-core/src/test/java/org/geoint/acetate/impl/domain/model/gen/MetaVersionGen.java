@@ -32,7 +32,7 @@ public class MetaVersionGen {
                 .withValidMajor()
                 .withValidMinor()
                 .withValidQualifier()
-                .build();
+                .buildString();
     }
 
     /**
@@ -45,7 +45,7 @@ public class MetaVersionGen {
                 .withInvalidMajor()
                 .withInvalidMinor()
                 .withInvalidQualifier()
-                .build();
+                .buildString();
     }
 
     /**
@@ -76,7 +76,7 @@ public class MetaVersionGen {
         public static final String VALID_QUALIFIER = VersionQualifier.BETA.name();
         public static final String INVALID_QUALIFIER = "invalidQualifer";
 
-        public String build() {
+        public String buildString() {
             StringBuilder sb = new StringBuilder();
             sb.append(majorVersion)
                     .append(".")
@@ -140,6 +140,8 @@ public class MetaVersionGen {
             qualifier = INVALID_QUALIFIER;
             return this;
         }
+
+
     }
 
 }

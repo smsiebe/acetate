@@ -18,10 +18,10 @@ public class DomainId {
     private final String name;
     private final MetaVersion version;
 
-    static final char VERSION_SEPARATOR = ':';
+    static final char ID_COMPONENT_SEPARATOR = ':';
     static final Pattern DOMAINID_PATTERN
             = Pattern.compile("(.*)"
-                    + VERSION_SEPARATOR
+                    + ID_COMPONENT_SEPARATOR
                     + "(" + (MetaVersionImpl.VERSION_PATTERN.pattern()) + ")"
             );
 
@@ -42,7 +42,7 @@ public class DomainId {
      * @throws NullPointerException if domain name was null or empty or domain
      * version was null
      */
-    public static DomainId getInstance(String domainName,
+    public static DomainId getInstance(final String domainName,
             MetaVersion domainVersion) {
 
         if (domainName == null || domainName.isEmpty()) {
@@ -54,13 +54,15 @@ public class DomainId {
                     + "null.");
         }
 
-        final String domainId = generateId(domainName, domainVersion);
+        final String upperDomainName = domainName.toUpperCase();
+
+        final String domainId = generateId(upperDomainName, domainVersion);
 
         synchronized (cache) {
             if (!cache.containsKey(domainId)) {
                 cache.put(domainId, new WeakReference(
                         new DomainId(domainId,
-                                domainName,
+                                upperDomainName,
                                 domainVersion)
                 ));
             }
@@ -68,29 +70,35 @@ public class DomainId {
         return cache.get(domainId).get();
     }
 
-    public static DomainId valueOf(String domainId)
+    public static DomainId valueOf(final String domainId)
             throws InvalidDomainIdentifierException {
-        if (cache.containsKey(domainId)) {
-            return cache.get(domainId).get();
+
+        final String upperDomainId = domainId.toUpperCase();
+
+        if (cache.containsKey(upperDomainId)) {
+            return cache.get(upperDomainId).get();
         }
 
-        Matcher m = DOMAINID_PATTERN.matcher(domainId);
+        Matcher m = DOMAINID_PATTERN.matcher(upperDomainId);
         if (!m.matches()) {
             throw new InvalidDomainIdentifierException("domainId", "Invalid "
                     + "domainId format.");
         }
 
-        for (int i = 0; i < m.groupCount(); i++) {
-            System.out.println("Group " + i + ": " + m.group(i));
-        }
-        final DomainId id = new DomainId(domainId,
+        final DomainId id = new DomainId(upperDomainId,
                 m.group(1),
                 MetaVersionImpl.valueOf(m.group(2)));
-        cache.put(domainId, new WeakReference(id));
+        cache.put(upperDomainId, new WeakReference(id));
 
         return id;
     }
 
+    /**
+     *
+     * @param domainId expected to be upper-case
+     * @param domainName expected to be upper-case
+     * @param domainVersion
+     */
     private DomainId(String domainId, String domainName,
             MetaVersion domainVersion) {
         this.domainId = domainId;
@@ -141,10 +149,16 @@ public class DomainId {
         return asString();
     }
 
+    /**
+     *
+     * @param domainName expected to be upper-case already
+     * @param version
+     * @return formatted domain id
+     */
     private static String generateId(String domainName, MetaVersion version) {
         StringBuilder sb = new StringBuilder();
         sb.append(domainName)
-                .append(VERSION_SEPARATOR)
+                .append(ID_COMPONENT_SEPARATOR)
                 .append(version.asString());
         return sb.toString();
     }

@@ -29,7 +29,7 @@ import org.geoint.acetate.meta.annotation.MetaModel;
 public @interface Model {
 
     /**
-     * Domain model unique component name.
+     * Domain model unique object model name.
      *
      * @return unique name of the domain model component
      */

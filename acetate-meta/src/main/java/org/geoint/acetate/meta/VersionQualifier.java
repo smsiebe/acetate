@@ -1,6 +1,7 @@
 package org.geoint.acetate.meta;
 
 import org.geoint.acetate.domain.annotation.Model;
+import org.geoint.acetate.domain.model.DomainModel;
 
 /**
  * The version qualifier identifies the "completeness" of a component.
@@ -10,7 +11,9 @@ import org.geoint.acetate.domain.annotation.Model;
  * example, to ensure that a component that hasn't met certain rigors from
  * accidently being deployed to a production environment.
  */
-@Model(name="versionQualifier", domainName="acetate", domainVersion="1.0-BETA")
+@Model(name = "versionQualifier",
+        domainName = DomainModel.ACETATE_DOMAIN_NAME,
+        domainVersion = DomainModel.ACETATE_DOMAIN_VERSION)
 public enum VersionQualifier {
 
     /**

@@ -13,7 +13,7 @@ public class DomainIdGen {
                 .withValidMajor()
                 .withValidMinor()
                 .withValidQualifier()
-                .build();
+                .buildString();
     }
 
     public static String generateInvalidString() {
@@ -22,7 +22,7 @@ public class DomainIdGen {
                 .withValidMajor()
                 .withValidMinor()
                 .withValidQualifier()
-                .build();
+                .buildString();
     }
 
     public static DomainIdBuilder builder() {
@@ -31,33 +31,33 @@ public class DomainIdGen {
 
     public static class DomainIdBuilder extends ModelVersionBuilder {
 
-        private String name;
+        private String domainName;
         public static final String VALID_DOMAIN_NAME = "myDomain";
         public static final String INVALID_DOMAIN_NAME = "";
 
         @Override
-        public String build() {
+        public String buildString() {
             StringBuilder sb = new StringBuilder();
-            if (name != null) {
-                sb.append(name);
+            if (domainName != null) {
+                sb.append(domainName);
             }
             sb.append(':')
-                    .append(super.build());
+                    .append(super.buildString());
             return sb.toString();
         }
 
         public DomainIdBuilder withValidDomainName() {
-            this.name = VALID_DOMAIN_NAME;
+            this.domainName = VALID_DOMAIN_NAME;
             return this;
         }
 
         public DomainIdBuilder withInvalidDomainName() {
-            this.name = INVALID_DOMAIN_NAME;
+            this.domainName = INVALID_DOMAIN_NAME;
             return this;
         }
 
         public DomainIdBuilder withDomainName(String dn) {
-            this.name = dn;
+            this.domainName = dn;
             return this;
         }
 

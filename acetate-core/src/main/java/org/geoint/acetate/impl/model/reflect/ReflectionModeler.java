@@ -10,6 +10,7 @@ import java.lang.reflect.Parameter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -56,7 +57,7 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
 
     private static final Logger logger
             = Logger.getLogger(ReflectionModeler.class.getName());
-    private static final int PERIOD_INTVAL = '.';
+    private static final char CHAR_PERIOD = '.';
 
     private ReflectionModeler(Class<?>... classes)
             throws ModelException {
@@ -130,9 +131,10 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
 
         //first we'll seed the toModelQueue with the base classes
         for (Class<?> c : baseClasses) {
-            if (canModel(c)) {
+            if (!canModel(c)) {
                 logger.fine(() -> "Skipping base class as it was annotated "
                         + "explicitly as not a model object.");
+            } else {
                 getObjectBuilder(c);
             }
         }
@@ -153,18 +155,22 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
                     .filter((m) -> Modifier.isPublic(m.getModifiers()))
                     .filter((m) -> !Modifier.isStatic(m.getModifiers()))
                     .filter((m) -> !m.isAnnotationPresent(DoNotModel.class))
+                    .filter((m) -> !m.isBridge())
+                    .filter((m) -> !m.isSynthetic())
                     .forEach((m) -> {
                         final String operationName = getOperationName(m);
 
                         try {
-                            //model first, then create builder, as it 
-                            //self-registers 
-
-                            final Map<String, ObjectId> params
-                            = modelOperationParameters(m);
 
                             //return object id or null if void return type
                             final Class<?> returnType = m.getReturnType();
+                            if (!canModel(returnType)) {
+                                logger.fine(() -> String.format("Method '%1$s' "
+                                                + "is not eligable as an operation; "
+                                                + "return type '%2$s' cannot be modeled.",
+                                                m.toString(), returnType.getName()));
+                                return;
+                            }
                             final ObjectId returnId = (returnType.equals(Void.class))
                                     ? null
                                     : getObjectBuilder(returnType).getObjectId();
@@ -172,8 +178,33 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
                             //exception models
                             final List<ObjectId> exceptionIds = new ArrayList<>();
                             for (Class<?> e : m.getExceptionTypes()) {
+                                if (!canModel(e)) {
+                                    logger.fine(() -> String.format("Method '%1$s' "
+                                                    + "is not eligable as an operation; "
+                                                    + "exception type '%2$s' cannot be modeled.",
+                                                    m.toString(), returnType.getName()));
+                                    return;
+                                }
                                 exceptionIds.add(
                                         getObjectBuilder(e).getObjectId());
+                            }
+
+                            //model operation components first, then create 
+                            //builder, as it self-registers 
+                            final Map<String, ObjectId> params = new HashMap<>();
+                            for (Parameter p : m.getParameters()) {
+                                //TODO track contextual metamodel annotations
+                                Class<?> paramType = p.getType().getClass();
+                                if (!canModel(paramType)) {
+                                    logger.fine(() -> String.format("Method '%1$s' "
+                                                    + "is not eligable as an operation; "
+                                                    + "parameter type '%2$s' cannot be modeled.",
+                                                    m.toString(), returnType.getName()));
+                                    return;
+                                }
+                                params.put(generateParamName(p),
+                                        getObjectBuilder(paramType).getObjectId()
+                                );
                             }
 
                             OperationModelBuilder opb = ob.withOperation(
@@ -209,20 +240,9 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
                 .collect(Collectors.toList());
     }
 
-    private Map<String, ObjectId> modelOperationParameters(Method m)
-            throws ModelException {
-        //TODO track contextual metamodel annotations
-        Map<String, ObjectId> params = new HashMap<>();
-        for (Parameter p : m.getParameters()) {
-            params.put(generateParamName(p),
-                    getObjectBuilder(p.getType()).getObjectId()
-            );
-        }
-        return params;
-    }
-
     private String generateParamName(Parameter p) {
         //TODO add annotation overriding parameter name
+
         return p.getName();
     }
 
@@ -286,9 +306,14 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
 
     private ObjectId[] getParentIds(Class<?> clazz) throws ModelException {
 
-        List<AnnotatedType> parentTypes
-                = Arrays.asList(clazz.getAnnotatedInterfaces());
-        parentTypes.add(clazz.getAnnotatedSuperclass());
+        List<AnnotatedType> parentTypes = new ArrayList<>();
+        //interfaces
+        Collections.addAll(parentTypes, clazz.getAnnotatedInterfaces());
+        //parent class (if applicable, see Class#getAnnotatedSuperclass)
+        AnnotatedType superclass = clazz.getAnnotatedSuperclass();
+        if (superclass != null) {
+            parentTypes.add(superclass);
+        }
 
         Set<ObjectId> parentIds = new HashSet<>();
         for (AnnotatedType at : parentTypes) {
@@ -303,19 +328,11 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
             }
 
             final Class<?> parentClass = at.getType().getClass();
-            synchronized (parentClass) {
-                if (!classIds.containsKey(parentClass)) {
-                    ObjectModelBuilder parentBuilder
-                            = getObjectBuilder(parentClass);
-                    //was not in classIds before calling getObjectBuilder, 
-                    //so we'll need to register the class with the modeling 
-                    //queue
-                    toModelQueue.add(parentClass);
-                }
-                parentIds.add(classIds.get(parentClass));
-            }
+            ObjectModelBuilder parentBuilder
+                    = getObjectBuilder(parentClass);
+            parentIds.add(parentBuilder.getObjectId());
         }
-        return (ObjectId[]) parentIds.toArray();
+        return parentIds.toArray(new ObjectId[parentIds.size()]);
     }
 
     /**
@@ -326,22 +343,21 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
      * @return camel-cased class name
      */
     private String classNameToCamelCase(Class<?> clazz) {
-        final AtomicBoolean nextUpper = new AtomicBoolean(false);
-        return String.valueOf(clazz.getName().chars()
-                .filter((c) -> {
-                    //TODO support inner classes
-                    if (PERIOD_INTVAL == c) {
-                        nextUpper.set(true);
-                        return false;
-                    }
-                    return true;
-                }).map((c) -> {
-                    if (nextUpper.get()) {
-                        return Character.toUpperCase(c);
-                    }
-                    return c;
-                })
-                .toArray());
+        boolean nextUpper = false;
+        StringBuilder sb = new StringBuilder();
+        for (char c : clazz.getName().toCharArray()) {
+            if (c == CHAR_PERIOD) {
+                nextUpper = true;
+            } else {
+                if (nextUpper) {
+                    sb.append(Character.toUpperCase(c));
+                    nextUpper = false;
+                } else {
+                    sb.append(c);
+                }
+            }
+        }
+        return sb.toString();
     }
 
     private void setDefaultIfMissing(
@@ -374,11 +390,11 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
         for (final Annotation a : metamodelAnnotations) {
             for (Method m : a.getClass().getDeclaredMethods()) {
                 try {
-                    if (isMetamodelAttribute(m)) {
+                    if (!isMetamodelAttribute(m)) {
                         //not a meta attribute, skip annotation method
                         continue;
                     }
-                    Meta ma = m.getAnnotation(Meta.class);
+                    Meta ma = m.getDeclaredAnnotation(Meta.class);
 
                     Object attributeValue = m.invoke(a);
                     final String attributeValueString = (attributeValue == null)
@@ -388,7 +404,7 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
                     metamodelAttributes.put(
                             (!ma.name().isEmpty()
                                     ? ma.name() //use the method name if the Meta#name() is default
-                                    : a.getClass().getAnnotation(MetaModel.class).name()
+                                    : a.getClass().getDeclaredAnnotation(MetaModel.class).name()
                                     + "." + m.getName()),//Meta#name() overrides the attribute name
                             attributeValueString);
                 } catch (IllegalAccessException | IllegalArgumentException |
@@ -424,8 +440,8 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
      * @return true if it is a domain model object
      */
     private boolean canModel(AnnotatedElement annotated) {
-        return (annotated.getClass().equals(java.lang.Object.class))
-                || annotated.isAnnotationPresent(DoNotModel.class);
+        return (!annotated.isAnnotationPresent(DoNotModel.class))
+                && hasMetamodelAnnotations(annotated);
     }
 
     /**
@@ -439,7 +455,8 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
      */
     private String getOperationDescription(Method m) {
         if (m.isAnnotationPresent(Operation.class)) {
-            final String desc = m.getAnnotation(Operation.class).description();
+            final String desc = m.getDeclaredAnnotation(Operation.class)
+                    .description();
             if (!desc.isEmpty()) {
                 return desc;
             }
@@ -462,7 +479,7 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
      */
     private String getOperationName(Method m) {
         if (m.isAnnotationPresent(Operation.class)) {
-            final String name = m.getAnnotation(Operation.class).name();
+            final String name = m.getDeclaredAnnotation(Operation.class).name();
             if (!name.isEmpty()) {
                 return name;
             }
@@ -479,12 +496,21 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
      *
      * Intentionally defined implementing the {@link Function} interface.
      *
-     * @param clazz
+     * @param element
      * @return metamodel annotations for class
      */
-    private Collection<Annotation> getMetamodelAnnotations(Class<?> clazz) {
-        return Arrays.stream(clazz.getAnnotations())
-                .filter((a) -> a.getClass().isAnnotationPresent(MetaModel.class))
+    private Collection<Annotation> getMetamodelAnnotations(AnnotatedElement element) {
+        return Arrays.stream(element.getDeclaredAnnotations())
+                .filter(this::isMetamodelAnnotation)
                 .collect(Collectors.toList());
+    }
+
+    private boolean hasMetamodelAnnotations(AnnotatedElement element) {
+        return Arrays.stream(element.getDeclaredAnnotations())
+                .anyMatch(this::isMetamodelAnnotation);
+    }
+
+    private boolean isMetamodelAnnotation(Annotation a) {
+        return a.annotationType().isAnnotationPresent(MetaModel.class);
     }
 }

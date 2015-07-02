@@ -1,5 +1,6 @@
 package org.geoint.acetate.impl.domain.model;
 
+import org.geoint.acetate.domain.model.DomainModel;
 import org.geoint.acetate.impl.domain.model.gen.DomainIdGen;
 import org.geoint.acetate.impl.domain.model.gen.MetaVersionGen;
 import static org.junit.Assert.assertEquals;
@@ -25,7 +26,8 @@ public class DomainIdTest {
     @Test
     public void testParseProperlyFormatted() throws Exception {
         DomainId domainId = DomainId.valueOf(DomainIdGen.generateValidString());
-        assertEquals(DomainIdGen.DomainIdBuilder.VALID_DOMAIN_NAME, domainId.getName());
+        assertEquals(DomainIdGen.DomainIdBuilder.VALID_DOMAIN_NAME.toUpperCase(),
+                domainId.getName());
         assertEquals(MetaVersionGen.generateValid(), domainId.getVersion());
     }
 
@@ -37,8 +39,8 @@ public class DomainIdTest {
                 .withValidMajor()
                 .withValidMinor()
                 .withValidQualifier()
-                .build());
-        assertEquals(EXPECTED_DOMAIN_NAME, domainId.getName());
+                .buildString());
+        assertEquals(EXPECTED_DOMAIN_NAME.toUpperCase(), domainId.getName());
         assertEquals(MetaVersionGen.generateValid(), domainId.getVersion());
     }
 
@@ -51,7 +53,7 @@ public class DomainIdTest {
                 .withInvalidMinor()
                 .withValidIncrement()
                 .withValidQualifier()
-                .build());
+                .buildString());
     }
 
     @Test(expected = NullPointerException.class)
@@ -59,6 +61,20 @@ public class DomainIdTest {
         DomainId.valueOf(DomainIdGen.builder()
                 .withInvalidDomainName()
                 .withValidVersion()
-                .build());
+                .buildString());
+    }
+
+    /**
+     * Test that two DomainId "instances" returned by DomainId#getInstance using
+     * identical name/version is "equal".
+     */
+    @Test
+    public void testDomainIdEquals() {
+        assertEquals(getAcetateDomainId(), getAcetateDomainId());
+    }
+
+    private DomainId getAcetateDomainId() {
+        return DomainId.getInstance(DomainModel.ACETATE_DOMAIN_NAME,
+                MetaVersionImpl.valueOf(DomainModel.ACETATE_DOMAIN_VERSION));
     }
 }

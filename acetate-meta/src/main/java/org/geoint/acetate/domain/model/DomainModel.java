@@ -12,7 +12,7 @@ import org.geoint.acetate.meta.VersionQualifier;
  *
  * All DomainModel instances must be immutable and thread-safe.
  */
-@Model(name = "domainModel",
+@Model(name = "Domain Model",
         domainName = DomainModel.ACETATE_DOMAIN_NAME,
         domainVersion = DomainModel.ACETATE_DOMAIN_VERSION)
 public interface DomainModel {
@@ -24,6 +24,7 @@ public interface DomainModel {
      * used.
      */
     public static final String META_DOMAIN_NAME = "acetate.domain.name";
+
     /**
      *
      */
@@ -32,12 +33,14 @@ public interface DomainModel {
     /**
      * The domain model name used by the acetate domain model metamodel.
      */
-    public static final String ACETATE_DOMAIN_NAME = "acetate.domain";
+    public static final String ACETATE_DOMAIN_NAME = "ACETATE.DOMAIN";
+
     /**
      * The current version of the acetate domain model metamodel.
      *
      */
     public static final String ACETATE_DOMAIN_VERSION = "1.0-BETA";
+
     /**
      * Default domain name used when no domain model is defined.
      *
@@ -52,7 +55,9 @@ public interface DomainModel {
      * Default domain version minor component used if no domain is defined.
      *
      */
+
     public static final int DEFAULT_DOMAIN_VERSION_MINOR = 0;
+
     /**
      * Default domain qualifier component used if no domain is defined.
      */
@@ -60,7 +65,7 @@ public interface DomainModel {
             = VersionQualifier.DEV;
 
     /**
-     * Globally-unique name of the domain model.
+     * Globally-unique, case-insensitive, name of the domain model.
      *
      * The name of the domain model, along with its version, is used to uniquely
      * identify a domain model instance and is used to form the domain models
@@ -68,9 +73,6 @@ public interface DomainModel {
      * <p>
      * Models must identify itself with the same name across versions to be
      * treated as different versions of the same domain model.
-     * <p>
-     * The name of a domain model is treated as case-insensitive and must only
-     * contain ASCII alphanumeric characters or spaces, no special characters.
      *
      * @return name of the data model
      */

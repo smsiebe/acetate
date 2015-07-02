@@ -39,7 +39,8 @@ import org.geoint.acetate.meta.MetaVersion;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
-@MetaModel(name = "acetate", version = "1.0-BETA")
+@MetaModel(name = DomainModel.ACETATE_DOMAIN_NAME,
+        version = DomainModel.ACETATE_DOMAIN_VERSION)
 public @interface MetaModel {
 
     /**

@@ -15,19 +15,17 @@ import org.geoint.acetate.meta.MetaVersion;
 public class ObjectId {
 
     private final DomainId domainId;
-    private final String objectAddress;
+    private final String objectId;
     private final String objectName;
 
     private static final Map<String, WeakReference<ObjectId>> cache
             = new WeakHashMap<>();
 
-    private static final char OBJECT_SEPARATOR = '@';
-
     private static final Pattern OBJECTID_PATTERN
             = Pattern.compile(
-                    DomainId.DOMAINID_PATTERN.pattern()
-                    + OBJECT_SEPARATOR
-                    + "(\\w*)");
+                    "(" + DomainId.DOMAINID_PATTERN.pattern() + ")"
+                    + DomainId.ID_COMPONENT_SEPARATOR
+                    + "(.*)$");
 
     /**
      *
@@ -38,7 +36,7 @@ public class ObjectId {
      * name was null
      */
     public static ObjectId getInstance(DomainId domainId,
-            String objectName)
+            final String objectName)
             throws NullPointerException {
 
         if (objectName == null || objectName.isEmpty()) {
@@ -46,16 +44,17 @@ public class ObjectId {
                     + "empty.");
         }
 
-        final String address = generateAddress(domainId, objectName);
+        final String upperObjectName = objectName.toUpperCase();
+        final String objectId = generateObjectId(domainId, upperObjectName);
 
         synchronized (cache) {
-            if (!cache.containsKey(address)) {
-                cache.put(address, new WeakReference(
-                        new ObjectId(address, domainId, objectName)
+            if (!cache.containsKey(objectId)) {
+                cache.put(objectId, new WeakReference(
+                        new ObjectId(objectId, domainId, upperObjectName)
                 ));
             }
         }
-        return cache.get(address).get();
+        return cache.get(objectId).get();
     }
 
     /**
@@ -68,12 +67,12 @@ public class ObjectId {
      * name was null
      */
     public static ObjectId getInstance(String domainName,
-            MetaVersion domainVersion, String objectName)
+            MetaVersion domainVersion, final String objectName)
             throws NullPointerException, IllegalArgumentException {
 
         return getInstance(
                 DomainId.getInstance(domainName, domainVersion),
-                objectName);
+                objectName.toUpperCase());
 
     }
 
@@ -85,23 +84,24 @@ public class ObjectId {
      * @throws InvalidDomainIdentifierException thrown if the provided string
      * was not formatted properly
      */
-    public static ObjectId valueOf(String objectId)
+    public static ObjectId valueOf(final String objectId)
             throws InvalidDomainIdentifierException {
 
-        if (cache.containsKey(objectId)) {
-            return cache.get(objectId).get();
+        final String upperObjectId = objectId.toUpperCase();
+        if (cache.containsKey(upperObjectId)) {
+            return cache.get(upperObjectId).get();
         }
 
-        Matcher m = OBJECTID_PATTERN.matcher(objectId);
+        Matcher m = OBJECTID_PATTERN.matcher(upperObjectId);
         if (!m.matches()) {
             throw new InvalidDomainIdentifierException("domainId", "Invalid "
                     + "objectId format.");
         }
 
-        final ObjectId id = new ObjectId(objectId,
-                DomainId.getInstance(m.group(1), MetaVersionImpl.valueOf(m.group(2))),
-                m.group(3));
-        cache.put(objectId, new WeakReference(id));
+        final ObjectId id = new ObjectId(upperObjectId,
+                DomainId.getInstance(m.group(2), MetaVersionImpl.valueOf(m.group(3))),
+                m.group(13));
+        cache.put(upperObjectId, new WeakReference(id));
 
         return id;
     }
@@ -112,7 +112,7 @@ public class ObjectId {
             throws NullPointerException, IllegalArgumentException {
 
         this.domainId = domainId;
-        this.objectAddress = objectId; //TODO intern?
+        this.objectId = objectId; //TODO intern?
         this.objectName = objectName;
     }
 
@@ -121,7 +121,7 @@ public class ObjectId {
     }
 
     public String getAddress() {
-        return objectAddress;
+        return objectId;
     }
 
     public String getDomainName() {
@@ -136,19 +136,37 @@ public class ObjectId {
         return objectName;
     }
 
+    /**
+     * Returns the ObejectId in the following format:
+     *
+     * {@link DomainId#asString()  domain}:{@link ObjectId#getObjectName() object Name}
+     *
+     * @return object id in controlled format
+     */
     public String asString() {
-        return objectAddress;
+        return objectId;
     }
 
     @Override
     public String toString() {
-        return objectAddress;
+        return objectId;
+    }
+
+    /**
+     *
+     * @param domainId
+     * @param objectName expected to be upper-case
+     * @return formatted object identifier
+     */
+    private static String generateObjectId(DomainId domainId, String objectName) {
+        return domainId.asString() + DomainId.ID_COMPONENT_SEPARATOR + objectName;
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 43 * hash + Objects.hashCode(this.objectAddress);
+        hash = 37 * hash + Objects.hashCode(this.domainId);
+        hash = 37 * hash + Objects.hashCode(this.objectName);
         return hash;
     }
 
@@ -161,14 +179,13 @@ public class ObjectId {
             return false;
         }
         final ObjectId other = (ObjectId) obj;
-        if (!Objects.equals(this.objectAddress, other.objectAddress)) {
+        if (!Objects.equals(this.domainId, other.domainId)) {
+            return false;
+        }
+        if (!Objects.equals(this.objectName, other.objectName)) {
             return false;
         }
         return true;
-    }
-
-    private static String generateAddress(DomainId domainId, String objectName) {
-        return domainId.asString() + OBJECT_SEPARATOR + objectName;
     }
 
 }

@@ -10,7 +10,7 @@ import org.geoint.acetate.meta.MetaVersion;
  * Model metadata as identified by the acetate metamodel framework.
  *
  */
-@Model(name = "object",
+@Model(name = "Object Model",
         domainName = DomainModel.ACETATE_DOMAIN_NAME,
         domainVersion = DomainModel.ACETATE_DOMAIN_VERSION)
 public interface ObjectModel {
@@ -39,7 +39,13 @@ public interface ObjectModel {
     MetaVersion getDomainVersion();
 
     /**
-     * Metamodel attributes assigned to this object model.
+     * Metamodel attributes defining traits of the object model.
+     * <p>
+     * An ObjectModel attribute should not be confused as a data-holding k/v
+     * property (a common misconception due to LDAP conventions). An ObjectModel
+     * attribute instead provides information about the object model itself,
+     * which metamodels and metamodel frameworks can use to understand the
+     * domain model.
      *
      * @return attributes defined by metamodels
      */

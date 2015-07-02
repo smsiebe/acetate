@@ -81,16 +81,16 @@ public final class DomainBuilder {
      *
      * @param objectName
      */
-    private ObjectBuilderImpl registerObjectType(ObjectId domainId) {
+    private ObjectBuilderImpl registerObjectType(ObjectId objectId) {
         synchronized (objects) {
             //register parent class model builder if it hasn't been already
-            if (!objects.containsKey(domainId)) {
-                ObjectBuilderImpl builder = new ObjectBuilderImpl(domainId);
-                objects.put(domainId, new WeakReference(builder));
+            if (!objects.containsKey(objectId)) {
+                ObjectBuilderImpl builder = new ObjectBuilderImpl(objectId);
+                objects.put(objectId, new WeakReference(builder));
                 return builder;
             }
         }
-        return objects.get(domainId).get();
+        return objects.get(objectId).get();
     }
 
     /**
@@ -441,8 +441,9 @@ public final class DomainBuilder {
             if (parameters.containsKey(paramName)) {
                 if (!parameters.get(paramName).equals(paramModelId)) {
                     buildException = new DuplicateParametersException(
-                            containerBuilder.objectId, paramName,
-                            parameters.get(paramName), paramModelId);
+                            containerBuilder.objectId, this.operationName, 
+                            paramName,  parameters.get(paramName), 
+                            paramModelId);
                     throw (DuplicateParametersException) buildException;
                 }
             } else {
