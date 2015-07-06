@@ -20,7 +20,6 @@ import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -48,7 +47,7 @@ import org.geoint.acetate.meta.annotation.MetaModel;
  * annotations.
  *
  */
-public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
+public class ReflectionModeler implements Callable<Collection<DomainModel>> {
 
     private DomainBuilder builder;
     private final Class<?>[] baseClasses; //classes the modeler started with
@@ -72,7 +71,7 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
      * @return object models
      * @throws ModelException thrown if there is an error in modeling
      */
-    public static Collection<ObjectModel> model(Class<?>... classes)
+    public static Collection<DomainModel> model(Class<?>... classes)
             throws ModelException {
         ReflectionModeler modeler = new ReflectionModeler(classes);
         return modeler.call();
@@ -86,7 +85,7 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
      * @return modeler
      * @throws ModelException thrown if there is an error in modeling
      */
-    public static Collection<ObjectModel> model(String... classNames)
+    public static Collection<DomainModel> model(String... classNames)
             throws ModelException {
         return model(Thread.currentThread().getContextClassLoader(),
                 classNames);
@@ -101,7 +100,7 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
      * @return modeler
      * @throws ModelException thrown if there is an error in modeling
      */
-    public static Collection<ObjectModel> model(ClassLoader cl,
+    public static Collection<DomainModel> model(ClassLoader cl,
             String... classNames) throws ModelException {
         Class[] classes = new Class[classNames.length];
         for (int i = 0; i < classNames.length; i++) {
@@ -126,7 +125,7 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
      * @throws ModelException thrown if there is an error in modeling
      */
     @Override
-    public Collection<ObjectModel> call() throws ModelException {
+    public Collection<DomainModel> call() throws ModelException {
         builder = new DomainBuilder();
 
         //first we'll seed the toModelQueue with the base classes
@@ -143,7 +142,7 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
 
             final Class<?> toModel = toModelQueue.poll();
 
-            logger.fine(() -> "Creating model of " + toModel.getClass().getName()
+            logger.fine(() -> "Creating model of " + toModel.getName()
                     + " with reflection.");
 
             final ObjectModelBuilder ob = getObjectBuilder(toModel);
@@ -235,9 +234,10 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
                         }
                     });
         }
-        return builder.build().stream()
-                .flatMap((d) -> d.findAll().stream())
-                .collect(Collectors.toList());
+        return builder.build();
+//        return builder.build().stream()
+//                .flatMap((d) -> d.findAll().stream())
+//                .collect(Collectors.toList());
     }
 
     private String generateParamName(Parameter p) {
@@ -348,10 +348,11 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
         for (char c : clazz.getName().toCharArray()) {
             if (c == CHAR_PERIOD) {
                 nextUpper = true;
+                //skip period
             } else {
                 if (nextUpper) {
-                    sb.append(Character.toUpperCase(c));
                     nextUpper = false;
+                    sb.append(Character.toUpperCase(c));
                 } else {
                     sb.append(c);
                 }
@@ -388,7 +389,7 @@ public class ReflectionModeler implements Callable<Collection<ObjectModel>> {
         //unable to use lambdas...scoping and exception handling issues...
         //don't bother trying to make this pretty =)
         for (final Annotation a : metamodelAnnotations) {
-            for (Method m : a.getClass().getDeclaredMethods()) {
+            for (Method m : a.annotationType().getDeclaredMethods()) {
                 try {
                     if (!isMetamodelAttribute(m)) {
                         //not a meta attribute, skip annotation method

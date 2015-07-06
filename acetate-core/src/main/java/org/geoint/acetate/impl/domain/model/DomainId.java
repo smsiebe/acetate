@@ -7,12 +7,13 @@ import java.util.WeakHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.geoint.acetate.domain.model.DomainModel;
+import org.geoint.acetate.domain.model.ObjectModel;
 import org.geoint.acetate.meta.MetaVersion;
 
 /**
  * Unique identity of a domain model/ontology.
  */
-public class DomainId {
+public final class DomainId {
 
     private final String domainId;
     private final String name;
@@ -54,15 +55,13 @@ public class DomainId {
                     + "null.");
         }
 
-        final String upperDomainName = domainName.toUpperCase();
-
-        final String domainId = generateId(upperDomainName, domainVersion);
+        final String domainId = generateId(domainName, domainVersion);
 
         synchronized (cache) {
             if (!cache.containsKey(domainId)) {
                 cache.put(domainId, new WeakReference(
                         new DomainId(domainId,
-                                upperDomainName,
+                                domainName,
                                 domainVersion)
                 ));
             }
@@ -73,22 +72,20 @@ public class DomainId {
     public static DomainId valueOf(final String domainId)
             throws InvalidDomainIdentifierException {
 
-        final String upperDomainId = domainId.toUpperCase();
-
-        if (cache.containsKey(upperDomainId)) {
-            return cache.get(upperDomainId).get();
+        if (cache.containsKey(domainId)) {
+            return cache.get(domainId).get();
         }
 
-        Matcher m = DOMAINID_PATTERN.matcher(upperDomainId);
+        Matcher m = DOMAINID_PATTERN.matcher(domainId);
         if (!m.matches()) {
             throw new InvalidDomainIdentifierException("domainId", "Invalid "
                     + "domainId format.");
         }
 
-        final DomainId id = new DomainId(upperDomainId,
+        final DomainId id = new DomainId(domainId,
                 m.group(1),
                 MetaVersionImpl.valueOf(m.group(2)));
-        cache.put(upperDomainId, new WeakReference(id));
+        cache.put(domainId, new WeakReference(id));
 
         return id;
     }
@@ -96,7 +93,7 @@ public class DomainId {
     /**
      *
      * @param domainId expected to be upper-case
-     * @param domainName expected to be upper-case
+     * @param domainName
      * @param domainVersion
      */
     private DomainId(String domainId, String domainName,
@@ -116,6 +113,17 @@ public class DomainId {
 
     public MetaVersion getVersion() {
         return version;
+    }
+
+    /**
+     * Check if the object model is a member of the domain.
+     *
+     * @param o
+     * @return true if the object is a member of the domain
+     */
+    boolean isMember(ObjectModel o) {
+        return o.getDomainName().equalsIgnoreCase(this.name)
+                && this.version.isWithin(o.getDomainVersion());
     }
 
     /**
@@ -151,7 +159,7 @@ public class DomainId {
 
     /**
      *
-     * @param domainName expected to be upper-case already
+     * @param domainName
      * @param version
      * @return formatted domain id
      */
@@ -180,7 +188,7 @@ public class DomainId {
             return false;
         }
         final DomainId other = (DomainId) obj;
-        if (!Objects.equals(this.name, other.name)) {
+        if (!this.name.equalsIgnoreCase(other.name)) {
             return false;
         }
         return Objects.equals(this.version, other.version);

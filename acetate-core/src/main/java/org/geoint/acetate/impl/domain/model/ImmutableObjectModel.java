@@ -3,6 +3,7 @@ package org.geoint.acetate.impl.domain.model;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -95,6 +96,33 @@ class ImmutableObjectModel implements ObjectModel {
     @Override
     public Collection<ObjectModel> getSpecialized() {
         return specialized;
+    }
+
+    @Override
+    public String toString() {
+        return this.objectId.asString();
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 97 * hash + Objects.hashCode(this.objectId);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ImmutableObjectModel other = (ImmutableObjectModel) obj;
+        if (!Objects.equals(this.objectId, other.objectId)) {
+            return false;
+        }
+        return true;
     }
 
 }

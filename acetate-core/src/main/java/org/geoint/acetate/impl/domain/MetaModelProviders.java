@@ -8,12 +8,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.geoint.acetate.domain.model.DomainModel;
 import org.geoint.acetate.domain.model.ObjectModel;
 import org.geoint.acetate.impl.domain.model.DomainId;
 import org.geoint.acetate.impl.domain.model.ImmutableDomainModel;
+import org.geoint.acetate.impl.domain.model.UnknownDomainObjectException;
 import org.geoint.acetate.meta.MetaVersion;
 import org.geoint.acetate.spi.MetaProvider;
 
@@ -84,7 +86,14 @@ public abstract class MetaModelProviders {
                 if (domainObjects.isEmpty()) {
                     domains.put(domainId, null);
                 } else {
-                    domains.put(domainId, new ImmutableDomainModel(domainId, domainObjects));
+                    try {
+                        domains.put(domainId,
+                                new ImmutableDomainModel(domainId, domainObjects));
+                    } catch (UnknownDomainObjectException ex) {
+                        domains.put(domainId, null);
+                        logger.log(Level.SEVERE, "Unable to retrieve domain "
+                                + "model, problems modeling domain.", ex);
+                    }
                 }
             }
         }

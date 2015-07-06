@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import org.geoint.acetate.domain.model.DomainModel;
 import org.geoint.acetate.domain.model.ExceptionModel;
 import org.geoint.acetate.domain.model.ObjectModel;
@@ -36,12 +37,14 @@ public class HardCodedDomainProvider implements MetaProvider {
                 MetaVersion.class,
                 VersionQualifier.class};
 
-    private static final Collection<ObjectModel> acetateDomainObjects
+    private static final Collection<DomainModel> acetateDomainObjects
             = acetateDomainModel();
 
     @Override
     public Collection<ObjectModel> findAll() {
-        return acetateDomainObjects;
+        return acetateDomainObjects.stream()
+                .flatMap((d) -> d.findAll().stream())
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -54,7 +57,7 @@ public class HardCodedDomainProvider implements MetaProvider {
         return Collections.EMPTY_LIST;
     }
 
-    private static Collection<ObjectModel> acetateDomainModel() {
+    private static Collection<DomainModel> acetateDomainModel() {
         try {
             return ReflectionModeler.model(
                     ACETATE_DOMAIN_CLASSES

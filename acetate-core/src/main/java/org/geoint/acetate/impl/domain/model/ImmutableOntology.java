@@ -12,6 +12,7 @@ import org.geoint.acetate.domain.model.DomainModel;
 import org.geoint.acetate.domain.model.ObjectModel;
 import org.geoint.acetate.domain.model.Ontology;
 import org.geoint.acetate.meta.MetaVersion;
+import org.geoint.acetate.meta.ModelException;
 
 /**
  *
@@ -26,20 +27,23 @@ public class ImmutableOntology implements Ontology {
     private static final Logger logger
             = Logger.getLogger(ImmutableOntology.class.getName());
 
-    public static ImmutableOntology fromObjects(DomainId domainId,
-            Collection<ObjectModel> allDomainObjects) {
-        Map<DomainId, Collection<ObjectModel>> models = new HashMap<>();
-        allDomainObjects.forEach((o) -> {
-            DomainId did = DomainId.getInstance(o.getDomainName(), o.getDomainVersion());
-            models.putIfAbsent(did, new ArrayList<>()); //TODO change to method reference
-            models.get(did).add(o);
-        });
-        return new ImmutableOntology(domainId, models.entrySet().stream()
-                .map((e) -> new ImmutableDomainModel(e.getKey(), e.getValue()))
-                .collect(Collectors.toList())
-        );
-    }
-
+//    public static ImmutableOntology fromObjects(DomainId domainId,
+//            Collection<ObjectModel> allDomainObjects) 
+//            throws ModelException {
+//        Map<DomainId, Collection<ObjectModel>> models = new HashMap<>();
+//        allDomainObjects.forEach((o) -> {
+//            DomainId did = DomainId.getInstance(o.getDomainName(), o.getDomainVersion());
+//            models.putIfAbsent(did, new ArrayList<>()); //TODO change to method reference
+//            models.get(did).add(o);
+//        });
+//        
+//        Collection<DomainModel> domains = new ArrayList<>();
+//        
+//        return new ImmutableOntology(domainId, models.entrySet().stream()
+//                .map((e) -> new ImmutableDomainModel(e.getKey(), e.getValue()))
+//                .collect(Collectors.toList())
+//        );
+//    }
     public ImmutableOntology(DomainId domainId,
             Collection<DomainModel> models) {
         this.domainId = domainId;

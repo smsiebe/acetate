@@ -34,7 +34,7 @@ public @interface Model {
      * @return unique name of the domain model component
      */
     @Meta(name = ObjectModel.META_OBJECT_NAME)
-    String name();
+    String name() default "";
 
     /**
      * Name of the domain model this component belongs to.

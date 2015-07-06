@@ -6,13 +6,14 @@ import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.geoint.acetate.domain.model.ObjectModel;
 import org.geoint.acetate.meta.MetaVersion;
 
 /**
  * Unique identity of a domain model object.
  *
  */
-public class ObjectId {
+public final class ObjectId {
 
     private final DomainId domainId;
     private final String objectId;
@@ -44,17 +45,23 @@ public class ObjectId {
                     + "empty.");
         }
 
-        final String upperObjectName = objectName.toUpperCase();
-        final String objectId = generateObjectId(domainId, upperObjectName);
+        final String objectId = generateObjectId(domainId, objectName);
 
         synchronized (cache) {
             if (!cache.containsKey(objectId)) {
                 cache.put(objectId, new WeakReference(
-                        new ObjectId(objectId, domainId, upperObjectName)
+                        new ObjectId(objectId, domainId, objectName)
                 ));
             }
         }
         return cache.get(objectId).get();
+    }
+
+    public static ObjectId getInstance(ObjectModel om)
+            throws NullPointerException, IllegalArgumentException {
+        return getInstance(om.getDomainName(),
+                om.getDomainVersion(),
+                om.getName());
     }
 
     /**
@@ -72,7 +79,7 @@ public class ObjectId {
 
         return getInstance(
                 DomainId.getInstance(domainName, domainVersion),
-                objectName.toUpperCase());
+                objectName);
 
     }
 
@@ -87,21 +94,20 @@ public class ObjectId {
     public static ObjectId valueOf(final String objectId)
             throws InvalidDomainIdentifierException {
 
-        final String upperObjectId = objectId.toUpperCase();
-        if (cache.containsKey(upperObjectId)) {
-            return cache.get(upperObjectId).get();
+        if (cache.containsKey(objectId)) {
+            return cache.get(objectId).get();
         }
 
-        Matcher m = OBJECTID_PATTERN.matcher(upperObjectId);
+        Matcher m = OBJECTID_PATTERN.matcher(objectId);
         if (!m.matches()) {
             throw new InvalidDomainIdentifierException("domainId", "Invalid "
                     + "objectId format.");
         }
 
-        final ObjectId id = new ObjectId(upperObjectId,
+        final ObjectId id = new ObjectId(objectId,
                 DomainId.getInstance(m.group(2), MetaVersionImpl.valueOf(m.group(3))),
                 m.group(13));
-        cache.put(upperObjectId, new WeakReference(id));
+        cache.put(objectId, new WeakReference(id));
 
         return id;
     }
@@ -159,7 +165,9 @@ public class ObjectId {
      * @return formatted object identifier
      */
     private static String generateObjectId(DomainId domainId, String objectName) {
-        return domainId.asString() + DomainId.ID_COMPONENT_SEPARATOR + objectName;
+        return domainId.asString()
+                + DomainId.ID_COMPONENT_SEPARATOR
+                + objectName;
     }
 
     @Override
@@ -182,10 +190,7 @@ public class ObjectId {
         if (!Objects.equals(this.domainId, other.domainId)) {
             return false;
         }
-        if (!Objects.equals(this.objectName, other.objectName)) {
-            return false;
-        }
-        return true;
+        return (this.objectName.equalsIgnoreCase(other.objectName));
     }
 
 }

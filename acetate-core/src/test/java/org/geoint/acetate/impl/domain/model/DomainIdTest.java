@@ -26,7 +26,7 @@ public class DomainIdTest {
     @Test
     public void testParseProperlyFormatted() throws Exception {
         DomainId domainId = DomainId.valueOf(DomainIdGen.generateValidString());
-        assertEquals(DomainIdGen.DomainIdBuilder.VALID_DOMAIN_NAME.toUpperCase(),
+        assertEquals(DomainIdGen.DomainIdBuilder.VALID_DOMAIN_NAME,
                 domainId.getName());
         assertEquals(MetaVersionGen.generateValid(), domainId.getVersion());
     }
@@ -40,7 +40,7 @@ public class DomainIdTest {
                 .withValidMinor()
                 .withValidQualifier()
                 .buildString());
-        assertEquals(EXPECTED_DOMAIN_NAME.toUpperCase(), domainId.getName());
+        assertEquals(EXPECTED_DOMAIN_NAME, domainId.getName());
         assertEquals(MetaVersionGen.generateValid(), domainId.getVersion());
     }
 

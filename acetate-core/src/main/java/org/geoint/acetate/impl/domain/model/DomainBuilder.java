@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import org.geoint.acetate.domain.annotation.DoNotModel;
 import org.geoint.acetate.domain.model.DomainModel;
 import org.geoint.acetate.domain.model.ObjectModel;
 import org.geoint.acetate.domain.model.OperationModel;
@@ -160,6 +160,7 @@ public final class DomainBuilder {
             throws ModelException {
         //defer this object modeling...then kick it off...neat trick to 
         //prevent any circular dependencies
+
         DeferredImmutableObjectModel dom
                 = new DeferredImmutableObjectModel(oid, objects.get(oid).get());
         objectModels.put(oid, dom);
@@ -209,8 +210,8 @@ public final class DomainBuilder {
             domainObjects.putIfAbsent(domainId, new HashSet<>()); //yuk...method reference?
             domainObjects.get(domainId).add(model);
 
-            //find out if it uses object from any external domains from the 
-            //object builder, which kept track 
+            //find out if this object references objects from any external 
+            //domains, making it not just a domain but an ontology
             Set<DomainId> relatedDomains = objects.get(objectId).get().getRelatedDomains();
             if (!relatedDomains.isEmpty()) {
                 ontologies.putIfAbsent(domainId, new HashSet<>());
@@ -223,16 +224,18 @@ public final class DomainBuilder {
         for (Entry<DomainId, Set<ObjectModel>> e : domainObjects.entrySet()) {
             final DomainId domainId = e.getKey();
             if (ontologies.containsKey(domainId)) {
-                domains.put(domainId,
-                        buildOntology(domainId,
-                                Stream.concat(e.getValue().stream(), //ontology-local
-                                        ontologies.get(domainId).stream()
-                                        .flatMap((id)
-                                                //plus all object of related domains
-                                                -> domainObjects.get(id).stream()
-                                        )
-                                )
-                                .collect(Collectors.toSet())));
+                throw new UnsupportedOperationException("Ontologies are not "
+                        + "yet supported.");
+//                domains.put(domainId,
+//                        buildOntology(domainId,
+//                                Stream.concat(e.getValue().stream(), //ontology-local
+//                                        ontologies.get(domainId).stream()
+//                                        .flatMap((id)
+//                                                //plus all object of related domains
+//                                                -> domainObjects.get(id).stream()
+//                                        )
+//                                )
+//                                .collect(Collectors.toSet())));
             } else {
                 domains.put(domainId, buildDomain(domainId, e.getValue()));
             }
@@ -240,13 +243,12 @@ public final class DomainBuilder {
         return domains;
     }
 
-    private ImmutableOntology buildOntology(DomainId domainId,
-            Set<ObjectModel> allDomainObjects) {
-        return ImmutableOntology.fromObjects(domainId, allDomainObjects);
-    }
-
+//    private ImmutableOntology buildOntology(DomainId domainId,
+//            Set<ObjectModel> allDomainObjects) {
+//        return ImmutableOntology.fromObjects(domainId, allDomainObjects);
+//    }
     private ImmutableDomainModel buildDomain(DomainId domainId,
-            Set<ObjectModel> objects) {
+            Set<ObjectModel> objects) throws ModelException {
         return new ImmutableDomainModel(domainId, objects);
     }
 
@@ -441,8 +443,8 @@ public final class DomainBuilder {
             if (parameters.containsKey(paramName)) {
                 if (!parameters.get(paramName).equals(paramModelId)) {
                     buildException = new DuplicateParametersException(
-                            containerBuilder.objectId, this.operationName, 
-                            paramName,  parameters.get(paramName), 
+                            containerBuilder.objectId, this.operationName,
+                            paramName, parameters.get(paramName),
                             paramModelId);
                     throw (DuplicateParametersException) buildException;
                 }
@@ -511,6 +513,10 @@ public final class DomainBuilder {
 
         public DeferredImmutableObjectModel(ObjectId objectId,
                 ObjectBuilderImpl builder) {
+            if (builder == null) {
+                throw new NullPointerException("Object builder cannot be null "
+                        + "when creating the deferred object mode.");
+            }
             this.objectId = objectId;
             this.builder = builder;
         }
@@ -586,8 +592,8 @@ public final class DomainBuilder {
         }
 
         private void logDeferredError(String attemptedMethod, Throwable ex) {
-            logger.log(Level.SEVERE, "Unable to retreive " + attemptedMethod + " info "
-                    + "for '" + objectId.asString() + "'", ex);
+            logger.log(Level.SEVERE, "Unable to retreive " + attemptedMethod
+                    + " info for '" + objectId.asString() + "'", ex);
         }
 
         /**
@@ -597,15 +603,46 @@ public final class DomainBuilder {
          * @throws ModelException
          */
         synchronized ImmutableObjectModel execute() throws ModelException {
-            if (deferredModel != null) {
+            if (deferredModel == null) {
                 try {
                     deferredModel = builder.buildImmutable();
+                    builder = null; //free up reference
                 } catch (Throwable ex) {
                     throw new DeferredModelException(objectId, ex);
                 }
-                builder = null; //free up reference
             }
             return deferredModel;
         }
+
+        @Override
+        public String toString() {
+            try {
+                return execute().toString();
+            } catch (ModelException ex) {
+                throw new RuntimeException("Unable to create string for "
+                        + "deferred object model.");
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            try {
+                return execute().hashCode();
+            } catch (ModelException ex) {
+                throw new RuntimeException("Unable to create hashCode for "
+                        + "deferred object model.");
+            }
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            try {
+                return execute().equals(obj);
+            } catch (ModelException ex) {
+                throw new RuntimeException("Unable to determine equals for "
+                        + "deferred object model.");
+            }
+        }
+
     }
 }

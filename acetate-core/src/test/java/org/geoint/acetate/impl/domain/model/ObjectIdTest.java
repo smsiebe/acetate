@@ -1,6 +1,5 @@
 package org.geoint.acetate.impl.domain.model;
 
-import org.geoint.acetate.domain.model.DomainModel;
 import org.geoint.acetate.impl.domain.model.gen.DomainIdGen;
 import org.geoint.acetate.impl.domain.model.gen.MetaVersionGen;
 import org.geoint.acetate.impl.domain.model.gen.ObjectIdGen;
@@ -27,8 +26,8 @@ public class ObjectIdTest {
     @Test
     public void testParseProperlyFormatted() throws Exception {
         ObjectId objectId = ObjectId.valueOf(ObjectIdGen.generateValidString());
-        assertEquals(ObjectIdGen.VALID_OBJECT_NAME.toUpperCase(), objectId.getObjectName());
-        assertEquals(DomainIdGen.DomainIdBuilder.VALID_DOMAIN_NAME.toUpperCase(), objectId.getDomainName());
+        assertEquals(ObjectIdGen.VALID_OBJECT_NAME, objectId.getObjectName());
+        assertEquals(DomainIdGen.DomainIdBuilder.VALID_DOMAIN_NAME, objectId.getDomainName());
         assertEquals(DomainIdGen.DomainIdBuilder.VALID_MAJOR, String.valueOf(objectId.getDomainVersion().getMajorVersion()));
         assertEquals(DomainIdGen.DomainIdBuilder.VALID_MINOR, String.valueOf(objectId.getDomainVersion().getMinorVersion()));
         assertEquals(DomainIdGen.DomainIdBuilder.VALID_QUALIFIER, String.valueOf(objectId.getDomainVersion().getQualifier()));
@@ -45,8 +44,8 @@ public class ObjectIdTest {
                 .withValidMinor()
                 .withValidQualifier()
                 .buildString());
-        assertEquals(EXPECTED_DOMAIN_NAME.toUpperCase(), objectId.getDomainName());
-        assertEquals(ObjectIdGen.VALID_OBJECT_NAME.toUpperCase(), objectId.getObjectName());
+        assertEquals(EXPECTED_DOMAIN_NAME, objectId.getDomainName());
+        assertEquals(ObjectIdGen.VALID_OBJECT_NAME, objectId.getObjectName());
         assertEquals(MetaVersionGen.generateValid(), objectId.getDomainVersion());
     }
 
@@ -60,7 +59,7 @@ public class ObjectIdTest {
                 .withValidMinor()
                 .withValidQualifier()
                 .buildString());
-        assertEquals(EXPECTED_OBJECT_NAME.toUpperCase(), objectId.getObjectName());
+        assertEquals(EXPECTED_OBJECT_NAME, objectId.getObjectName());
         assertEquals(MetaVersionGen.generateValid(), objectId.getDomainVersion());
     }
 

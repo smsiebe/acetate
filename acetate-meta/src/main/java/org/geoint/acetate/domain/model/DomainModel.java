@@ -33,7 +33,7 @@ public interface DomainModel {
     /**
      * The domain model name used by the acetate domain model metamodel.
      */
-    public static final String ACETATE_DOMAIN_NAME = "ACETATE.DOMAIN";
+    public static final String ACETATE_DOMAIN_NAME = "acetate.domain";
 
     /**
      * The current version of the acetate domain model metamodel.
