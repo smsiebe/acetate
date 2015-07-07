@@ -18,19 +18,6 @@ import org.geoint.acetate.meta.VersionQualifier;
 public interface DomainModel {
 
     /**
-     * Metamodel attribute name used to define the domain model of the object.
-     * <p>
-     * Without the domain name defined, the {@link #DEFAULT_DOMAIN_NAME} will be
-     * used.
-     */
-    public static final String META_DOMAIN_NAME = "acetate.domain.name";
-
-    /**
-     *
-     */
-    public static final String META_DOMAIN_VERSION = "acetate.domain.version";
-
-    /**
      * The domain model name used by the acetate domain model metamodel.
      */
     public static final String ACETATE_DOMAIN_NAME = "acetate.domain";

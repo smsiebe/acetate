@@ -1,36 +1,26 @@
 package org.geoint.acetate.meta.annotation;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.geoint.acetate.domain.annotation.Model;
 import org.geoint.acetate.domain.model.DomainModel;
-import org.geoint.acetate.domain.model.ObjectModel;
 import org.geoint.acetate.meta.MetaVersion;
 
 /**
- * Annotation which identifies annotation as one that defines a specialized
- * component of the specified metamodel, specified by the name and version of
- * this annotation.
+ * Annotation which, when annotated on an ANNOTATION_TYPE, identifies it as one
+ * which is used to a component of its metamodel.
  * <p>
- * A annotation annotated with MetaModel is checked for any annotation
- * attributes/methods annotated with {@link Meta}. If there are any, the value
- * of these attributes will be accessible from
- * {@link ObjectModel#getAttributes()}. This is particularly powerful in that
- * frameworks extending the metamodel can augment/replace the acetate-defined
- * metamodel annotations (for example {@link Object}) simply by defining their
- * own metamodel annotation and including the required metamodel attributes by
- * name:
- * <ul>
- * <li>{@link DomainModel#META_DOMAIN_NAME}</li>
- * <li>{@link DomainModel#META_DOMAIN_VERSION</li>
- * <li>{@link ObjectModel#META_OBJECT_NAME</li>
- * </ul>
- * By the metamodel including these annotations in its own custom metamodel
- * annotation, developers do not need to use both the custom metamodel
- * annotation and the acetate-defined annotations...they may not even know the
- * annotations are processed by acetate at all.
+ * A MetaModel annotation may contain attributes which are annotated by
+ * {@link MetaOperation} annotations, identifying the attribute as providing the
+ * metamodel value. Typical MetaOperations are define the domain of the
+ * metamodel (ie {@link DomainName}, {@link DomainVersion}), so that developers
+ * only need to annotate with the framework-defined metamodel annotation (not
+ * needing the {@link Model} annotation). Metamodel implementation may define
+ * their own meta operations as well.
  * <p>
  * MetaModel itself is a metamodel annotation using the <i>acetate.*</i> prefix
  * for its annotations. As such, the <i>acetate.*</i> metamodel attribute prefix
@@ -51,7 +41,7 @@ public @interface MetaModel {
      *
      * @return name of the metamodel this meta annotation is associated
      */
-    @Meta(name = "acetate.metamodel.name")
+    @DomainName
     String name();
 
     /**
@@ -61,7 +51,13 @@ public @interface MetaModel {
      * @return version of the metamodel, which may be a specific version or a
      * VersionRange
      */
-    @Meta(name = "acetate.metamodel.version")
+    @DomainVersion
     String version();
 
+    /**
+     * Identifies zero or more operations, identified by being annotated by a
+     * {@link MetaOperation} annotation, that must be present on the metamodel
+     * component.
+     */
+    Class<? extends Annotation> requiredOperations() default new [0];
 }
