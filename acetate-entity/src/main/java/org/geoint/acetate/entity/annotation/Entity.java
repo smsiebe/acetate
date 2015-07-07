@@ -7,10 +7,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.geoint.acetate.domain.model.DomainModel;
 import org.geoint.acetate.domain.model.ObjectModel;
+import org.geoint.acetate.entity.model.EntityModel;
 import org.geoint.acetate.meta.annotation.Meta;
 
 /**
- *
+ * Metamodel annotation used to identify a class as an Entity.
+ * 
+ * @see EntityModel
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
