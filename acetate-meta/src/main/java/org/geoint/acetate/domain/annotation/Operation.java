@@ -6,9 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.geoint.acetate.domain.model.DomainModel;
-import org.geoint.acetate.domain.model.OperationModel;
-import org.geoint.acetate.meta.annotation.Meta;
 import org.geoint.acetate.meta.annotation.MetaModel;
+import org.geoint.acetate.meta.annotation.ModelName;
 
 /**
  * Optionally annotates a models method, overridding default values.
@@ -25,7 +24,7 @@ public @interface Operation {
      *
      * @return explicit operation name
      */
-    @Meta(name = OperationModel.META_OPERATION_NAME)
+    @ModelName
     String name() default "";
 
     /**
@@ -33,7 +32,6 @@ public @interface Operation {
      *
      * @return explicit operation description
      */
-    @Meta(name = OperationModel.META_OPERATION_DESCRIPTION)
     String description() default "";
 
 }

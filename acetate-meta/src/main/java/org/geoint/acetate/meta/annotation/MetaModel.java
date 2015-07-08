@@ -6,6 +6,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Collections;
 import org.geoint.acetate.domain.annotation.Model;
 import org.geoint.acetate.domain.model.DomainModel;
 import org.geoint.acetate.meta.MetaVersion;
@@ -58,6 +59,9 @@ public @interface MetaModel {
      * Identifies zero or more operations, identified by being annotated by a
      * {@link MetaOperation} annotation, that must be present on the metamodel
      * component.
+     *
+     * @return array of MetaOperation marker annotations which at least one of
+     * each must be found among the model instance operations
      */
-    Class<? extends Annotation> requiredOperations() default new [0];
+    Class<? extends Annotation>[] requiredOperations() default {};
 }

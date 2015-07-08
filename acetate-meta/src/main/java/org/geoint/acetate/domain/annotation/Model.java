@@ -6,10 +6,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.geoint.acetate.domain.model.DomainModel;
-import org.geoint.acetate.domain.model.ObjectModel;
 import org.geoint.acetate.meta.MetaVersion;
-import org.geoint.acetate.meta.annotation.Meta;
+import org.geoint.acetate.meta.annotation.DomainName;
+import org.geoint.acetate.meta.annotation.DomainVersion;
 import org.geoint.acetate.meta.annotation.MetaModel;
+import org.geoint.acetate.meta.annotation.ModelName;
 
 /**
  * Annotation used to declare a Java class (or all classes within a package)
@@ -33,7 +34,7 @@ public @interface Model {
      *
      * @return unique name of the domain model component
      */
-    @Meta(name = ObjectModel.META_OBJECT_NAME)
+    @ModelName
     String name() default "";
 
     /**
@@ -41,7 +42,7 @@ public @interface Model {
      *
      * @return domain model name
      */
-    @Meta(name = DomainModel.META_DOMAIN_NAME)
+    @DomainName
     String domainName();
 
     /**
@@ -50,7 +51,7 @@ public @interface Model {
      * @see MetaVersion
      * @return domain model version
      */
-    @Meta(name = DomainModel.META_DOMAIN_VERSION)
+    @DomainVersion
     String domainVersion();
 
 }
