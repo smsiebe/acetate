@@ -15,24 +15,24 @@ import org.geoint.acetate.meta.MetaVersion;
  * Annotation which, when annotated on an ANNOTATION_TYPE, identifies it as one
  * which is used to a component of its metamodel.
  * <p>
- * A MetaModel annotation may contain attributes which are annotated by
- * {@link MetaOperation} annotations, identifying the attribute as providing the
+ A MetaObject annotation may contain attributes which are annotated by
+ {@link MetaOperation} annotations, identifying the attribute as providing the
  * metamodel value. Typical MetaOperations are define the domain of the
  * metamodel (ie {@link DomainName}, {@link DomainVersion}), so that developers
  * only need to annotate with the framework-defined metamodel annotation (not
  * needing the {@link Model} annotation). Metamodel implementation may define
  * their own meta operations as well.
  * <p>
- * MetaModel itself is a metamodel annotation using the <i>acetate.*</i> prefix
+ MetaObject itself is a metamodel annotation using the <i>acetate.*</i> prefix
  * for its annotations. As such, the <i>acetate.*</i> metamodel attribute prefix
  * is reserved for use for the acetate metamodel framework.
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
-@MetaModel(name = DomainModel.ACETATE_DOMAIN_NAME,
+@MetaObject(name = DomainModel.ACETATE_DOMAIN_NAME,
         version = DomainModel.ACETATE_DOMAIN_VERSION)
-public @interface MetaModel {
+public @interface MetaObject {
 
     /**
      * Metamodel domain name, providing context for the meta attributes.

@@ -9,7 +9,7 @@ import org.geoint.acetate.domain.model.DomainModel;
 import org.geoint.acetate.meta.MetaVersion;
 import org.geoint.acetate.meta.annotation.DomainName;
 import org.geoint.acetate.meta.annotation.DomainVersion;
-import org.geoint.acetate.meta.annotation.MetaModel;
+import org.geoint.acetate.meta.annotation.MetaObject;
 import org.geoint.acetate.meta.annotation.ModelName;
 
 /**
@@ -17,7 +17,7 @@ import org.geoint.acetate.meta.annotation.ModelName;
  * component(s) of the specified domain model.
  *
  * Most frameworks will define their own metamodels, often defining their own
- * {@link MetaModel annotations} which their frameworks can use to easily
+ * {@link MetaObject annotations} which their frameworks can use to easily
  * discover relevant components.
  *
  * @see DomainModel
@@ -25,7 +25,7 @@ import org.geoint.acetate.meta.annotation.ModelName;
 @Documented
 @Target({ElementType.TYPE, ElementType.PACKAGE})
 @Retention(RetentionPolicy.RUNTIME)
-@MetaModel(name = DomainModel.ACETATE_DOMAIN_NAME,
+@MetaObject(name = DomainModel.ACETATE_DOMAIN_NAME,
         version = DomainModel.ACETATE_DOMAIN_VERSION)
 public @interface Model {
 
