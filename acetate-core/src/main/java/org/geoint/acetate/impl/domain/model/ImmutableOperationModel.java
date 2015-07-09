@@ -2,31 +2,43 @@ package org.geoint.acetate.impl.domain.model;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import org.geoint.acetate.domain.model.ObjectModel;
 import org.geoint.acetate.domain.model.OperationModel;
 import org.geoint.acetate.domain.model.ParameterModel;
-import org.geoint.acetate.domain.model.ReturnModel;
 
 /**
- *
- * @param <R>
+ * Model of an objects operation.
  */
 final class ImmutableOperationModel implements OperationModel {
 
     private final String name;
+    private final Optional<String> description;
     private final Map<String, ParameterModel> parameterModels;
-    private final ReturnModel returnModel;
+    private final Optional<ObjectModel> returnModel;
+    private final Set<ObjectModel> errorModels;
 
     public ImmutableOperationModel(String name,
+            String description,
             Map<String, ParameterModel> parameterModels,
-            ReturnModel returnModel) {
+            ObjectModel returnModel,
+            Set<ObjectModel> errorModels) {
         this.name = name;
+        this.description = Optional.ofNullable(description);
         this.parameterModels = Collections.unmodifiableMap(parameterModels);
-        this.returnModel = returnModel;
+        this.returnModel = Optional.ofNullable(returnModel);
+        this.errorModels = errorModels;
     }
 
     @Override
-    public String getOperationName() {
+    public String getName() {
         return name;
+    }
+
+    @Override
+    public Optional<String> getDescription() {
+        return this.description;
     }
 
     @Override
@@ -35,8 +47,13 @@ final class ImmutableOperationModel implements OperationModel {
     }
 
     @Override
-    public ReturnModel getReturnModel() {
+    public Optional<ObjectModel> getReturnModel() {
         return returnModel;
+    }
+
+    @Override
+    public Set<ObjectModel> getErrorModels() {
+        return errorModels;
     }
 
 }

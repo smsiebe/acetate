@@ -39,8 +39,7 @@ import org.geoint.acetate.impl.domain.model.ObjectModelBuilder;
 import org.geoint.acetate.impl.domain.model.OperationModelBuilder;
 import org.geoint.acetate.impl.domain.model.UnknownDomainObjectException;
 import org.geoint.acetate.meta.ModelException;
-import org.geoint.acetate.meta.annotation.Meta;
-import org.geoint.acetate.meta.annotation.MetaModel;
+import org.geoint.acetate.meta.annotation.MetaObject;
 
 /**
  * Reflects on the provided classes to create domain model(s) based on
@@ -138,6 +137,9 @@ public class ReflectionModeler implements Callable<Collection<DomainModel>> {
             }
         }
 
+        //now we drain the model queue, modeling each of the classes.  as we 
+        //model, more classes may be added to the model queue (ie from 
+        //composite relationships, operation parameter/response types, etc)
         while (!toModelQueue.isEmpty()) {
 
             final Class<?> toModel = toModelQueue.poll();
@@ -402,10 +404,9 @@ public class ReflectionModeler implements Callable<Collection<DomainModel>> {
                             ? null
                             : String.valueOf(attributeValue);
 
-                    metamodelAttributes.put(
-                            (!ma.name().isEmpty()
+                    metamodelAttributes.put((!ma.name().isEmpty()
                                     ? ma.name() //use the method name if the Meta#name() is default
-                                    : a.getClass().getDeclaredAnnotation(MetaModel.class).name()
+                                    : a.getClass().getDeclaredAnnotation(MetaObject.class).name()
                                     + "." + m.getName()),//Meta#name() overrides the attribute name
                             attributeValueString);
                 } catch (IllegalAccessException | IllegalArgumentException |
@@ -491,11 +492,11 @@ public class ReflectionModeler implements Callable<Collection<DomainModel>> {
     }
 
     /**
-     * Check if this class has annotated with a MetaModel annotation, otherwise
-     * return null because this object is not part of a model
-     *
-     *
-     * Intentionally defined implementing the {@link Function} interface.
+     * Check if this class has annotated with a MetaObject annotation, otherwise
+ return null because this object is not part of a model
+
+
+ Intentionally defined implementing the {@link Function} interface.
      *
      * @param element
      * @return metamodel annotations for class
@@ -512,6 +513,6 @@ public class ReflectionModeler implements Callable<Collection<DomainModel>> {
     }
 
     private boolean isMetamodelAnnotation(Annotation a) {
-        return a.annotationType().isAnnotationPresent(MetaModel.class);
+        return a.annotationType().isAnnotationPresent(MetaObject.class);
     }
 }

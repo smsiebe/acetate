@@ -15,7 +15,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import org.geoint.acetate.domain.annotation.DoNotModel;
 import org.geoint.acetate.domain.model.DomainModel;
 import org.geoint.acetate.domain.model.ObjectModel;
 import org.geoint.acetate.domain.model.OperationModel;
@@ -172,7 +171,7 @@ public final class DomainBuilder {
             Map<String, OperationBuilderImpl> opBuilders) throws ModelException {
         Set<OperationModel> ops = new HashSet<>();
         for (OperationBuilderImpl opb : opBuilders.values()) {
-            Map<String, ParameterModel> params = new HashMap<>();
+            final Map<String, ParameterModel> params = new HashMap<>();
             for (Entry<String, ObjectId> pe : opb.parameters.entrySet()) {
                 final String paramName = pe.getKey();
                 params.put(paramName,
@@ -180,17 +179,20 @@ public final class DomainBuilder {
                                 modelDeferringDeadlocks(pe.getValue())
                         ));
             }
+
+            final Set<ObjectModel> errorModels = new HashSet<>();
+            for (ObjectId eId : opb.errorModels) {
+                errorModels.add(modelDeferringDeadlocks(eId));
+            }
+
             ops.add(new ImmutableOperationModel(
                     opb.operationName,
+                    opb.description,
                     params,
-                    new ImmutableReturnModel(
-                            (opb.returnType != null)
-                                    ? modelDeferringDeadlocks(opb.returnType)
-                                    : null,
-                            opb.exceptions.stream()
-                            .map((oid) -> new ImmutableThrowableModel(oid))
-                            .collect(Collectors.toSet())
-                    )
+                    (opb.returnType != null)
+                            ? modelDeferringDeadlocks(opb.returnType)
+                            : null,
+                    errorModels
             ));
         }
         return ops;
@@ -417,7 +419,7 @@ public final class DomainBuilder {
         private String description; //can be null
         private final Map<String, ObjectId> parameters = new ConcurrentHashMap<>();
         private ObjectId returnType; //can be null, indicating Void return 
-        private final Set<ObjectId> exceptions
+        private final Set<ObjectId> errorModels
                 = Collections.synchronizedSet(new HashSet<>());
         private ModelException buildException; //null if builder had no problem during construction
 
@@ -481,7 +483,7 @@ public final class DomainBuilder {
             //tell container about possible external object reference
             containerBuilder.trackRelated(exceptionModel);
 
-            exceptions.add(exceptionModel);
+            errorModels.add(exceptionModel);
             return this;
         }
 
@@ -497,7 +499,7 @@ public final class DomainBuilder {
             //validate referenced object are present in the object cache,
             //which will ensure that they are checked
             validateRegistered(parameters.values());
-            validateRegistered(exceptions);
+            validateRegistered(errorModels);
             if (returnType != null) {
                 validateRegistered(Arrays.asList(returnType));
             }

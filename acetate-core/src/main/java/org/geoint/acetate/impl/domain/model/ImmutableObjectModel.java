@@ -12,8 +12,7 @@ import org.geoint.acetate.domain.model.OperationModel;
 import org.geoint.acetate.meta.MetaVersion;
 
 /**
- *
- * @param <T>
+ * Domain model object.
  */
 class ImmutableObjectModel implements ObjectModel {
 
@@ -33,7 +32,7 @@ class ImmutableObjectModel implements ObjectModel {
         this.attributes = Collections.unmodifiableMap(attributes);
         this.declaredOperations = Collections.unmodifiableMap(
                 declaredOperations.stream().collect(
-                        Collectors.toMap((o) -> o.getOperationName(), (o) -> o))
+                        Collectors.toMap((o) -> o.getName(), (o) -> o))
         );
 
         this.parents = Collections.unmodifiableCollection(parents);
@@ -81,9 +80,9 @@ class ImmutableObjectModel implements ObjectModel {
                                     (p) -> p.getOperations().stream()
                             )
                             //if the subclass 'overrides' this operation, ignore it
-                            .filter((o) -> !this.declaredOperations.containsKey(o.getOperationName()))
+                            .filter((o) -> !this.declaredOperations.containsKey(o.getName()))
                     )
-                    .collect(Collectors.toMap((o) -> o.getOperationName(), (o) -> o)));
+                    .collect(Collectors.toMap((o) -> o.getName(), (o) -> o)));
         }
         return allOperations.values();
     }

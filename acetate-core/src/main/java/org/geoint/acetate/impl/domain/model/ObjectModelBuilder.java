@@ -1,7 +1,6 @@
 package org.geoint.acetate.impl.domain.model;
 
 import java.util.Map;
-import org.geoint.acetate.meta.annotation.Meta;
 
 /**
  * Fluid API to create an ObjectModel instance.
