@@ -16,7 +16,7 @@
     </properties>
     <modules>
         <!-- acetete core framework modules -->
-        <module>acetate-meta</module>
+        <module>acetate-domain</module>
         <module>acetate-core</module>
         <module>acetate-entity</module>
         

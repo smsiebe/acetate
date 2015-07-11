@@ -6,8 +6,8 @@
         <artifactId>acetate</artifactId>
         <version>0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>acetate-meta</artifactId>
-    <name>acetate-meta</name>
+    <artifactId>acetate-domain</artifactId>
+    <name>acetate-domain</name>
     <description>Object metamodel framework.</description>
     <packaging>jar</packaging>
 </project>

@@ -23,11 +23,6 @@
         dependencies -->
         
         <!-- 1st party dependencies -->
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>acetate-meta</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         
         <!-- test dependencies -->
         <dependency>
@@ -35,6 +30,11 @@
             <artifactId>junit</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>acetate-domain</artifactId>
+            <version>${project.version}</version>
         </dependency>
     </dependencies>
     
