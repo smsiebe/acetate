@@ -5,24 +5,24 @@ import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import org.geoint.acetate.domain.model.DomainModel;
+import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.domain.model.ExceptionModel;
-import org.geoint.acetate.domain.model.ObjectModel;
-import org.geoint.acetate.domain.model.Ontology;
-import org.geoint.acetate.domain.model.OperationModel;
+import org.geoint.acetate.model.ObjectModel;
+import org.geoint.acetate.model.Ontology;
+import org.geoint.acetate.entity.model.OperationModel;
 import org.geoint.acetate.domain.model.ParameterModel;
 import org.geoint.acetate.domain.model.ReturnModel;
 import org.geoint.acetate.impl.model.reflect.ReflectionModeler;
-import org.geoint.acetate.meta.MetaVersion;
+import org.geoint.acetate.model.ModelVersion;
 import org.geoint.acetate.meta.ModelException;
-import org.geoint.acetate.meta.VersionQualifier;
-import org.geoint.acetate.spi.MetaProvider;
+import org.geoint.acetate.model.VersionQualifier;
+import org.geoint.acetate.spi.ModelProvider;
 
 /**
- * Test MetaProvider which is simply hard-coded with the acetate metamodel
- * domain classes.
+ * Test ModelProvider which is simply hard-coded with the acetate metamodel
+ domain classes.
  */
-public class HardCodedDomainProvider implements MetaProvider {
+public class HardCodedDomainProvider implements ModelProvider {
 
     private static final Logger logger
             = Logger.getLogger(HardCodedDomainProvider.class.getName());
@@ -34,7 +34,7 @@ public class HardCodedDomainProvider implements MetaProvider {
                 ParameterModel.class,
                 ReturnModel.class,
                 ExceptionModel.class,
-                MetaVersion.class,
+                ModelVersion.class,
                 VersionQualifier.class};
 
     private static final Collection<DomainModel> acetateDomainObjects
@@ -49,7 +49,7 @@ public class HardCodedDomainProvider implements MetaProvider {
 
     @Override
     public Collection<ObjectModel> find(
-            String domainName, MetaVersion domainVersion) {
+            String domainName, ModelVersion domainVersion) {
         if (domainName.equalsIgnoreCase(DomainModel.ACETATE_DOMAIN_NAME)
                 && domainVersion.asString().contentEquals(DomainModel.ACETATE_DOMAIN_VERSION)) {
             return findAll();

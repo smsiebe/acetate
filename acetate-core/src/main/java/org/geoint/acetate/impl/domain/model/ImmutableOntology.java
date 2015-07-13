@@ -8,10 +8,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import org.geoint.acetate.domain.model.DomainModel;
-import org.geoint.acetate.domain.model.ObjectModel;
-import org.geoint.acetate.domain.model.Ontology;
-import org.geoint.acetate.meta.MetaVersion;
+import org.geoint.acetate.model.DomainModel;
+import org.geoint.acetate.model.ObjectModel;
+import org.geoint.acetate.model.Ontology;
+import org.geoint.acetate.model.ModelVersion;
 import org.geoint.acetate.meta.ModelException;
 
 /**
@@ -83,7 +83,7 @@ public class ImmutableOntology implements Ontology {
     }
 
     @Override
-    public MetaVersion getVersion() {
+    public ModelVersion getVersion() {
         return domainId.getVersion();
     }
 

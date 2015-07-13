@@ -2,9 +2,9 @@ package org.geoint.acetate.impl.domain;
 
 import java.util.Collection;
 import java.util.Optional;
-import org.geoint.acetate.domain.model.DomainModel;
+import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.impl.domain.model.MetaVersionImpl;
-import org.geoint.acetate.spi.MetaProvider;
+import org.geoint.acetate.spi.ModelProvider;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
@@ -15,7 +15,7 @@ public class MetaModelProvidersTest {
      */
     @Test
     public void testLoadProvidersFromServiceLoader() {
-        Collection<MetaProvider> providers = MetaModelProviders.getProviders();
+        Collection<ModelProvider> providers = MetaModelProviders.getProviders();
         assertTrue(!providers.isEmpty());
         assertTrue(providers.stream()
                 .filter((p) -> p.getClass().equals(HardCodedDomainProvider.class))

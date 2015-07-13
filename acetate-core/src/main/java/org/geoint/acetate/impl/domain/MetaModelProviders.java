@@ -11,20 +11,20 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import org.geoint.acetate.domain.model.DomainModel;
-import org.geoint.acetate.domain.model.ObjectModel;
+import org.geoint.acetate.model.DomainModel;
+import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.impl.domain.model.DomainId;
 import org.geoint.acetate.impl.domain.model.ImmutableDomainModel;
 import org.geoint.acetate.impl.domain.model.UnknownDomainObjectException;
-import org.geoint.acetate.meta.MetaVersion;
-import org.geoint.acetate.spi.MetaProvider;
+import org.geoint.acetate.model.ModelVersion;
+import org.geoint.acetate.spi.ModelProvider;
 
 /**
- * Loads {@link MetaProvider meta providers}.
+ * Loads {@link ModelProvider meta providers}.
  */
 public abstract class MetaModelProviders {
 
-    private static final Collection<MetaProvider> providers;
+    private static final Collection<ModelProvider> providers;
     private static final Map<DomainId, DomainModel> domains = new HashMap<>();
 
     private static final Logger logger
@@ -32,11 +32,11 @@ public abstract class MetaModelProviders {
 
     static {
         logger.info(() -> "Loading metamodel providers from ServiceLoader.");
-        final ServiceLoader<MetaProvider> providerLoader
-                = ServiceLoader.load(MetaProvider.class);
+        final ServiceLoader<ModelProvider> providerLoader
+                = ServiceLoader.load(ModelProvider.class);
 
-        Collection<MetaProvider> loaded = new ArrayList<>();
-        for (MetaProvider p : providerLoader) {
+        Collection<ModelProvider> loaded = new ArrayList<>();
+        for (ModelProvider p : providerLoader) {
             logger.fine(() -> "Found metamodel provider '"
                     + p.getClass().getName() + "'.");
             loaded.add(p);
@@ -49,7 +49,7 @@ public abstract class MetaModelProviders {
      *
      * @return collection of metamodel providers
      */
-    public static Collection<MetaProvider> getProviders() {
+    public static Collection<ModelProvider> getProviders() {
         return providers;
     }
 
@@ -72,7 +72,7 @@ public abstract class MetaModelProviders {
      * @return domain model, if registered
      */
     public static Optional<DomainModel> getDomain(String domainName,
-            MetaVersion domainVersion) {
+            ModelVersion domainVersion) {
 
         final DomainId domainId = DomainId.getInstance(domainName, domainVersion);
 

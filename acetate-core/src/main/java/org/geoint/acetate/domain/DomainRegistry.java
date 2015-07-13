@@ -9,12 +9,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.geoint.acetate.domain.model.DomainModel;
+import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.impl.domain.MetaModelProviders;
 import org.geoint.acetate.impl.domain.model.DomainBuilder;
 import org.geoint.acetate.impl.domain.model.DomainId;
-import org.geoint.acetate.meta.MetaVersion;
-import org.geoint.acetate.spi.MetaProvider;
+import org.geoint.acetate.model.ModelVersion;
+import org.geoint.acetate.spi.ModelProvider;
 
 /**
  * Domain model registry.
@@ -48,7 +48,7 @@ public final class DomainRegistry {
     }
 
     private static DomainRegistry defaultRegistry() {
-        Collection<MetaProvider> providers = MetaModelProviders.getProviders();
+        Collection<ModelProvider> providers = MetaModelProviders.getProviders();
         ExecutorService exe = Executors.newCachedThreadPool();
         final DomainBuilder db = new DomainBuilder();
         providers.stream().forEach((p) -> {
@@ -65,7 +65,7 @@ public final class DomainRegistry {
     }
 
     public Optional<DomainModel> findDomain(String domainName,
-            MetaVersion domainVersion) {
+            ModelVersion domainVersion) {
         final DomainId domainId = DomainId.getInstance(domainName, domainVersion);
         try {
             if (searchExecutor != null

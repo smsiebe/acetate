@@ -18,7 +18,6 @@
         <!-- acetete core framework modules -->
         <module>acetate-domain</module>
         <module>acetate-core</module>
-        <module>acetate-entity</module>
         
         <!-- acetate provided framework implemenetations/extensions -->
         <!-- TODO consider moving these projects outside the reactor to promote 

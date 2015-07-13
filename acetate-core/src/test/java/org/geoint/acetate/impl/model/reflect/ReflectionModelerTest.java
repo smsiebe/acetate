@@ -2,9 +2,9 @@ package org.geoint.acetate.impl.model.reflect;
 
 import java.util.Collection;
 import java.util.Optional;
-import org.geoint.acetate.domain.model.DomainModel;
-import org.geoint.acetate.domain.model.ObjectModel;
-import org.geoint.acetate.domain.model.OperationModel;
+import org.geoint.acetate.model.DomainModel;
+import org.geoint.acetate.model.ObjectModel;
+import org.geoint.acetate.entity.model.OperationModel;
 import org.geoint.acetate.impl.domain.HardCodedDomainProvider;
 import static org.junit.Assert.*;
 import org.junit.Test;

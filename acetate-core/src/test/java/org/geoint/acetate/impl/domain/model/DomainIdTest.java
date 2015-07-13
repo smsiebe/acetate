@@ -1,6 +1,6 @@
 package org.geoint.acetate.impl.domain.model;
 
-import org.geoint.acetate.domain.model.DomainModel;
+import org.geoint.acetate.model.DomainModel;
 import org.geoint.acetate.impl.domain.model.gen.DomainIdGen;
 import org.geoint.acetate.impl.domain.model.gen.MetaVersionGen;
 import static org.junit.Assert.assertEquals;

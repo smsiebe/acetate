@@ -2,11 +2,11 @@ package org.geoint.acetate.impl.domain.model;
 
 import java.io.Serializable;
 import java.util.Optional;
-import org.geoint.acetate.meta.MetaVersion;
-import org.geoint.acetate.meta.VersionQualifier;
+import org.geoint.acetate.model.ModelVersion;
+import org.geoint.acetate.model.VersionQualifier;
 
 /**
- * Defines an [un]bounded {@link MetaVersion} range.
+ * Defines an [un]bounded {@link ModelVersion} range.
  * <p>
  * A version range can be arbitrarily complex, allowing open bounds as well as
  * multiple, distinct, ranges.
@@ -17,7 +17,7 @@ import org.geoint.acetate.meta.VersionQualifier;
  * boundary/no limit.
  */
 public final class MetaVersionRange
-        implements MetaVersion, Serializable, Comparable<MetaVersion> {
+        implements ModelVersion, Serializable, Comparable<ModelVersion> {
 
     private final static long serialVersionUID = 1L;
 
@@ -152,13 +152,13 @@ public final class MetaVersionRange
     }
 
     @Override
-    public int compareTo(MetaVersion o) {
+    public int compareTo(ModelVersion o) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
     }
 
     @Override
-    public boolean isWithin(MetaVersion v) {
+    public boolean isWithin(ModelVersion v) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

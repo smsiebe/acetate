@@ -6,8 +6,8 @@ import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.geoint.acetate.domain.model.ObjectModel;
-import org.geoint.acetate.meta.MetaVersion;
+import org.geoint.acetate.model.ObjectModel;
+import org.geoint.acetate.model.ModelVersion;
 
 /**
  * Unique identity of a domain model object.
@@ -74,7 +74,7 @@ public final class ObjectId {
      * name was null
      */
     public static ObjectId getInstance(String domainName,
-            MetaVersion domainVersion, final String objectName)
+            ModelVersion domainVersion, final String objectName)
             throws NullPointerException, IllegalArgumentException {
 
         return getInstance(
@@ -134,7 +134,7 @@ public final class ObjectId {
         return domainId.getName();
     }
 
-    public MetaVersion getDomainVersion() {
+    public ModelVersion getDomainVersion() {
         return domainId.getVersion();
     }
 

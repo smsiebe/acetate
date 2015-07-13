@@ -6,9 +6,9 @@ import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.geoint.acetate.domain.model.DomainModel;
-import org.geoint.acetate.domain.model.ObjectModel;
-import org.geoint.acetate.meta.MetaVersion;
+import org.geoint.acetate.model.DomainModel;
+import org.geoint.acetate.model.ObjectModel;
+import org.geoint.acetate.model.ModelVersion;
 
 /**
  * Unique identity of a domain model/ontology.
@@ -17,7 +17,7 @@ public final class DomainId {
 
     private final String domainId;
     private final String name;
-    private final MetaVersion version;
+    private final ModelVersion version;
 
     static final char ID_COMPONENT_SEPARATOR = ':';
     static final Pattern DOMAINID_PATTERN
@@ -44,7 +44,7 @@ public final class DomainId {
      * version was null
      */
     public static DomainId getInstance(final String domainName,
-            MetaVersion domainVersion) {
+            ModelVersion domainVersion) {
 
         if (domainName == null || domainName.isEmpty()) {
             throw new NullPointerException("Domain name must not be null.");
@@ -97,7 +97,7 @@ public final class DomainId {
      * @param domainVersion
      */
     private DomainId(String domainId, String domainName,
-            MetaVersion domainVersion) {
+            ModelVersion domainVersion) {
         this.domainId = domainId;
         if (domainName == null || domainName.isEmpty()) {
             throw new NullPointerException("Domain name must not be null or an "
@@ -111,7 +111,7 @@ public final class DomainId {
         return name;
     }
 
-    public MetaVersion getVersion() {
+    public ModelVersion getVersion() {
         return version;
     }
 
@@ -163,7 +163,7 @@ public final class DomainId {
      * @param version
      * @return formatted domain id
      */
-    private static String generateId(String domainName, MetaVersion version) {
+    private static String generateId(String domainName, ModelVersion version) {
         StringBuilder sb = new StringBuilder();
         sb.append(domainName)
                 .append(ID_COMPONENT_SEPARATOR)

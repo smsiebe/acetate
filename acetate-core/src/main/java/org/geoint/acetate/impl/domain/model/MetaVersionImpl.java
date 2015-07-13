@@ -5,19 +5,19 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.geoint.acetate.domain.model.DomainModel;
-import org.geoint.acetate.meta.MetaVersion;
-import org.geoint.acetate.meta.VersionQualifier;
+import org.geoint.acetate.model.DomainModel;
+import org.geoint.acetate.model.ModelVersion;
+import org.geoint.acetate.model.VersionQualifier;
 
 public final class MetaVersionImpl
-        implements Serializable, MetaVersion, Comparable<MetaVersionImpl> {
+        implements Serializable, ModelVersion, Comparable<MetaVersionImpl> {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * Default domain version used if not defined.
      */
-    public static final MetaVersion DEFAULT_VERSION = new MetaVersionImpl(
+    public static final ModelVersion DEFAULT_VERSION = new MetaVersionImpl(
             DomainModel.DEFAULT_DOMAIN_VERSION_MAJOR,
             DomainModel.DEFAULT_DOMAIN_VERSION_MINOR,
             DomainModel.DEFAULT_DOMAIN_VERSION_QUALIFIER);
@@ -135,7 +135,7 @@ public final class MetaVersionImpl
     }
 
     @Override
-    public boolean isWithin(MetaVersion v) {
+    public boolean isWithin(ModelVersion v) {
         return this.equals(v);
     }
 

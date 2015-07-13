@@ -15,11 +15,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import org.geoint.acetate.domain.model.DomainModel;
-import org.geoint.acetate.domain.model.ObjectModel;
-import org.geoint.acetate.domain.model.OperationModel;
+import org.geoint.acetate.model.DomainModel;
+import org.geoint.acetate.model.ObjectModel;
+import org.geoint.acetate.entity.model.OperationModel;
 import org.geoint.acetate.domain.model.ParameterModel;
-import org.geoint.acetate.meta.MetaVersion;
+import org.geoint.acetate.model.ModelVersion;
 import org.geoint.acetate.meta.ModelException;
 
 /**
@@ -64,7 +64,7 @@ public final class DomainBuilder {
      * @return object model builder
      */
     public ObjectModelBuilder forObject(String domainName,
-            MetaVersion domainVersion, String objectName) {
+            ModelVersion domainVersion, String objectName) {
         return registerObjectType(
                 ObjectId.getInstance(domainName, domainVersion, objectName)
         );
@@ -287,7 +287,7 @@ public final class DomainBuilder {
                 = Collections.synchronizedSet(new HashSet<>());
 
         public ObjectBuilderImpl(String domainName,
-                MetaVersion domainVersion,
+                ModelVersion domainVersion,
                 String objectName) {
             this(ObjectId.getInstance(domainName, domainVersion, objectName));
         }
@@ -534,7 +534,7 @@ public final class DomainBuilder {
         }
 
         @Override
-        public MetaVersion getDomainVersion() {
+        public ModelVersion getDomainVersion() {
             return this.objectId.getDomainVersion();
         }
 

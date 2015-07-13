@@ -7,9 +7,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.geoint.acetate.domain.model.ObjectModel;
-import org.geoint.acetate.domain.model.OperationModel;
-import org.geoint.acetate.meta.MetaVersion;
+import org.geoint.acetate.model.ObjectModel;
+import org.geoint.acetate.entity.model.OperationModel;
+import org.geoint.acetate.model.ModelVersion;
 
 /**
  * Domain model object.
@@ -50,7 +50,7 @@ class ImmutableObjectModel implements ObjectModel {
     }
 
     @Override
-    public MetaVersion getDomainVersion() {
+    public ModelVersion getDomainVersion() {
         return this.objectId.getDomainVersion();
     }
 

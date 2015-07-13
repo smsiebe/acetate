@@ -26,10 +26,10 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import org.geoint.acetate.domain.annotation.DoNotModel;
-import org.geoint.acetate.domain.annotation.Operation;
-import org.geoint.acetate.domain.model.DomainModel;
-import org.geoint.acetate.domain.model.ObjectModel;
+import org.geoint.acetate.model.annotation.DoNotModel;
+import org.geoint.acetate.model.annotation.ModelName;
+import org.geoint.acetate.model.DomainModel;
+import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.impl.domain.model.DomainBuilder;
 import org.geoint.acetate.impl.domain.model.DomainId;
 import org.geoint.acetate.impl.domain.model.DuplicateParametersException;
@@ -456,8 +456,8 @@ public class ReflectionModeler implements Callable<Collection<DomainModel>> {
      * @return operation description or null if not set
      */
     private String getOperationDescription(Method m) {
-        if (m.isAnnotationPresent(Operation.class)) {
-            final String desc = m.getDeclaredAnnotation(Operation.class)
+        if (m.isAnnotationPresent(ModelName.class)) {
+            final String desc = m.getDeclaredAnnotation(ModelName.class)
                     .description();
             if (!desc.isEmpty()) {
                 return desc;
@@ -470,7 +470,7 @@ public class ReflectionModeler implements Callable<Collection<DomainModel>> {
 
     /**
      * Determines the operation name based on the presence of a
-     * {@link Operation} annotation, or returns the a name based on the default
+     * {@link ModelName} annotation, or returns the a name based on the default
      * operation naming convention.
      *
      *
@@ -480,8 +480,8 @@ public class ReflectionModeler implements Callable<Collection<DomainModel>> {
      * @return operation name for method
      */
     private String getOperationName(Method m) {
-        if (m.isAnnotationPresent(Operation.class)) {
-            final String name = m.getDeclaredAnnotation(Operation.class).name();
+        if (m.isAnnotationPresent(ModelName.class)) {
+            final String name = m.getDeclaredAnnotation(ModelName.class).name();
             if (!name.isEmpty()) {
                 return name;
             }

@@ -1,6 +1,6 @@
 package org.geoint.acetate.impl.domain.model;
 
-import org.geoint.acetate.domain.model.ObjectModel;
+import org.geoint.acetate.model.ObjectModel;
 import org.geoint.acetate.domain.model.ParameterModel;
 
 /**

@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import org.geoint.acetate.domain.model.ObjectModel;
-import org.geoint.acetate.domain.model.OperationModel;
+import org.geoint.acetate.model.ObjectModel;
+import org.geoint.acetate.entity.model.OperationModel;
 import org.geoint.acetate.domain.model.ParameterModel;
 
 /**
