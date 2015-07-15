@@ -17,20 +17,13 @@
     <modules>
         <!-- acetete core framework modules -->
         <module>acetate-domain</module>
-        <module>acetate-core</module>
+        <!--<module>acetate-bind</module>-->
         
-        <!-- acetate provided framework implemenetations/extensions -->
-        <!-- TODO consider moving these projects outside the reactor to promote 
-        independent development       -->
-        <!--
-        
-        <module>acetate-bind</module>
-        -->
         <!--
         <module>acetate-modelgen</module>
-        <module>acetate-template</module>
-        <module>acetate-jsonld</module>
-        <module>acetate-rdfxml</module>
+        <module>acetate-bind-template</module>
+        <module>acetate-bind-jsonld</module>
+        <module>acetate-bind-rdf</module>
         -->
     </modules>
 </project>

@@ -3,7 +3,7 @@ package org.geoint.acetate.impl.transform;
 import java.nio.ByteBuffer;
 import org.geoint.acetate.bind.transform.BufferedCodec;
 import org.geoint.acetate.bind.transform.DataTransformException;
-import org.geoint.acetate.model.DataModel;
+import org.geoint.acetate.domain.model.DataModel;
 
 /**
  * Default data type for {@link Integer}.

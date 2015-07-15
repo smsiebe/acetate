@@ -9,7 +9,7 @@ import java.util.Optional;
 import org.geoint.acetate.bind.transform.ObjectConverter;
 import org.geoint.acetate.bind.transform.DataTransformException;
 import org.geoint.acetate.impl.transform.DefaultMapConverter.KeyValue;
-import org.geoint.acetate.model.DataModel;
+import org.geoint.acetate.domain.model.DataModel;
 
 /**
  * Default {@link Map java.util.Map} converter, converting each map entry into a

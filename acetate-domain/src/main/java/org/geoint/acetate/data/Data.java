@@ -3,8 +3,8 @@ package org.geoint.acetate.data;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.WritableByteChannel;
-import org.geoint.acetate.model.DataModel;
-import org.geoint.acetate.model.DataVisitor;
+import org.geoint.acetate.domain.model.DataModel;
+import org.geoint.acetate.domain.model.DataVisitor;
 
 /**
  * Binds data values with a data model, providing a means access the data within

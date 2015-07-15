@@ -1,7 +1,7 @@
 package org.geoint.acetate.bind.transform;
 
 import java.util.Optional;
-import org.geoint.acetate.model.DataModel;
+import org.geoint.acetate.domain.model.DataModel;
 
 /**
  * Converts a java object to/from a domain model object.

@@ -1,7 +1,7 @@
 package org.geoint.acetate.bind.transform;
 
 import java.nio.Buffer;
-import org.geoint.acetate.model.DataModel;
+import org.geoint.acetate.domain.model.DataModel;
 
 /**
  * Codec used to convert a domain model object instance to/from a data stream.
