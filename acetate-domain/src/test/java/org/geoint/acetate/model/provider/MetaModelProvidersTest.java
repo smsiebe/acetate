@@ -2,7 +2,7 @@ package org.geoint.acetate.model.provider;
 
 import java.util.Collection;
 import java.util.Optional;
-import org.geoint.acetate.domain.model.DomainModel;
+import org.geoint.acetate.domain.model.DataModel;
 import org.geoint.acetate.impl.domain.model.MetaVersionImpl;
 import org.geoint.acetate.domain.provider.ModelProvider;
 import static org.junit.Assert.*;
@@ -40,9 +40,8 @@ public class MetaModelProvidersTest {
      */
     @Test
     public void testKnownDomain() {
-        Optional<DomainModel> acetate = MetaModelProviders.getDomain(
-                DomainModel.ACETATE_DOMAIN_NAME,
-                MetaVersionImpl.valueOf(DomainModel.ACETATE_DOMAIN_VERSION)
+        Optional<DataModel> acetate = MetaModelProviders.getDomain(DataModel.ACETATE_DOMAIN_NAME,
+                MetaVersionImpl.valueOf(DataModel.ACETATE_DOMAIN_VERSION)
         );
         assertTrue("Acetate domain model was not loaded", acetate.isPresent());
         assertEquals(HardCodedDomainProvider.ACETATE_DOMAIN_CLASSES.length,

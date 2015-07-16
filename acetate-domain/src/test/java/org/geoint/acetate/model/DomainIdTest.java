@@ -1,6 +1,6 @@
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.domain.model.DomainModel;
+import org.geoint.acetate.domain.model.DataModel;
 import org.geoint.acetate.model.gen.DomainIdGen;
 import org.geoint.acetate.model.gen.MetaVersionGen;
 import static org.junit.Assert.assertEquals;
@@ -74,7 +74,7 @@ public class DomainIdTest {
     }
 
     private DomainId getAcetateDomainId() {
-        return DomainId.getInstance(DomainModel.ACETATE_DOMAIN_NAME,
-                MetaVersionImpl.valueOf(DomainModel.ACETATE_DOMAIN_VERSION));
+        return DomainId.getInstance(DataModel.ACETATE_DOMAIN_NAME,
+                MetaVersionImpl.valueOf(DataModel.ACETATE_DOMAIN_VERSION));
     }
 }

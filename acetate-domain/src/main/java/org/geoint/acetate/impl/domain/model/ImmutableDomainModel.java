@@ -6,14 +6,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import org.geoint.acetate.domain.model.DomainModel;
+import org.geoint.acetate.domain.model.DataModel;
 import org.geoint.acetate.domain.model.ObjectModel;
 import org.geoint.acetate.model.common.Version;
 
 /**
  *
  */
-public class ImmutableDomainModel implements DomainModel {
+public class ImmutableDomainModel implements DataModel {
 
     private final DomainId domainId;
     private final Map<String, ObjectModel> objects; //key is object name

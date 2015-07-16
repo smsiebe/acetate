@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.geoint.acetate.domain.annotation.DoNotModel;
 import org.geoint.acetate.domain.annotation.ModelName;
-import org.geoint.acetate.domain.model.DomainModel;
+import org.geoint.acetate.domain.model.DataModel;
 import org.geoint.acetate.domain.model.ObjectModel;
 import org.geoint.acetate.impl.domain.model.DomainBuilder;
 import org.geoint.acetate.impl.domain.model.DomainId;
@@ -46,7 +46,7 @@ import org.geoint.acetate.meta.annotation.MetaObject;
  * annotations.
  *
  */
-public class ReflectionModeler implements Callable<Collection<DomainModel>> {
+public class ReflectionModeler implements Callable<Collection<DataModel>> {
 
     private DomainBuilder builder;
     private final Class<?>[] baseClasses; //classes the modeler started with
@@ -70,7 +70,7 @@ public class ReflectionModeler implements Callable<Collection<DomainModel>> {
      * @return object models
      * @throws ModelException thrown if there is an error in modeling
      */
-    public static Collection<DomainModel> model(Class<?>... classes)
+    public static Collection<DataModel> model(Class<?>... classes)
             throws ModelException {
         ReflectionModeler modeler = new ReflectionModeler(classes);
         return modeler.call();
@@ -84,7 +84,7 @@ public class ReflectionModeler implements Callable<Collection<DomainModel>> {
      * @return modeler
      * @throws ModelException thrown if there is an error in modeling
      */
-    public static Collection<DomainModel> model(String... classNames)
+    public static Collection<DataModel> model(String... classNames)
             throws ModelException {
         return model(Thread.currentThread().getContextClassLoader(),
                 classNames);
@@ -99,7 +99,7 @@ public class ReflectionModeler implements Callable<Collection<DomainModel>> {
      * @return modeler
      * @throws ModelException thrown if there is an error in modeling
      */
-    public static Collection<DomainModel> model(ClassLoader cl,
+    public static Collection<DataModel> model(ClassLoader cl,
             String... classNames) throws ModelException {
         Class[] classes = new Class[classNames.length];
         for (int i = 0; i < classNames.length; i++) {
@@ -124,7 +124,7 @@ public class ReflectionModeler implements Callable<Collection<DomainModel>> {
      * @throws ModelException thrown if there is an error in modeling
      */
     @Override
-    public Collection<DomainModel> call() throws ModelException {
+    public Collection<DataModel> call() throws ModelException {
         builder = new DomainBuilder();
 
         //first we'll seed the toModelQueue with the base classes
@@ -279,11 +279,11 @@ public class ReflectionModeler implements Callable<Collection<DomainModel>> {
             //Set/add the default metamodel attribute values for required 
             //attributes if they are not already set
             setDefaultIfMissing(metamodelAttributes,
-                    DomainModel.META_DOMAIN_NAME,
+                    DataModel.META_DOMAIN_NAME,
                     DomainId.DEFAULT_DOMAIN::getName);
 
             setDefaultIfMissing(metamodelAttributes,
-                    DomainModel.META_DOMAIN_VERSION,
+                    DataModel.META_DOMAIN_VERSION,
                     DomainId.DEFAULT_DOMAIN.getVersion()::asString);
 
             setDefaultIfMissing(metamodelAttributes,
@@ -291,10 +291,9 @@ public class ReflectionModeler implements Callable<Collection<DomainModel>> {
                     () -> classNameToCamelCase(toModel)
             );
 
-            final ObjectId objectId = ObjectId.getInstance(
-                    metamodelAttributes.get(DomainModel.META_DOMAIN_NAME),
+            final ObjectId objectId = ObjectId.getInstance(metamodelAttributes.get(DataModel.META_DOMAIN_NAME),
                     MetaVersionImpl.valueOf(metamodelAttributes
-                            .get(DomainModel.META_DOMAIN_VERSION)
+                            .get(DataModel.META_DOMAIN_VERSION)
                     ),
                     metamodelAttributes.get(ObjectModel.META_OBJECT_NAME));
 

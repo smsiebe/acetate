@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import org.geoint.acetate.domain.model.DomainModel;
+import org.geoint.acetate.domain.model.DataModel;
 import org.geoint.acetate.domain.model.ObjectModel;
 import org.geoint.acetate.domain.model.OperationModel;
 import org.geoint.acetate.domain.model.ParameterModel;
@@ -109,14 +109,14 @@ public final class DomainBuilder {
      * @return object models created with this builder
      * @throws ModelException thrown if there is an invalid model
      */
-    public Collection<DomainModel> build()
+    public Collection<DataModel> build()
             throws ModelException {
 
         //validate this.objects and creates models, adding them to this.objectModels
         buildObjectModels();
 
         //build domain models from this.objectModels
-        final Map<DomainId, DomainModel> domainModels = buildDomainModels();
+        final Map<DomainId, DataModel> domainModels = buildDomainModels();
 
         //ensure builder instances are eligible for GC from this builder
         objects.clear();
@@ -199,7 +199,7 @@ public final class DomainBuilder {
     }
 
     //build domain models from this.objectModels
-    private Map<DomainId, DomainModel> buildDomainModels() throws ModelException {
+    private Map<DomainId, DataModel> buildDomainModels() throws ModelException {
         final Map<DomainId, Set<ObjectModel>> domainObjects = new HashMap<>();
         final Map<DomainId, Set<DomainId>> ontologies = new HashMap<>(); //key present if domain is an ontology, with the value containing all external domains 
 
@@ -222,7 +222,7 @@ public final class DomainBuilder {
         }
 
         //create domain or ontology model(s)
-        final Map<DomainId, DomainModel> domains = new HashMap<>();
+        final Map<DomainId, DataModel> domains = new HashMap<>();
         for (Entry<DomainId, Set<ObjectModel>> e : domainObjects.entrySet()) {
             final DomainId domainId = e.getKey();
             if (ontologies.containsKey(domainId)) {

@@ -8,11 +8,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.geoint.acetate.domain.BinaryCodec;
+import org.geoint.acetate.data.DataCodec;
+import org.geoint.acetate.domain.annotation.ContentType;
 import org.geoint.acetate.domain.annotation.Query;
-import org.geoint.acetate.domain.annotation.Value;
-import org.geoint.acetate.domain.model.DomainModel;
-import org.geoint.acetate.model.common.Version.VersionBinaryCodec;
+import org.geoint.acetate.domain.annotation.DataType;
+import org.geoint.acetate.domain.annotation.Service;
+import org.geoint.acetate.domain.model.DataModel;
 
 /**
  * Version metadata.
@@ -21,11 +22,10 @@ import org.geoint.acetate.model.common.Version.VersionBinaryCodec;
  * qualifier is considered a required component of the version and is considered
  * when calculating {@link VersionRange ranges}.
  */
-@Value(domain = DomainModel.COMMON_DOMAIN_NAME,
-        version = DomainModel.ACETATE_DOMAIN_VERSION,
+@DataType(domain = DataModel.COMMON_DOMAIN_NAME,
+        version = DataModel.ACETATE_DOMAIN_VERSION,
         name = "version",
-        displayName = "Version",
-        codec = VersionBinaryCodec.class)
+        displayName = "Version")
 public final class Version implements Comparable<Version> {
 
     private static final long serialVersionUID = 1L;
@@ -314,9 +314,12 @@ public final class Version implements Comparable<Version> {
     }
 
     /**
-     * Converts a Version instance to a binary
+     * Default Version binary converter.
      */
-    public static class VersionBinaryCodec implements BinaryCodec<Version> {
+    @Service(name = "versionBinaryCodec",
+            domain = DataModel.COMMON_DOMAIN_NAME)
+    @ContentType("application/binary")
+    public static class VersionBinaryCodec extends DataCodec<Version> {
 
         /**
          * Size, in bytes, of a version data type.

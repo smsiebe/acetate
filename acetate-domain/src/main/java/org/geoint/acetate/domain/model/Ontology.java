@@ -8,7 +8,7 @@ import org.geoint.acetate.domain.annotation.MultiComposite;
 /**
  * A data model consisting of other data models.
  */
-@Entity(domain = DomainModel.ACETATE_DOMAIN_NAME,
+@Entity(domain = DataModel.ACETATE_DOMAIN_NAME,
         name = "ontology",
         displayName = "Ontology")
 public interface Ontology extends Taxonomy {

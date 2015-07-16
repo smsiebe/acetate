@@ -1,4 +1,4 @@
-package org.geoint.acetate.domain.model;
+package org.geoint.acetate.data;
 
 /**
  * Visitor interface implemented by software desiring to crawl the data by its

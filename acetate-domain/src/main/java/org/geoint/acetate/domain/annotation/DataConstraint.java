@@ -5,16 +5,25 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.geoint.acetate.domain.BinaryCodec;
+import javax.validation.Constraint;
+import org.geoint.acetate.domain.model.ConstraintModel;
 import org.geoint.acetate.model.common.Version;
 
 /**
+ * Annotation added to a Bean Validation custom validator annotation definition
+ * to define its domain model properties.
+ * <p>
+ * The DataConstraint is simply added to the annotation type definition and does
+ * not replace the {@link javax.validation.Constraint} annotation required by
+ * the Bean Validation specification.
  *
+ * @see Constraint
+ * @see ConstraintModel
  */
-@Documented
-@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Value {
+@Target({ElementType.METHOD})
+@Documented
+public @interface DataConstraint {
 
     /**
      * Name of the domain that defines this model.
@@ -24,8 +33,8 @@ public @interface Value {
     String domain();
 
     /**
-     * OPTIONAL domain-unique "short" name of the model; unspecified the name is
-     * derived from the domain and type name.
+     * OPTIONAL domain-unique "short" name of the constraint; unspecified the
+     * name is derived from the domain and type name.
      *
      * @return name of the model
      */
@@ -47,12 +56,4 @@ public @interface Value {
      * @return domain model version
      */
     String version() default "";
-
-    /**
-     * The <i>default</i> binary codec to use for this data type.
-     *
-     * @return binary data codec for this value object
-     */
-    Class<? extends BinaryCodec<?>> codec();
-
 }

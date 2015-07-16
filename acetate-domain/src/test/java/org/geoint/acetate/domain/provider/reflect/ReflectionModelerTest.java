@@ -3,7 +3,7 @@ package org.geoint.acetate.domain.provider.reflect;
 import org.geoint.acetate.domain.provider.reflect.ReflectionModeler;
 import java.util.Collection;
 import java.util.Optional;
-import org.geoint.acetate.domain.model.DomainModel;
+import org.geoint.acetate.domain.model.DataModel;
 import org.geoint.acetate.domain.model.ObjectModel;
 import org.geoint.acetate.domain.model.OperationModel;
 import org.geoint.acetate.model.provider.HardCodedDomainProvider;
@@ -21,13 +21,13 @@ public class ReflectionModelerTest {
      */
     @Test
     public void testClassReflection() throws Exception {
-        Collection<DomainModel> domainModels
+        Collection<DataModel> domainModels
                 = ReflectionModeler.model(HardCodedDomainProvider.ACETATE_DOMAIN_CLASSES);
 
         //only should be the acetate domain model domain
         assertEquals(1, domainModels.size());
 
-        DomainModel acetateDomain = domainModels.iterator().next();
+        DataModel acetateDomain = domainModels.iterator().next();
 
         //the domain should contain the expected number of object models
         assertEquals(HardCodedDomainProvider.ACETATE_DOMAIN_CLASSES.length,
@@ -37,12 +37,12 @@ public class ReflectionModelerTest {
     
     @Test
     public void testOperationReflection() throws Exception {
-        Collection<DomainModel> domainModels
+        Collection<DataModel> domainModels
                 = ReflectionModeler.model(HardCodedDomainProvider.ACETATE_DOMAIN_CLASSES);
         //only should be the acetate domain model domain
         assertEquals(1, domainModels.size());
 
-        DomainModel acetateDomain = domainModels.iterator().next();
+        DataModel acetateDomain = domainModels.iterator().next();
         Optional<ObjectModel> optional = acetateDomain.find("Object Model");
         assertTrue(optional.isPresent());
         

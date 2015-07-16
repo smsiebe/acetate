@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import org.geoint.acetate.domain.model.DomainModel;
+import org.geoint.acetate.domain.model.DataModel;
 import org.geoint.acetate.domain.model.ExceptionModel;
 import org.geoint.acetate.domain.model.ObjectModel;
 import org.geoint.acetate.domain.model.Ontology;
@@ -28,7 +28,7 @@ public class HardCodedDomainProvider implements ModelProvider {
             = Logger.getLogger(HardCodedDomainProvider.class.getName());
     public static final Class<?>[] ACETATE_DOMAIN_CLASSES
             = {Ontology.class,
-                DomainModel.class,
+                DataModel.class,
                 ObjectModel.class,
                 OperationModel.class,
                 ParameterModel.class,
@@ -37,7 +37,7 @@ public class HardCodedDomainProvider implements ModelProvider {
                 Version.class,
                 VersionQualifier.class};
 
-    private static final Collection<DomainModel> acetateDomainObjects
+    private static final Collection<DataModel> acetateDomainObjects
             = acetateDomainModel();
 
     @Override
@@ -50,14 +50,14 @@ public class HardCodedDomainProvider implements ModelProvider {
     @Override
     public Collection<ObjectModel> find(
             String domainName, Version domainVersion) {
-        if (domainName.equalsIgnoreCase(DomainModel.ACETATE_DOMAIN_NAME)
-                && domainVersion.asString().contentEquals(DomainModel.ACETATE_DOMAIN_VERSION)) {
+        if (domainName.equalsIgnoreCase(DataModel.ACETATE_DOMAIN_NAME)
+                && domainVersion.asString().contentEquals(DataModel.ACETATE_DOMAIN_VERSION)) {
             return findAll();
         }
         return Collections.EMPTY_LIST;
     }
 
-    private static Collection<DomainModel> acetateDomainModel() {
+    private static Collection<DataModel> acetateDomainModel() {
         try {
             return ReflectionModeler.model(
                     ACETATE_DOMAIN_CLASSES

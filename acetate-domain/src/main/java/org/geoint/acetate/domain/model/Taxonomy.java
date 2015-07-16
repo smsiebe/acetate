@@ -11,9 +11,9 @@ import org.geoint.acetate.domain.annotation.Query;
 /**
  *
  */
-@Entity(domain = DomainModel.ACETATE_DOMAIN_NAME,
+@Entity(domain = DataModel.ACETATE_DOMAIN_NAME,
         name = "taxonomy", displayName = "Taxonomy",
-        version = DomainModel.ACETATE_DOMAIN_VERSION)
+        version = DataModel.ACETATE_DOMAIN_VERSION)
 public interface Taxonomy {
 
     /**
@@ -42,7 +42,7 @@ public interface Taxonomy {
      * @return all components within the taxonomy
      */
     @Composite(name = "models", displayName = "Domain Model Components")
-    Collection<DomainModel> getModels();
+    Collection<DataModel> getModels();
 
     /**
      * Returns a component model by its name.
@@ -52,7 +52,7 @@ public interface Taxonomy {
      * component
      */
     @Query(name = "findByModelName")
-    Optional<DomainModel> find(String modelName);
+    Optional<DataModel> find(String modelName);
 
 //    /**
 //     * Returns the data model for the provided class, or null if the class is

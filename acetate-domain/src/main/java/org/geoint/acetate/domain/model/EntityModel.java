@@ -1,7 +1,7 @@
 package org.geoint.acetate.domain.model;
 
-import java.util.Collection;
-import org.geoint.acetate.domain.model.ObjectModel;
+import org.geoint.acetate.domain.annotation.Composite;
+import org.geoint.acetate.domain.annotation.Model;
 
 /**
  * Models the special Entity data type.
@@ -13,11 +13,21 @@ import org.geoint.acetate.domain.model.ObjectModel;
  *
  * @param <T>
  */
+@Model(name = "entityModel", displayName = "Entity Model",
+        domain = DataModel.ACETATE_DOMAIN_NAME,
+        version = DataModel.ACETATE_DOMAIN_VERSION)
 public interface EntityModel<T> extends ObjectModel<T> {
 
+    @Composite(name = "idName")
+    String getIdComponentName();
+
+    @Composite(name = "versionName")
+    String getVersionComponentName();
+
+    //@DoNotModel
     String getId(T entity);
 
+    //@DoNotModel
     String getVersion(T entity);
 
-    Collection<OperationModel> getEntityOperations();
 }

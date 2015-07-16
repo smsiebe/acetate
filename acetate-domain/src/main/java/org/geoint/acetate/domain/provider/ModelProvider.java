@@ -2,7 +2,7 @@ package org.geoint.acetate.domain.provider;
 
 import java.util.Collection;
 import java.util.ServiceLoader;
-import org.geoint.acetate.domain.model.DomainModel;
+import org.geoint.acetate.domain.model.DataModel;
 import org.geoint.acetate.model.common.Version;
 
 /**
@@ -27,7 +27,7 @@ public interface ModelProvider {
      * @return meta models found by this provider; if no metamodels are found,
      * returns empty collection
      */
-    Collection<DomainModel> findAll();
+    Collection<DataModel> findAll();
 
     /**
      * Return all domain components for the specified domain model found by this
@@ -37,5 +37,5 @@ public interface ModelProvider {
      * @param domainVersion
      * @return domain model components found by this provider
      */
-    Collection<DomainModel> find(String domainName, Version domainVersion);
+    Collection<DataModel> find(String domainName, Version domainVersion);
 }

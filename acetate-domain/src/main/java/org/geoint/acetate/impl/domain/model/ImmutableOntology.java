@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import org.geoint.acetate.domain.model.DomainModel;
+import org.geoint.acetate.domain.model.DataModel;
 import org.geoint.acetate.domain.model.ObjectModel;
 import org.geoint.acetate.domain.model.Ontology;
 import org.geoint.acetate.model.common.Version;
@@ -20,7 +20,7 @@ import org.geoint.acetate.meta.ModelException;
 public class ImmutableOntology implements Ontology {
 
     private final DomainId domainId;
-    private final Collection<DomainModel> domains;
+    private final Collection<DataModel> domains;
     private final Map<String, Collection<ObjectModel>> attributeIndex;
     private final Map<String, ObjectModel> componentIndex; //key unambiguous component name
 
@@ -45,7 +45,7 @@ public class ImmutableOntology implements Ontology {
 //        );
 //    }
     public ImmutableOntology(DomainId domainId,
-            Collection<DomainModel> models) {
+            Collection<DataModel> models) {
         this.domainId = domainId;
         this.domains = Collections.unmodifiableCollection(models);
 
@@ -88,7 +88,7 @@ public class ImmutableOntology implements Ontology {
     }
 
     @Override
-    public Collection<DomainModel> getDomains() {
+    public Collection<DataModel> getDomains() {
         return domains;
     }
 

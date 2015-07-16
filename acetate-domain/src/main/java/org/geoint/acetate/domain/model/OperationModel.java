@@ -7,23 +7,23 @@ import java.util.Set;
 
 /**
  * Models a behavior of an object.
- * 
+ *
  */
-public interface OperationModel extends DomainModel {
+public interface OperationModel extends DataModel {
 
     /**
      * Operation parameter models.
      *
      * @return parameter models
      */
-    Map<String, CompositeComponentModel<?>> getParameters();
+    Map<String, CompositeComponentModel<?, ?>> getParameters();
 
     /**
      * Operation return model.
      *
      * @return return model
      */
-    Optional<? extends CompositeComponentModel<?>> getReturnType();
+    Optional<? extends CompositeComponentModel<?, ?>> getReturnType();
 
     /**
      * Potential error objects that can be return (thrown) if execution of the
@@ -32,7 +32,7 @@ public interface OperationModel extends DomainModel {
      * @return potential exceptions that could be thrown if operation did not
      * succeed
      */
-    Set<CompositeComponentModel<?>> getErrorModels();
+    Set<CompositeComponentModel<?, ?>> getErrorModels();
 
     /**
      * Execute the operation.

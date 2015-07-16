@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import org.geoint.acetate.domain.model.DomainModel;
+import org.geoint.acetate.domain.model.DataModel;
 import org.geoint.acetate.domain.model.ObjectModel;
 import org.geoint.acetate.impl.domain.model.DomainId;
 import org.geoint.acetate.impl.domain.model.ImmutableDomainModel;
@@ -25,7 +25,7 @@ import org.geoint.acetate.domain.provider.ModelProvider;
 public abstract class MetaModelProviders {
 
     private static final Collection<ModelProvider> providers;
-    private static final Map<DomainId, DomainModel> domains = new HashMap<>();
+    private static final Map<DomainId, DataModel> domains = new HashMap<>();
 
     private static final Logger logger
             = Logger.getLogger(MetaModelProviders.class.getName());
@@ -71,7 +71,7 @@ public abstract class MetaModelProviders {
      * @param domainVersion
      * @return domain model, if registered
      */
-    public static Optional<DomainModel> getDomain(String domainName,
+    public static Optional<DataModel> getDomain(String domainName,
             Version domainVersion) {
 
         final DomainId domainId = DomainId.getInstance(domainName, domainVersion);

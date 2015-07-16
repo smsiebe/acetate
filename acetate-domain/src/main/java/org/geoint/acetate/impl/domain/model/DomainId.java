@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.WeakHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.geoint.acetate.domain.model.DomainModel;
+import org.geoint.acetate.domain.model.DataModel;
 import org.geoint.acetate.domain.model.ObjectModel;
 import org.geoint.acetate.model.common.Version;
 
@@ -32,7 +32,7 @@ public final class DomainId {
      * Default domain model used if not defined.
      */
     public static final DomainId DEFAULT_DOMAIN
-            = DomainId.getInstance(DomainModel.DEFAULT_DOMAIN_NAME,
+            = DomainId.getInstance(DataModel.DEFAULT_DOMAIN_NAME,
                     MetaVersionImpl.DEFAULT_VERSION);
 
     /**
