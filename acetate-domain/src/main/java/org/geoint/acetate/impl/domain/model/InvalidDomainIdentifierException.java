@@ -1,6 +1,7 @@
 package org.geoint.acetate.impl.domain.model;
 
-import org.geoint.acetate.meta.ModelException;
+import org.geoint.acetate.domain.model.ModelException;
+
 
 /**
  * Thrown if the domain model identifier was invalid, was not formatted

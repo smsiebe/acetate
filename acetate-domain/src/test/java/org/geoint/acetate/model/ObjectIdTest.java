@@ -1,5 +1,7 @@
 package org.geoint.acetate.model;
 
+import org.geoint.acetate.impl.domain.model.DomainId;
+import org.geoint.acetate.impl.domain.model.ObjectId;
 import org.geoint.acetate.model.gen.DomainIdGen;
 import org.geoint.acetate.model.gen.MetaVersionGen;
 import org.geoint.acetate.model.gen.ObjectIdGen;

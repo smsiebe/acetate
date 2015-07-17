@@ -1,5 +1,5 @@
 
-package org.geoint.acetate.event;
+package org.geoint.acetate.domain.event;
 
 import org.geoint.acetate.domain.annotation.Event;
 import org.geoint.acetate.domain.model.DataModel;

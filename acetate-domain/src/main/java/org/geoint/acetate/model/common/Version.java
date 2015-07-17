@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.geoint.acetate.data.CodecContext;
 import org.geoint.acetate.data.DataCodec;
 import org.geoint.acetate.domain.annotation.ContentType;
 import org.geoint.acetate.domain.annotation.Query;
@@ -319,14 +320,15 @@ public final class Version implements Comparable<Version> {
     @Service(name = "versionBinaryCodec",
             domain = DataModel.COMMON_DOMAIN_NAME)
     @ContentType("application/binary")
-    public static class VersionBinaryCodec extends DataCodec<Version> {
+    public static class VersionBinaryCodec implements DataCodec<Version> {
 
         /**
          * Size, in bytes, of a version data type.
          */
         public static int BYTES = Integer.BYTES * 5;
 
-        public void convert(Version obj, WritableByteChannel channel)
+        @Override
+        public void convert(CodecContext context, Version obj, WritableByteChannel channel)
                 throws IOException {
             ByteBuffer buff = ByteBuffer.allocate(BYTES);
             buff.putInt(obj.majorVersion)
@@ -337,7 +339,8 @@ public final class Version implements Comparable<Version> {
             channel.write(buff);
         }
 
-        public Version invert(ReadableByteChannel channel)
+        @Override
+        public Version invert(CodecContext context, ReadableByteChannel channel)
                 throws IOException {
             ByteBuffer buff = readAll(channel, BYTES);
             return new Version(buff.getInt(), //major

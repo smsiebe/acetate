@@ -4,8 +4,10 @@ import java.util.Collection;
 import org.geoint.acetate.domain.annotation.Operation;
 import org.geoint.acetate.domain.annotation.Query;
 import org.geoint.acetate.domain.annotation.Service;
+import org.geoint.acetate.domain.event.DomainDeprecated;
 import org.geoint.acetate.domain.model.DataModel;
 import org.geoint.acetate.domain.model.Taxonomy;
+import org.geoint.acetate.domain.event.DomainRegistered;
 import org.geoint.acetate.model.common.Version;
 
 /**
