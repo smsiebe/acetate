@@ -1,7 +1,6 @@
 package org.geoint.acetate.domain.model;
 
 import org.geoint.acetate.model.common.Version;
-import org.geoint.acetate.data.Data;
 import java.util.Collection;
 import java.util.Optional;
 import org.geoint.acetate.domain.annotation.Composite;
