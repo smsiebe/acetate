@@ -7,10 +7,51 @@
         <version>0.1-SNAPSHOT</version>
     </parent>
     <artifactId>acetate-meta</artifactId>
+    <name>acetate-meta</name>
+    <description>Java Annotation-based metamodel framework.</description>
     <packaging>jar</packaging>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <executions>
+                    <execution>
+                        <id>base</id>
+<!--                        <goals>
+                            <goal>compile</goal>
+                        </goals>-->
+                        <configuration>
+                            <verbose>true</verbose>
+                            <proc>none</proc>
+                            <compilerVersion>${maven.compiler.source}</compilerVersion>
+                            <source>${maven.compiler.source}</source>
+                            <target>${maven.compiler.target}</target>
+                        </configuration>
+                    </execution>
+<!--                    <execution>
+                        <id>with-unit-testing</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>-->
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    
+    <dependencies>
+        
+        <!-- test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        
+    </dependencies>
 </project>

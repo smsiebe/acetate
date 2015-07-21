@@ -8,4 +8,4 @@
  * model components by the {@link MetaAnnotationProvider}.
  *
  */
-package org.geoint.acetate.model.meta.annotation;
+package org.geoint.acetate.model.meta;
