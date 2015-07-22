@@ -1,6 +1,10 @@
 package org.geoint.acetate.model.meta;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.processing.AbstractProcessor;
@@ -14,23 +18,20 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
-import org.geoint.acetate.model.ModelElement;
+import javax.tools.Diagnostic;
+import javax.tools.StandardLocation;
 import org.geoint.acetate.model.ModelType;
+import org.geoint.acetate.model.xml.ModelXmlDescriptor;
 
 /**
  * Annotation processor which discovers model elements annotated with
- * {@link Meta} and writes the resultant model as an XML descriptor file within
- * the jars META-INF directory.
- * <p>
- * The location of the model XML descriptor is defined as a MANIFEST.mf
- * property.
+ * {@link Meta} and writes the resultant model as an XML descriptor files at
+ * compile time.
  */
 @SupportedAnnotationTypes("org.geoint.acetate.model.meta.Meta")
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class MetaModelAnnotationProcessor extends AbstractProcessor {
 
-    public static final String MANIFEST_XML_FILE_PROPERTY_NAME
-            = "acetate.metamodel.xml.file";
     private Filer filer;
     private Messager messager;
 
@@ -42,41 +43,70 @@ public class MetaModelAnnotationProcessor extends AbstractProcessor {
     }
 
     @Override
-    public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
+    public boolean process(Set<? extends TypeElement> annotations,
+            RoundEnvironment roundEnv) {
 
         //grab model types annotated with the metamodel annotation
-        List<ModelType> types = annotations.stream()
+        List<ModelType> types = annotations.parallelStream()
                 .filter((a) -> a.getAnnotation(Meta.class) != null)
                 .flatMap((a) -> roundEnv.getElementsAnnotatedWith(a).stream())
-                //                .forEach((e) -> {
-                //                    try {
-                //                        FileObject obj = this.filer.createResource(StandardLocation.CLASS_OUTPUT,
-                //                                "",
-                //                                "resources/"+e.getSimpleName());
-                //                        try (Writer out = obj.openWriter()) {
-                //                            out.write("test");
-                //                        }
-                //
-                //                    } catch (IOException ex) {
-                //                        Logger.getLogger(MetaModelAnnotationProcessor.class.getName()).log(Level.SEVERE, null, ex);
-                //                    }
-                //                });
-                
-                //only care about class/interfaces, we'll use reflection 
-                //to get member annotations
-                .filter((e) -> e.getKind().equals(ElementKind.CLASS)
-                        || e.getKind().equals(ElementKind.INTERFACE)) 
                 .parallel()
-                .map(this::model)
-                .map((m) -> (ModelType) m) //since we previously filter class/interfaces
+                .map(this::modelType)
+                .filter(Objects::nonNull) //returns null if type wasn't class or interface
                 .collect(Collectors.toList());
-                
-        //types include all member and hierarchy information already, so just
-        //save model file for each one
+
+        try {
+            //types include all member and hierarchy information already, so just
+            //save model file for each one
+            writeDescriptors(types);
+        } catch (IOException ex) {
+            messager.printMessage(Diagnostic.Kind.ERROR,
+                    String.format("Problems when writing acetate model "
+                            + "descriptors: '%s$'", ex.toString()));
+        }
+
         return false;
     }
 
-    private ModelElement model(Element e) {
+    /**
+     * Models a ElementKind.CLASS or ElementKind.INTERFACE element as a
+     * ModelType, or returns null.
+     *
+     * @param e
+     * @return model of the type or null
+     */
+    private ModelType modelType(Element e) {e.
+        //only model types and use reflection to "fill out" model components 
+        //within that type
+        if (!isClassOrInterfaceType(e)) {
+            return null;
+        }
 
+    }
+
+    /**
+     * Writes the model-specific descriptor(s) for the models.
+     *
+     * @param typeModels
+     * @throws IOException
+     */
+    private void writeDescriptors(Collection<ModelType> typeModels)
+            throws IOException {
+        for (ModelType t : typeModels) {
+            writeDescriptor(t);
+        }
+    }
+
+    private void writeDescriptor(ModelType m) throws IOException {
+        try (OutputStream out = filer.createResource(StandardLocation.CLASS_OUTPUT,
+                "", ModelXmlDescriptor.descriptorPath(m)).openOutputStream()) {
+            ModelXmlDescriptor.write(m, out);
+        }
+    }
+
+    private boolean isClassOrInterfaceType(Element e) {
+        final ElementKind kind = e.getKind();
+        return kind.equals(ElementKind.CLASS)
+                || kind.equals(ElementKind.INTERFACE);
     }
 }

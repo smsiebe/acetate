@@ -42,6 +42,25 @@ public interface ModelType<T> extends ModelElement {
     ModelField<?>[] getModelFields(Class<? extends Annotation> modelAnnotation);
 
     /**
+     * All members of this type that are annotated with at least one metamodel
+     * annotation.
+     *
+     * @return all members that are annotated with a metamodel annotation or
+     * empty array
+     */
+    ModelMember[] getModelMembers();
+
+    /**
+     * All members of this type which are annotated with the specified model
+     * annotation.
+     *
+     * @param modelAnnotation
+     * @return all member models annotated with this model annotation or an
+     * empty array
+     */
+    ModelMember[] getModelMembers(Class<? extends Annotation> modelAnnotation);
+
+    /**
      * ModelProvider provided Class of this model type.
      *
      * @return class of the model type

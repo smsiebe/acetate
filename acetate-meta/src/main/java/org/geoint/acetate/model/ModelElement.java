@@ -45,4 +45,11 @@ public interface ModelElement extends AnnotatedElement {
      */
     ModelAnnotation<?>[] getDeclaredModelAnnotations();
 
+    /**
+     * Visits the model being notified for each model related to the model.
+     *
+     * @param visitor
+     */
+    void visit(ModelVisitor visitor);
+
 }
