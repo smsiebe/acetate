@@ -5,7 +5,7 @@ package org.geoint.acetate.model;
  *
  * @param <T>
  */
-public interface ModelTypeUse<T> extends ModelType<T> {
+public interface ModelTypeUse<T> {
 
     /**
      * The model annotations defined at use-time.
@@ -13,4 +13,5 @@ public interface ModelTypeUse<T> extends ModelType<T> {
      * @return use-time model annotations or empty array
      */
     ModelAnnotation<?>[] getUseModelAnnotations();
+
 }

@@ -1,19 +1,46 @@
 package org.geoint.acetate.model;
 
-import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Member;
+import org.geoint.acetate.model.provider.Resolver;
 
 /**
  * A member of a {@link ModelType}.
+ *
+ * @param <E>
  */
-public interface ModelMember extends ModelElement, Member {
+public abstract class ModelMember<E extends AnnotatedElement>
+        extends ModelElement<E> implements Member {
+
+    private final ModelType<?> declaringModel;
+    private final String name;
+
+    public ModelMember(ModelType<?> declaringModel,
+            String name,
+            ModelAnnotation<?>[] modelAnnotations,
+            Resolver<E> elementResolver) {
+        super(modelAnnotations, elementResolver);
+        this.declaringModel = declaringModel;
+        this.name = name;
+    }
+
+    public ModelMember(ModelType<?> declaringModel,
+            String name,
+            ModelAnnotation<?>[] modelAnnotations,
+            E element) {
+        super(modelAnnotations, element);
+        this.declaringModel = declaringModel;
+        this.name = name;
+    }
 
     /**
-     * The class name which declared this member.
+     * The model of the type this member was declared.
      *
-     * @return name of the declaring class
+     * @return model of the declaring type
      */
-    String getDeclaringClassName();
+    public ModelType<?> getDeclaringModel() {
+        return declaringModel;
+    }
 
     /**
      * Returns an instance of the class this model member is defined.
@@ -21,15 +48,13 @@ public interface ModelMember extends ModelElement, Member {
      * @return declaring class type
      */
     @Override
-    Class<?> getDeclaringClass();
+    public Class<?> getDeclaringClass() {
+        return declaringModel.getType();
+    }
 
-    /**
-     * Check if the declaring class is annotated by the specified model
-     * annotation.
-     *
-     * @param modelAnnotation
-     * @return true if the declaring class is a type of the specified model
-     */
-    boolean isDeclaredByModel(Class<? extends Annotation> modelAnnotation);
+    @Override
+    public String getName() {
+        return name;
+    }
 
 }

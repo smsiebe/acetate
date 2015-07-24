@@ -1,6 +1,7 @@
 package org.geoint.acetate.model;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -8,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import org.geoint.acetate.model.provider.ProviderRegistry;
 
@@ -23,6 +25,9 @@ public final class ImmutableModelRegistry extends ModelRegistry {
     private final Map<String, Collection<ModelElement>> annotationIndex;
     //key is class name, value is subclasses of that type
     private final Map<String, Collection<ModelType>> subclassIndex;
+
+    private static final Logger logger
+            = Logger.getLogger(ImmutableModelRegistry.class.getName());
 
     /**
      *
@@ -42,7 +47,7 @@ public final class ImmutableModelRegistry extends ModelRegistry {
 
     public static ImmutableModelRegistry register(
             Collection<ModelElement> models) {
-        //visit each model to ensure it's complete
+        //visit each model, inventoring all components, to ensure it's complete
         ModelInventoryVisitor inventory = new ModelInventoryVisitor();
 
         models.stream().forEach((e) -> {
@@ -51,7 +56,7 @@ public final class ImmutableModelRegistry extends ModelRegistry {
 
         return new ImmutableModelRegistry(
                 inventory.allModels,
-                inventory.annotatinIndex,
+                inventory.annotationIndex,
                 inventory.subclassIndex);
     }
 
@@ -79,13 +84,13 @@ public final class ImmutableModelRegistry extends ModelRegistry {
     }
 
     /**
-     * Thread-safe model visitor that records the inventory of a models.
+     * Thread-safe model visitor that inventories all the models.
      */
     private static class ModelInventoryVisitor implements ModelVisitor {
 
         final Set<ModelElement> allModels
                 = Collections.synchronizedSet(new HashSet<>());
-        final Map<String, Collection<ModelElement>> annotatinIndex
+        final Map<String, Collection<ModelElement>> annotationIndex
                 = Collections.synchronizedMap(new HashMap<>());
         final Map<String, Collection<ModelType>> subclassIndex
                 = Collections.synchronizedMap(new HashMap<>());
@@ -99,8 +104,29 @@ public final class ImmutableModelRegistry extends ModelRegistry {
 
         @Override
         public void visit(ModelElement model) {
-            fdsfsd //TODO inventory 
+            allModels.add(model);
+
+            Arrays.stream(model.getModelAnnotations())
+                    .forEach((a) -> index(annotationIndex,
+                                    a.getAnnotationName(),
+                                    model)
+                    );
+
+            if (model instanceof ModelType) {
+                Arrays.stream(((ModelType) model).getSubclasses())
+                        .forEach((st) -> index(subclassIndex,
+                                        ((ModelType) model).getTypeName(),
+                                        st)
+                        );
+            }
         }
 
+        private synchronized <V> void index(Map<String, Collection<V>> index,
+                String key, V value) {
+            if (!index.containsKey(key)) {
+                index.put(key, new ArrayList<>());
+            }
+            index.get(key).add(value);
+        }
     }
 }
