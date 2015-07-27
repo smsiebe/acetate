@@ -248,7 +248,7 @@ public final class ModelXmlDescriptor {
             if (localNameFunction != null) {
                 writer.writeAttribute(XML_ATTRIBUTE_NAME, localNameFunction.apply(model));
             }
-            writer.writeAttribute(XML_ATTRIBUTE_CLASSNAME, model.getName());
+            writer.writeAttribute(XML_ATTRIBUTE_CLASSNAME, model.getType().getTypeName());
             writeNillableArray(writer, model.getUseModelAnnotations(),
                     XML_ELEMENT_ANNOTATIONS, this::writeAnnotation);
             writer.writeEndElement();

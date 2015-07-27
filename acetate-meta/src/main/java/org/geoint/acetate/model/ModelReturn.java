@@ -46,7 +46,13 @@ public class ModelReturn<T> extends ModelElement<Class<T>>
     }
 
     @Override
+    public ModelType<T> getType() {
+        return this.baseModel;
+    }
+
+    @Override
     public void visit(ModelVisitor visitor) {
         visitor.visit(this);
     }
+
 }

@@ -8,6 +8,13 @@ package org.geoint.acetate.model;
 public interface ModelTypeUse<T> {
 
     /**
+     * The model of the data type.
+     *
+     * @return data type
+     */
+    ModelType<T> getType();
+
+    /**
      * The model annotations defined at use-time.
      *
      * @return use-time model annotations or empty array

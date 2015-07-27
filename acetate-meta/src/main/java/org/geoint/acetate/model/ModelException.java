@@ -43,8 +43,8 @@ public class ModelException<T extends Throwable> extends ModelElement<Class<T>>
     }
 
     @Override
-    public void visit(ModelVisitor visitor) {
-        visitor.visit(this);
+    public ModelType<T> getType() {
+        return this.baseModel;
     }
 
     @Override
@@ -103,6 +103,11 @@ public class ModelException<T extends Throwable> extends ModelElement<Class<T>>
     @Override
     public Annotation[] getDeclaredAnnotations() {
         return resolver.resolve().getDeclaredAnnotations();
+    }
+
+    @Override
+    public void visit(ModelVisitor visitor) {
+        visitor.visit(this);
     }
 
 }

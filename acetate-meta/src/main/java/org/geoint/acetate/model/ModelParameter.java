@@ -48,6 +48,11 @@ public class ModelParameter<T> extends ModelElement<Parameter>
         this.useAnnotations = useAnnotations;
     }
 
+    @Override
+    public ModelType getType() {
+        return this.paramModel;
+    }
+
     /**
      * Name of the method parameter.
      *
@@ -66,4 +71,5 @@ public class ModelParameter<T> extends ModelElement<Parameter>
     public void visit(ModelVisitor visitor) {
         visitor.visit(this);
     }
+
 }

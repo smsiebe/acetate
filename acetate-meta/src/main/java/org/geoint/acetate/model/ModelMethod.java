@@ -9,17 +9,17 @@ import org.geoint.acetate.model.provider.Resolver;
  *
  * @see Meta
  */
-public class ModelMethod extends ModelMember<Method> implements ModelTypeUse {
+public class ModelMethod extends ModelMember<Method> {
 
     private final ModelParameter<?>[] params;
-    private final ModelTypeUse<? extends Throwable>[] exceptions;
+    private final ModelException[] exceptions;
     private final ModelTypeUse<?> returnType;
 
     public ModelMethod(ModelType declaringType,
             String name,
             ModelAnnotation<?>[] useAnnotations,
             ModelParameter<?>[] params,
-            ModelTypeUse<? extends Throwable>[] exceptions,
+            ModelException[] exceptions,
             ModelTypeUse<?> returnType,
             Resolver<Method> elementResolver) {
         super(declaringType, name, useAnnotations, elementResolver);
@@ -32,7 +32,7 @@ public class ModelMethod extends ModelMember<Method> implements ModelTypeUse {
             String name,
             ModelAnnotation<?>[] useAnnotations,
             ModelParameter<?>[] params,
-            ModelTypeUse<? extends Throwable>[] exceptions,
+            ModelException[] exceptions,
             ModelTypeUse<?> returnType,
             Method method) {
         super(declaringType, name, useAnnotations, method);
@@ -74,7 +74,7 @@ public class ModelMethod extends ModelMember<Method> implements ModelTypeUse {
      * @return exception types of the signature or empty array if no exceptions
      * are declared
      */
-    public ModelTypeUse<? extends Throwable>[] getExceptions() {
+    public ModelException[] getExceptions() {
         return exceptions;
     }
 
@@ -94,8 +94,7 @@ public class ModelMethod extends ModelMember<Method> implements ModelTypeUse {
         throw new UnsupportedOperationException();
     }
 
-    @Override
-    public ModelAnnotation[] getUseModelAnnotations() {
+    public ModelAnnotation[] getMethodAnnotations() {
         return this.modelAnnotations;
     }
 

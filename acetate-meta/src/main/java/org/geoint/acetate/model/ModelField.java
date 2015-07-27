@@ -58,12 +58,14 @@ public class ModelField<T> extends ModelMember<Field> implements ModelTypeUse {
         return resolver.resolve().isSynthetic();
     }
 
-    public ModelType<T> getModel() {
-        return fieldModel;
+    @Override
+    public ModelType getType() {
+        return this.fieldModel;
     }
 
     @Override
     public void visit(ModelVisitor visitor) {
         visitor.visit(this);
     }
+
 }
