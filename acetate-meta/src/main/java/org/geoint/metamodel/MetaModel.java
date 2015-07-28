@@ -1,11 +1,10 @@
-package org.geoint.acetate.model.meta;
+package org.geoint.metamodel;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.geoint.acetate.model.ModelRegistry;
 
 /**
  * Identifies the annotation this annotates as defining a component of a model.
@@ -17,6 +16,6 @@ import org.geoint.acetate.model.ModelRegistry;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.ANNOTATION_TYPE)
 @Documented
-public @interface Meta {
+public @interface MetaModel {
 
 }

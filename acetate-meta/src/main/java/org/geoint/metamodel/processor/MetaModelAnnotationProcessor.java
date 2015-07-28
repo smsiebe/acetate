@@ -1,4 +1,4 @@
-package org.geoint.acetate.model.meta;
+package org.geoint.metamodel.processor;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -20,12 +20,12 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
 import javax.tools.StandardLocation;
-import org.geoint.acetate.model.ModelType;
-import org.geoint.acetate.model.xml.ModelXmlDescriptor;
+import org.geoint.metamodel.MetaModel;
+import org.geoint.metamodel.xml.ModelDescriptor;
 
 /**
  * Annotation processor which discovers model elements annotated with
- * {@link Meta} and writes the resultant model as an XML descriptor files at
+ * {@link MetaModel} and writes the resultant model as an XML descriptor files at
  * compile time.
  */
 @SupportedAnnotationTypes("org.geoint.acetate.model.meta.Meta")
@@ -48,7 +48,7 @@ public class MetaModelAnnotationProcessor extends AbstractProcessor {
 
         //grab model types annotated with the metamodel annotation
         List<ModelType> types = annotations.parallelStream()
-                .filter((a) -> a.getAnnotation(Meta.class) != null)
+                .filter((a) -> a.getAnnotation(MetaModel.class) != null)
                 .flatMap((a) -> roundEnv.getElementsAnnotatedWith(a).stream())
                 .parallel()
                 .map(this::modelType)
@@ -97,10 +97,10 @@ fdsfsd //TODO finish this using reflection
         }
     }
 
-    private void writeDescriptor(ModelType m) throws IOException {
+    private void writeDescriptor(ModelRegistry registry) throws IOException {
         try (OutputStream out = filer.createResource(StandardLocation.CLASS_OUTPUT,
-                "", ModelXmlDescriptor.descriptorPath(m)).openOutputStream()) {
-            ModelXmlDescriptor.write(m, out);
+                "", ModelDescriptor.descriptorPath(m)).openOutputStream()) {
+            ModelDescriptor.write(m, out);
         }
     }
 

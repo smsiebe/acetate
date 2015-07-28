@@ -4,7 +4,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.geoint.acetate.model.meta.Meta;
+import org.geoint.metamodel.MetaModel;
 
 /**
  * Mock model annotation for testing.
@@ -18,7 +18,7 @@ import org.geoint.acetate.model.meta.Meta;
     ElementType.TYPE,
     ElementType.TYPE_USE
 })
-@Meta
+@MetaModel
 public @interface NonInheritedModelAnnotation {
 
 }
