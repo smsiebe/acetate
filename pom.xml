@@ -5,9 +5,9 @@
     <artifactId>acetate</artifactId>
     <version>0.1-SNAPSHOT</version>
     <name>acetate</name>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <description>
-        Metamodel framework
+        geoint.org data metamodel framework.
     </description>
     <properties>        
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -17,19 +17,59 @@
         <!-- dependency version properties -->
         <junit.version>4.12</junit.version>
     </properties>
-    <modules>
-        <!-- acetete framework modules -->
-        <module>acetate-meta</module>
-        <!--<module>acetate-domain</module>-->
-        <!--<module>acetate-bind</module>-->
-        <!--<module>acetate-data</module>-->
+    
+       <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+
+                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                    <proc>none</proc>
+                </configuration>
+<!--                <executions>
+                    <execution>
+                        <id>base</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <source>${maven.compiler.source}</source>
+                            <target>${maven.compiler.target}</target>
+                            <verbose>true</verbose>                    
+                            <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                            <proc>none</proc>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>with-unit-testing</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                        <configuration>
+                            <verbose>true</verbose>                    
+                            <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                        </configuration>
+                    </execution>
+                </executions>-->
+            </plugin>
+        </plugins>
+    </build>
+    
+    <dependencies>
         
+        <!-- test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
         
-        <!--
-        <module>acetate-modelgen</module>
-        <module>acetate-bind-template</module>
-        <module>acetate-bind-jsonld</module>
-        <module>acetate-bind-rdf</module>
-        -->
-    </modules>
+    </dependencies>
 </project>
