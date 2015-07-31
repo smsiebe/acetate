@@ -18,49 +18,7 @@
         <junit.version>4.12</junit.version>
     </properties>
     
-       <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.3</version>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-
-                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
-                    <proc>none</proc>
-                </configuration>
-<!--                <executions>
-                    <execution>
-                        <id>base</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <source>${maven.compiler.source}</source>
-                            <target>${maven.compiler.target}</target>
-                            <verbose>true</verbose>                    
-                            <forceJavacCompilerUse>true</forceJavacCompilerUse>
-                            <proc>none</proc>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>with-unit-testing</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                        <configuration>
-                            <verbose>true</verbose>                    
-                            <forceJavacCompilerUse>true</forceJavacCompilerUse>
-                        </configuration>
-                    </execution>
-                </executions>-->
-            </plugin>
-        </plugins>
-    </build>
-    
+       
     <dependencies>
         
         <!-- test dependencies -->
@@ -70,6 +28,10 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
-        
+        <dependency>
+            <groupId>org.geoint.metamodel</groupId>
+            <artifactId>geoint-metamodel</artifactId>
+            <version>1.0-BETA</version>
+        </dependency>
     </dependencies>
 </project>

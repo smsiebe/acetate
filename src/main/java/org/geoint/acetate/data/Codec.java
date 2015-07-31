@@ -10,8 +10,8 @@ import java.lang.annotation.Target;
  * Defines a {@link DataCodec codec} to use to write the domain data as bytes or
  * String.
  * <p>
- * When annotated on a TYPE this is the default codec to use for that domain
- * model type.
+ * When annotated on a TYPE this declares the default codec to use for that
+ * domain model type.
  * <p>
  * When annotating a TYPE_USE this indicates this codec should be preferred for
  * this context.

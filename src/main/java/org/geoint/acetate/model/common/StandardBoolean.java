@@ -4,15 +4,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.CharBuffer;
-import org.geoint.acetate.data.Buffers;
+import org.geoint.acetate.data.StreamUtils;
+import org.geoint.acetate.data.Codec;
 import org.geoint.acetate.data.DataCodec;
 import org.geoint.acetate.domain.annotation.Domain;
 import org.geoint.acetate.model.DomainConverter;
+import org.geoint.acetate.model.common.StandardBoolean.StandardBooleanCodec;
 
 /**
  *
  */
 @Domain(domain = "org.geoint.acetate.std")
+@Codec(StandardBooleanCodec.class)
 public enum StandardBoolean {
 
     TRUE((byte) 1, true),
@@ -52,12 +55,13 @@ public enum StandardBoolean {
         @Override
         public StandardBoolean fromString(Readable readable) throws IOException {
             CharBuffer buffer = CharBuffer.allocate(1);
-            Buffers.readFully(buffer, readable);
+            StreamUtils.readFully(buffer, readable);
             buffer.flip();
             return (buffer.get() == 't') ? StandardBoolean.TRUE : StandardBoolean.FALSE;
         }
     }
 
+    @Domain(domain = "org.geoint.acetate.std")
     public static class StandardBooleanConverter implements
             DomainConverter<Boolean, StandardBoolean> {
 
