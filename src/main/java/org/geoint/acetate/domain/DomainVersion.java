@@ -1,4 +1,4 @@
-package org.geoint.acetate.model;
+package org.geoint.acetate.domain;
 
 import java.io.DataInput;
 import java.io.DataInputStream;
@@ -11,23 +11,24 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.geoint.acetate.data.DataCodec;
+import org.geoint.acetate.data.StreamUtils;
 
 /**
- * Version metadata.
+ * DomainVersion metadata.
  *
  * A version is similar to that of a Maven version identifier, however, the
  * qualifier is considered a required component of the version and is considered
  * when calculating {@link VersionRange ranges}.
  */
-public final class Version implements Comparable<Version> {
+public final class DomainVersion implements Comparable<DomainVersion> {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * Default domain version used if not defined.
      */
-    public static final Version DEFAULT_VERSION
-            = new Version(1, 0, VersionQualifier.DEV);
+    public static final DomainVersion DEFAULT_VERSION
+            = new DomainVersion(1, 0, VersionQualifier.DEV);
 
     private final int majorVersion;
     private final int minorVersion;
@@ -39,27 +40,27 @@ public final class Version implements Comparable<Version> {
     static final Pattern VERSION_PATTERN
             = Pattern.compile("(\\d+?)\\.(\\d+?)((\\.)(\\d*?))?\\-(\\w*)((\\-)(\\d+))?");
 
-    public Version(int majorVersion,
+    public DomainVersion(int majorVersion,
             int minorVersion,
             VersionQualifier qualifier) {
         this(majorVersion, minorVersion, null, qualifier, null);
     }
 
-    public Version(int majorVersion,
+    public DomainVersion(int majorVersion,
             int minorVersion,
             int increment,
             VersionQualifier qualifier) {
         this(majorVersion, minorVersion, increment, qualifier, null);
     }
 
-    public Version(int majorVersion,
+    public DomainVersion(int majorVersion,
             int minorVersion,
             VersionQualifier qualifier,
             int buildNumber) {
         this(majorVersion, minorVersion, null, qualifier, buildNumber);
     }
 
-    public Version(int majorVersion,
+    public DomainVersion(int majorVersion,
             int minorVersion,
             Integer increment,
             VersionQualifier qualifier,
@@ -88,7 +89,7 @@ public final class Version implements Comparable<Version> {
      * format
      *
      */
-    public static Version valueOf(String version)
+    public static DomainVersion valueOf(String version)
             throws IllegalArgumentException {
 
         Matcher m = VERSION_PATTERN.matcher(version);
@@ -107,7 +108,7 @@ public final class Version implements Comparable<Version> {
                     + "'" + m.group(6) + "'.", ex);
         }
 
-        return new Version(
+        return new DomainVersion(
                 Integer.valueOf(m.group(1)), //major
                 Integer.valueOf(m.group(2)), //minor
                 (m.group(5) == null) ? null : Integer.valueOf(m.group(5)), //inc
@@ -186,12 +187,12 @@ public final class Version implements Comparable<Version> {
      * @return true if the provided version falls within/is supported by this
      * version
      */
-    public boolean isWithin(Version v) {
+    public boolean isWithin(DomainVersion v) {
         return this.equals(v);
     }
 
     @Override
-    public int compareTo(Version o) {
+    public int compareTo(DomainVersion o) {
 
         //major version
         if (this.majorVersion > o.majorVersion) {
@@ -283,7 +284,7 @@ public final class Version implements Comparable<Version> {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Version other = (Version) obj;
+        final DomainVersion other = (DomainVersion) obj;
         if (this.majorVersion != other.majorVersion) {
             return false;
         }
@@ -300,34 +301,32 @@ public final class Version implements Comparable<Version> {
     }
 
     /**
-     * Default Version binary converter.
+     * Default DomainVersion binary converter.
      */
-    public static class VersionCodec implements DataCodec<Version> {
+    public static class VersionCodec implements DataCodec<DomainVersion> {
 
         /**
          * Size, in bytes, of a version data type.
          */
         public static int BYTES = Integer.BYTES * 5;
 
-
         private int optionalIntToInt(Optional<Integer> optional) {
             return (optional.isPresent()) ? optional.get() : -1;
         }
 
-       
         /**
          * Returns an Integer if != -1, otherwise returns null.
          *
          * @param buffer
          * @return null if integer was -1, otherwise Integer value
          */
-        private Integer intToOptionalInteger(DataInput din) throws IOException{
+        private Integer intToOptionalInteger(DataInput din) throws IOException {
             int i = din.readInt();
             return (i == -1) ? null : i;
         }
 
         @Override
-        public void asBytes(Version data, OutputStream out) throws IOException {
+        public void asBytes(DomainVersion data, OutputStream out) throws IOException {
             DataOutputStream dout = new DataOutputStream(out);
             dout.writeInt(data.majorVersion);
             dout.writeInt(data.minorVersion);
@@ -337,23 +336,23 @@ public final class Version implements Comparable<Version> {
         }
 
         @Override
-        public Version fromBytes(InputStream in) throws IOException {
+        public DomainVersion fromBytes(InputStream in) throws IOException {
             DataInputStream din = new DataInputStream(in);
-            return new Version(din.readInt(), //major
+            return new DomainVersion(din.readInt(), //major
                     din.readInt(), //minor
                     intToOptionalInteger(din), //increment 
                     VersionQualifier.values()[din.readInt()],
                     intToOptionalInteger(din));  //build number
         }
+
         @Override
-        public void asString(Version data, Appendable appendable) throws IOException {
+        public void asString(DomainVersion data, Appendable appendable) throws IOException {
             appendable.append(data.asString());
         }
 
-
         @Override
-        public Version fromString(Readable reable) throws IOException {
-            
+        public DomainVersion fromString(Readable readable) throws IOException {
+            return DomainVersion.valueOf(StreamUtils.readString(readable));
         }
     }
 }

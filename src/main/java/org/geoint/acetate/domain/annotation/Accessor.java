@@ -5,18 +5,16 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.geoint.metamodel.MetaModel;
 
 /**
  * Identifies a method as providing idempotent, safe, access to data from a
  * composite model.
- *
- * @see Query
- * @see Composite
- * @see MultiComposite
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
 @Documented
+@MetaModel
 public @interface Accessor {
 
     /**

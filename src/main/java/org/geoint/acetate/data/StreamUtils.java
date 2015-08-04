@@ -10,6 +10,8 @@ import java.nio.channels.ReadableByteChannel;
  */
 public class StreamUtils {
 
+    private static final int DEFAULT_CHAR_BUFFER_SIZE = 512;
+
     public static void readFully(CharBuffer buffer, Readable readable)
             throws IOException {
         final int limit = buffer.limit();
@@ -18,14 +20,22 @@ public class StreamUtils {
             total += readable.read(buffer);
         }
     }
-    
+
     /**
-     * Creates a String from all the content available from the Readable 
+     * Creates a String from all the content available from the Readable
+     *
      * @param readable
-     * @return 
+     * @return string read from the content of the Readable
+     * @throws java.io.IOException
      */
-    public static String readString (Readable readable) {
-        
+    public static String readString(Readable readable) throws IOException {
+        CharBuffer buff = CharBuffer.allocate(DEFAULT_CHAR_BUFFER_SIZE);
+        StringBuilder sb = new StringBuilder();
+        while (readable.read(buff) != -1) {
+            buff.flip();
+            sb.append(buff.toString());
+        }
+        return sb.toString();
     }
 
     /**

@@ -3,12 +3,11 @@ package org.geoint.acetate.model.common;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Reader;
 import org.geoint.acetate.data.Codec;
 import org.geoint.acetate.data.DataCodec;
 import org.geoint.acetate.data.StreamUtils;
 import org.geoint.acetate.domain.annotation.Domain;
-import org.geoint.acetate.model.DomainConverter;
+import org.geoint.acetate.domain.DomainConverter;
 import org.geoint.acetate.model.common.StandardInteger.StandardIntegerCodec;
 
 /**
@@ -45,8 +44,8 @@ public class StandardInteger {
         }
 
         @Override
-        public StandardInteger fromString(Reader reader) throws IOException {
-            Integer.parseInt(StreamUtils.readString(reader));
+        public StandardInteger fromString(Readable readable) throws IOException {
+            return new StandardInteger(Integer.parseInt(StreamUtils.readString(readable)));
         }
 
     }
@@ -56,12 +55,12 @@ public class StandardInteger {
 
         @Override
         public StandardInteger convert(Integer obj) {
-
+            return new StandardInteger(obj);
         }
 
         @Override
         public Integer invert(StandardInteger domainObj) {
-
+            return domainObj.integer;
         }
 
     }

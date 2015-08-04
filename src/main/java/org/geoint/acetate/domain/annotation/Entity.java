@@ -5,6 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.geoint.metamodel.MetaModel;
 
 /**
  * Identifies a {@link EntityModel} model within the domain.
@@ -14,6 +15,7 @@ import java.lang.annotation.Target;
 @Documented
 @Target({ElementType.TYPE, ElementType.PACKAGE})
 @Retention(RetentionPolicy.RUNTIME)
+@MetaModel
 public @interface Entity {
 
     /**

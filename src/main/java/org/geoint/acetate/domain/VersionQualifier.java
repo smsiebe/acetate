@@ -1,4 +1,4 @@
-package org.geoint.acetate.model;
+package org.geoint.acetate.domain;
 
 /**
  * The version qualifier identifies the "completeness" of a component.

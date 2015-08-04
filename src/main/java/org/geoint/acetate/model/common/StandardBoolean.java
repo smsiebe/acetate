@@ -8,7 +8,7 @@ import org.geoint.acetate.data.StreamUtils;
 import org.geoint.acetate.data.Codec;
 import org.geoint.acetate.data.DataCodec;
 import org.geoint.acetate.domain.annotation.Domain;
-import org.geoint.acetate.model.DomainConverter;
+import org.geoint.acetate.domain.DomainConverter;
 import org.geoint.acetate.model.common.StandardBoolean.StandardBooleanCodec;
 
 /**

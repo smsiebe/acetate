@@ -1,4 +1,4 @@
-package org.geoint.acetate.model;
+package org.geoint.acetate.domain;
 
 /**
  * Converts an object to/from a {@link DomainType}.
