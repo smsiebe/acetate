@@ -20,7 +20,7 @@ import org.geoint.metamodel.MetaModel;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.TYPE_USE})
 @Documented
-@MetaModel
+//@MetaModel
 public @interface Codec {
 
     Class<? extends DataCodec> value();

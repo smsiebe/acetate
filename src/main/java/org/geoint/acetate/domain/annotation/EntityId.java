@@ -8,13 +8,25 @@ import java.lang.annotation.Target;
 import org.geoint.metamodel.MetaModel;
 
 /**
- * Identifies the {@link Accessor accessor} method which provides the unique ID
- * of the domain entity.
+ * Identifies the method as an {@link Accessor accessor} method which provides
+ * the unique ID of the domain entity.
+ * <p>
+ * Annotating a method as an EntityId infers it is an {@link Accessor}, so it
+ * does not need to be explicitly added.
  */
 @Documented
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @MetaModel
 public @interface EntityId {
+
+    /**
+     * OPTIONAL model unique name of the data type being accessed.
+     *
+     * By default, the name of the data is the simple name of the method.
+     *
+     * @return container-model unique accessor name
+     */
+    String name() default "";
 
 }

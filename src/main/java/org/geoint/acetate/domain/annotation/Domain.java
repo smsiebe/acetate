@@ -5,11 +5,10 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.geoint.acetate.domain.DomainVersion;
 import org.geoint.metamodel.MetaModel;
 
 /**
- * Annotation used to declare a type as part of a domain model.
+ * Annotation used to declare a basic domain type as part of a domain model.
  */
 @Documented
 @Target({ElementType.TYPE})
@@ -25,12 +24,19 @@ public @interface Domain {
     String domain();
 
     /**
-     * OPTIONAL version this model was first added to the domain; unspecified
-     * indicates the model was present since the first version of the domain.
+     * Domain model version of the data type.
      *
-     * @see DomainVersion
-     * @return domain model version
+     * @return 
      */
-    String version() default "";
+    String domainVersion();
+    
+    /**
+     * OPTIONAL Domain type name.
+     * 
+     * @return domain type name
+     */
+    String name();
+    
+   
 
 }

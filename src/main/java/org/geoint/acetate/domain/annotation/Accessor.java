@@ -12,25 +12,18 @@ import org.geoint.metamodel.MetaModel;
  * composite model.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
+@Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Documented
 @MetaModel
 public @interface Accessor {
 
     /**
-     * OPTIONAL alternate, container-model unique, name to use for the accessor.
+     * OPTIONAL model unique name of the data type being accessed.
      *
-     * By default, the name of the method is used.
+     * By default, the name of the data is the simple name of the method.
      *
      * @return container-model unique accessor name
      */
     String name() default "";
 
-    /**
-     * OPTIONAL display name of the accessor; unspecified the display name is
-     * the same as the {@link #name() } of the model.
-     *
-     * @return display name of the accessor
-     */
-    String displayName() default "";
 }

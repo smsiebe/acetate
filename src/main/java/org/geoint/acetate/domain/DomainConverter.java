@@ -11,4 +11,5 @@ public interface DomainConverter<F, T> {
     T convert(F obj);
 
     F invert(T domainObj);
+
 }

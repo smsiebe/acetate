@@ -35,6 +35,6 @@ public @interface Operation {
      *
      * @return optional entity type
      */
-    Class<?> entity() default Object.class;
+//    Class<?> entity() default Object.class;
 
 }

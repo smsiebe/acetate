@@ -8,22 +8,35 @@ import java.lang.annotation.Target;
 import org.geoint.metamodel.MetaModel;
 
 /**
- * Identifies a {@link EntityModel} model within the domain.
+ * Identifies the type as a domain model entity.
  *
  * @see EntityModel
  */
 @Documented
-@Target({ElementType.TYPE, ElementType.PACKAGE})
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @MetaModel
 public @interface Entity {
 
     /**
-     * OPTIONAL domain-unique "short" name of the model; unspecified the name is
-     * derived from the domain and type name.
+     * Name of the domain that defines this model.
      *
-     * @return name of the model
+     * @return domain model name
      */
-    String name() default "";
+    String domain();
+
+    /**
+     * Domain model version of the data type.
+     *
+     * @return
+     */
+    String domainVersion();
+
+    /**
+     * OPTIONAL Domain type name.
+     *
+     * @return domain type name
+     */
+    String name();
 
 }
