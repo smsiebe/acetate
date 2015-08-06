@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Expression project.organization is undefined on line 4, column 57 in Templates/Licenses/license-apache20.txt..
+ * Copyright 2015 geoint.org.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,13 @@
  */
 package org.geoint.acetate.domain;
 
-import java.util.Collection;
-import java.util.Optional;
-
 /**
  *
  * @author steve_siebert
  */
-public interface DomainModel extends DomainComponent {
+public interface DomainComponent {
 
-    Collection<DomainType> getTypes();
+    String getDomainName();
 
-    Collection<DomainEntity> getEntityTypes();
-
-    Collection<DomainEvent> getEventTypes();
-
-    boolean hasType(String typeName);
-
-    Optional<DomainType> getType(String typeName);
+    String getDomainVersion();
 }

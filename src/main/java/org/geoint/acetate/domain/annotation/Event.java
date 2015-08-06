@@ -20,11 +20,13 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.geoint.acetate.metamodel.DomainMetaModel;
+import org.geoint.metamodel.MetaAttribute;
 import org.geoint.metamodel.MetaModel;
 
 /**
  * Identifies the type as a domain model event.
- * 
+ *
  * @author steve_siebert
  */
 @Documented
@@ -34,10 +36,11 @@ import org.geoint.metamodel.MetaModel;
 public @interface Event {
 
     /**
-     * Name of the domain that defines this event model.
+     * Name of the domain that defines this model.
      *
      * @return domain model name
      */
+    @MetaAttribute(name = DomainMetaModel.DOMAIN_NAME)
     String domain();
 
     /**
@@ -45,6 +48,7 @@ public @interface Event {
      *
      * @return
      */
+    @MetaAttribute(name = DomainMetaModel.DOMAIN_VERSION)
     String domainVersion();
 
     /**
@@ -52,5 +56,7 @@ public @interface Event {
      *
      * @return domain type name
      */
+    @MetaAttribute(name = DomainMetaModel.DOMAIN_TYPE_NAME)
     String name();
+
 }

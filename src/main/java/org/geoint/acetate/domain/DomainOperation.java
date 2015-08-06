@@ -5,6 +5,6 @@ package org.geoint.acetate.domain;
  */
 public interface DomainOperation {
 
-    DomainType execute(DomainEntity entity, DomainType... parameters);
+    DomainEvent execute(DomainEntity entity, DomainType... parameters);
 
 }

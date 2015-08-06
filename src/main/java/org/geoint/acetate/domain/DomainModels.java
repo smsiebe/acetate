@@ -15,11 +15,20 @@
  */
 package org.geoint.acetate.domain;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+import org.geoint.acetate.domain.impl.MutableDomainModel;
+import org.geoint.acetate.domain.impl.MutableOntology;
 import org.geoint.acetate.domain.provider.DomainProvider;
 
 /**
@@ -33,22 +42,117 @@ import org.geoint.acetate.domain.provider.DomainProvider;
 public final class DomainModels {
 
     private static final Set<DomainProvider> providers;
+    private static final Logger logger
+            = Logger.getLogger(DomainModels.class.getName());
+
+    private final Set<DomainModel> models;
 
     static {
-        providers = new HashSet<>();
+        //providers = Collections.synchronizedSet(new HashSet<>());
+        providers = new HashSet<>(); //manually synchronized
 
+        //synchronized (providers) { //I really don't think this is necessary
         ServiceLoader<DomainProvider> slProviders = ServiceLoader.load(DomainProvider.class);
         slProviders.forEach(providers::add);
+        //}
+
+        logger.log(Level.FINE, () -> String.format(
+                "Domain model providers loaded from ServiceLoader: [%s]",
+                StreamSupport.stream(slProviders.spliterator(), false)
+                .map((p) -> p.getClass().getCanonicalName())
+                .collect(Collectors.joining(",")))
+        );
+    }
+
+    private DomainModels(Set<DomainModel> models) {
+        this.models = Collections.unmodifiableSet(models);
+    }
+
+    /**
+     * Load domain models from the configured domain model providers.
+     *
+     * @return domain models loaded from providers
+     * @throws DomainModelException thrown if there was a terminal problem
+     * resolving the domain models
+     */
+    public static DomainModels loadModels()
+            throws DomainModelException {
+        synchronized (providers) {
+            return loadModels(providers.toArray(
+                    new DomainProvider[providers.size()])
+            );
+        }
+    }
+
+    /**
+     * Load domain models from the provided providers (does not include static
+     * configured providers).
+     *
+     * @param providers providers from which to load models
+     * @return domain models resolved from providers
+     * @throws DomainModelException thrown if there was a terminal problem
+     * resolving the domain models
+     */
+    public static DomainModels loadModels(DomainProvider... providers)
+            throws DomainModelException {
+        return merge(Arrays.stream(providers)
+                .flatMap((p) -> p.getDomainModels().stream())
+                .collect(Collectors.toList()));
     }
 
     public static void addProvider(DomainProvider provider) {
-        providers.add(provider);
+        synchronized (providers) {
+            providers.add(provider);
+        }
     }
 
-    public static Collection<DomainModel> loadModels() {
-        return providers.stream()
-                .flatMap((p) -> p.getDomainModels().stream())
-                .collect(Collectors.toList());
+    public Set<DomainModel> getModels() {
+        return models;
+    }
+
+    public Set<DomainModel> getModels(String domainName) {
+        return getModels().stream()
+                .filter((m) -> m.getDomainName().equalsIgnoreCase(domainName))
+                .collect(Collectors.toSet());
+    }
+
+    public Optional<DomainModel> getModel(String domainName, String domainVersion) {
+        return getModels().stream()
+                .filter((m) -> m.getDomainName().equalsIgnoreCase(domainName))
+                .filter((m) -> m.getDomainVersion().equalsIgnoreCase(domainVersion))
+                .findAny();
+    }
+
+    private static DomainModels merge(Collection<DomainModel> models)
+            throws DomainModelException {
+        Set<MutableDomainModel> mergedModels = new HashSet<>();
+        for (DomainModel dm : models) {
+            Optional<MutableDomainModel> domainCollision = mergedModels.stream()
+                    .filter((mm) -> mm.isSameDomain(dm))
+                    .findFirst();
+
+            if (domainCollision.isPresent()) {
+                domainCollision.get().merge(dm);
+            } else {
+                mergedModels.add(createMergedModel(mergedModels, dm));
+            }
+        }
+
+        //this.models = toModels(mergedModels); //TODO convert to immutable models
+        return new DomainModels(mergedModels.stream() //needed for generics =(
+                .map((m) -> (DomainModel) m)
+                .collect(Collectors.toSet()));
+    }
+
+    private static MutableDomainModel createMergedModel(
+            Set<MutableDomainModel> mergedModels, DomainModel domainModel)
+            throws IllegalModelException {
+        if (Ontology.class.isAssignableFrom(domainModel.getClass())) {
+            return new MutableOntology((Ontology) domainModel,
+                    mergedModels);
+        } else {
+            return new MutableDomainModel(domainModel);
+        }
     }
 
 }

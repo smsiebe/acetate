@@ -14,7 +14,9 @@ import org.geoint.acetate.model.common.StandardBoolean.StandardBooleanCodec;
 /**
  *
  */
-@Domain(domain = "org.geoint.acetate.std")
+@Domain(domain = StandardModels.DOMAIN_MODEL,
+        domainVersion = StandardModels.DOMAIN_VERSION,
+        name = "boolean")
 @Codec(StandardBooleanCodec.class)
 public enum StandardBoolean {
 
@@ -61,7 +63,6 @@ public enum StandardBoolean {
         }
     }
 
-    @Domain(domain = "org.geoint.acetate.std")
     public static class StandardBooleanConverter implements
             DomainConverter<Boolean, StandardBoolean> {
 

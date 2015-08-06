@@ -5,6 +5,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.geoint.acetate.metamodel.DomainMetaModel;
+import org.geoint.metamodel.MetaAttribute;
 import org.geoint.metamodel.MetaModel;
 
 /**
@@ -23,6 +25,7 @@ public @interface Entity {
      *
      * @return domain model name
      */
+    @MetaAttribute(name = DomainMetaModel.DOMAIN_NAME)
     String domain();
 
     /**
@@ -30,6 +33,7 @@ public @interface Entity {
      *
      * @return
      */
+    @MetaAttribute(name = DomainMetaModel.DOMAIN_VERSION)
     String domainVersion();
 
     /**
@@ -37,6 +41,7 @@ public @interface Entity {
      *
      * @return domain type name
      */
+    @MetaAttribute(name = DomainMetaModel.DOMAIN_TYPE_NAME)
     String name();
 
 }

@@ -13,7 +13,9 @@ import org.geoint.acetate.model.common.StandardInteger.StandardIntegerCodec;
 /**
  *
  */
-@Domain(domain = "org.geoint.acetate.std")
+@Domain(domain = StandardModels.DOMAIN_MODEL,
+        domainVersion = StandardModels.DOMAIN_VERSION,
+        name = "integer")
 @Codec(StandardIntegerCodec.class)
 public class StandardInteger {
 
