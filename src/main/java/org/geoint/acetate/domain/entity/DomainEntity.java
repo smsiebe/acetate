@@ -1,6 +1,9 @@
-package org.geoint.acetate.domain;
+package org.geoint.acetate.domain.entity;
 
 import java.util.Collection;
+import org.geoint.acetate.data.DataCodec;
+import org.geoint.acetate.domain.DomainType;
+import org.geoint.acetate.domain.operation.DomainOperation;
 
 /**
  *
@@ -11,22 +14,24 @@ public interface DomainEntity<T> extends DomainType<T> {
     /**
      * Globally unique domain entity ID.
      *
+     * @param entity entity instance
      * @return domain entity instance id
      */
-    String getEntityId();
+    String getEntityId(T entity);
 
     /**
      * Entity version.
      *
+     * @param entity entity instance
      * @return entity version
      */
-    String getEntityVersion();
+    String getEntityVersion(T entity);
 
     /**
      * Domain operations (behavior) defined for the Entity.
      *
      * @return entity operations
      */
-    Collection<DomainEvent> getOperations();
+    Collection<DomainOperation<T>> getOperations();
 
 }

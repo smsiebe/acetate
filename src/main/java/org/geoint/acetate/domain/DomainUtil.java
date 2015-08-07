@@ -13,15 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate.model.common;
+package org.geoint.acetate.domain;
+
+import org.geoint.acetate.domain.entity.DomainEntity;
+import org.geoint.acetate.domain.event.DomainEvent;
+import org.geoint.acetate.domain.DomainType;
 
 /**
+ * Utility methods useful when working with a domain model.
  *
  * @author steve_siebert
  */
-public final class StandardModels {
+public class DomainUtil {
 
-    public static final String DOMAIN_MODEL = "org.geoint.acetate.std";
-    public static final String DOMAIN_VERSION = "1.0-BETA";
+    public static boolean isEntity(DomainType t) {
+        return DomainEntity.class.isAssignableFrom(t.getClass());
+    }
+
+    public static boolean isEvent(DomainType t) {
+        return DomainEvent.class.isAssignableFrom(t.getClass());
+    }
 
 }

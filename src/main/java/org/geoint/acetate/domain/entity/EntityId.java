@@ -1,4 +1,4 @@
-package org.geoint.acetate.domain.annotation;
+package org.geoint.acetate.domain.entity;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -8,17 +8,17 @@ import java.lang.annotation.Target;
 import org.geoint.metamodel.MetaModel;
 
 /**
- * Identifies the {@link Accessor accessor} method which provides the version of
- * the entity.
+ * Identifies the method as an {@link Accessor accessor} method which provides
+ * the unique ID of the domain entity.
  * <p>
  * Annotating a method as an EntityId infers it is an {@link Accessor}, so it
  * does not need to be explicitly added.
  */
 @Documented
-@Target({ElementType.TYPE_USE, ElementType.METHOD})
+@Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @MetaModel
-public @interface EntityVersion {
+public @interface EntityId {
 
     /**
      * OPTIONAL model unique name of the data type being accessed.

@@ -24,4 +24,8 @@ public interface DomainComponent {
     String getDomainName();
 
     String getDomainVersion();
+    
+    String getDisplayName();
+    
+    String getDescription();
 }

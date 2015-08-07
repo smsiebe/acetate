@@ -5,7 +5,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.geoint.metamodel.MetaModel;
 
 /**
  * Defines a {@link DataCodec codec} to use to write the domain data as bytes or
@@ -20,7 +19,6 @@ import org.geoint.metamodel.MetaModel;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.TYPE_USE})
 @Documented
-//@MetaModel
 public @interface Codec {
 
     Class<? extends DataCodec> value();

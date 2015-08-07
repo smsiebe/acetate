@@ -1,4 +1,4 @@
-package org.geoint.acetate.domain.annotation;
+package org.geoint.acetate.domain.operation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

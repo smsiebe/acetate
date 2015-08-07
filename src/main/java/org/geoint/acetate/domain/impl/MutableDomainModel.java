@@ -22,12 +22,12 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.geoint.acetate.domain.DomainComponent;
-import org.geoint.acetate.domain.DomainEntity;
-import org.geoint.acetate.domain.DomainEvent;
+import org.geoint.acetate.domain.entity.DomainEntity;
+import org.geoint.acetate.domain.event.DomainEvent;
 import org.geoint.acetate.domain.DomainModel;
 import org.geoint.acetate.domain.DomainType;
 import org.geoint.acetate.domain.IllegalModelException;
-import org.geoint.acetate.util.DomainUtil;
+import org.geoint.acetate.domain.DomainUtil;
 
 /**
  *

@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Expression project.organization is undefined on line 4, column 57 in Templates/Licenses/license-apache20.txt..
+ * Copyright 2015 geoint.org.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.geoint.acetate.domain.annotation;
 
 import java.lang.annotation.Documented;
@@ -20,43 +21,17 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.geoint.acetate.metamodel.DomainMetaModel;
-import org.geoint.metamodel.MetaAttribute;
 import org.geoint.metamodel.MetaModel;
 
+
 /**
- * Identifies the type as a domain model event.
- *
+ * 
  * @author steve_siebert
  */
-@Documented
-@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE})
+@Documented
 @MetaModel
-public @interface Event {
-
-    /**
-     * Name of the domain that defines this model.
-     *
-     * @return domain model name
-     */
-    @MetaAttribute(name = DomainMetaModel.DOMAIN_NAME)
-    String domain();
-
-    /**
-     * Domain model version of the data type.
-     *
-     * @return
-     */
-    @MetaAttribute(name = DomainMetaModel.DOMAIN_VERSION)
-    String domainVersion();
-
-    /**
-     * OPTIONAL Domain type name.
-     *
-     * @return domain type name
-     */
-    @MetaAttribute(name = DomainMetaModel.DOMAIN_TYPE_NAME)
-    String name();
+public @interface DomainConverter {
 
 }

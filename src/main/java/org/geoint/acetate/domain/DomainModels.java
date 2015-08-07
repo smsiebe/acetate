@@ -15,7 +15,6 @@
  */
 package org.geoint.acetate.domain;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -96,6 +95,12 @@ public final class DomainModels {
     public static DomainModels loadModels(DomainProvider... providers)
             throws DomainModelException {
         return merge(Arrays.stream(providers)
+                .map((p) -> {
+                    logger.log(Level.FINE, () -> String.format(
+                                    "Loading domain models from provider '%s'",
+                                    p.getClass().getCanonicalName()));
+                    return p;
+                })
                 .flatMap((p) -> p.getDomainModels().stream())
                 .collect(Collectors.toList()));
     }

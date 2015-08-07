@@ -15,9 +15,16 @@
  */
 package org.geoint.acetate.domain;
 
-import org.geoint.acetate.model.common.StandardModels;
+import com.google.testing.compile.JavaFileObjects;
+import static com.google.testing.compile.JavaSourceSubjectFactory.javaSource;
+import java.io.File;
+import java.net.URL;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardLocation;
+import org.geoint.metamodel.descriptor.ModelDescriptor;
+import org.geoint.metamodel.processor.MetaModelAnnotationProcessor;
 import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.truth0.Truth.ASSERT;
 
 /**
  *
@@ -26,14 +33,42 @@ import static org.junit.Assert.*;
 public class DomainModelsTest {
 
     @Test
-    public void testServiceLoadedProviders() throws DomainModelException {
-        DomainModels models = DomainModels.loadModels();
-        assertTrue(models.getModel(StandardModels.DOMAIN_MODEL,
-                StandardModels.DOMAIN_VERSION).isPresent());
+    public void testServiceLoadedProviders() throws DomainModelException, Exception {
+
+//        ASSERT.about(javaSource())
+//                .that(sourceClass(StandardBoolean.class))
+//                .processedWith(new MetaModelAnnotationProcessor())
+//                .compilesWithoutError()
+//                .and()
+//                .generatesFileNamed(StandardLocation.CLASS_OUTPUT, "",
+//                        ModelDescriptor.MODEL_DESCRIPTOR_JAR_PATH);
     }
 
     @Test
     public void testExplicitProviderLoading() {
 
+    }
+
+    private JavaFileObject sourceClass(Class<?> type) throws Exception {
+        return loadClass("src/main/java/", type);
+    }
+
+    private JavaFileObject testClass(Class<?> type) throws Exception {
+        return loadClass("src/test/java/", type);
+    }
+
+    private JavaFileObject loadClass(String relativePath, Class<?> type) throws Exception {
+        URL sourceURL = this.getClass().getClassLoader().getResource("");
+        File projectBaseDir = new File(sourceURL.toURI())
+                .getParentFile().getParentFile();
+        File testSourceDir = new File(projectBaseDir, relativePath + toSourcePath(type));
+        return JavaFileObjects.forResource(testSourceDir.toURI().toURL());
+    }
+
+    private String toSourcePath(Class<?> type) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(type.getCanonicalName().replace('.', '/'))
+                .append(".java");
+        return sb.toString();
     }
 }

@@ -6,7 +6,7 @@ package org.geoint.acetate.domain;
  * @param <F> potentially non-domain type
  * @param <T> domain type
  */
-public interface DomainConverter<F, T> {
+public interface DomainTypeCodec<F, T> {
 
     T convert(F obj);
 

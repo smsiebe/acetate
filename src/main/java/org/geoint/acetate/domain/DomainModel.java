@@ -15,6 +15,8 @@
  */
 package org.geoint.acetate.domain;
 
+import org.geoint.acetate.domain.entity.DomainEntity;
+import org.geoint.acetate.domain.event.DomainEvent;
 import java.util.Collection;
 import java.util.Optional;
 

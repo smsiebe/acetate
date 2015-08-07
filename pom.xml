@@ -18,7 +18,24 @@
         <junit.version>4.12</junit.version>
     </properties>
     
-       
+       <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+
+                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                    <proc>none</proc>
+                    <failOnError>true</failOnError>
+                    <showDeprecation>true</showDeprecation>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
     <dependencies>
         
         <!-- test dependencies -->
@@ -32,6 +49,12 @@
             <groupId>org.geoint.metamodel</groupId>
             <artifactId>geoint-metamodel</artifactId>
             <version>1.0-BETA</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.testing.compile</groupId>
+            <artifactId>compile-testing</artifactId>
+            <version>0.7</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
