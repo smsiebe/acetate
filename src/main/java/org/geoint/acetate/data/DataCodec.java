@@ -15,7 +15,7 @@ public interface DataCodec<T> {
 
     T fromBytes(InputStream in) throws IOException;
 
-    void asString(T data, Appendable appendable) throws IOException;
-
-    T fromString(Readable readable) throws IOException;
+//    void asString(T data, Appendable appendable) throws IOException;
+//
+//    T fromString(Readable readable) throws IOException;
 }

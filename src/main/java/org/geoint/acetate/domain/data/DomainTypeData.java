@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Expression project.organization is undefined on line 4, column 57 in Templates/Licenses/license-apache20.txt..
+ * Copyright 2015 geoint.org.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate.domain;
+package org.geoint.acetate.domain.data;
 
-import java.util.Collection;
-import org.geoint.acetate.domain.entity.Entity;
+import org.geoint.acetate.data.Data;
+import org.geoint.acetate.domain.DomainType;
 
 /**
+ * DomainType instance-Data bridge.
  *
  * @author steve_siebert
+ * @param <T>
  */
-@Entity(name="Ontology")
-public interface Ontology extends DomainModel {
+public interface DomainTypeData<T> extends Data {
 
-    Collection<DomainModel> getImportedDomainModels();
+    DomainType<T> getDomainType();
+
+    T getDomainInstance();
+
+    void visit(DomainDataVisitor visitor);
 }

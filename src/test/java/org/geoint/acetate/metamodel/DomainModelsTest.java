@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate.domain;
+package org.geoint.acetate.metamodel;
 
 import com.google.testing.compile.JavaFileObjects;
 import static com.google.testing.compile.JavaSourceSubjectFactory.javaSource;
@@ -21,6 +21,8 @@ import java.io.File;
 import java.net.URL;
 import javax.tools.JavaFileObject;
 import javax.tools.StandardLocation;
+import org.geoint.acetate.domain.DomainModel;
+import org.geoint.acetate.domain.DomainModelException;
 import org.geoint.metamodel.descriptor.ModelDescriptor;
 import org.geoint.metamodel.processor.MetaModelAnnotationProcessor;
 import org.junit.Test;
@@ -32,19 +34,19 @@ import static org.truth0.Truth.ASSERT;
  */
 public class DomainModelsTest {
 
-    @Test
+//    @Test
     public void testServiceLoadedProviders() throws DomainModelException, Exception {
 
-//        ASSERT.about(javaSource())
-//                .that(sourceClass(StandardBoolean.class))
-//                .processedWith(new MetaModelAnnotationProcessor())
-//                .compilesWithoutError()
-//                .and()
-//                .generatesFileNamed(StandardLocation.CLASS_OUTPUT, "",
-//                        ModelDescriptor.MODEL_DESCRIPTOR_JAR_PATH);
+        ASSERT.about(javaSource())
+                .that(sourceClass(DomainModel.class))
+                .processedWith(new MetaModelAnnotationProcessor())
+                .compilesWithoutError()
+                .and()
+                .generatesFileNamed(StandardLocation.CLASS_OUTPUT, "",
+                        ModelDescriptor.MODEL_DESCRIPTOR_JAR_PATH);
     }
 
-    @Test
+//    @Test
     public void testExplicitProviderLoading() {
 
     }

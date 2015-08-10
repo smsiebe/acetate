@@ -5,7 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.geoint.acetate.domain.provider.metamodel.DomainMetaModel;
+import org.geoint.acetate.metamodel.DomainMetaModel;
 import org.geoint.metamodel.MetaAttribute;
 import org.geoint.metamodel.MetaModel;
 
@@ -20,7 +20,7 @@ import org.geoint.metamodel.MetaModel;
 @MetaModel
 public @interface Entity {
 
-   /**
+    /**
      * OPTIONAL Name of the domain that defines this model.
      * <p>
      * If not explicitly set a domain type will inherit the domain name defined

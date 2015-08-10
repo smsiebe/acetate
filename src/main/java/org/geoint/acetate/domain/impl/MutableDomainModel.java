@@ -18,6 +18,7 @@ package org.geoint.acetate.domain.impl;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -37,12 +38,12 @@ public class MutableDomainModel implements DomainModel {
 
     private final String domainName;
     private final String domainVersion;
-    private final Map<String, DomainType> types;
+    private final String displayName;
+    private final String description;
+    private final Map<String, DomainType<?>> types;
 
     public MutableDomainModel(String domainName, String domainVersion) {
-        this.domainName = domainName;
-        this.domainVersion = domainVersion;
-        this.types = new HashMap<>();
+        this(domainName, domainVersion, null, null);
     }
 
     public MutableDomainModel(DomainModel dm) throws IllegalModelException {
@@ -50,12 +51,31 @@ public class MutableDomainModel implements DomainModel {
         this.mergeDomain(dm);
     }
 
+    public MutableDomainModel(String domainName, String domainVersion,
+            String displayName, String description) {
+        this.domainName = domainName;
+        this.domainVersion = domainVersion;
+        this.types = new HashMap<>();
+        this.displayName = valueOrDefault(displayName, domainName);
+        this.description = valueOrDefault(description, domainName);
+    }
+
     protected void setType(DomainType t) {
         types.put(t.getName(), t);
     }
 
     @Override
-    public Collection<DomainType> getTypes() {
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    @Override
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public Collection<DomainType<?>> getTypes() {
         return types.values();
     }
 
@@ -65,8 +85,17 @@ public class MutableDomainModel implements DomainModel {
     }
 
     @Override
-    public Optional<DomainType> getType(String typeName) {
+    public Optional<DomainType<?>> getType(String typeName) {
         return Optional.ofNullable(types.get(typeName));
+    }
+
+    @Override
+    public <T> Optional<DomainType<T>> getType(Class<T> domainTypeClass) {
+        return types.entrySet().stream()
+                .map(Entry::getValue)
+                .filter((t) -> t.getTypeClass().equals(domainTypeClass))
+                .map((t) -> (DomainType<T>) t)
+                .findFirst();
     }
 
     public void merge(DomainModel md) throws IllegalModelException {
@@ -89,18 +118,18 @@ public class MutableDomainModel implements DomainModel {
     }
 
     @Override
-    public Collection<DomainEntity> getEntityTypes() {
+    public Collection<DomainEntity<?>> getEntityTypes() {
         return getTypes().stream()
                 .filter(DomainUtil::isEntity)
-                .map((t) -> (DomainEntity) t)
+                .map((t) -> (DomainEntity<?>) t)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Collection<DomainEvent> getEventTypes() {
+    public Collection<DomainEvent<?, ?>> getEventTypes() {
         return getTypes().stream()
                 .filter(DomainUtil::isEvent)
-                .map((t) -> (DomainEvent) t)
+                .map((t) -> (DomainEvent<?, ?>) t)
                 .collect(Collectors.toList());
     }
 
@@ -154,6 +183,12 @@ public class MutableDomainModel implements DomainModel {
             }
 
         }
+    }
+
+    private String valueOrDefault(String displayName, String domainName) {
+        return (Objects.isNull(displayName) || domainName.isEmpty())
+                ? domainName
+                : displayName;
     }
 
     @Override

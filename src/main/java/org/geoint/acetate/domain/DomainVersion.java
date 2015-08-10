@@ -345,14 +345,14 @@ public final class DomainVersion implements Comparable<DomainVersion> {
                     intToOptionalInteger(din));  //build number
         }
 
-        @Override
-        public void asString(DomainVersion data, Appendable appendable) throws IOException {
-            appendable.append(data.asString());
-        }
-
-        @Override
-        public DomainVersion fromString(Readable readable) throws IOException {
-            return DomainVersion.valueOf(StreamUtils.readString(readable));
-        }
+//        @Override
+//        public void asString(DomainVersion data, Appendable appendable) throws IOException {
+//            appendable.append(data.asString());
+//        }
+//
+//        @Override
+//        public DomainVersion fromString(Readable readable) throws IOException {
+//            return DomainVersion.valueOf(StreamUtils.readString(readable));
+//        }
     }
 }

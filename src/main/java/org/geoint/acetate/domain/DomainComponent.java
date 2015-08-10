@@ -15,17 +15,23 @@
  */
 package org.geoint.acetate.domain;
 
+import org.geoint.acetate.domain.entity.Entity;
+
 /**
  *
  * @author steve_siebert
  */
+@Entity(name = "DomainComponent")
 public interface DomainComponent {
+
+    public static final String ACETATE_DOMAIN_MODEL = "org.geoint.acetate";
+    public static final String ACETATE_DOMAIN_VERSION = "1.0-BETA";
 
     String getDomainName();
 
     String getDomainVersion();
-    
+
     String getDisplayName();
-    
+
     String getDescription();
 }

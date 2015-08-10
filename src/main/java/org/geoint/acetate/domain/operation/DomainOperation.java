@@ -3,6 +3,7 @@ package org.geoint.acetate.domain.operation;
 import org.geoint.acetate.domain.DomainComponent;
 import org.geoint.acetate.domain.entity.DomainEntity;
 import org.geoint.acetate.domain.DomainType;
+import org.geoint.acetate.domain.annotation.Domain;
 import org.geoint.acetate.domain.event.DomainEvent;
 
 /**
@@ -11,6 +12,7 @@ import org.geoint.acetate.domain.event.DomainEvent;
  * @param <E> java class type of the entity related to the operation
  *
  */
+@Domain(name="Operation")
 public interface DomainOperation<E> extends DomainComponent {
 
     String getName();

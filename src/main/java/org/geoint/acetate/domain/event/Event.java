@@ -20,7 +20,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.geoint.acetate.domain.provider.metamodel.DomainMetaModel;
+import org.geoint.acetate.metamodel.DomainMetaModel;
 import org.geoint.metamodel.MetaAttribute;
 import org.geoint.metamodel.MetaModel;
 

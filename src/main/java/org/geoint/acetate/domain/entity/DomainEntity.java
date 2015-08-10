@@ -1,7 +1,6 @@
 package org.geoint.acetate.domain.entity;
 
 import java.util.Collection;
-import org.geoint.acetate.data.DataCodec;
 import org.geoint.acetate.domain.DomainType;
 import org.geoint.acetate.domain.operation.DomainOperation;
 
@@ -9,6 +8,7 @@ import org.geoint.acetate.domain.operation.DomainOperation;
  *
  * @param <T> java class representation of the domain entity
  */
+@Entity(name="DomainEntity")
 public interface DomainEntity<T> extends DomainType<T> {
 
     /**

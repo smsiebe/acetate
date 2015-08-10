@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate.domain.provider.metamodel;
+package org.geoint.acetate.metamodel;
 
 import java.lang.annotation.Annotation;
 import java.util.Collection;
@@ -114,7 +114,7 @@ public class DomainMetaModel {
 
     private static String getDefaultTypeName(MetaModelType model) {
         String[] parts = PATTERN_DOT_SPLITTER.split(model.getTypeName());
-        return parts[parts.length-1];
+        return parts[parts.length - 1];
     }
 
     private static String getMetaModelAttribtue(MetaModelType model,

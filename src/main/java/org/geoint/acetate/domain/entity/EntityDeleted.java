@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 
+package org.geoint.acetate.domain.entity;
+
+import org.geoint.acetate.domain.event.Event;
+
+
 /**
- * Loads domain models declared in geoint-metamodel descriptor files.
+ *
+ * @author steve_siebert
+ * @param <E> entity type
  */
-package org.geoint.acetate.domain.provider.metamodel;
+@Event(name="EntityDeleted")
+public class EntityDeleted<E> {
+
+}

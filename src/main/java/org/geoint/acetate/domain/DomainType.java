@@ -2,11 +2,13 @@ package org.geoint.acetate.domain;
 
 import java.util.Collection;
 import org.geoint.acetate.data.DataCodec;
+import org.geoint.acetate.domain.entity.Entity;
 
 /**
  *
  * @param <T> java class representation of the domain type
  */
+@Entity(name="DomainType")
 public interface DomainType<T> extends DomainComponent {
 
     /**
@@ -33,8 +35,18 @@ public interface DomainType<T> extends DomainComponent {
      */
     Class<T> getTypeClass();
 
+    /**
+     * Known subclasses of the DomainType.
+     *
+     * @return known subclasses
+     */
     Collection<DomainType<? extends T>> getSubclasses();
 
+    /**
+     * Default data codec to use for this domain type.
+     *
+     * @return default codec
+     */
     DataCodec<T> getDefaultCodec();
 
 }

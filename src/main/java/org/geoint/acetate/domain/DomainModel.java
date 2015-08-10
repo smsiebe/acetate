@@ -19,20 +19,25 @@ import org.geoint.acetate.domain.entity.DomainEntity;
 import org.geoint.acetate.domain.event.DomainEvent;
 import java.util.Collection;
 import java.util.Optional;
+import org.geoint.acetate.domain.entity.Entity;
 
 /**
  *
  * @author steve_siebert
  */
+@Entity(name = "DomainModel")
 public interface DomainModel extends DomainComponent {
 
-    Collection<DomainType> getTypes();
+    Collection<DomainType<?>> getTypes();
 
-    Collection<DomainEntity> getEntityTypes();
+    Collection<DomainEntity<?>> getEntityTypes();
 
-    Collection<DomainEvent> getEventTypes();
+    Collection<DomainEvent<?, ?>> getEventTypes();
 
     boolean hasType(String typeName);
 
-    Optional<DomainType> getType(String typeName);
+    Optional<DomainType<?>> getType(String typeName);
+    
+    <T> Optional<DomainType<T>> getType(Class<T> domainTypeClass);
+    
 }
