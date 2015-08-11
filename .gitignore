@@ -1,2 +1,5 @@
-/acetate-*/target/
-/target/
+#maven 
+/target/ 
+
+#netbeans IDE
+nb-configuration.xml

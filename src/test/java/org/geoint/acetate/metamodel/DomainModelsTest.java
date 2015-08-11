@@ -25,6 +25,7 @@ import org.geoint.acetate.domain.DomainModel;
 import org.geoint.acetate.domain.DomainModelException;
 import org.geoint.metamodel.descriptor.ModelDescriptor;
 import org.geoint.metamodel.processor.MetaModelAnnotationProcessor;
+import static org.junit.Assert.fail;
 import org.junit.Test;
 import static org.truth0.Truth.ASSERT;
 

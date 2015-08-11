@@ -1,3 +1,3 @@
-Acetate Metamodel Framework
-===========================
+Acetate Domain Modeling
+=======================
 
