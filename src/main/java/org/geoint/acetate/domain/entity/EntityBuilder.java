@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.geoint.acetate.domain.entity;
 
-package org.geoint.acetate.domain.annotation;
-
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import org.geoint.metamodel.annotation.MetaModel;
-
+import org.geoint.acetate.domain.annotation.Domain;
 
 /**
- * 
+ *
  * @author steve_siebert
+ * @param <E>
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE})
-@Documented
-@MetaModel
-public @interface DomainConverter {
+@Domain(name="entityBuilder")
+public interface EntityBuilder<E> {
 
+    /**
+     * Create a transient instance of the entity.
+     *
+     * @return transient instance of the entity
+     * @throws EntityException thrown if there were problems with the entity
+     * state
+     */
+    E build() throws EntityException;
 }

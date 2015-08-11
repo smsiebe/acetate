@@ -18,7 +18,7 @@ package org.geoint.acetate.metamodel;
 import java.util.Collection;
 import org.geoint.acetate.domain.DomainModel;
 import org.geoint.acetate.domain.provider.DomainProvider;
-import org.geoint.metamodel.MetaModel;
+import org.geoint.metamodel.annotation.MetaModel;
 import org.geoint.metamodel.MetaModels;
 import org.geoint.metamodel.ModelRegistry;
 

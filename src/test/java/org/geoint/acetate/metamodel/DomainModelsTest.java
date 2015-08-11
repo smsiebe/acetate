@@ -24,7 +24,7 @@ import javax.tools.StandardLocation;
 import org.geoint.acetate.domain.DomainModel;
 import org.geoint.acetate.domain.DomainModelException;
 import org.geoint.metamodel.descriptor.ModelDescriptor;
-import org.geoint.metamodel.processor.MetaModelAnnotationProcessor;
+import org.geoint.metamodel.processor.MetaModelDescriptorGeneratorProcessor;
 import static org.junit.Assert.fail;
 import org.junit.Test;
 import static org.truth0.Truth.ASSERT;
@@ -40,7 +40,7 @@ public class DomainModelsTest {
 
         ASSERT.about(javaSource())
                 .that(sourceClass(DomainModel.class))
-                .processedWith(new MetaModelAnnotationProcessor())
+                .processedWith(new MetaModelDescriptorGeneratorProcessor())
                 .compilesWithoutError()
                 .and()
                 .generatesFileNamed(StandardLocation.CLASS_OUTPUT, "",

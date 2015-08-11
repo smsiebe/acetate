@@ -28,16 +28,18 @@ import org.geoint.acetate.domain.annotation.Domain;
 @Domain(name="EntityRepository")
 public interface EntityRepository<E> {
 
-    E create();
+    /**
+     * Create an new builder for the entity.
+     * 
+     * @return entity builder
+     */
+    EntityBuilder<E> builder();
 
-    EntityPersisted<E> persist(DomainEntity<E> toPersist)
-            throws EntityException;
+    EntityPersisted<E> persist(DomainEntity<E> toPersist) throws EntityException;
 
-    EntityArchived<E> archive(DomainEntity<E> toArchive)
-            throws EntityException;
+    EntityArchived<E> archive(DomainEntity<E> toArchive) throws EntityException;
 
-    EntityDeleted<E> delete(DomainEntity<E> toDelete)
-            throws EntityException;
+    EntityDeleted<E> delete(DomainEntity<E> toDelete) throws EntityException;
 
     Collection<DomainEntity<E>> find(EntityQuery<E> query)
             throws EntityException;
