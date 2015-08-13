@@ -46,15 +46,15 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.geoint.metamodel</groupId>
-            <artifactId>geoint-metamodel</artifactId>
-            <version>1.0-BETA</version>
-        </dependency>
-        <dependency>
             <groupId>com.google.testing.compile</groupId>
             <artifactId>compile-testing</artifactId>
             <version>0.7</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.geoint.metamodel</groupId>
+            <artifactId>geoint-metamodel</artifactId>
+            <version>1.0-BETA</version>
         </dependency>
     </dependencies>
 </project>
