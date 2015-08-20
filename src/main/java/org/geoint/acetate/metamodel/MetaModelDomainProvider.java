@@ -18,19 +18,19 @@ package org.geoint.acetate.metamodel;
 import java.util.Collection;
 import org.geoint.acetate.domain.DomainModel;
 import org.geoint.acetate.domain.provider.DomainProvider;
-import org.geoint.metamodel.annotation.MetaModel;
+import org.geoint.metamodel.annotation.Model;
 import org.geoint.metamodel.MetaModels;
-import org.geoint.metamodel.ModelRegistry;
+import org.geoint.metamodel.MetaModel;
 
 /**
  * Provides domain models discovered from a
- * {@link MetaModel metamodel registry}.
+ * {@link Model metamodel registry}.
  *
  * @author steve_siebert
  */
 public class MetaModelDomainProvider implements DomainProvider {
 
-    private final ModelRegistry metamodelRegistry;
+    private final MetaModel metamodelRegistry;
     private Collection<DomainModel> domainModels;
 
     /**

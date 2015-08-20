@@ -5,7 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.geoint.metamodel.annotation.MetaModel;
+import org.geoint.metamodel.annotation.Model;
 
 /**
  * Identifies a method as an {@link OperationModel operation}, which when
@@ -15,7 +15,7 @@ import org.geoint.metamodel.annotation.MetaModel;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
 @Documented
-@MetaModel
+@Model
 public @interface Operation {
 
     /**

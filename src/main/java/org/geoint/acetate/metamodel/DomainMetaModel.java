@@ -30,7 +30,7 @@ import org.geoint.acetate.domain.entity.Entity;
 import org.geoint.acetate.domain.event.Event;
 import org.geoint.metamodel.MetaModelType;
 import org.geoint.metamodel.MetaModels;
-import org.geoint.metamodel.ModelRegistry;
+import org.geoint.metamodel.MetaModel;
 import org.geoint.metamodel.ModelType;
 
 /**
@@ -57,7 +57,7 @@ public class DomainMetaModel {
     private static final Pattern PATTERN_DOT_SPLITTER
             = Pattern.compile(".", Pattern.LITERAL);
 
-    public static Collection<DomainModel> fromRegistry(ModelRegistry registry) {
+    public static Collection<DomainModel> fromRegistry(MetaModel registry) {
         Map<String, DomainModel> models = new HashMap<>();  //key=domain name
 
         addMetaType(registry, Domain.class, models);
@@ -66,7 +66,7 @@ public class DomainMetaModel {
         return models.values();
     }
 
-    private static void addMetaType(ModelRegistry registry,
+    private static void addMetaType(MetaModel registry,
             Class<? extends Annotation> domainMetaModel,
             Map<String, DomainModel> models) {
         Collection<ModelType<?, ?>> domainTypes

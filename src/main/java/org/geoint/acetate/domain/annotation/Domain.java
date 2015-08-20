@@ -6,8 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import org.geoint.acetate.metamodel.DomainMetaModel;
-import org.geoint.metamodel.annotation.MetaAttribute;
-import org.geoint.metamodel.annotation.MetaModel;
+import org.geoint.metamodel.annotation.ModelAttribute;
+import org.geoint.metamodel.annotation.Model;
 
 /**
  * Annotation used to declare a basic domain type as part of a domain model.
@@ -15,7 +15,7 @@ import org.geoint.metamodel.annotation.MetaModel;
 @Documented
 @Target({ElementType.TYPE, ElementType.PACKAGE})
 @Retention(RetentionPolicy.RUNTIME)
-@MetaModel
+@Model
 public @interface Domain {
 
     /**
@@ -26,7 +26,7 @@ public @interface Domain {
      *
      * @return domain model name
      */
-    @MetaAttribute(name = DomainMetaModel.DOMAIN_NAME)
+    @ModelAttribute(name = DomainMetaModel.DOMAIN_NAME)
     String domain() default "";
 
     /**
@@ -37,7 +37,7 @@ public @interface Domain {
      *
      * @return
      */
-    @MetaAttribute(name = DomainMetaModel.DOMAIN_VERSION)
+    @ModelAttribute(name = DomainMetaModel.DOMAIN_VERSION)
     String domainVersion() default "";
 
     /**
@@ -47,7 +47,7 @@ public @interface Domain {
      *
      * @return domain type name
      */
-    @MetaAttribute(name = DomainMetaModel.DOMAIN_TYPE_NAME)
+    @ModelAttribute(name = DomainMetaModel.DOMAIN_TYPE_NAME)
     String name() default "";
 
 }

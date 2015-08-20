@@ -5,7 +5,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import org.geoint.metamodel.annotation.MetaModel;
+import org.geoint.metamodel.annotation.Model;
 
 /**
  * Identifies a method as providing idempotent, safe, access to data from a
@@ -14,7 +14,7 @@ import org.geoint.metamodel.annotation.MetaModel;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.ANNOTATION_TYPE})
 @Documented
-@MetaModel
+@Model
 public @interface Accessor {
 
     /**
