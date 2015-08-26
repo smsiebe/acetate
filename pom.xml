@@ -53,7 +53,12 @@
         </dependency>
         <dependency>
             <groupId>org.geoint.metamodel</groupId>
-            <artifactId>geoint-metamodel</artifactId>
+            <artifactId>metamodel-processor</artifactId>
+            <version>1.0-BETA</version>
+        </dependency>
+        <dependency>
+            <groupId>org.geoint.metamodel</groupId>
+            <artifactId>metamodel-core</artifactId>
             <version>1.0-BETA</version>
         </dependency>
     </dependencies>
