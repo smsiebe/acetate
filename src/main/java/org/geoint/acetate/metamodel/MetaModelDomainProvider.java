@@ -15,30 +15,34 @@
  */
 package org.geoint.acetate.metamodel;
 
+import java.io.IOException;
 import java.util.Collection;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.geoint.acetate.domain.DomainModel;
 import org.geoint.acetate.domain.provider.DomainProvider;
 import org.geoint.metamodel.annotation.Model;
-import org.geoint.metamodel.MetaModels;
 import org.geoint.metamodel.MetaModel;
+import org.geoint.metamodel.descriptor.DescriptorXmlReader;
 
 /**
- * Provides domain models discovered from a
- * {@link Model metamodel registry}.
+ * Provides domain models discovered from a {@link Model metamodel registry}.
  *
  * @author steve_siebert
  */
 public class MetaModelDomainProvider implements DomainProvider {
 
-    private final MetaModel metamodelRegistry;
+    private final ClassLoader metamodelClassLoader;
     private Collection<DomainModel> domainModels;
+    private static final Logger logger
+            = Logger.getLogger(MetaModelDomainProvider.class.getName());
 
     /**
      * Loads domain models from the metamodels found by the current context
      * ClassLoader.
      */
     public MetaModelDomainProvider() {
-        metamodelRegistry = MetaModels.getRegistry();
+        metamodelClassLoader = Thread.currentThread().getContextClassLoader();
     }
 
     /**
@@ -49,17 +53,40 @@ public class MetaModelDomainProvider implements DomainProvider {
      * model components
      */
     public MetaModelDomainProvider(ClassLoader loader) {
-        metamodelRegistry = MetaModels.newInstance(loader);
+        metamodelClassLoader = loader;
     }
 
     @Override
     public Collection<DomainModel> getDomainModels() {
-        synchronized (metamodelRegistry) {
+        synchronized (this) {
             if (domainModels == null) {
-                domainModels = DomainMetaModel.fromRegistry(metamodelRegistry);
+                try {
+                    domainModels = loadFromClassLoaderDescriptor(metamodelClassLoader);
+                } catch (IOException | ClassNotFoundException ex) {
+                    logger.log(Level.WARNING, "Unable to load domain models "
+                            + "from metamodel descriptor", ex);
+                }
             }
         }
         return domainModels;
+    }
+
+    private Collection<DomainModel> loadFromClassLoaderDescriptor(
+            ClassLoader loader) throws IOException, ClassNotFoundException {
+
+        if (logger.isLoggable(Level.FINE)) {
+            logger.fine("Loading domain models from metamodel descriptor.");
+        }
+
+        DescriptorXmlReader reader = new DescriptorXmlReader(loader);
+        MetaModel metamodels = reader.call();
+
+        if (logger.isLoggable(Level.INFO)) {
+            logger.info(String.format("Loaded %d models from "
+                    + "metamodel provider.", metamodels.getNumModels()));
+        }
+
+        return DomainMetaModel.fromRegistry(metamodels);
     }
 
 }

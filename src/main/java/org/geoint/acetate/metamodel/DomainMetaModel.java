@@ -29,7 +29,6 @@ import org.geoint.acetate.domain.annotation.Domain;
 import org.geoint.acetate.domain.entity.Entity;
 import org.geoint.acetate.domain.event.Event;
 import org.geoint.metamodel.MetaModelType;
-import org.geoint.metamodel.MetaModels;
 import org.geoint.metamodel.MetaModel;
 import org.geoint.metamodel.ModelType;
 
@@ -66,10 +65,10 @@ public class DomainMetaModel {
         return models.values();
     }
 
-    private static void addMetaType(MetaModel registry,
-            Class<? extends Annotation> domainMetaModel,
+    private static <A extends Annotation> void addMetaType(MetaModel registry,
+            Class<A> domainMetaModel,
             Map<String, DomainModel> models) {
-        Collection<ModelType<?, ?>> domainTypes
+        Collection<ModelType<A, ?>> domainTypes
                 = registry.getModelTypes(domainMetaModel);
         domainTypes.forEach((t) -> {
             final String domainName = getDomainName(t);

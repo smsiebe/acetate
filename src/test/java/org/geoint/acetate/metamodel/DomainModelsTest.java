@@ -23,10 +23,8 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardLocation;
 import org.geoint.acetate.domain.DomainModel;
 import org.geoint.acetate.domain.DomainModelException;
-import org.geoint.metamodel.descriptor.ModelDescriptor;
+import org.geoint.metamodel.descriptor.DescriptorXml;
 import org.geoint.metamodel.processor.MetaModelDescriptorGeneratorProcessor;
-import static org.junit.Assert.fail;
-import org.junit.Test;
 import static org.truth0.Truth.ASSERT;
 
 /**
@@ -44,7 +42,7 @@ public class DomainModelsTest {
                 .compilesWithoutError()
                 .and()
                 .generatesFileNamed(StandardLocation.CLASS_OUTPUT, "",
-                        ModelDescriptor.MODEL_DESCRIPTOR_JAR_PATH);
+                        DescriptorXml.MODEL_DESCRIPTOR_JAR_PATH);
     }
 
 //    @Test
