@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.geoint.acetate.domain.annotation;
+package org.geoint.acetate.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

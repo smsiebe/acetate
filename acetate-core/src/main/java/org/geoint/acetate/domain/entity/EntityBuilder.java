@@ -15,7 +15,7 @@
  */
 package org.geoint.acetate.domain.entity;
 
-import org.geoint.acetate.domain.annotation.Domain;
+import org.geoint.acetate.annotation.Domain;
 
 /**
  *

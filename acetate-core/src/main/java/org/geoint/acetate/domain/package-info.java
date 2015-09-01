@@ -18,5 +18,5 @@
         domainVersion = DomainComponent.ACETATE_DOMAIN_VERSION)
 package org.geoint.acetate.domain;
 
-import org.geoint.acetate.domain.annotation.Domain;
+import org.geoint.acetate.annotation.Domain;
 

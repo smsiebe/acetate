@@ -1,4 +1,4 @@
-package org.geoint.acetate.domain.annotation;
+package org.geoint.acetate.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -10,10 +10,11 @@ import org.geoint.metamodel.annotation.ModelAttribute;
 import org.geoint.metamodel.annotation.Model;
 
 /**
- * Annotation used to declare a basic domain type as part of a domain model.
+ * Annotates a [abstract] class or interface which describes an unmanaged 
+ * domain model component.
  */
 @Documented
-@Target({ElementType.TYPE, ElementType.PACKAGE})
+@Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Model
 public @interface Domain {

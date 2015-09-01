@@ -19,5 +19,5 @@
 package org.geoint.acetate.domain.operation;
 
 import org.geoint.acetate.domain.DomainComponent;
-import org.geoint.acetate.domain.annotation.Domain;
+import org.geoint.acetate.annotation.Domain;
 

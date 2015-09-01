@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import org.geoint.acetate.domain.DomainModel;
 import org.geoint.acetate.domain.DomainType;
-import org.geoint.acetate.domain.annotation.Domain;
+import org.geoint.acetate.annotation.Domain;
 import org.geoint.acetate.domain.entity.Entity;
 import org.geoint.acetate.domain.event.Event;
 import org.geoint.metamodel.MetaModelType;

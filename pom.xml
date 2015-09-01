@@ -20,7 +20,7 @@
     
     <modules>
         <module>acetate-core</module>
-        <module>acetate-cdi</module>
+        <module>acetate-data</module>
     </modules>
    
 </project>

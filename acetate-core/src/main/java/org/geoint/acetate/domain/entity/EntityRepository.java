@@ -16,7 +16,7 @@
 package org.geoint.acetate.domain.entity;
 
 import java.util.Collection;
-import org.geoint.acetate.domain.annotation.Domain;
+import org.geoint.acetate.annotation.Domain;
 
 /**
  * Entity repository used to create new, find/load, and delete entity instances
