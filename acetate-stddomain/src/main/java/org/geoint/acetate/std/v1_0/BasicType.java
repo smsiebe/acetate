@@ -13,23 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate.data;
+package org.geoint.acetate.std.v1_0;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
+import org.geoint.acetate.data.DomainTypeData;
 
 /**
- * Binds data values with a data model, providing a means access the data within
- * the context of the model.
  *
+ * @author steve_siebert
+ * @param <T>
  */
-public abstract class Data {
-
-    public abstract byte[] asBytes(Charset charset);
-
-    public abstract void write(OutputStream out, Charset charset) throws IOException;
-
-    public abstract void visit(DataVisitor visitor);
+public abstract class BasicType<T extends BasicType> extends DomainTypeData<T> {
 
 }

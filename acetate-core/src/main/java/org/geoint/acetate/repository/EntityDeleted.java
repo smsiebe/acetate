@@ -13,23 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate.data;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
+package org.geoint.acetate.repository;
+
+import org.geoint.acetate.annotation.Event;
+
 
 /**
- * Binds data values with a data model, providing a means access the data within
- * the context of the model.
- *
+ * Event published each time an Entity instance is deleted.
+ * 
+ * @author steve_siebert
+ * @param <E> entity type
  */
-public abstract class Data {
-
-    public abstract byte[] asBytes(Charset charset);
-
-    public abstract void write(OutputStream out, Charset charset) throws IOException;
-
-    public abstract void visit(DataVisitor visitor);
+@Event
+public class EntityDeleted<E> {
 
 }

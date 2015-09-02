@@ -15,21 +15,27 @@
  */
 package org.geoint.acetate.data;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Binds data values with a data model, providing a means access the data within
- * the context of the model.
+ * Declares the desired, or resultant, RFC 2045 media type of the formatted
+ * data.
  *
+ * @author steve_siebert
  */
-public abstract class Data {
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
+@Documented
+public @interface DataFormat {
 
-    public abstract byte[] asBytes(Charset charset);
-
-    public abstract void write(OutputStream out, Charset charset) throws IOException;
-
-    public abstract void visit(DataVisitor visitor);
-
+    /**
+     * RFC 2045 compliant media type name.
+     *
+     * @return media type
+     */
+    String value();
 }

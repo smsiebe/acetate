@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 geoint.org.
+ * Copyright 2015 Expression project.organization is undefined on line 4, column 57 in Templates/Licenses/license-apache20.txt..
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,23 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate.data;
+package org.geoint.acetate;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
+import java.util.Collection;
 
 /**
- * Binds data values with a data model, providing a means access the data within
- * the context of the model.
  *
+ * @author steve_siebert
  */
-public abstract class Data {
+public interface Ontology extends DomainModel {
 
-    public abstract byte[] asBytes(Charset charset);
-
-    public abstract void write(OutputStream out, Charset charset) throws IOException;
-
-    public abstract void visit(DataVisitor visitor);
-
+    Collection<DomainModel> getImportedDomainModels();
 }

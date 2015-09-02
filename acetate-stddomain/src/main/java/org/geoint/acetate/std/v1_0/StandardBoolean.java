@@ -13,23 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate.data;
+package org.geoint.acetate.std.v1_0;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+import org.geoint.acetate.annotation.Converts;
+import org.geoint.acetate.annotation.Domain;
+import org.geoint.acetate.annotation.DomainName;
 
 /**
- * Binds data values with a data model, providing a means access the data within
- * the context of the model.
+ * Data model wrapper for a {@link Boolean} or {@link boolean}.
  *
+ * @author steve_siebert
  */
-public abstract class Data {
+@DomainName("boolean")
+@Domain(name = "org.geoint.stddomain", version = "1.0")
+public class StandardBoolean extends BasicType<StandardBoolean> {
 
-    public abstract byte[] asBytes(Charset charset);
+    private final Boolean bool;
 
-    public abstract void write(OutputStream out, Charset charset) throws IOException;
+    @Converts
+    public StandardBoolean(Boolean bool) {
+        this.bool = bool;
+    }
 
-    public abstract void visit(DataVisitor visitor);
+    @Override
+    public void write(OutputStream out, Charset charset) throws IOException {
+        out.write((bool == null || !bool) ? 0 : 1);
+    }
 
 }

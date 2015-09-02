@@ -10,14 +10,15 @@ import org.geoint.metamodel.annotation.ModelAttribute;
 import org.geoint.metamodel.annotation.Model;
 
 /**
- * Annotates a [abstract] class or interface which describes an unmanaged domain
- * model component.
+ * Identifies the type as a domain model entity.
+ *
+ * @see EntityModel
  */
 @Documented
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Model
-public @interface Domain {
+public @interface Entity {
 
     /**
      * OPTIONAL Name of the domain that defines this model.
@@ -28,7 +29,7 @@ public @interface Domain {
      * @return domain model name
      */
     @ModelAttribute(name = DomainMetaModel.DOMAIN_NAME)
-    String name() default "";
+    String domain() default "";
 
     /**
      * OPTIONAL Domain model version of the data type.
@@ -39,6 +40,6 @@ public @interface Domain {
      * @return
      */
     @ModelAttribute(name = DomainMetaModel.DOMAIN_VERSION)
-    String version() default "";
+    String domainVersion() default "";
 
 }

@@ -13,23 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate.data;
+package org.geoint.acetate.annotation;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import org.geoint.metamodel.annotation.Model;
 
 /**
- * Binds data values with a data model, providing a means access the data within
- * the context of the model.
+ * Annotates a java type/method indicating it is not part of the domain model.
  *
+ * @author steve_siebert
  */
-public abstract class Data {
-
-    public abstract byte[] asBytes(Charset charset);
-
-    public abstract void write(OutputStream out, Charset charset) throws IOException;
-
-    public abstract void visit(DataVisitor visitor);
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD})
+@Documented
+@Model
+public @interface NotModeled {
 
 }

@@ -13,23 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate.data;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
+package org.geoint.acetate;
 
 /**
- * Binds data values with a data model, providing a means access the data within
- * the context of the model.
+ * Top-level exception for all exceptions related to the domain model.
  *
+ * @author steve_siebert
  */
-public abstract class Data {
+public class DomainModelException extends Exception {
 
-    public abstract byte[] asBytes(Charset charset);
+    public DomainModelException() {
+    }
 
-    public abstract void write(OutputStream out, Charset charset) throws IOException;
+    public DomainModelException(String message) {
+        super(message);
+    }
 
-    public abstract void visit(DataVisitor visitor);
+    public DomainModelException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public DomainModelException(Throwable cause) {
+        super(cause);
+    }
 
 }

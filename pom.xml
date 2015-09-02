@@ -9,7 +9,12 @@
     <description>
         geoint.org data metamodel framework.
     </description>
-    <properties>        
+    
+    <organization>
+        <name>geoint.org</name>
+    </organization>
+    
+    <properties>    
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -20,7 +25,8 @@
     
     <modules>
         <module>acetate-core</module>
-        <module>acetate-data</module>
+        <module>acetate-stddomain</module>
+        <module>acetate-test</module>
     </modules>
    
 </project>
