@@ -1,3 +1,6 @@
 #maven 
 /target/
 /acetate-*/target/ 
+/acetate-api/nbproject/
+/acetate-core/nbproject/
+/acetate-java/nbproject/

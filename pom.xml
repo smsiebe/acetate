@@ -3,12 +3,10 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.geoint.acetate</groupId>
     <artifactId>acetate</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>1.0</version>
     <name>acetate</name>
     <packaging>pom</packaging>
-    <description>
-        geoint.org data metamodel framework.
-    </description>
+    <description>event-oriented domain model library</description>
     
     <organization>
         <name>geoint.org</name>
@@ -24,9 +22,8 @@
     </properties>
     
     <modules>
-        <module>acetate-core</module>
-        <module>acetate-stddomain</module>
-        <module>acetate-test</module>
+        <module>acetate-api</module>
+        <module>acetate-java</module>
     </modules>
    
 </project>
