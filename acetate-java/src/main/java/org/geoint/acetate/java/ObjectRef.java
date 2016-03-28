@@ -15,10 +15,14 @@
  */
 package org.geoint.acetate.java;
 
+import org.geoint.acetate.java.model.TypeClass;
+
 /**
  *
  * @author steve_siebert
+ * @param <T>
+ * @param <M>
  */
-public interface ObjectRef<T, M extends Type> extends TypeInstanceRef {
+public interface ObjectRef<T, M extends TypeClass<T>> extends TypeObject {
     
 }

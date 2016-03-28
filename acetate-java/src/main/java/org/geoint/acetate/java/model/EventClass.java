@@ -15,7 +15,12 @@
  */
 package org.geoint.acetate.java.model;
 
+import java.util.Optional;
+import java.util.Set;
 import org.geoint.acetate.model.EventModel;
+import org.geoint.acetate.model.InvalidModelException;
+import org.geoint.acetate.model.NamedTypeRef;
+import org.geoint.acetate.model.ValueModel;
 
 /**
  * A {@link EventModel} represented by a java class.
@@ -25,4 +30,9 @@ import org.geoint.acetate.model.EventModel;
  */
 public interface EventClass<E> extends EventModel, TypeClass<E> {
     
+     Set<? extends NamedTypeRef<? extends ValueModel>> getAttributes()
+            throws InvalidModelException;
+
+    Optional<? extends NamedTypeRef<? extends ValueModel>> findAttribute(String name)
+            throws InvalidModelException;
 }
