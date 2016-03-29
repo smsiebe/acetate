@@ -17,9 +17,7 @@ package org.geoint.acetate;
 
 import java.util.Optional;
 import java.util.Set;
-import org.geoint.acetate.model.NamedTypeRef;
 import org.geoint.acetate.model.ResourceModel;
-import org.geoint.acetate.model.ValueModel;
 
 /**
  * An instance of a domain resource.
@@ -27,9 +25,6 @@ import org.geoint.acetate.model.ValueModel;
  * @param <M> model used to describe the domain resource
  */
 public interface ResourceInstance<M extends ResourceModel> extends TypeInstance<M> {
-
-    @Override
-    public M getModel();
 
     /**
      * Resource instance globally unique identifier.
@@ -53,12 +48,15 @@ public interface ResourceInstance<M extends ResourceModel> extends TypeInstance<
      */
     Optional<String> getPreviousResourceVersion();
 
+    @Override
+    public M getModel();
+
     /**
      * Attributes set on the resource.
      *
      * @return resource attributes
      */
-    Set<? extends NamedTypeRef<? extends ValueModel>> getAttributes();
+    Set<? extends InstanceRef<? extends ValueInstance>> getAttributes();
 
     /**
      * Return an attribute by name.
@@ -66,11 +64,11 @@ public interface ResourceInstance<M extends ResourceModel> extends TypeInstance<
      * @param attributeName attribute name
      * @return object describing the attribute reference or null
      */
-    Optional<? extends NamedTypeRef<? extends ValueModel>> findAttribute(String attributeName);
+    Optional<? extends InstanceRef<? extends ValueInstance>> findAttribute(String attributeName);
 
-    Set<? extends NamedTypeRef<? extends ResourceModel>> getLinks();
+    Set<? extends InstanceRef<? extends ResourceInstance>> getLinks();
 
-    Optional<? extends NamedTypeRef<? extends ResourceModel>> findLink(String linkName);
+    Optional<? extends InstanceRef<? extends ResourceInstance>> findLink(String linkName);
 
     Set<? extends OperationInstance> getOperations();
 

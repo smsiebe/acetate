@@ -35,7 +35,7 @@ public interface OperationInstance<R extends ResourceInstance, E extends EventIn
      * @param params operation parameters
      */
     void asyncInvoke(OperationResultHandler<E> handler, R resource,
-            TypeInstanceRef... params);
+            InstanceRef... params);
 
     /**
      * Synchronously invokes the resource operation.
@@ -49,6 +49,6 @@ public interface OperationInstance<R extends ResourceInstance, E extends EventIn
      * @return operation execution result
      * @throws OperationExecutionException if the operation failed execution
      */
-    E syncInvoke(R resource, TypeInstanceRef... params) 
+    E syncInvoke(R resource, InstanceRef... params) 
             throws OperationExecutionException;
 }

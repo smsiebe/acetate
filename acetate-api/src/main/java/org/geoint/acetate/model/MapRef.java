@@ -22,26 +22,26 @@ package org.geoint.acetate.model;
  * @param <K> domain model of the key
  * @param <V> domain model of the value
  */
-public interface MapRef<K extends TypeModel, V extends TypeModel>
+public interface MapRef<K extends NamedRef, V extends NamedRef>
         extends NamedRef {
 
     /**
-     * Key model.
+     * Key model reference.
      * <p>
      * This method is available for convenience and is functionally equivalent
      * to {@link MapRef#getKeyRef() }.
      *
      * @return key model
      */
-    public K getKeyModel();
+    public K getKeyRef();
 
     /**
-     * Value model.
+     * Value model reference.
      * <p>
      * This method is available for convenience and is functionally equivalent
      * to {@link MapRef#getValueRef() }.
      *
      * @return value model
      */
-    public V getValueModel();
+    public V getValueRef();
 }

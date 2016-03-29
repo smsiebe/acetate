@@ -16,22 +16,43 @@
 package org.geoint.acetate;
 
 import java.util.function.Consumer;
-import org.geoint.acetate.model.TypeModel;
 import org.geoint.acetate.model.NamedTypeRef;
+import org.geoint.acetate.model.TypeModel;
 
 /**
  *
  * @author steve_siebert
- * @param <M>
  * @param <T>
  */
-public interface TypeInstanceRef<M extends TypeModel, T extends TypeInstance<M>> {
+public interface InstanceRef<T extends TypeInstance> {
 
-    NamedTypeRef<M> getReferenceModel();
+    NamedTypeRef<? extends TypeModel> getRefModel();
 
-    String getName();
-
-    boolean isCollection();
+    /**
+     * Referenced domain type model.
+     *
+     * @return referenced type
+     */
+    T getReferencedType();
 
     void forEachType(Consumer<T> instance);
+
+    /**
+     * Indicates if the type reference supports multiple instances of the value
+     * or just one.
+     *
+     * @return true if multiple instances are supported, otherwise false
+     */
+    default boolean isCollection() {
+        return getRefModel().isCollection();
+    }
+
+    /**
+     * The reference name.
+     *
+     * @return type reference name
+     */
+    default String getName() {
+        return getRefModel().getName();
+    }
 }

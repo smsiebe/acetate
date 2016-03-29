@@ -20,8 +20,6 @@ import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.Set;
 import org.geoint.acetate.model.EventModel;
-import org.geoint.acetate.model.NamedTypeRef;
-import org.geoint.acetate.model.ValueModel;
 
 /**
  * Instance of a domain event.
@@ -100,7 +98,7 @@ public interface EventInstance<M extends EventModel> extends TypeInstance<M> {
      *
      * @return event attributes
      */
-    Set<? extends NamedTypeRef<? extends ValueModel>> getAttributes();
+    Set<? extends InstanceRef<? extends ValueInstance>> getAttributes();
 
     /**
      * Retrieve event attribute by name.
@@ -108,5 +106,5 @@ public interface EventInstance<M extends EventModel> extends TypeInstance<M> {
      * @param attributeName attribute name
      * @return attribute or null
      */
-    Optional<? extends NamedTypeRef<? extends ValueModel>> findAttribute(String attributeName);
+    Optional<? extends InstanceRef<? extends ValueInstance>> findAttribute(String attributeName);
 }

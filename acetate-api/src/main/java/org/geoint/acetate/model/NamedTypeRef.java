@@ -18,16 +18,16 @@ package org.geoint.acetate.model;
 /**
  * A named reference to a domain type.
  *
- * @param <T> referenced domain type
+ * @param <M> referenced domain type
  */
-public interface NamedTypeRef<T extends TypeModel> extends NamedRef {
+public interface NamedTypeRef<M extends TypeModel> extends NamedRef {
 
     /**
      * Referenced domain type model.
      *
      * @return referenced type
      */
-    T getReferencedType();
+    M getReferencedType();
 
     /**
      * Indicates if the type reference supports multiple instances of the value

@@ -16,27 +16,29 @@
 package org.geoint.acetate;
 
 import java.util.function.BiConsumer;
-import org.geoint.acetate.model.TypeModel;
 
 /**
+ * Map instance reference.
  *
  * @author steve_siebert
- * @param <KM>
  * @param <K>
- * @param <VM>
  * @param <V>
  */
-public interface MapInstanceRef<KM extends TypeModel, K extends TypeInstance<KM>, VM extends TypeModel, V extends TypeInstance<VM>> {
+public interface MapInstanceRef<K extends TypeInstance, V extends TypeInstance> {
 
     String getName();
 
-    KM getKeyModel();
+    default K getKey() {
+        return getKeyRef().getReferencedType();
+    }
 
-    K getKey();
+    InstanceRef<K> getKeyRef();
 
-    VM getValueModel();
+    default V getValue() {
+        return getValueRef().getReferencedType();
+    }
 
-    V getValue();
+    InstanceRef<V> getValueRef();
 
-    void forEachType(BiConsumer<K, V> instance);
+    void forEachType(BiConsumer<InstanceRef<K>, InstanceRef<V>> instance);
 }
