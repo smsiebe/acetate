@@ -23,7 +23,6 @@
     
     <modules>
         <module>acetate-api</module>
-        <module>acetate-java</module>
     </modules>
    
 </project>
