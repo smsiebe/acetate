@@ -7,7 +7,7 @@
 /data/projects/acetate/acetate-api/src/main/java/org/geoint/acetate/model/ValueModel.java
 /data/projects/acetate/acetate-api/src/main/java/org/geoint/acetate/ValueInstance.java
 /data/projects/acetate/acetate-api/src/main/java/org/geoint/acetate/spi/model/DomainModelProvider.java
-/data/projects/acetate/acetate-api/src/main/java/org/geoint/acetate/TypeInstanceRef.java
+/data/projects/acetate/acetate-api/src/main/java/org/geoint/acetate/InstanceRef.java
 /data/projects/acetate/acetate-api/src/main/java/org/geoint/acetate/model/OperationModel.java
 /data/projects/acetate/acetate-api/src/main/java/org/geoint/acetate/serialization/SerializationFormat.java
 /data/projects/acetate/acetate-api/src/main/java/org/geoint/acetate/DomainModels.java

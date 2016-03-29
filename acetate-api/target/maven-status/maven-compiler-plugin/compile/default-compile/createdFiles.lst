@@ -5,6 +5,7 @@ org/geoint/acetate/ResourceInstance.class
 org/geoint/acetate/model/TypeModel.class
 org/geoint/acetate/TypeInstance.class
 org/geoint/acetate/model/EventModel.class
+org/geoint/acetate/InstanceRef.class
 org/geoint/acetate/spi/model/DomainModelProvider.class
 org/geoint/acetate/OperationResultHandler.class
 org/geoint/acetate/MapInstanceRef.class
@@ -16,7 +17,6 @@ org/geoint/acetate/serialization/SerializationFormat.class
 org/geoint/acetate/DomainModels.class
 org/geoint/acetate/EventInstance.class
 org/geoint/acetate/OperationInstance.class
-org/geoint/acetate/TypeInstanceRef.class
 org/geoint/acetate/serialization/CharacterFormats.class
 org/geoint/acetate/serialization/TypeCodec.class
 org/geoint/acetate/ValueInstance.class
