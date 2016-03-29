@@ -1,7 +1,5 @@
 # maven 
-target/
-acetate-api/target/
-acetate-java/target/
+*/target/
 
 # netbeans
 nb-configuration.xml
