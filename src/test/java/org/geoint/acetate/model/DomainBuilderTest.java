@@ -55,5 +55,4 @@ public class DomainBuilderTest {
         assertNotNull(v.getDefaultCharacterCodec());
     }
 
-    
 }
