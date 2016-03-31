@@ -25,7 +25,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import org.geoint.acetate.functional.ThrowingFunction;
 import org.geoint.acetate.model.DomainBuilder.EventBuilder;
 import org.geoint.acetate.serialization.TypeCodec;
 import org.geoint.acetate.spi.model.DomainModelProvider;
@@ -119,7 +118,7 @@ public class DomainRegistry implements DomainModelProvider, TypeResolver {
     }
 
     @Override
-    public Optional<DomainType> findType(String namespace, String version,
+    public Optional<DomainType> resolve(String namespace, String version,
             String typeName) {
         return findModel(namespace, version)
                 .flatMap((m) -> m.typeStream()

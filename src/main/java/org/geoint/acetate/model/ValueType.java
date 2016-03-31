@@ -30,17 +30,17 @@ public final class ValueType extends DomainType {
     private final TypeCodec defaultCharacterCodec;
     private final TypeCodec defaultBinaryCodec;
 
-    public ValueType(String namespace, String name, String version,
+    public ValueType(String namespace, String version, String name,
             TypeCodec defaultCharCodec, TypeCodec defaultBinCodec)
             throws InvalidModelException {
-        this(namespace, name, version, null, defaultCharCodec, defaultBinCodec);
+        this(namespace, version, name, null, defaultCharCodec, defaultBinCodec);
     }
 
-    public ValueType(String namespace, String name, String version,
+    public ValueType(String namespace, String version, String name,
             String description,
             TypeCodec defaultCharacterCodec, TypeCodec defaultBinaryCodec)
             throws InvalidModelException {
-        super(namespace, name, version, description);
+        super(namespace, version, name, description);
         if (defaultCharacterCodec == null) {
             throw new InvalidModelException(String.format("Value types "
                     + "'%s' requires a default character codec.", this.toString()));

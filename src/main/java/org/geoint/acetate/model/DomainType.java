@@ -33,11 +33,11 @@ public abstract class DomainType {
     private final String version;
     private final Optional<String> description;
 
-    public DomainType(String namespace, String name, String version) {
-        this(namespace, name, version, null);
+    public DomainType(String namespace, String version, String name) {
+        this(namespace, version, name, null);
     }
 
-    public DomainType(String namespace, String name, String version,
+    public DomainType(String namespace, String version, String name,
             String description) {
         this.namespace = namespace;
         this.name = name;
@@ -124,13 +124,7 @@ public abstract class DomainType {
             return false;
         }
         final DomainType other = (DomainType) obj;
-        if (!Objects.equals(this.namespace, other.namespace)) {
-            return false;
-        }
-        if (!Objects.equals(this.name, other.name)) {
-            return false;
-        }
-        return Objects.equals(this.version, other.version);
+        return this.isType(other.namespace, other.version, other.name);
     }
 
 }

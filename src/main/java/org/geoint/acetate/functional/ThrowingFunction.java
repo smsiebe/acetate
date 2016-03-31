@@ -13,14 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate.functional;
+package org.geoint.java.function;
 
 import java.util.function.Function;
 
 /**
+ * Represents a function that accepts one argument, ideally produces a result,
+ * or throws a Throwable exception if the function fails to produce a result
+ * (pre-conditions not met, external dependencies not met, whatever your
+ * pleasure).
+ *
  * TODO implement chaining default methods like {@link Function}.
- * 
+ *
  * @author steve_siebert
+ * @param <T> type to be transformed
+ * @param <R> type returned
+ * @param <X> exception type that may be thrown
  */
 @FunctionalInterface
 public interface ThrowingFunction<T, R, X extends Throwable> {

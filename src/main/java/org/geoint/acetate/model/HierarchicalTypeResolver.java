@@ -18,24 +18,29 @@ package org.geoint.acetate.model;
 import java.util.Optional;
 
 /**
- * Decorates a TypeResolver creating a type resolution hierarchy.
+ * A type resolver that "fails up", checking a parent type resolver if it cannot
+ * locally resolve a type.
  * <p>
  * Each HierarchicalTypeResolver may have one parent and the resolution of a
  * domain type is up the hierarchy until a type is found.
  *
  * @author steve_siebert
  */
-public class HierarchicalTypeResolver implements TypeResolver {
+public final class HierarchicalTypeResolver implements TypeResolver {
 
     private final HierarchicalTypeResolver parent; //null indicates the root/parent node
     private final TypeResolver resolver;
 
     private HierarchicalTypeResolver(TypeResolver resolver) {
-        this.parent = null;
-        this.resolver = resolver;
+        this(null, resolver);
     }
 
-    private HierarchicalTypeResolver(HierarchicalTypeResolver parent, TypeResolver resolver) {
+    private HierarchicalTypeResolver(HierarchicalTypeResolver parent,
+            TypeResolver resolver) throws NullPointerException {
+        if (resolver == null) {
+            throw new NullPointerException("HierarchicalTypeResolver node must "
+                    + "have a local type resolver.");
+        }
         this.parent = parent;
         this.resolver = resolver;
     }
@@ -44,17 +49,41 @@ public class HierarchicalTypeResolver implements TypeResolver {
         return new HierarchicalTypeResolver(resolver);
     }
 
+    /**
+     * Creates a new HierarchicalTypeResolver with this resolver as the parent
+     * and the provided resolver as its local resolver.
+     *
+     * @param resolver local resolver
+     * @return new hierarchical resolver
+     * @throws NullPointerException if the local resolver is null
+     */
     public HierarchicalTypeResolver addChild(TypeResolver resolver) {
-        return new HierarchicalTypeResolver(this);
+        return new HierarchicalTypeResolver(this, resolver);
+    }
+
+    /**
+     * Creates a new HierarchicalTypeResolver if the provided local resolver is
+     * not null, otherwise returns itself.
+     *
+     * @param resolver local resolver
+     * @return new child resolver or the same resolver if provided resolver was
+     * null
+     */
+    public HierarchicalTypeResolver optionalChild(TypeResolver resolver) {
+        return (resolver == null)
+                ? this
+                : addChild(resolver);
     }
 
     @Override
-    public Optional<DomainType> findType(String namespace,
+    public Optional<DomainType> resolve(String namespace,
             String version, String typeName) {
+
+        //recursively check hierarchy
         Optional<DomainType> type
-                = this.resolver.findType(namespace, version, typeName);
+                = this.resolver.resolve(namespace, version, typeName);
         if (!type.isPresent() && this.parent != null) {
-            return this.parent.findType(namespace, version, typeName);
+            return this.parent.resolve(namespace, version, typeName);
         }
         return type;
     }

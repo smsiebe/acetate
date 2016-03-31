@@ -29,13 +29,26 @@ public class ValueTypeTest {
     private static final String TN = "mockValue";
     private static final String V = "1.0";
 
+    /**
+     * Test that the default char codec cannot be null.
+     *
+     * @throws Exception
+     */
     @Test(expected = InvalidModelException.class)
     public void testNullDefaultCharCodec() throws Exception {
-        ValueType valueType = new ValueType(NS, TN, V, null, new MockValueBinaryCodec());
+
+        final ValueType value
+                = new ValueType(NS, V, TN, null, new MockValueBinaryCodec());//InvalidModelException expected
     }
 
+    /**
+     * Test that the default binary codec cannot be null.
+     *
+     * @throws Exception
+     */
     @Test(expected = InvalidModelException.class)
     public void testNullDefaultBinCodec() throws Exception {
-        ValueType valueType = new ValueType(NS, TN, V, new MockValueBinaryCodec(), null);
+        final ValueType value
+                = new ValueType(NS, V, TN, new MockValueBinaryCodec(), null);//InvalidModelException expected
     }
 }

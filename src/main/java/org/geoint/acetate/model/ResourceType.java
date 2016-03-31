@@ -30,28 +30,28 @@ public final class ResourceType extends DomainType {
     private final ImmutableNamedTypeMap<NamedTypeRef<ResourceType>> links;
     private final ImmutableNamedTypeMap<ResourceOperation> operations;
 
-    public ResourceType(String namespace, String name, String version,
+    public ResourceType(String namespace, String version, String name,
             Collection<NamedTypeRef<ValueType>> composites,
             Collection<NamedTypeRef<ResourceType>> links,
             Collection<ResourceOperation> operations)
             throws InvalidModelException {
-        this(namespace, name, version, null, composites, links, operations);
+        this(namespace, version, name, null, composites, links, operations);
     }
 
-    public ResourceType(String namespace, String name,
-            String version, String description,
+    public ResourceType(String namespace, String version, String name,
+            String description,
             Collection<NamedTypeRef<ValueType>> composites,
             Collection<NamedTypeRef<ResourceType>> links,
             Collection<ResourceOperation> operations)
             throws InvalidModelException {
-        super(namespace, name, version, description);
+        super(namespace, version, name, description);
         this.composites = ImmutableNamedTypeMap.createMap(composites,
                 NamedTypeRef::getName);
         this.links = ImmutableNamedTypeMap.createMap(links,
-                NamedTypeRef::getName, 
+                NamedTypeRef::getName,
                 this.composites::containsKey);
         this.operations = ImmutableNamedTypeMap.createMap(operations,
-                ResourceOperation::getName, 
+                ResourceOperation::getName,
                 (n) -> this.composites.containsKey(n) || this.links.containsKey(n));
     }
 

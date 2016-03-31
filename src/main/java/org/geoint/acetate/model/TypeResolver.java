@@ -33,6 +33,6 @@ public interface TypeResolver {
      * @param typeName domain type name
      * @return domain type, if known to the resolver
      */
-    Optional<DomainType> findType(String namespace, String version,
+    Optional<DomainType> resolve(String namespace, String version,
             String typeName);
 }

@@ -31,17 +31,17 @@ public final class EventType extends DomainType {
 
     private final ImmutableNamedTypeMap<NamedTypeRef<ValueType>> composites;
 
-    public EventType(String namespace, String name, String version,
+    public EventType(String namespace,  String version,String name,
             Collection<NamedTypeRef<ValueType>> composites)
             throws InvalidModelException {
-        this(namespace, name, version, null, composites);
+        this(namespace, version, name, null, composites);
     }
 
-    public EventType(String namespace, String name,
-            String version, String description,
+    public EventType(String namespace, 
+            String version, String name, String description,
             Collection<NamedTypeRef<ValueType>> composites)
             throws InvalidModelException {
-        super(namespace, name, version, description);
+        super(namespace, version,name,  description);
         this.composites
                 = ImmutableNamedTypeMap.createMap(composites, NamedTypeRef::getName);
     }
