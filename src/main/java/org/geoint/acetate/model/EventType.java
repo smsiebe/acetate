@@ -29,28 +29,28 @@ import org.geoint.acetate.EventInstance;
  */
 public final class EventType extends DomainType {
 
-    private final ImmutableNamedTypeMap<NamedTypeRef<ValueType>> composites;
+    private final ImmutableNamedTypeMap<NamedRef> composites;
 
-    public EventType(String namespace,  String version,String name,
-            Collection<NamedTypeRef<ValueType>> composites)
+    public EventType(String namespace, String version, String name,
+            Collection<NamedRef> composites)
             throws InvalidModelException {
         this(namespace, version, name, null, composites);
     }
 
-    public EventType(String namespace, 
+    public EventType(String namespace,
             String version, String name, String description,
-            Collection<NamedTypeRef<ValueType>> composites)
+            Collection<NamedRef> composites)
             throws InvalidModelException {
-        super(namespace, version,name,  description);
+        super(namespace, version, name, description);
         this.composites
-                = ImmutableNamedTypeMap.createMap(composites, NamedTypeRef::getName);
+                = ImmutableNamedTypeMap.createMap(composites, NamedRef::getName);
     }
 
-    public Collection<NamedTypeRef<ValueType>> getComposites() {
+    public Collection<NamedRef> getComposites() {
         return composites.values();
     }
 
-    public Optional<NamedTypeRef<ValueType>> findComposite(String name) {
+    public Optional<NamedRef> findComposite(String name) {
         return composites.find(name);
     }
 

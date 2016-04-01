@@ -26,24 +26,14 @@ public abstract class NamedRef {
 
     private final String name;
     private final Optional<String> description;
-    private final boolean collection;
 
     public NamedRef(String name) {
-        this(name, null, false);
-    }
-
-    public NamedRef(String name, boolean isCollection) {
-        this(name, null, isCollection);
+        this(name, null);
     }
 
     public NamedRef(String name, String description) {
-        this(name, description, false);
-    }
-
-    public NamedRef(String name, String description, boolean isCollection) {
         this.name = name;
         this.description = Optional.ofNullable(description);
-        this.collection = isCollection;
     }
 
     /**
@@ -62,10 +52,6 @@ public abstract class NamedRef {
      */
     public Optional<String> getDescription() {
         return description;
-    }
-
-    public boolean isCollection() {
-        return collection;
     }
 
 }

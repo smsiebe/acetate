@@ -15,6 +15,7 @@
  */
 package org.geoint.acetate.model;
 
+import java.util.Optional;
 import org.geoint.acetate.serialization.MockValueBinaryCodec;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -27,14 +28,16 @@ public class DomainBuilderTest {
 
     private static final String NS = "org.geoint.acetate.test";
     private static final String V = "1.0";
-    final String valueName = "testValue";
-    final String valueDescription = "my test value";
-    final String eventName = "testEvent";
-    final String eventDesc = "my test desc";
-    final String valueRefName = "eventValue";
-    final String valueRefDesc = "event value";
-    final String resourceName = "testResource";
-    final String resourceDesc = "super cool resource";
+    private static final String valueName = "testValue";
+    private static final String valueDescription = "my test value";
+    private static final String eventName = "testEvent";
+    private static final String eventDesc = "my test desc";
+    private static final String valueRefName = "eventValue";
+    private static final String valueRefDesc = "event value";
+    private static final String resourceName = "testResource";
+    private static final String resourceDesc = "super cool resource";
+    private static final String mapRefName = "mapRef";
+    private static final String eventRefName = "myEventRef";
 
     @Test
     public void testDefineModel() throws Exception {
@@ -82,13 +85,14 @@ public class DomainBuilderTest {
         assertTrue(e.findComposite(valueRefName).isPresent());
 
         //test event composite
-        NamedTypeRef<ValueType> vRef = e.findComposite(valueRefName).get();
+        NamedRef vRef = e.findComposite(valueRefName).get();
         assertTrue(vRef.getDescription().isPresent());
         assertEquals(valueRefDesc, vRef.getDescription().get());
         assertEquals(valueRefName, vRef.getName());
-        ValueType refType = vRef.getReferencedType();
+        assertTrue(vRef instanceof NamedTypeRef);
+        NamedTypeRef typeRef = (NamedTypeRef) vRef;
         ValueType vType = m.getValues().iterator().next();
-        assertEquals(vType, refType);
+        assertEquals(vType, typeRef.getReferencedType());
 
     }
 
@@ -115,13 +119,14 @@ public class DomainBuilderTest {
         assertTrue(r.findComposite(valueRefName).isPresent());
 
         //test value composite
-        NamedTypeRef<ValueType> vRef = r.findComposite(valueRefName).get();
+        NamedRef vRef = r.findComposite(valueRefName).get();
         assertTrue(vRef.getDescription().isPresent());
         assertEquals(valueRefDesc, vRef.getDescription().get());
         assertEquals(valueRefName, vRef.getName());
-        ValueType refType = vRef.getReferencedType();
+        assertTrue(vRef instanceof NamedTypeRef);
+        NamedTypeRef typeRef = (NamedTypeRef) vRef;
         ValueType vType = m.getValues().iterator().next();
-        assertEquals(vType, refType);
+        assertEquals(vType, typeRef.getReferencedType());
     }
 
     /**
@@ -186,10 +191,62 @@ public class DomainBuilderTest {
         DomainModel m = b.build(); //InvalidModelException expected
     }
 
+    @Test
+    public void testMapReference() throws InvalidModelException {
+        DomainBuilder b = new DomainBuilder(NS, V);
+        addTestValue(b);
+        addTestEvent(b);
+        b.defineResource("resourceWithMap")
+                .withCompositeMap(mapRefName)
+                .keyType(valueRefName, valueName)
+                .withDescription(valueRefDesc)
+                .build() //map key ref
+                .valueRef(eventRefName)
+                .referencedType(eventName)
+                .isCollection(true)
+                .build() //may key value
+                .build() //resource
+                .build(); //domain
+
+        DomainModel m = b.build();
+
+        assertEquals(1, m.getValues().size());
+        assertEquals(1, m.getEvents().size());
+        assertEquals(1, m.getResources().size());
+
+        ResourceType r = m.getResources().iterator().next();
+        assertEquals(1, r.getComposites().size());
+        Optional<NamedRef> cRef = r.findComposite(mapRefName);
+        assertTrue(cRef.isPresent());
+        NamedRef ref = cRef.get();
+        assertTrue(ref instanceof NamedMapRef);
+        NamedMapRef mapRef = (NamedMapRef) ref;
+
+        //test key
+        assertEquals(valueRefName, mapRef.getKeyRef().getName());
+        assertTrue(mapRef.getKeyRef().getDescription().isPresent());
+        assertEquals(valueRefDesc, mapRef.getKeyRef().getDescription().get());
+        assertFalse(mapRef.getKeyRef().isCollection());
+        DomainType keyType = mapRef.getKeyRef().getReferencedType();
+        assertTrue(keyType instanceof ValueType);
+        ValueType keyValueType = (ValueType) keyType;
+        assertEquals(valueName, keyValueType.getName());
+
+        //test value
+        NamedRef valueRef = mapRef.getValueRef();
+        assertEquals(eventRefName, valueRef.getName());
+        assertTrue(valueRef instanceof NamedTypeRef);
+        NamedTypeRef valueTypeRef = (NamedTypeRef) valueRef;
+        DomainType valueType = valueTypeRef.getReferencedType();
+        assertTrue(valueType instanceof EventType);
+        EventType valueEventType = (EventType) valueType;
+        assertEquals(eventName, valueEventType.getName());
+    }
+
     private DomainBuilder addTestResource(DomainBuilder b)
             throws InvalidModelException {
         return b.defineResource(resourceName, resourceDesc)
-                .withComposite(valueRefName, valueName)
+                .withCompositeType(valueRefName, valueName)
                 .withDescription(valueRefDesc)
                 .build() //ref
                 .build(); //resource
@@ -198,7 +255,7 @@ public class DomainBuilderTest {
     private DomainBuilder addTestEvent(DomainBuilder b)
             throws InvalidModelException {
         b.defineEvent(eventName, eventDesc)
-                .withComposite(valueRefName, valueName)
+                .withCompositeType(valueRefName, valueName)
                 .withDescription(valueRefDesc)
                 .build() //ref
                 .build(); //event

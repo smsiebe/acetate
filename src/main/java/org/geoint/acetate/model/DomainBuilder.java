@@ -421,7 +421,7 @@ public class DomainBuilder {
             NamedTypeRefBuilder<ResourceBuilder> ref = new NamedTypeRefBuilder(this, refName,
                     compositeNamespace, compositeVersion, compositeName);
 
-            if (!composites.add(ref)) {
+            if (!links.add(ref)) {
                 throw new DuplicateNamedTypeException(refName);
             }
             return ref;
@@ -519,8 +519,8 @@ public class DomainBuilder {
     public abstract class ComposedTypeBuilder<T extends DomainType, B extends TypeBuilder>
             extends TypeBuilder<T, B> {
 
-        final NamedSet<NamedTypeRefBuilder> composites
-                = new NamedSet<>(NamedTypeRefBuilder::getRefName);
+        final NamedSet<NamedRefBuilder> composites
+                = new NamedSet<>(NamedRefBuilder::getRefName);
 
         public ComposedTypeBuilder(
                 ThrowingFunction<B, DomainBuilder, InvalidModelException> onBuild,
@@ -535,22 +535,22 @@ public class DomainBuilder {
         }
 
         /**
-         * Defines local (same domain) ValueType as a composite of the event.
+         * Defines composite reference.
          *
          * @param refName name for this composite type
-         * @param localTypeName value type name fro
          * @throws InvalidModelException if this definition is invalid
          * @return this builder (fluid interface)
          */
-        public NamedTypeRefBuilder<B> withComposite(String refName,
-                String localTypeName) throws InvalidModelException {
-            return withComposite(refName, namespace, version,
-                    localTypeName);
+        public NamedRefBuilder<B> withComposite(String refName)
+                throws InvalidModelException {
+            NamedRefBuilder<B> rb = new NamedRefBuilder(this, refName);
+            addCompositeRef(rb);
+            return rb;
         }
 
         /**
-         * Defines a ValueType (same or external domain) as a composite of the
-         * event.
+         * Defines a reference to a (or a collection of) DomainType(s) as a
+         * composite.
          *
          * @param refName name for this composite type
          * @param compositeNamespace namespace of the composite type
@@ -559,77 +559,251 @@ public class DomainBuilder {
          * @return this builder (fluid interface)
          * @throws InvalidModelException if this definition is invalid
          */
-        public NamedTypeRefBuilder<B> withComposite(String refName,
+        public NamedTypeRefBuilder<B> withCompositeType(String refName,
                 String compositeNamespace, String compositeVersion,
                 String compositeName) throws InvalidModelException {
 
-            NamedTypeRefBuilder<B> ref = new NamedTypeRefBuilder(this, refName,
-                    compositeNamespace, compositeVersion, compositeName);
-
-            if (!composites.add(ref)) {
-                throw new DuplicateNamedTypeException(refName);
-            }
-            return ref;
+            NamedRefBuilder<B> ref = new NamedRefBuilder(this, refName);
+            NamedTypeRefBuilder<B> typeRef
+                    = ref.referencedType(compositeNamespace,
+                            compositeVersion, compositeName);
+            addCompositeRef(ref);
+            return typeRef;
         }
 
-        protected Collection<NamedTypeRef<ValueType>> getCompositeRefs(
+        /**
+         * Returns a NamedTypeRefBuilder to define the composite type.
+         *
+         * @param refName
+         * @param localDomainTypeName
+         * @return
+         * @throws InvalidModelException
+         */
+        public NamedTypeRefBuilder<B> withCompositeType(String refName,
+                String localDomainTypeName) throws InvalidModelException {
+            NamedRefBuilder<B> ref = new NamedRefBuilder(this, refName);
+            NamedTypeRefBuilder<B> typeRef = ref.referencedType(localDomainTypeName);
+            addCompositeRef(ref);
+            return typeRef;
+        }
+
+        /**
+         * Returns a NamedMapRefBuilder to define the composite map.
+         *
+         * @param refName
+         * @return
+         * @throws InvalidModelException
+         */
+        public NamedMapRefBuilder<B> withCompositeMap(String refName)
+                throws InvalidModelException {
+            NamedRefBuilder<B> ref = new NamedRefBuilder(this, refName);
+            NamedMapRefBuilder<B> typeRef = ref.referencedMap();
+            addCompositeRef(ref);
+            return typeRef;
+        }
+
+        protected void addCompositeRef(NamedRefBuilder ref)
+                throws InvalidModelException {
+            if (!composites.add(ref)) {
+                throw new DuplicateNamedTypeException(ref.getRefName());
+            }
+        }
+
+        protected Collection<NamedRef> getCompositeRefs(
                 TypeResolver resolver) throws InvalidModelException {
             return this.composites.toList((c) -> {
-                NamedTypeRef ref = c.createModel(resolver);
-                if (!ValueType.class.isAssignableFrom(
-                        ref.getReferencedType().getClass())) {
-                    throw new InvalidModelException(
-                            String.format("Composites can only be a domain "
-                                    + "ValueType, refererence '%s' but was "
-                                    + "found to be of type '%s'",
-                                    ref.toString(),
-                                    ref.getReferencedType().getClass().getName()));
-                }
-                return ref;
+                return c.createModel(resolver);
             });
         }
     }
 
-    public class NamedTypeRefBuilder<B> extends ModelBuilder {
+    public abstract class RefModelBuilder<M extends NamedRef> extends ModelBuilder<M> {
+
+        abstract String getRefName();
+    }
+
+    /**
+     * Generic named ref API.
+     *
+     * @see NamedTypeRefBuilder
+     * @see NamedMapRefBuilder
+     * @param <B> declaring builder
+     */
+    public class NamedRefBuilder<B extends ModelBuilder>
+            extends ModelBuilder {
 
         private final B declaringBuilder;
-        private final String namespace;
-        private final String version;
-        private final String typeName;
         private final String refName;
         private String description;
+        private RefModelBuilder refModelBuilder; //aggregate
 
-        public NamedTypeRefBuilder(B declaringBuilder, String refName,
-                String namespace, String version, String typeName) {
+        public NamedRefBuilder(B declaringBuilder, String refName) {
             this.declaringBuilder = declaringBuilder;
-            this.namespace = namespace;
-            this.version = version;
-            this.typeName = typeName;
             this.refName = refName;
-        }
-
-        public NamedTypeRefBuilder<B> withDescription(String desc) {
-            this.description = desc;
-            return this;
         }
 
         String getRefName() {
             return refName;
         }
 
+        public NamedRefBuilder<B> withDescription(String desc) {
+            this.description = desc;
+            return this;
+        }
+
+        public NamedTypeRefBuilder<B> referencedType(String typeName) {
+            refModelBuilder = new NamedTypeRefBuilder(this, typeName);
+            return (NamedTypeRefBuilder<B>) refModelBuilder;
+        }
+
+        public NamedTypeRefBuilder<B> referencedType(String typeNamespace,
+                String typeVersion, String typeName) {
+            refModelBuilder = new NamedTypeRefBuilder(this, typeNamespace,
+                    typeVersion, typeName);
+            return (NamedTypeRefBuilder<B>) refModelBuilder;
+        }
+
+        public NamedMapRefBuilder<B> referencedMap() {
+            refModelBuilder = new NamedMapRefBuilder(this);
+            return (NamedMapRefBuilder<B>) refModelBuilder;
+        }
+
+        @Override
+        protected NamedRef createModel(TypeResolver resolver)
+                throws InvalidModelException {
+            return (NamedRef) refModelBuilder.createModel(resolver);
+        }
+
         public B build() {
             return declaringBuilder;
+        }
+    }
+
+    public class NamedTypeRefBuilder<B extends ModelBuilder> extends RefModelBuilder<NamedTypeRef> {
+
+        private final NamedRefBuilder<B> refBuilder; //aggregation vs inheritence because generics resulted in a too-complex API
+        private final String refTypeNamespace;
+        private final String refTypeVersion;
+        private final String refTypeName;
+        private boolean collection;
+
+        public NamedTypeRefBuilder(NamedRefBuilder<B> refBuilder,
+                String refNamespace, String refVersion, String refType) {
+            this.refBuilder = refBuilder;
+            this.refTypeNamespace = refNamespace;
+            this.refTypeVersion = refVersion;
+            this.refTypeName = refType;
+        }
+
+        public NamedTypeRefBuilder(NamedRefBuilder<B> refBuilder,
+                String refType) {
+            this(refBuilder, namespace, version, refType);
+        }
+
+        public NamedTypeRefBuilder(B builder, String refName,
+                String refNamespace, String refVersion, String refType) {
+            this(new NamedRefBuilder(builder, refName), refNamespace,
+                    refVersion, refType);
+        }
+
+        public NamedTypeRefBuilder<B> withDescription(String desc) {
+            this.refBuilder.description = desc;
+            return this;
+        }
+
+        public NamedTypeRefBuilder<B> isCollection(boolean collection) {
+            this.collection = collection;
+            return this;
+        }
+
+        @Override
+        String getRefName() {
+            return refBuilder.getRefName();
+        }
+
+        public B build() {
+            return refBuilder.build();
         }
 
         @Override
         protected NamedTypeRef createModel(TypeResolver resolver)
                 throws InvalidModelException {
-            DomainType type = resolver.resolve(namespace, version, typeName)
+            DomainType type = resolver.resolve(refTypeNamespace, refTypeVersion, refTypeName)
                     .orElseThrow(() -> new UnknownTypeException(
-                            namespace, version, typeName)
+                            refTypeNamespace, refTypeVersion, refTypeName)
                     );
-            return new NamedTypeRef(refName, description, type);
+            return new NamedTypeRef(type,
+                    refBuilder.refName,
+                    refBuilder.description,
+                    collection);
         }
+
+    }
+
+    public class NamedMapRefBuilder<B extends ModelBuilder>
+            extends RefModelBuilder<NamedMapRef> {
+
+        private final NamedRefBuilder<B> refBuilder;
+        private NamedTypeRefBuilder<NamedMapRefBuilder<B>> keyRefBuilder;
+        private NamedRefBuilder<NamedMapRefBuilder<B>> valueRefBuilder;
+
+        public NamedMapRefBuilder(NamedRefBuilder<B> refBuilder) {
+            this.refBuilder = refBuilder;
+        }
+
+        public NamedMapRefBuilder<B> withDescription(String desc) {
+            this.refBuilder.description = desc;
+            return this;
+        }
+
+        /**
+         * Specify the key type as a domain type of the domain being built.
+         *
+         * @param typeName domain type name
+         * @return this builder
+         */
+        public NamedTypeRefBuilder<NamedMapRefBuilder<B>> keyType(String typeName) {
+            this.keyRefBuilder = new NamedTypeRefBuilder(new NamedRefBuilder(this, typeName), typeName);
+            return this.keyRefBuilder;
+        }
+
+        public NamedTypeRefBuilder<NamedMapRefBuilder<B>> keyType(String refName,
+                String refTypeName) {
+            this.keyRefBuilder = new NamedTypeRefBuilder(
+                    new NamedRefBuilder(this, refName), refTypeName);
+            return this.keyRefBuilder;
+        }
+
+        public NamedTypeRefBuilder<NamedMapRefBuilder<B>> keyType(String refName,
+                String refNamespace, String refVersion, String refType) {
+            this.keyRefBuilder = new NamedTypeRefBuilder(
+                    new NamedRefBuilder(this, refName), refNamespace, refVersion, refType);
+            return this.keyRefBuilder;
+        }
+
+        public NamedRefBuilder<NamedMapRefBuilder<B>> valueRef(String refName) {
+            this.valueRefBuilder = new NamedRefBuilder(this, refName);
+            return this.valueRefBuilder;
+        }
+
+        @Override
+        protected NamedMapRef createModel(TypeResolver resolver)
+                throws InvalidModelException {
+            NamedTypeRef keyRef = keyRefBuilder.createModel(resolver);
+            NamedRef valueRef = valueRefBuilder.createModel(resolver);
+            return new NamedMapRef(this.refBuilder.refName,
+                    this.refBuilder.description, keyRef, valueRef);
+        }
+
+        @Override
+        String getRefName() {
+            return refBuilder.getRefName();
+        }
+
+        public B build() {
+            return refBuilder.build();
+        }
+
     }
 
     /**

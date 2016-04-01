@@ -25,6 +25,13 @@ import java.util.Objects;
 public final class NamedTypeRef<M extends DomainType> extends NamedRef {
 
     private final M type;
+    private final boolean collection;
+
+    public NamedTypeRef(M type, String refName, String description, boolean isCollection) {
+        super(refName, description);
+        this.type = type;
+        this.collection = isCollection;
+    }
 
     /**
      * Uses the name of the domain type as the reference name.
@@ -32,18 +39,19 @@ public final class NamedTypeRef<M extends DomainType> extends NamedRef {
      * @param type
      */
     public NamedTypeRef(M type) {
-        super(type.getName());
-        this.type = type;
+        this(type, type.getName(), null, false);
     }
 
-    public NamedTypeRef(String name, M type) {
-        super(name);
-        this.type = type;
+    public NamedTypeRef(M type, String name) {
+        this(type, name, null, false);
     }
 
-    public NamedTypeRef(String name, String description, M type) {
-        super(name, description);
-        this.type = type;
+    public NamedTypeRef(M type, String name, String description) {
+        this(type, name, description, false);
+    }
+
+    public boolean isCollection() {
+        return collection;
     }
 
     @Override

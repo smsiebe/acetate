@@ -26,12 +26,12 @@ import java.util.Optional;
  */
 public final class ResourceType extends DomainType {
 
-    private final ImmutableNamedTypeMap<NamedTypeRef<ValueType>> composites;
+    private final ImmutableNamedTypeMap<NamedRef> composites;
     private final ImmutableNamedTypeMap<NamedTypeRef<ResourceType>> links;
     private final ImmutableNamedTypeMap<ResourceOperation> operations;
 
     public ResourceType(String namespace, String version, String name,
-            Collection<NamedTypeRef<ValueType>> composites,
+            Collection<NamedRef> composites,
             Collection<NamedTypeRef<ResourceType>> links,
             Collection<ResourceOperation> operations)
             throws InvalidModelException {
@@ -40,13 +40,13 @@ public final class ResourceType extends DomainType {
 
     public ResourceType(String namespace, String version, String name,
             String description,
-            Collection<NamedTypeRef<ValueType>> composites,
+            Collection<NamedRef> composites,
             Collection<NamedTypeRef<ResourceType>> links,
             Collection<ResourceOperation> operations)
             throws InvalidModelException {
         super(namespace, version, name, description);
         this.composites = ImmutableNamedTypeMap.createMap(composites,
-                NamedTypeRef::getName);
+                NamedRef::getName);
         this.links = ImmutableNamedTypeMap.createMap(links,
                 NamedTypeRef::getName,
                 this.composites::containsKey);
@@ -70,7 +70,7 @@ public final class ResourceType extends DomainType {
      * @param operationName operation name
      * @return operation or null
      */
-    Optional<ResourceOperation> findOperation(String operationName) {
+    public Optional<ResourceOperation> findOperation(String operationName) {
         return operations.find(operationName);
     }
 
@@ -79,7 +79,7 @@ public final class ResourceType extends DomainType {
      *
      * @return resource data attribute models
      */
-    Collection<NamedTypeRef<ValueType>> getComposites() {
+    public Collection<NamedRef> getComposites() {
         return composites.values();
     }
 
@@ -90,7 +90,7 @@ public final class ResourceType extends DomainType {
      * @return the attribute information or null if the attribute name is not
      * valid for this resource
      */
-    Optional<NamedTypeRef<ValueType>> findComposite(String name) {
+    public Optional<NamedRef> findComposite(String name) {
         return composites.find(name);
     }
 
@@ -99,7 +99,7 @@ public final class ResourceType extends DomainType {
      *
      * @return resources linked to this resource
      */
-    Collection<NamedTypeRef<ResourceType>> getLinks() {
+    public Collection<NamedTypeRef<ResourceType>> getLinks() {
         return links.values();
     }
 
@@ -110,7 +110,7 @@ public final class ResourceType extends DomainType {
      * @param linkName link name
      * @return link details or null if link by this name does not exist
      */
-    Optional<NamedTypeRef<ResourceType>> findLink(String linkName) {
+    public Optional<NamedTypeRef<ResourceType>> findLink(String linkName) {
         return links.find(linkName);
     }
 
