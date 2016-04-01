@@ -3,7 +3,7 @@
 
 # netbeans
 nb-configuration.xml
-nbproject/private/
+nbproject/
 nbactions.xml
 
 # Eclipse
