@@ -1,0 +1,7 @@
+org/geoint/acetate/model/HierarchicalTypeResolverTest.class
+org/geoint/acetate/serialization/MockValueBinaryCodec.class
+org/geoint/acetate/model/MemoryTypeResolverTest.class
+org/geoint/acetate/model/DomainBuilderTest.class
+org/geoint/acetate/model/HierarchicalTypeResolverTest$TrackingTypeResolver.class
+org/geoint/acetate/serialization/SerializationFormatTest.class
+org/geoint/acetate/model/ValueTypeTest.class
