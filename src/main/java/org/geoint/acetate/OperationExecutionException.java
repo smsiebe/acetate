@@ -22,7 +22,7 @@ package org.geoint.acetate;
  */
 public class OperationExecutionException extends RuntimeException {
 
-    public OperationExecutionException(OperationInstance operation) {
+    public OperationExecutionException(ResourceInstanceOperation operation) {
         super(defaultMessage(operation));
     }
 
@@ -34,12 +34,12 @@ public class OperationExecutionException extends RuntimeException {
         super(message, cause);
     }
 
-    public OperationExecutionException(OperationInstance operation,
+    public OperationExecutionException(ResourceInstanceOperation operation,
             Throwable cause) {
         super(defaultMessage(operation), cause);
     }
 
-    private static String defaultMessage(OperationInstance op) {
+    private static String defaultMessage(ResourceInstanceOperation op) {
         return String.format("Operation '%s' on resource '%s.%s-%s' failed to "
                 + "execute successfully.",
                 op.getModel().getName(),

@@ -1,6 +1,6 @@
-/data/projects/new/acetate/src/test/java/org/geoint/acetate/serialization/SerializationFormatTest.java
-/data/projects/new/acetate/src/test/java/org/geoint/acetate/model/ValueTypeTest.java
-/data/projects/new/acetate/src/test/java/org/geoint/acetate/serialization/MockValueBinaryCodec.java
-/data/projects/new/acetate/src/test/java/org/geoint/acetate/model/MemoryTypeResolverTest.java
-/data/projects/new/acetate/src/test/java/org/geoint/acetate/model/HierarchicalTypeResolverTest.java
-/data/projects/new/acetate/src/test/java/org/geoint/acetate/model/DomainBuilderTest.java
+/data/projects/new/github/acetate/src/test/java/org/geoint/acetate/model/HierarchicalTypeResolverTest.java
+/data/projects/new/github/acetate/src/test/java/org/geoint/acetate/model/ValueTypeTest.java
+/data/projects/new/github/acetate/src/test/java/org/geoint/acetate/model/MemoryTypeResolverTest.java
+/data/projects/new/github/acetate/src/test/java/org/geoint/acetate/serialization/MockValueBinaryCodec.java
+/data/projects/new/github/acetate/src/test/java/org/geoint/acetate/model/DomainBuilderTest.java
+/data/projects/new/github/acetate/src/test/java/org/geoint/acetate/serialization/SerializationFormatTest.java

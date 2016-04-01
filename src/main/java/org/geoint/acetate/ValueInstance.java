@@ -15,22 +15,12 @@
  */
 package org.geoint.acetate;
 
-import java.nio.channels.WritableByteChannel;
-import org.geoint.acetate.serialization.SerializationFormat;
 import org.geoint.acetate.model.ValueType;
 
 /**
  * Instance of a domain value.
  *
- * @param <M> domain value model
  */
-public interface ValueInstance<M extends ValueType> extends TypeInstance<M> {
+public interface ValueInstance extends TypeInstance<ValueType> {
 
-    /**
-     * Serialize the content of the value instance to the provided channel.
-     *
-     * @param out output channel
-     * @param format serialized format
-     */
-    void serialize(WritableByteChannel out, SerializationFormat format);
 }

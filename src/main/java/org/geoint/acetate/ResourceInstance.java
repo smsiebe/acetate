@@ -22,23 +22,22 @@ import org.geoint.acetate.model.ResourceType;
 /**
  * An instance of a domain resource.
  *
- * @param <M> model used to describe the domain resource
  */
-public interface ResourceInstance<M extends ResourceType> extends TypeInstance<M> {
+public interface ResourceInstance extends TypeInstance<ResourceType> {
 
     /**
      * Resource instance globally unique identifier.
      *
      * @return immutable unique identifier for the resource
      */
-    String getResourceGuid();
+    String getInstanceGuid();
 
     /**
      * The instance version identifier.
      *
      * @return resource version
      */
-    String getResourceVersion();
+    String getInstanceVersion();
 
     /**
      * The previous version of this resource.
@@ -48,29 +47,26 @@ public interface ResourceInstance<M extends ResourceType> extends TypeInstance<M
      */
     Optional<String> getPreviousResourceVersion();
 
-    @Override
-    public M getModel();
+    /**
+     * Domain types that compose this resource instance.
+     *
+     * @return composite data
+     */
+    Set<TypeInstanceRef> getComposites();
 
     /**
-     * Attributes set on the resource.
+     * Return an composite instance
      *
-     * @return resource attributes
+     * @param compositeName composite name
+     * @return composite reference or null
      */
-    Set<? extends InstanceRef<? extends ValueInstance>> getAttributes();
+    Optional<TypeInstanceRef> findComposite(String compositeName);
 
-    /**
-     * Return an attribute by name.
-     *
-     * @param attributeName attribute name
-     * @return object describing the attribute reference or null
-     */
-    Optional<? extends InstanceRef<? extends ValueInstance>> findAttribute(String attributeName);
+    Set<TypeInstanceRef<ResourceInstance>> getLinks();
 
-    Set<? extends InstanceRef<? extends ResourceInstance>> getLinks();
+    Optional<TypeInstanceRef<ResourceInstance>> findLink(String linkName);
 
-    Optional<? extends InstanceRef<? extends ResourceInstance>> findLink(String linkName);
+    Set<ResourceInstanceOperation> getOperations();
 
-    Set<? extends OperationInstance> getOperations();
-
-    Optional<? extends OperationInstance> findOperation(String operationName);
+    Optional<ResourceInstanceOperation> findOperation(String operationName);
 }

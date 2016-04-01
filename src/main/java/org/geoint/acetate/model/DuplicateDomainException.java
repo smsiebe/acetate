@@ -20,15 +20,15 @@ package org.geoint.acetate.model;
  *
  * @author steve_siebert
  */
-public class DuplicateDomainException extends InvalidModelException {
+public class DuplicateDomainException extends InvalidDomainException {
 
     public DuplicateDomainException(String namespace, String version) {
-        super(message(namespace, version));
+        super(namespace, version, message(namespace, version));
     }
 
     public DuplicateDomainException(String namespace, String version,
             Throwable cause) {
-        super(message(namespace, version), cause);
+        super(namespace, version, message(namespace, version), cause);
     }
 
     private static String message(String namespace, String version) {

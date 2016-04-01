@@ -16,29 +16,29 @@
 package org.geoint.acetate;
 
 import java.util.function.BiConsumer;
+import org.geoint.acetate.model.NamedMapRef;
+import org.geoint.acetate.model.NamedRef;
+import org.geoint.acetate.model.NamedTypeRef;
 
 /**
- * Map instance reference.
+ * Provides model driven interface to access domain instance(s) modeled as
+ * key/value pairs that compose or are are related to a domain instance.
  *
  * @author steve_siebert
- * @param <K>
- * @param <V>
  */
-public interface MapInstanceRef<K extends TypeInstance, V extends TypeInstance> {
+public interface MapInstanceRef extends NamedInstanceRef<NamedMapRef> {
 
-    String getName();
-
-    default K getKey() {
-        return getKeyRef().getReferencedType();
+    public default NamedTypeRef getKeyModel() {
+        return getModel().getKeyRef();
     }
 
-    InstanceRef<K> getKeyRef();
-
-    default V getValue() {
-        return getValueRef().getReferencedType();
+    public default NamedRef getValueModel() {
+        return getModel().getValueRef();
     }
 
-    InstanceRef<V> getValueRef();
+    TypeInstanceRef getKey();
 
-    void forEachType(BiConsumer<InstanceRef<K>, InstanceRef<V>> instance);
+    NamedInstanceRef getValue();
+
+    void forEachType(BiConsumer<TypeInstanceRef, NamedInstanceRef> instance);
 }

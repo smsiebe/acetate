@@ -19,15 +19,27 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * Operation result callback.
  *
+ * @see ResourceInstanceOperation#asyncInvoke()
  * @author steve_siebert
- * @param <E> event result on successful execution of the operation
  */
 @FunctionalInterface
-public interface OperationResultHandler<E extends EventInstance> {
+public interface OperationResultHandler {
 
-    void onSuccess(E event);
+    /**
+     * Called on successful completion of the operation.
+     *
+     * @param event results from the operation
+     */
+    void onSuccess(EventInstance event);
 
+    /**
+     * Called when an operation throws an exception (fails to complete
+     * successfully).
+     *
+     * @param ex wrapped exception thrown by the operation
+     */
     default void onFail(OperationExecutionException ex) {
         Logger.getLogger(OperationResultHandler.class.getName()).log(
                 Level.WARNING, "Operation execution failed.", ex);

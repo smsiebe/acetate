@@ -13,26 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate.model;
+package org.geoint.acetate;
 
-import java.util.Optional;
+import org.geoint.acetate.model.NamedRef;
 
 /**
- * Provides domain descriptor to type resolution services.
  *
  * @author steve_siebert
+ * @param <M> reference model
  */
-@FunctionalInterface
-public interface TypeResolver {
+public interface NamedInstanceRef<M extends NamedRef> {
 
-    /**
-     * Returns the requested type, if known to the resolver.
-     *
-     * @param namespace domain namespace
-     * @param version domain version
-     * @param typeName domain type name
-     * @return domain type, if known to the resolver
-     */
-    Optional<DomainType> resolve(String namespace, String version,
-            String typeName);
+    public default String getName() {
+        return getModel().getName();
+    }
+
+    M getModel();
 }

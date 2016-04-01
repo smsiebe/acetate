@@ -16,7 +16,7 @@
 package org.geoint.acetate;
 
 import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.Set;
 import org.geoint.acetate.model.EventType;
@@ -43,9 +43,8 @@ import org.geoint.acetate.model.EventType;
  * events.
  *
  * @author steve_siebert
- * @param <M> model type used to describe the domain event
  */
-public interface EventInstance<M extends EventType> extends TypeInstance<M> {
+public interface EventInstance extends TypeInstance<EventType> {
 
     /**
      * Globally unique event identifier.
@@ -76,18 +75,11 @@ public interface EventInstance<M extends EventType> extends TypeInstance<M> {
     String getResourceVerison();
 
     /**
-     * Name of the operation which created this event.
-     *
-     * @return operation name
-     */
-    String getOperationName();
-
-    /**
      * Unique identifier of the related resource instance.
      *
      * @return resource id
      */
-    String getInstaceGuid();
+    String getResourceGuid();
 
     /**
      * Version of the resource instance <b>before</b> the operation was
@@ -95,28 +87,21 @@ public interface EventInstance<M extends EventType> extends TypeInstance<M> {
      *
      * @return resource instance version
      */
-    String getInstanceVersion();
+    String getResourceVersion();
 
     /**
-     * Local start time of the machine which executed the operation.
+     * String representation of the source of the event.
      *
-     * @return execution start time
+     * @return source of the event
      */
-    ZonedDateTime getExecutionTime();
-
-    /**
-     * Duration of the operation execution.
-     *
-     * @return execution duration
-     */
-    Duration getExecutionDuration();
+    String getEventSource();
 
     /**
      * Attributes of the event.
      *
      * @return event attributes
      */
-    Set<? extends InstanceRef<? extends ValueInstance>> getAttributes();
+    Set<TypeInstanceRef> getComposites();
 
     /**
      * Retrieve event attribute by name.
@@ -124,5 +109,5 @@ public interface EventInstance<M extends EventType> extends TypeInstance<M> {
      * @param attributeName attribute name
      * @return attribute or null
      */
-    Optional<? extends InstanceRef<? extends ValueInstance>> findAttribute(String attributeName);
+    Optional<TypeInstanceRef> findComposite(String attributeName);
 }

@@ -15,6 +15,7 @@
  */
 package org.geoint.acetate.model;
 
+import org.geoint.acetate.spi.model.TypeResolver;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;

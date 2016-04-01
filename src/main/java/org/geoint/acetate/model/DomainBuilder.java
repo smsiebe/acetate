@@ -15,6 +15,7 @@
  */
 package org.geoint.acetate.model;
 
+import org.geoint.acetate.spi.model.TypeResolver;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,12 +27,12 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import org.geoint.acetate.functional.ThrowingFunction;
 import org.geoint.acetate.serialization.SerializationFormat;
 import org.geoint.acetate.serialization.TypeCodec;
 import org.geoint.acetate.serialization.TypeDeserializer;
 import org.geoint.acetate.serialization.TypeSerializer;
 import org.geoint.acetate.serialization.ValueCodec;
-import org.geoint.java.function.ThrowingFunction;
 
 /**
  * Fluid interface used define a domain model.

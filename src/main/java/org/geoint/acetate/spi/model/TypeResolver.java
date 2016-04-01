@@ -13,21 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate.event;
+package org.geoint.acetate.spi.model;
+
+import java.util.Optional;
+import org.geoint.acetate.model.DomainType;
 
 /**
- * Source of domain events.
+ * Provides domain descriptor to type resolution services.
  *
  * @author steve_siebert
  */
 @FunctionalInterface
-public interface EventSource {
+public interface TypeResolver {
 
     /**
-     * Callback that is notified of events as they become available from the
-     * source.
+     * Returns the requested type, if known to the resolver.
      *
-     * @param handler event handler
+     * @param namespace domain namespace
+     * @param version domain version
+     * @param typeName domain type name
+     * @return domain type, if known to the resolver
      */
-    void subscribe(EventHandler handler);
+    Optional<DomainType> resolve(String namespace, String version,
+            String typeName);
 }
