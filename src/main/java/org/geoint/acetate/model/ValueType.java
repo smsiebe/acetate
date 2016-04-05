@@ -15,8 +15,6 @@
  */
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.serialization.TypeCodec;
-
 /**
  * Domain value type.
  * <p>
@@ -27,38 +25,48 @@ import org.geoint.acetate.serialization.TypeCodec;
  */
 public final class ValueType extends DomainType {
 
-    private final TypeCodec defaultCharacterCodec;
-    private final TypeCodec defaultBinaryCodec;
-
-    public ValueType(String namespace, String version, String name,
-            TypeCodec defaultCharCodec, TypeCodec defaultBinCodec)
-            throws InvalidModelException {
-        this(namespace, version, name, null, defaultCharCodec, defaultBinCodec);
+    public ValueType(String namespace, String version, String name) {
+        super(namespace, version, name);
     }
 
-    public ValueType(String namespace, String version, String name,
-            String description,
-            TypeCodec defaultCharacterCodec, TypeCodec defaultBinaryCodec)
-            throws InvalidModelException {
+    public ValueType(String namespace, String version, String name, 
+            String description) {
         super(namespace, version, name, description);
-        if (defaultCharacterCodec == null) {
-            throw new InvalidModelException(String.format("Value types "
-                    + "'%s' requires a default character codec.", this.toString()));
-        }
-        this.defaultCharacterCodec = defaultCharacterCodec;
-        if (defaultBinaryCodec == null) {
-            throw new InvalidModelException(String.format("Value type "
-                    + "'%s' requires a default binary codec.", this.toString()));
-        }
-        this.defaultBinaryCodec = defaultBinaryCodec;
     }
 
-    public TypeCodec getDefaultCharacterCodec() {
-        return defaultCharacterCodec;
-    }
-
-    public TypeCodec getDefaultBinaryCodec() {
-        return defaultBinaryCodec;
-    }
+    
+//    private final TypeCodec defaultCharacterCodec;
+//    private final TypeCodec defaultBinaryCodec;
+//
+//    public ValueType(String namespace, String version, String name,
+//            TypeCodec defaultCharCodec, TypeCodec defaultBinCodec)
+//            throws InvalidModelException {
+//        this(namespace, version, name, null, defaultCharCodec, defaultBinCodec);
+//    }
+//
+//    public ValueType(String namespace, String version, String name,
+//            String description,
+//            TypeCodec defaultCharacterCodec, TypeCodec defaultBinaryCodec)
+//            throws InvalidModelException {
+//        super(namespace, version, name, description);
+//        if (defaultCharacterCodec == null) {
+//            throw new InvalidModelException(String.format("Value types "
+//                    + "'%s' requires a default character codec.", this.toString()));
+//        }
+//        this.defaultCharacterCodec = defaultCharacterCodec;
+//        if (defaultBinaryCodec == null) {
+//            throw new InvalidModelException(String.format("Value type "
+//                    + "'%s' requires a default binary codec.", this.toString()));
+//        }
+//        this.defaultBinaryCodec = defaultBinaryCodec;
+//    }
+//
+//    public TypeCodec getDefaultCharacterCodec() {
+//        return defaultCharacterCodec;
+//    }
+//
+//    public TypeCodec getDefaultBinaryCodec() {
+//        return defaultBinaryCodec;
+//    }
 
 }

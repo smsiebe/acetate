@@ -16,7 +16,7 @@
 package org.geoint.acetate.model;
 
 import java.util.Optional;
-import org.geoint.acetate.serialization.MockValueBinaryCodec;
+//import org.geoint.acetate.serialization.MockValueBinaryCodec;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -63,8 +63,8 @@ public class DomainBuilderTest {
         assertEquals(valueName, v.getName());
         assertTrue(v.getDescription().isPresent());
         assertEquals(valueDescription, v.getDescription().get());
-        assertNotNull(v.getDefaultBinaryCodec());
-        assertNotNull(v.getDefaultCharacterCodec());
+//        assertNotNull(v.getDefaultBinaryCodec());
+//        assertNotNull(v.getDefaultCharacterCodec());
     }
 
     @Test
@@ -265,8 +265,8 @@ public class DomainBuilderTest {
     private DomainBuilder addTestValue(DomainBuilder b)
             throws InvalidModelException {
         b.defineValue(valueName)
-                .withDefaultBinCodec(MockValueBinaryCodec.class)
-                .withDefaultCharCodec(MockValueBinaryCodec.class)
+                //                .withDefaultBinCodec(MockValueBinaryCodec.class)
+                //                .withDefaultCharCodec(MockValueBinaryCodec.class)
                 .withDescription(valueDescription)
                 .build();
         return b;

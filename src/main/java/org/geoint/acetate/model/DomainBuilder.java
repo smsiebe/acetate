@@ -26,11 +26,6 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import org.geoint.acetate.serialization.SerializationFormat;
-import org.geoint.acetate.serialization.TypeCodec;
-import org.geoint.acetate.serialization.TypeDeserializer;
-import org.geoint.acetate.serialization.TypeSerializer;
-import org.geoint.acetate.serialization.ValueCodec;
 import org.geoint.java.function.ThrowingFunction;
 
 /**
@@ -98,26 +93,28 @@ public class DomainBuilder {
         return defineType(ValueBuilder::new, typeName);
     }
 
-    public ValueBuilder defineValue(String typeName,
-            TypeCodec defaultCharCodec, TypeCodec defaultBinCodec)
-            throws InvalidModelException, IllegalStateException {
-        ValueBuilder b = defineType(ValueBuilder::new, typeName);
-        return b.withDefaultCharCodec(defaultCharCodec.getClass())
-                .withDefaultBinCodec(defaultBinCodec.getClass());
-    }
+//    public ValueBuilder defineValue(String typeName,
+//            TypeCodec defaultCharCodec, TypeCodec defaultBinCodec)
+//            throws InvalidModelException, IllegalStateException {
+//        ValueBuilder b = defineType(ValueBuilder::new, typeName);
+//        return b;
+////        return b.withDefaultCharCodec(defaultCharCodec.getClass())
+////                .withDefaultBinCodec(defaultBinCodec.getClass());
+//    }
 
     public ValueBuilder defineValue(String typeName, String desc)
             throws InvalidModelException {
         return defineType(ValueBuilder::new, typeName, desc);
     }
 
-    public ValueBuilder defineValue(String typeName, String desc,
-            TypeCodec defaultCharCodec, TypeCodec defaultBinCodec)
-            throws InvalidModelException, IllegalStateException {
-        ValueBuilder b = defineType(ValueBuilder::new, typeName, desc);
-        return b.withDefaultBinCodec(defaultBinCodec.getClass())
-                .withDefaultBinCodec(defaultBinCodec.getClass());
-    }
+//    public ValueBuilder defineValue(String typeName, String desc,
+//            TypeCodec defaultCharCodec, TypeCodec defaultBinCodec)
+//            throws InvalidModelException, IllegalStateException {
+//        ValueBuilder b = defineType(ValueBuilder::new, typeName, desc);
+//        return b;
+////        return b.withDefaultBinCodec(defaultBinCodec.getClass())
+////                .withDefaultBinCodec(defaultBinCodec.getClass());;
+//    }
 
     public EventBuilder defineEvent(String typeName)
             throws InvalidModelException {
@@ -452,8 +449,8 @@ public class DomainBuilder {
 
     public class ValueBuilder extends TypeBuilder<ValueType, ValueBuilder> {
 
-        private TypeCodec defaultCharCodec;
-        private TypeCodec defaultBinCodec;
+//        private TypeCodec defaultCharCodec;
+//        private TypeCodec defaultBinCodec;
 
         public ValueBuilder(
                 ThrowingFunction<ValueBuilder, DomainBuilder, InvalidModelException> onBuild,
@@ -467,53 +464,53 @@ public class DomainBuilder {
             super(onBuild, typeName, description);
         }
 
-        public ValueBuilder withDefaultCharCodec(
-                SerializationFormat format, TypeSerializer serializer,
-                TypeDeserializer deserializer) {
-            this.defaultCharCodec = ValueCodec.valueCodec(namespace, version,
-                    typeName, format, serializer, deserializer);
-            return this;
-        }
-
-        public ValueBuilder withDefaultCharCodec(
-                Class<? extends TypeCodec> codecClass)
-                throws InvalidModelException {
-            this.defaultCharCodec = loadCodec(codecClass);
-            return this;
-        }
-
-        public ValueBuilder withDefaultBinCodec(
-                SerializationFormat format,
-                TypeSerializer serializer, TypeDeserializer deserializer) {
-            this.defaultBinCodec = ValueCodec.valueCodec(namespace, version,
-                    typeName, format, serializer, deserializer);
-            return this;
-        }
-
-        public ValueBuilder withDefaultBinCodec(
-                Class<? extends TypeCodec> codecClass)
-                throws InvalidModelException {
-            this.defaultBinCodec = loadCodec(codecClass);
-            return this;
-        }
+//        public ValueBuilder withDefaultCharCodec(
+//                SerializationFormat format, TypeSerializer serializer,
+//                TypeDeserializer deserializer) {
+//            this.defaultCharCodec = ValueCodec.valueCodec(namespace, version,
+//                    typeName, format, serializer, deserializer);
+//            return this;
+//        }
+//
+//        public ValueBuilder withDefaultCharCodec(
+//                Class<? extends TypeCodec> codecClass)
+//                throws InvalidModelException {
+//            this.defaultCharCodec = loadCodec(codecClass);
+//            return this;
+//        }
+//
+//        public ValueBuilder withDefaultBinCodec(
+//                SerializationFormat format,
+//                TypeSerializer serializer, TypeDeserializer deserializer) {
+//            this.defaultBinCodec = ValueCodec.valueCodec(namespace, version,
+//                    typeName, format, serializer, deserializer);
+//            return this;
+//        }
+//
+//        public ValueBuilder withDefaultBinCodec(
+//                Class<? extends TypeCodec> codecClass)
+//                throws InvalidModelException {
+//            this.defaultBinCodec = loadCodec(codecClass);
+//            return this;
+//        }
 
         @Override
         protected ValueType createModel(TypeResolver resolver)
                 throws InvalidModelException {
-            return new ValueType(namespace, version, typeName, description,
-                    defaultCharCodec, defaultBinCodec);
+            return new ValueType(namespace, version, typeName, description);
+//                    ,defaultCharCodec, defaultBinCodec);
         }
 
-        private TypeCodec loadCodec(Class<? extends TypeCodec> codecClass)
-                throws InvalidModelException {
-            try {
-                return codecClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException ex) {
-                throw new InvalidModelException(String.format("Unable to "
-                        + "instantiate value codec class '%s' using no-arg "
-                        + "constructor", codecClass.getName()));
-            }
-        }
+//        private TypeCodec loadCodec(Class<? extends TypeCodec> codecClass)
+//                throws InvalidModelException {
+//            try {
+//                return codecClass.newInstance();
+//            } catch (InstantiationException | IllegalAccessException ex) {
+//                throw new InvalidModelException(String.format("Unable to "
+//                        + "instantiate value codec class '%s' using no-arg "
+//                        + "constructor", codecClass.getName()));
+//            }
+//        }
     }
 
     public abstract class ComposedTypeBuilder<T extends DomainType, B extends TypeBuilder>

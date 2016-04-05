@@ -15,7 +15,7 @@
  */
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.serialization.MockValueBinaryCodec;
+//import org.geoint.acetate.serialization.MockValueBinaryCodec;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -34,21 +34,21 @@ public class ValueTypeTest {
      *
      * @throws Exception
      */
-    @Test(expected = InvalidModelException.class)
-    public void testNullDefaultCharCodec() throws Exception {
-
-        final ValueType value
-                = new ValueType(NS, V, TN, null, new MockValueBinaryCodec());//InvalidModelException expected
-    }
+//    @Test(expected = InvalidModelException.class)
+//    public void testNullDefaultCharCodec() throws Exception {
+//
+//        final ValueType value
+//                = new ValueType(NS, V, TN);//, null, new MockValueBinaryCodec());//InvalidModelException expected
+//    }
 
     /**
      * Test that the default binary codec cannot be null.
      *
      * @throws Exception
      */
-    @Test(expected = InvalidModelException.class)
-    public void testNullDefaultBinCodec() throws Exception {
-        final ValueType value
-                = new ValueType(NS, V, TN, new MockValueBinaryCodec(), null);//InvalidModelException expected
-    }
+//    @Test(expected = InvalidModelException.class)
+//    public void testNullDefaultBinCodec() throws Exception {
+//        final ValueType value
+//                = new ValueType(NS, V, TN);//, new MockValueBinaryCodec(), null);//InvalidModelException expected
+//    }
 }
