@@ -49,14 +49,10 @@ public final class TypeDescriptor {
         return type;
     }
 
-    public boolean describes(String namespace, String type, String version) {
-        if (!Objects.equals(this.namespace, namespace)) {
-            return false;
-        }
-        if (!Objects.equals(this.version, version)) {
-            return false;
-        }
-        return Objects.equals(this.type, type);
+    public boolean describes(String namespace, String version, String type) {
+        return this.namespace.contentEquals(namespace)
+                && this.version.contentEquals(version)
+                && this.type.contentEquals(type);
     }
 
     public boolean describes(DomainType type) {
