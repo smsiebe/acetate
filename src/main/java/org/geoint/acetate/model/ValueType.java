@@ -17,7 +17,6 @@ package org.geoint.acetate.model;
 
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.function.Function;
 import org.geoint.acetate.ValueInstance;
 
 /**
@@ -39,8 +38,7 @@ public final class ValueType extends DomainType {
         super(namespace, version, name, description);
     }
 
-    public ValueInstance createInstance(byte[] bytes)
-            throws InvalidModelException {
+    public ValueInstance createInstance(byte[] bytes) {
         return new DefaultValueInstance(this, bytes);
     }
 
@@ -92,10 +90,7 @@ public final class ValueType extends DomainType {
             if (!Objects.equals(this.model, other.model)) {
                 return false;
             }
-            if (!Arrays.equals(this.bytes, other.bytes)) {
-                return false;
-            }
-            return true;
+            return Arrays.equals(this.bytes, other.bytes);
         }
 
     }
