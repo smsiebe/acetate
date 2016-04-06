@@ -41,21 +41,21 @@ import java.util.function.Supplier;
  * @author steve_siebert
  * @param <V> map value
  */
-public final class ImmutableNamedTypeMap<V> implements Map<String, V> {
+public final class ImmutableNamedMap<V> implements Map<String, V> {
 
     private final Map<String, V> map;
     private static final Supplier<Map> DEFAULT_MAP_SUPPLIER = () -> new HashMap<>();
 
-    ImmutableNamedTypeMap(Map<String, V> map) {
+    ImmutableNamedMap(Map<String, V> map) {
         this.map = map;
     }
 
-    public static <V> ImmutableNamedTypeMap<V> createMap(Collection<V> items,
+    public static <V> ImmutableNamedMap<V> createMap(Collection<V> items,
             Function<V, String> namer) throws InvalidModelException {
         return createMap(DEFAULT_MAP_SUPPLIER, items, namer, null);
     }
 
-    public static <V> ImmutableNamedTypeMap<V> createMap(
+    public static <V> ImmutableNamedMap<V> createMap(
             Collection<V> items,
             Function<V, String> namer,
             Predicate<String> duplicateNameFilter)
@@ -63,14 +63,14 @@ public final class ImmutableNamedTypeMap<V> implements Map<String, V> {
         return createMap(DEFAULT_MAP_SUPPLIER, items, namer, duplicateNameFilter);
     }
 
-    public static <V> ImmutableNamedTypeMap<V> createMap(
+    public static <V> ImmutableNamedMap<V> createMap(
             Supplier<Map> mapSupplier,
             Collection<V> items,
             Function<V, String> namer) throws InvalidModelException {
         return createMap(mapSupplier, items, namer, null);
     }
 
-    public static <V> ImmutableNamedTypeMap<V> createMap(
+    public static <V> ImmutableNamedMap<V> createMap(
             Supplier<Map> mapSupplier,
             Collection<V> items,
             Function<V, String> namer,
@@ -92,7 +92,7 @@ public final class ImmutableNamedTypeMap<V> implements Map<String, V> {
             }
             map.put(name, i);
         }
-        return new ImmutableNamedTypeMap(map);
+        return new ImmutableNamedMap(map);
     }
 
     public Optional<V> find(String name) {
@@ -176,10 +176,10 @@ public final class ImmutableNamedTypeMap<V> implements Map<String, V> {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof ImmutableNamedTypeMap)) {
+        if (!(other instanceof ImmutableNamedMap)) {
             return false;
         }
-        return map.equals(((ImmutableNamedTypeMap) other).map);
+        return map.equals(((ImmutableNamedMap) other).map);
     }
 
 }

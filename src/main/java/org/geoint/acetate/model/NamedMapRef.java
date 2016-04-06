@@ -16,6 +16,9 @@
 package org.geoint.acetate.model;
 
 import java.util.Objects;
+import org.geoint.acetate.InstanceRef;
+import org.geoint.acetate.MapInstanceRef;
+import org.geoint.acetate.TypeInstanceRef;
 
 /**
  * Special type model which describes a key/value pair relationship.
@@ -66,6 +69,11 @@ public final class NamedMapRef<K extends NamedTypeRef, V extends NamedRef>
         return valueRef;
     }
 
+    public MapInstanceRef createInstance(TypeInstanceRef key,
+            InstanceRef value) {
+        return new DefaultMapInstanceRef(this, key, value);
+    }
+
     @Override
     public int hashCode() {
         int hash = 7;
@@ -96,4 +104,33 @@ public final class NamedMapRef<K extends NamedTypeRef, V extends NamedRef>
         return Objects.equals(this.valueRef, other.valueRef);
     }
 
+    static class DefaultMapInstanceRef implements MapInstanceRef {
+
+        private final NamedMapRef model;
+        private final TypeInstanceRef key;
+        private final InstanceRef value;
+
+        public DefaultMapInstanceRef(NamedMapRef model, TypeInstanceRef key,
+                InstanceRef value) {
+            this.model = model;
+            this.key = key;
+            this.value = value;
+        }
+
+        @Override
+        public TypeInstanceRef getKeyRef() {
+            return key;
+        }
+
+        @Override
+        public InstanceRef getValueRef() {
+            return value;
+        }
+
+        @Override
+        public NamedMapRef getRefModel() {
+            return model;
+        }
+
+    }
 }

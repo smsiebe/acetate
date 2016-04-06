@@ -15,9 +15,18 @@
  */
 package org.geoint.acetate.model;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Optional;
+import org.geoint.acetate.EventInstance;
+import org.geoint.acetate.InstanceRef;
+import org.geoint.acetate.OperationCompleted;
+import org.geoint.acetate.OperationExecuted;
+import org.geoint.acetate.OperationFailed;
+import org.geoint.acetate.OperationInstance;
 import org.geoint.acetate.ResourceInstance;
+import org.geoint.acetate.functional.ThrowingBiFunction;
 
 /**
  * Behavior of a domain is described as resource operations, returning events
@@ -31,39 +40,48 @@ import org.geoint.acetate.ResourceInstance;
  */
 public final class ResourceOperation {
 
-    private final String namespace;
-    private final String version;
-    private final String resourceName;
+    private final TypeDescriptor resourceDescriptor;
     private final String operationName;
     private final Optional<String> description;
     private final boolean idempotent;
     private final boolean safe;
-    private final ImmutableNamedTypeMap<NamedTypeRef> parameters;
+    private final ThrowingBiFunction<ResourceInstance, InstanceRef[], EventInstance, ?> function;
+    private final ImmutableNamedMap<NamedTypeRef> parameters;
     private final NamedTypeRef<EventType> returnEvent;
 
-    public ResourceOperation(String namespace, String version,
-            String resourceName, String operationName, boolean idempotent,
-            boolean safe,
+    public ResourceOperation(String namespace, String version, String resourceType,
+            String operationName, String description,
+            boolean idempotent, boolean safe,
+            ThrowingBiFunction<ResourceInstance, InstanceRef[], EventInstance, ?> function,
             Collection<NamedTypeRef> parameters,
             NamedTypeRef<EventType> returnEvent) throws InvalidModelException {
-        this(namespace, version, resourceName, operationName, null,
-                idempotent, safe, parameters, returnEvent);
+        this(new TypeDescriptor(namespace, version, resourceType),
+                operationName, description, idempotent, safe, function,
+                parameters, returnEvent);
     }
 
-    public ResourceOperation(String namespace, String version,
-            String resourceName, String operationName, String description,
+    public ResourceOperation(TypeDescriptor resourceDescriptor,
+            String operationName, String description,
             boolean idempotent, boolean safe,
+            ThrowingBiFunction<ResourceInstance, InstanceRef[], EventInstance, ?> function,
             Collection<NamedTypeRef> parameters,
             NamedTypeRef<EventType> returnEvent) throws InvalidModelException {
-        this.namespace = namespace;
-        this.version = version;
-        this.resourceName = resourceName;
+        if (function == null) {
+            throw new InvalidModelException("Resource operation must be defined "
+                    + "with behavior.");
+        }
+        if (returnEvent == null) {
+            throw new InvalidModelException("Operations must return an "
+                    + "EventType instance on successful completion.");
+        }
+        this.resourceDescriptor = resourceDescriptor;
         this.operationName = operationName;
         this.description = Optional.ofNullable(description);
         this.idempotent = idempotent;
         this.safe = safe;
+        this.function = function;
         this.parameters
-                = ImmutableNamedTypeMap.createMap(parameters, NamedTypeRef::getName);
+                = ImmutableNamedMap.createMap(parameters, NamedTypeRef::getName);
         this.returnEvent = returnEvent;
     }
 
@@ -73,7 +91,7 @@ public final class ResourceOperation {
      * @return resource namespace
      */
     public String getNamespace() {
-        return namespace;
+        return resourceDescriptor.getNamespace();
     }
 
     /**
@@ -82,7 +100,7 @@ public final class ResourceOperation {
      * @return resource version
      */
     public String getResourceVersion() {
-        return version;
+        return resourceDescriptor.getVersion();
     }
 
     /**
@@ -91,7 +109,7 @@ public final class ResourceOperation {
      * @return resource type
      */
     public String getResourceName() {
-        return resourceName;
+        return resourceDescriptor.getType();
     }
 
     /**
@@ -157,4 +175,69 @@ public final class ResourceOperation {
         return returnEvent;
     }
 
+    public ThrowingBiFunction<ResourceInstance, InstanceRef[], EventInstance, ?> getFunction() {
+        return function;
+    }
+
+    /**
+     * Create a new operation instance bound to (declared by) a resource
+     * instance.
+     *
+     * @param resource resource context
+     * @return operation instance
+     * @throws InvalidModelException if the resource type does not match the
+     * model
+     */
+    public OperationInstance createInstance(ResourceInstance resource)
+            throws InvalidModelException {
+        return new DefaultOperationInstance(this, resource);
+    }
+
+    private static class DefaultOperationInstance implements OperationInstance {
+
+        private final ResourceOperation model;
+        private final ResourceInstance resource;
+
+        public DefaultOperationInstance(ResourceOperation model,
+                ResourceInstance resource)
+                throws InvalidModelException {
+
+            if (!model.resourceDescriptor.describes(resource)) {
+                throw new InvalidModelException(String.format("Unable to create "
+                        + "instance of operation '%s#%s', contextual resource "
+                        + "instance '%s' does not match expected resource "
+                        + "type '%s'",
+                        model.resourceDescriptor.toString(),
+                        model.operationName,
+                        resource.toString(),
+                        model.resourceDescriptor.toString()));
+            }
+
+            this.model = model;
+            this.resource = resource;
+        }
+
+        @Override
+        public ResourceOperation getModel() {
+            return model;
+        }
+
+        @Override
+        public OperationExecuted invoke(InstanceRef... params) {
+            Instant executionTime = Instant.now();
+            try {
+                EventInstance event = model.getFunction().apply(resource, params);
+                return OperationCompleted.newInstance(this, resource,
+                        executionTime,
+                        Duration.between(executionTime, Instant.now()),
+                        event);
+            } catch (Throwable ex) {
+                return OperationFailed.newInstance(this, resource,
+                        executionTime,
+                        Duration.between(executionTime, Instant.now()),
+                        ex);
+            }
+        }
+
+    }
 }

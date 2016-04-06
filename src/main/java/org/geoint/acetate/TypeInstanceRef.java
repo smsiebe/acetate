@@ -15,14 +15,29 @@
  */
 package org.geoint.acetate;
 
-import org.geoint.acetate.model.ValueType;
+import java.util.function.Consumer;
+import org.geoint.acetate.model.DomainType;
+import org.geoint.acetate.model.NamedTypeRef;
 
 /**
- * Instance of a domain value.
  *
  */
-public interface ValueInstance extends TypeInstance<ValueType> {
+public interface TypeInstanceRef extends InstanceRef<NamedTypeRef> {
 
-    byte[] asBytes();
+    default DomainType getTypeModel() {
+        return getRefModel().getReferencedType();
+    }
+
+    void forEachType(Consumer<TypeInstance> consumer);
+
+    /**
+     * Indicates if the type reference supports multiple instances of the value
+     * or just one.
+     *
+     * @return true if multiple instances are supported, otherwise false
+     */
+    default boolean isCollection() {
+        return getRefModel().isCollection();
+    }
 
 }

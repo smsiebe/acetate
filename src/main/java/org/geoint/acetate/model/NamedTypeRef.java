@@ -16,6 +16,9 @@
 package org.geoint.acetate.model;
 
 import java.util.Objects;
+import java.util.function.Consumer;
+import org.geoint.acetate.TypeInstance;
+import org.geoint.acetate.TypeInstanceRef;
 
 /**
  * A named reference to a domain type.
@@ -54,11 +57,6 @@ public final class NamedTypeRef<M extends DomainType> extends NamedRef {
         return collection;
     }
 
-    @Override
-    public String toString() {
-        return String.format("%s: %s", this.getName(), type.toString());
-    }
-
     /**
      * Referenced domain type model.
      *
@@ -66,6 +64,15 @@ public final class NamedTypeRef<M extends DomainType> extends NamedRef {
      */
     public M getReferencedType() {
         return type;
+    }
+
+    public TypeInstanceRef createInstance(TypeInstance... instances) {
+        return new DefaultTypeInstanceRef(this, instances);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s: %s", this.getName(), type.toString());
     }
 
     @Override
@@ -94,4 +101,28 @@ public final class NamedTypeRef<M extends DomainType> extends NamedRef {
         return Objects.equals(this.type, other.type);
     }
 
+    private static class DefaultTypeInstanceRef implements TypeInstanceRef {
+
+        private final NamedTypeRef refModel;
+        private final TypeInstance[] instance;
+
+        public DefaultTypeInstanceRef(NamedTypeRef refModel,
+                TypeInstance... instance) {
+            this.refModel = refModel;
+            this.instance = instance;
+        }
+
+        @Override
+        public void forEachType(Consumer<TypeInstance> consumer) {
+            for (TypeInstance i : instance) {
+                consumer.accept(i);
+            }
+        }
+
+        @Override
+        public NamedTypeRef getRefModel() {
+            return refModel;
+        }
+
+    }
 }

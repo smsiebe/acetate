@@ -16,7 +16,13 @@
 package org.geoint.acetate.model;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import org.geoint.acetate.InstanceRef;
+import org.geoint.acetate.ResourceInstance;
+import org.geoint.acetate.TypeInstanceRef;
 
 /**
  * Model of a {@link DomainResource}.
@@ -26,9 +32,9 @@ import java.util.Optional;
  */
 public final class ResourceType extends DomainType {
 
-    private final ImmutableNamedTypeMap<NamedRef> composites;
-    private final ImmutableNamedTypeMap<NamedTypeRef<ResourceType>> links;
-    private final ImmutableNamedTypeMap<ResourceOperation> operations;
+    private final ImmutableNamedMap<NamedRef> composites;
+    private final ImmutableNamedMap<NamedTypeRef<ResourceType>> links;
+    private final ImmutableNamedMap<ResourceOperation> operations;
 
     public ResourceType(String namespace, String version, String name,
             Collection<NamedRef> composites,
@@ -45,12 +51,12 @@ public final class ResourceType extends DomainType {
             Collection<ResourceOperation> operations)
             throws InvalidModelException {
         super(namespace, version, name, description);
-        this.composites = ImmutableNamedTypeMap.createMap(composites,
+        this.composites = ImmutableNamedMap.createMap(composites,
                 NamedRef::getName);
-        this.links = ImmutableNamedTypeMap.createMap(links,
+        this.links = ImmutableNamedMap.createMap(links,
                 NamedTypeRef::getName,
                 this.composites::containsKey);
-        this.operations = ImmutableNamedTypeMap.createMap(operations,
+        this.operations = ImmutableNamedMap.createMap(operations,
                 ResourceOperation::getName,
                 (n) -> this.composites.containsKey(n) || this.links.containsKey(n));
     }
@@ -112,6 +118,134 @@ public final class ResourceType extends DomainType {
      */
     public Optional<NamedTypeRef<ResourceType>> findLink(String linkName) {
         return links.find(linkName);
+    }
+
+    /**
+     * Create a new resource instance based on this type definition.
+     *
+     * @param guid resource instance unique identifier
+     * @param version resource instance version
+     * @param previousVersion previous version of the resource (may be null)
+     * @param composites composite types that compose the resource
+     * @param links links to other resources
+     * @return resource instance
+     * @throws InvalidModelException if the resource instance definition is not
+     * consistent with the model
+     */
+    public ResourceInstance createInstance(String guid, String version,
+            String previousVersion,
+            Collection<InstanceRef> composites,
+            Collection<TypeInstanceRef> links)
+            throws InvalidModelException {
+
+        return new DefaultResourceInstance(this, guid, version, previousVersion,
+                composites, links);
+    }
+
+    private static class DefaultResourceInstance implements ResourceInstance {
+
+        private final ResourceType model;
+        private final String guid;
+        private final String version;
+        private final Optional<String> previousVersion;
+        private final Map<String, InstanceRef> composites;
+        private final Map<String, TypeInstanceRef> links;
+
+        public DefaultResourceInstance(ResourceType model, String guid,
+                String version,
+                String previousVersion,
+                Collection<InstanceRef> composites,
+                Collection<TypeInstanceRef> links)
+                throws InvalidModelException {
+
+            if (guid == null || version == null) {
+                throw new InvalidModelException("Resource instances require a "
+                        + "GUID and instance version.");
+            }
+
+            this.model = model;
+            this.guid = guid;
+            this.version = version;
+            this.previousVersion = Optional.ofNullable(previousVersion);
+
+            Map<String, InstanceRef> compositeIndex = new HashMap<>();
+            for (InstanceRef c : composites) {
+                if (!model.findComposite(c.getName()).isPresent()) {
+                    throw new InvalidModelException(String.format(
+                            "Invalid reference '%s' for composite on resource "
+                            + "type '%s'", c.getName(), model.toString()));
+                }
+                compositeIndex.put(c.getName(), c);
+            }
+            this.composites = Collections.unmodifiableMap(compositeIndex);
+
+            Map<String, TypeInstanceRef> linkIndex = new HashMap<>();
+            for (TypeInstanceRef l : links) {
+                if (!model.findLink(l.getName()).isPresent()) {
+                    throw new InvalidModelException(String.format(
+                            "Invalid reference '%s' to link on resource type '%s'",
+                            l.getName(), model.toString()));
+                }
+                linkIndex.put(l.getName(), l);
+            }
+            this.links = Collections.unmodifiableMap(linkIndex);
+        }
+
+        @Override
+        public String getResourceGuid() {
+            return guid;
+        }
+
+        @Override
+        public String getResourceVersion() {
+            return version;
+        }
+
+        @Override
+        public Optional getPreviousResourceVersion() {
+            return previousVersion;
+        }
+
+        @Override
+        public ResourceType getModel() {
+            return this.model;
+        }
+
+        @Override
+        public Collection<InstanceRef> getComposites() {
+            return this.composites.values();
+        }
+
+        @Override
+        public Optional<InstanceRef> findComposite(String compositeName) {
+            return Optional.ofNullable(this.composites.get(compositeName));
+        }
+
+        @Override
+        public Collection<TypeInstanceRef> getLinks() {
+            return this.links.values();
+        }
+
+        @Override
+        public Optional<TypeInstanceRef> findLink(String linkName) {
+            return Optional.ofNullable(this.links.get(linkName));
+        }
+
+        @Override
+        public Optional findOperation(String operationName) {
+            return model.findOperation(operationName)
+                    .map((o) -> {
+                        try {
+                            return o.createInstance(this);
+                        } catch (InvalidModelException ex) {
+                            //we won't get here since we know the operation 
+                            //exists for this model
+                            throw new RuntimeException("Unexpected operation "
+                                    + "initialization error", ex);
+                        }
+                    });
+        }
+
     }
 
 }

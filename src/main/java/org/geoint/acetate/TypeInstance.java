@@ -16,18 +16,28 @@
 package org.geoint.acetate;
 
 import org.geoint.acetate.model.DomainType;
+import org.geoint.acetate.model.TypeDescriptor;
 
 /**
  * Abstract domain type instance.
- * 
+ *
  * @param <M>
  */
 public interface TypeInstance<M extends DomainType> {
 
     /**
      * Model of the domain type.
-     * 
-     * @return type model 
+     *
+     * @return type model
      */
-     M getModel();
+    M getModel();
+
+    /**
+     * Domain descriptor this type.
+     *
+     * @return type descriptor
+     */
+    default TypeDescriptor getTypeDescriptor() {
+        return TypeDescriptor.valueOf(getModel());
+    }
 }

@@ -13,16 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate;
-
-import org.geoint.acetate.model.ValueType;
+package org.geoint.acetate.functional;
 
 /**
- * Instance of a domain value.
  *
+ * @param <A> 
+ * @param <B>
+ * @param <R>
+ * @param <X>
  */
-public interface ValueInstance extends TypeInstance<ValueType> {
+@FunctionalInterface
+public interface ThrowingBiFunction<A, B, R, X extends Throwable> {
 
-    byte[] asBytes();
-
+    R apply(A a, B b) throws X;
 }

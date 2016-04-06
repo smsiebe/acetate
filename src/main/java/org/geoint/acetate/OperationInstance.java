@@ -15,27 +15,24 @@
  */
 package org.geoint.acetate;
 
+import java.util.Optional;
 import org.geoint.acetate.model.ResourceOperation;
 
 /**
  *
  * @author steve_siebert
- * @param <R> resource instance context for this operation
- * @param <E> event created on successful execution of the operation
  */
-public interface OperationInstance<R extends ResourceInstance, E extends EventInstance> {
+public interface OperationInstance {
 
     ResourceOperation getModel();
-    
-    /**
-     * Asynchronously invokes the resource operation.
-     *
-     * @param handler operation result callback
-     * @param resource resource context of the operation
-     * @param params operation parameters
-     */
-    void asyncInvoke(OperationResultHandler<E> handler, R resource,
-            InstanceRef... params);
+
+    default String getName() {
+        return getModel().getName();
+    }
+
+    default Optional<String> getDescription() {
+        return getModel().getDescription();
+    }
 
     /**
      * Synchronously invokes the resource operation.
@@ -44,11 +41,8 @@ public interface OperationInstance<R extends ResourceInstance, E extends EventIn
      * thread may simply wait while the operation is executed on a different
      * thread.
      *
-     * @param resource resource context of the operation
      * @param params operation parameters
      * @return operation execution result
-     * @throws OperationExecutionException if the operation failed execution
      */
-    E syncInvoke(R resource, InstanceRef... params) 
-            throws OperationExecutionException;
+    OperationExecuted invoke(InstanceRef... params);
 }

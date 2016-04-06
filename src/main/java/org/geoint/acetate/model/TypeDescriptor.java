@@ -16,6 +16,7 @@
 package org.geoint.acetate.model;
 
 import java.util.Objects;
+import org.geoint.acetate.TypeInstance;
 
 /**
  * Identity of a specific domain type.
@@ -32,6 +33,10 @@ public final class TypeDescriptor {
         this.type = type;
     }
 
+    public static TypeDescriptor valueOf(DomainType t) {
+        return new TypeDescriptor(t.getNamespace(), t.getVersion(), t.getName());
+    }
+
     public String getNamespace() {
         return namespace;
     }
@@ -42,6 +47,26 @@ public final class TypeDescriptor {
 
     public String getType() {
         return type;
+    }
+
+    public boolean describes(String namespace, String type, String version) {
+        if (!Objects.equals(this.namespace, namespace)) {
+            return false;
+        }
+        if (!Objects.equals(this.version, version)) {
+            return false;
+        }
+        return Objects.equals(this.type, type);
+    }
+
+    public boolean describes(DomainType type) {
+        return describes(type.getNamespace(), type.getVersion(), type.getName());
+    }
+
+    public boolean describes(TypeInstance instance) {
+        return describes(instance.getModel().getNamespace(),
+                instance.getModel().getVersion(),
+                instance.getModel().getName());
     }
 
     @Override
@@ -69,17 +94,9 @@ public final class TypeDescriptor {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final TypeDescriptor other = (TypeDescriptor) obj;
-        if (!Objects.equals(this.namespace, other.namespace)) {
-            return false;
-        }
-        if (!Objects.equals(this.version, other.version)) {
-            return false;
-        }
-        if (!Objects.equals(this.type, other.type)) {
-            return false;
-        }
-        return true;
+        return this.describes(((TypeDescriptor) obj).getNamespace(),
+                ((TypeDescriptor) obj).getVersion(),
+                ((TypeDescriptor) obj).getType());
     }
 
 }

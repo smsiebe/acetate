@@ -26,7 +26,11 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import org.geoint.java.function.ThrowingFunction;
+import org.geoint.acetate.EventInstance;
+import org.geoint.acetate.InstanceRef;
+import org.geoint.acetate.ResourceInstance;
+import org.geoint.acetate.functional.ThrowingBiFunction;
+import org.geoint.acetate.functional.ThrowingFunction;
 
 /**
  * Fluid interface used define a domain model.
@@ -101,7 +105,6 @@ public class DomainBuilder {
 ////        return b.withDefaultCharCodec(defaultCharCodec.getClass())
 ////                .withDefaultBinCodec(defaultBinCodec.getClass());
 //    }
-
     public ValueBuilder defineValue(String typeName, String desc)
             throws InvalidModelException {
         return defineType(ValueBuilder::new, typeName, desc);
@@ -115,7 +118,6 @@ public class DomainBuilder {
 ////        return b.withDefaultBinCodec(defaultBinCodec.getClass())
 ////                .withDefaultBinCodec(defaultBinCodec.getClass());;
 //    }
-
     public EventBuilder defineEvent(String typeName)
             throws InvalidModelException {
         return defineType(EventBuilder::new, typeName);
@@ -179,7 +181,7 @@ public class DomainBuilder {
     public DomainModel build() throws InvalidModelException {
 
         if (model == null) {
-            return DomainModel.newInstance(namespace, version, description,
+            return DomainModel.newModel(namespace, version, description,
                     typeBuilders.toList((t) -> (DomainType) t.createModel(resolver)));
         }
         return model;
@@ -281,6 +283,7 @@ public class DomainBuilder {
         private String description;
         private boolean idempotent = false;
         private boolean safe = false;
+        private ThrowingBiFunction<ResourceInstance, InstanceRef[], EventInstance, ?> function;
         private NamedSet<NamedTypeRefBuilder> parameters;
         private NamedTypeRefBuilder returnEvent;
 
@@ -311,6 +314,13 @@ public class DomainBuilder {
 
         public OperationBuilder notIdempotent() {
             this.idempotent = false;
+            return this;
+        }
+
+        public OperationBuilder withFunction(
+                ThrowingBiFunction<ResourceInstance, InstanceRef[], EventInstance, ?> function)
+                throws InvalidModelException {
+            this.function = function;
             return this;
         }
 
@@ -356,7 +366,7 @@ public class DomainBuilder {
                 throws InvalidModelException {
             return new ResourceOperation(namespace, version,
                     this.resource.typeName, operationName, description,
-                    idempotent, safe,
+                    idempotent, safe, function,
                     parameters.toList((r) -> r.createModel(resolver)),
                     returnEvent.createModel(resolver));
         }
@@ -451,7 +461,6 @@ public class DomainBuilder {
 
 //        private TypeCodec defaultCharCodec;
 //        private TypeCodec defaultBinCodec;
-
         public ValueBuilder(
                 ThrowingFunction<ValueBuilder, DomainBuilder, InvalidModelException> onBuild,
                 String typeName) {
@@ -493,7 +502,6 @@ public class DomainBuilder {
 //            this.defaultBinCodec = loadCodec(codecClass);
 //            return this;
 //        }
-
         @Override
         protected ValueType createModel(TypeResolver resolver)
                 throws InvalidModelException {

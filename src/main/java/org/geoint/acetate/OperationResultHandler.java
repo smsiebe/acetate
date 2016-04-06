@@ -15,21 +15,13 @@
  */
 package org.geoint.acetate;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 /**
  *
  * @author steve_siebert
- * @param <E> event result on successful execution of the operation
  */
 @FunctionalInterface
-public interface OperationResultHandler<E extends EventInstance> {
+public interface OperationResultHandler {
 
-    void onSuccess(E event);
+    void onComplete(OperationExecuted results);
 
-    default void onFail(OperationExecutionException ex) {
-        Logger.getLogger(OperationResultHandler.class.getName()).log(
-                Level.WARNING, "Operation execution failed.", ex);
-    }
 }

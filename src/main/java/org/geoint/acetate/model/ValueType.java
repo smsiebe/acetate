@@ -15,6 +15,11 @@
  */
 package org.geoint.acetate.model;
 
+import java.util.Arrays;
+import java.util.Objects;
+import java.util.function.Function;
+import org.geoint.acetate.ValueInstance;
+
 /**
  * Domain value type.
  * <p>
@@ -29,44 +34,69 @@ public final class ValueType extends DomainType {
         super(namespace, version, name);
     }
 
-    public ValueType(String namespace, String version, String name, 
+    public ValueType(String namespace, String version, String name,
             String description) {
         super(namespace, version, name, description);
     }
 
-    
-//    private final TypeCodec defaultCharacterCodec;
-//    private final TypeCodec defaultBinaryCodec;
-//
-//    public ValueType(String namespace, String version, String name,
-//            TypeCodec defaultCharCodec, TypeCodec defaultBinCodec)
-//            throws InvalidModelException {
-//        this(namespace, version, name, null, defaultCharCodec, defaultBinCodec);
-//    }
-//
-//    public ValueType(String namespace, String version, String name,
-//            String description,
-//            TypeCodec defaultCharacterCodec, TypeCodec defaultBinaryCodec)
-//            throws InvalidModelException {
-//        super(namespace, version, name, description);
-//        if (defaultCharacterCodec == null) {
-//            throw new InvalidModelException(String.format("Value types "
-//                    + "'%s' requires a default character codec.", this.toString()));
-//        }
-//        this.defaultCharacterCodec = defaultCharacterCodec;
-//        if (defaultBinaryCodec == null) {
-//            throw new InvalidModelException(String.format("Value type "
-//                    + "'%s' requires a default binary codec.", this.toString()));
-//        }
-//        this.defaultBinaryCodec = defaultBinaryCodec;
-//    }
-//
-//    public TypeCodec getDefaultCharacterCodec() {
-//        return defaultCharacterCodec;
-//    }
-//
-//    public TypeCodec getDefaultBinaryCodec() {
-//        return defaultBinaryCodec;
-//    }
+    public ValueInstance createInstance(byte[] bytes)
+            throws InvalidModelException {
+        return new DefaultValueInstance(this, bytes);
+    }
 
+    private class DefaultValueInstance implements ValueInstance {
+
+        private final ValueType model;
+        private final byte[] bytes;
+
+        public DefaultValueInstance(ValueType model, byte[] bytes) {
+            this.model = model;
+            this.bytes = bytes;
+        }
+
+        @Override
+        public byte[] asBytes() {
+            return this.bytes;
+        }
+
+        @Override
+        public ValueType getModel() {
+            return this.model;
+        }
+
+        @Override
+        public String toString() {
+            return model.toString();
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 7;
+            hash = 71 * hash + Objects.hashCode(this.model);
+            hash = 71 * hash + Arrays.hashCode(this.bytes);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final DefaultValueInstance other = (DefaultValueInstance) obj;
+            if (!Objects.equals(this.model, other.model)) {
+                return false;
+            }
+            if (!Arrays.equals(this.bytes, other.bytes)) {
+                return false;
+            }
+            return true;
+        }
+
+    }
 }

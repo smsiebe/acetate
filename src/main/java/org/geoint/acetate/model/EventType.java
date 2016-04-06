@@ -29,7 +29,7 @@ import org.geoint.acetate.EventInstance;
  */
 public final class EventType extends DomainType {
 
-    private final ImmutableNamedTypeMap<NamedRef> composites;
+    private final ImmutableNamedMap<NamedRef> composites;
 
     public EventType(String namespace, String version, String name,
             Collection<NamedRef> composites)
@@ -43,7 +43,7 @@ public final class EventType extends DomainType {
             throws InvalidModelException {
         super(namespace, version, name, description);
         this.composites
-                = ImmutableNamedTypeMap.createMap(composites, NamedRef::getName);
+                = ImmutableNamedMap.createMap(composites, NamedRef::getName);
     }
 
     public Collection<NamedRef> getComposites() {

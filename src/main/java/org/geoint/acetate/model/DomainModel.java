@@ -17,8 +17,10 @@ package org.geoint.acetate.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Stream;
 
 /**
@@ -31,39 +33,46 @@ public final class DomainModel {
     private final String namespace;
     private final String version;
     private final Optional<String> description;
-    private final ImmutableNamedTypeMap<ResourceType> resources;
-    private final ImmutableNamedTypeMap<EventType> events;
-    private final ImmutableNamedTypeMap<ValueType> values;
+    private final ImmutableNamedMap<ResourceType> resources;
+    private final ImmutableNamedMap<EventType> events;
+    private final ImmutableNamedMap<ValueType> values;
+    private final Set<TypeDescriptor> dependencies;
 
     public DomainModel(String namespace, String version, String description,
             Collection<ResourceType> resources,
             Collection<EventType> events,
-            Collection<ValueType> values) throws InvalidModelException {
+            Collection<ValueType> values,
+            Collection<TypeDescriptor> dependencies) throws InvalidModelException {
         this.namespace = namespace;
         this.version = version;
         this.description = Optional.ofNullable(description);
-        this.resources = ImmutableNamedTypeMap.createMap(resources, ResourceType::getName);
-        this.events = ImmutableNamedTypeMap.createMap(events,
+        this.resources = ImmutableNamedMap.createMap(resources, ResourceType::getName);
+        this.events = ImmutableNamedMap.createMap(events,
                 EventType::getName, this.resources::containsKey);
-        this.values = ImmutableNamedTypeMap.createMap(values,
+        this.values = ImmutableNamedMap.createMap(values,
                 ValueType::getName,
                 (n) -> this.resources.containsKey(n) || this.events.containsKey(n));
+        this.dependencies = new HashSet<>(dependencies);
     }
 
-    public static DomainModel newInstance(String namespace, String version,
+    public static DomainModel newModel(String namespace, String version,
             Collection<DomainType> types) throws InvalidModelException {
-        return newInstance(namespace, version, null, types);
+        return newModel(namespace, version, null, types);
     }
 
-    public static DomainModel newInstance(String namespace, String version,
+    public static DomainModel newModel(String namespace, String version,
             String description, Collection<DomainType> types)
             throws InvalidModelException {
         Collection<ResourceType> resources = new ArrayList<>();
         Collection<EventType> events = new ArrayList<>();
         Collection<ValueType> values = new ArrayList<>();
+        Set<TypeDescriptor> dependencies = new HashSet<>();
 
         for (DomainType t : types) {
-            if (t instanceof ResourceType) {
+            if (!t.getNamespace().contentEquals(namespace)
+                    || !t.getVersion().contentEquals(version)) {
+                dependencies.add(TypeDescriptor.valueOf(t));
+            } else if (t instanceof ResourceType) {
                 resources.add((ResourceType) t);
             } else if (t instanceof EventType) {
                 events.add((EventType) t);
@@ -75,7 +84,7 @@ public final class DomainModel {
             }
         }
         return new DomainModel(namespace, version, description,
-                resources, events, values);
+                resources, events, values, dependencies);
     }
 
     /**
@@ -105,12 +114,15 @@ public final class DomainModel {
         return description;
     }
 
-//    /**
-//     * Models of domains this model depends upon.
-//     *
-//     * @return domain dependencies
-//     */
-//    public Set<DomainModel> getModelDependencies();
+    /**
+     * Models of domains this model depends upon.
+     *
+     * @return domain dependencies
+     */
+    public Set<TypeDescriptor> getDependencies() {
+        return this.dependencies;
+    }
+
     /**
      * Resources native to this domain.
      *

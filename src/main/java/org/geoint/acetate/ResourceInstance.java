@@ -15,8 +15,9 @@
  */
 package org.geoint.acetate;
 
+import java.util.Collection;
 import java.util.Optional;
-import java.util.Set;
+import org.geoint.acetate.model.ResourceOperation;
 import org.geoint.acetate.model.ResourceType;
 
 /**
@@ -52,25 +53,28 @@ public interface ResourceInstance<M extends ResourceType> extends TypeInstance<M
     public M getModel();
 
     /**
-     * Attributes set on the resource.
+     * Composites set on the resource.
      *
-     * @return resource attributes
+     * @return resource composites
      */
-    Set<? extends InstanceRef<? extends ValueInstance>> getAttributes();
+    Collection<TypeInstanceRef> getComposites();
 
     /**
-     * Return an attribute by name.
+     * Return an composite type by name.
      *
-     * @param attributeName attribute name
-     * @return object describing the attribute reference or null
+     * @param compositeName composite name
+     * @return object describing the composite reference or null
      */
-    Optional<? extends InstanceRef<? extends ValueInstance>> findAttribute(String attributeName);
+    Optional<TypeInstanceRef> findComposite(String compositeName);
 
-    Set<? extends InstanceRef<? extends ResourceInstance>> getLinks();
+    Collection<TypeInstanceRef> getLinks();
 
-    Optional<? extends InstanceRef<? extends ResourceInstance>> findLink(String linkName);
+    Optional<TypeInstanceRef> findLink(String linkName);
 
-    Set<? extends OperationInstance> getOperations();
+    default Collection<ResourceOperation> listOperations() {
+        return getModel().getOperations();
+    }
 
-    Optional<? extends OperationInstance> findOperation(String operationName);
+    Optional<OperationInstance> findOperation(String operationName);
+
 }

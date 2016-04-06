@@ -15,10 +15,8 @@
  */
 package org.geoint.acetate;
 
-import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.util.Collection;
 import java.util.Optional;
-import java.util.Set;
 import org.geoint.acetate.model.EventType;
 
 /**
@@ -43,86 +41,21 @@ import org.geoint.acetate.model.EventType;
  * events.
  *
  * @author steve_siebert
- * @param <M> model type used to describe the domain event
  */
-public interface EventInstance<M extends EventType> extends TypeInstance<M> {
+public interface EventInstance extends TypeInstance<EventType> {
 
     /**
-     * Globally unique event identifier.
+     * Type instances that compose the event.
      *
-     * @return event identifier
+     * @return event composite types
      */
-    String getEventGuid();
+    Collection<TypeInstanceRef> getComposites();
 
     /**
-     * Namespace of the related resource.
+     * Retrieve event composite by name.
      *
-     * @return resource namespace
+     * @param compositeName composite name
+     * @return composite or null
      */
-    String getResourceNamespace();
-
-    /**
-     * Domain type of related resource.
-     *
-     * @return resource type
-     */
-    String getResourceType();
-
-    /**
-     * Version of the related resource.
-     *
-     * @return resource version
-     */
-    String getResourceVerison();
-
-    /**
-     * Name of the operation which created this event.
-     *
-     * @return operation name
-     */
-    String getOperationName();
-
-    /**
-     * Unique identifier of the related resource instance.
-     *
-     * @return resource id
-     */
-    String getInstaceGuid();
-
-    /**
-     * Version of the resource instance <b>before</b> the operation was
-     * executed.
-     *
-     * @return resource instance version
-     */
-    String getInstanceVersion();
-
-    /**
-     * Local start time of the machine which executed the operation.
-     *
-     * @return execution start time
-     */
-    ZonedDateTime getExecutionTime();
-
-    /**
-     * Duration of the operation execution.
-     *
-     * @return execution duration
-     */
-    Duration getExecutionDuration();
-
-    /**
-     * Attributes of the event.
-     *
-     * @return event attributes
-     */
-    Set<? extends InstanceRef<? extends ValueInstance>> getAttributes();
-
-    /**
-     * Retrieve event attribute by name.
-     *
-     * @param attributeName attribute name
-     * @return attribute or null
-     */
-    Optional<? extends InstanceRef<? extends ValueInstance>> findAttribute(String attributeName);
+    Optional<TypeInstanceRef> findComposite(String compositeName);
 }
