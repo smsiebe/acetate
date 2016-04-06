@@ -49,7 +49,7 @@ public interface EventInstance extends TypeInstance<EventType> {
      *
      * @return event composite types
      */
-    Collection<TypeInstanceRef> getComposites();
+    Collection<InstanceRef> getComposites();
 
     /**
      * Retrieve event composite by name.
@@ -57,5 +57,5 @@ public interface EventInstance extends TypeInstance<EventType> {
      * @param compositeName composite name
      * @return composite or null
      */
-    Optional<TypeInstanceRef> findComposite(String compositeName);
+    Optional<InstanceRef> findComposite(String compositeName);
 }
