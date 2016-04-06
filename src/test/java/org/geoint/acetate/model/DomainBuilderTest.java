@@ -16,9 +16,9 @@
 package org.geoint.acetate.model;
 
 import java.util.Optional;
-//import org.geoint.acetate.serialization.MockValueBinaryCodec;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import static org.geoint.acetate.model.TestDomainUtil.*;
 
 /**
  *
@@ -26,25 +26,12 @@ import static org.junit.Assert.*;
  */
 public class DomainBuilderTest {
 
-    private static final String NS = "org.geoint.acetate.test";
-    private static final String V = "1.0";
-    private static final String valueName = "testValue";
-    private static final String valueDescription = "my test value";
-    private static final String eventName = "testEvent";
-    private static final String eventDesc = "my test desc";
-    private static final String valueRefName = "eventValue";
-    private static final String valueRefDesc = "event value";
-    private static final String resourceName = "testResource";
-    private static final String resourceDesc = "super cool resource";
-    private static final String mapRefName = "mapRef";
-    private static final String eventRefName = "myEventRef";
-
     @Test
     public void testDefineModel() throws Exception {
         DomainModel m = newTestDomainBuilder()
                 .build();
-        assertEquals(NS, m.getNamespace());
-        assertEquals(V, m.getVersion());
+        assertEquals(NAMESPACE, m.getNamespace());
+        assertEquals(VERSION, m.getVersion());
         assertTrue(m.getEvents().isEmpty());
         assertTrue(m.getResources().isEmpty());
         assertTrue(m.getValues().isEmpty());
@@ -58,11 +45,11 @@ public class DomainBuilderTest {
         assertEquals(1, m.getValues().size());
 
         ValueType v = m.getValues().iterator().next();
-        assertEquals(NS, v.getNamespace());
-        assertEquals(V, v.getVersion());
-        assertEquals(valueName, v.getName());
+        assertEquals(NAMESPACE, v.getNamespace());
+        assertEquals(VERSION, v.getVersion());
+        assertEquals(VALUE_TYPE_NAME, v.getName());
         assertTrue(v.getDescription().isPresent());
-        assertEquals(valueDescription, v.getDescription().get());
+        assertEquals(VALUE_DESC, v.getDescription().get());
 //        assertNotNull(v.getDefaultBinaryCodec());
 //        assertNotNull(v.getDefaultCharacterCodec());
     }
@@ -76,19 +63,19 @@ public class DomainBuilderTest {
 
         //test event
         EventType e = m.getEvents().iterator().next();
-        assertEquals(NS, e.getNamespace());
-        assertEquals(V, e.getVersion());
-        assertEquals(eventName, e.getName());
+        assertEquals(NAMESPACE, e.getNamespace());
+        assertEquals(VERSION, e.getVersion());
+        assertEquals(EVENT_TYPE_NAME, e.getName());
         assertTrue(e.getDescription().isPresent());
-        assertEquals(eventDesc, e.getDescription().get());
+        assertEquals(EVENT_DESC, e.getDescription().get());
         assertEquals(1, e.getComposites().size());
-        assertTrue(e.findComposite(valueRefName).isPresent());
+        assertTrue(e.findComposite(VALUE_REF_NAME).isPresent());
 
         //test event composite
-        NamedRef vRef = e.findComposite(valueRefName).get();
+        NamedRef vRef = e.findComposite(VALUE_REF_NAME).get();
         assertTrue(vRef.getDescription().isPresent());
-        assertEquals(valueRefDesc, vRef.getDescription().get());
-        assertEquals(valueRefName, vRef.getName());
+        assertEquals(VALUE_REF_DESC, vRef.getDescription().get());
+        assertEquals(VALUE_REF_NAME, vRef.getName());
         assertTrue(vRef instanceof NamedTypeRef);
         NamedTypeRef typeRef = (NamedTypeRef) vRef;
         ValueType vType = m.getValues().iterator().next();
@@ -110,19 +97,19 @@ public class DomainBuilderTest {
 
         //test resource
         ResourceType r = m.getResources().iterator().next();
-        assertEquals(NS, r.getNamespace());
-        assertEquals(V, r.getVersion());
-        assertEquals(resourceName, r.getName());
+        assertEquals(NAMESPACE, r.getNamespace());
+        assertEquals(VERSION, r.getVersion());
+        assertEquals(RESOURCE_TYPE_NAME, r.getName());
         assertTrue(r.getDescription().isPresent());
-        assertEquals(resourceDesc, r.getDescription().get());
+        assertEquals(RESOURCE_DESC, r.getDescription().get());
         assertEquals(1, r.getComposites().size());
-        assertTrue(r.findComposite(valueRefName).isPresent());
+        assertTrue(r.findComposite(VALUE_REF_NAME).isPresent());
 
         //test value composite
-        NamedRef vRef = r.findComposite(valueRefName).get();
+        NamedRef vRef = r.findComposite(VALUE_REF_NAME).get();
         assertTrue(vRef.getDescription().isPresent());
-        assertEquals(valueRefDesc, vRef.getDescription().get());
-        assertEquals(valueRefName, vRef.getName());
+        assertEquals(VALUE_REF_DESC, vRef.getDescription().get());
+        assertEquals(VALUE_REF_NAME, vRef.getName());
         assertTrue(vRef instanceof NamedTypeRef);
         NamedTypeRef typeRef = (NamedTypeRef) vRef;
         ValueType vType = m.getValues().iterator().next();
@@ -141,7 +128,7 @@ public class DomainBuilderTest {
      */
     @Test
     public void testDefineEventOutOfDependencyOrder() throws Exception {
-        DomainBuilder b = new DomainBuilder(NS, V);
+        DomainBuilder b = new DomainBuilder(NAMESPACE, VERSION);
         addTestEvent(b); //adding event descriptor before value it depends on
         addTestValue(b); //then adding the dependecy
 
@@ -164,7 +151,7 @@ public class DomainBuilderTest {
      */
     @Test
     public void testDefineResourceOutOfDependencyOrder() throws Exception {
-        DomainBuilder b = new DomainBuilder(NS, V);
+        DomainBuilder b = new DomainBuilder(NAMESPACE, VERSION);
         addTestResource(b); //adding resource descriptor before event and value it depends on
         addTestEvent(b); //adding event descriptor before value it depends on
         addTestValue(b); //then adding the dependecy
@@ -184,7 +171,7 @@ public class DomainBuilderTest {
      */
     @Test(expected = InvalidModelException.class)
     public void testInvalidMissingValue() throws InvalidModelException {
-        DomainBuilder b = new DomainBuilder(NS, V);
+        DomainBuilder b = new DomainBuilder(NAMESPACE, VERSION);
         addTestEvent(b);
         /* addTestValue(b); <-- no value added to descriptor, do not uncomment or you invalidate test */
 
@@ -193,16 +180,16 @@ public class DomainBuilderTest {
 
     @Test
     public void testMapReference() throws InvalidModelException {
-        DomainBuilder b = new DomainBuilder(NS, V);
+        DomainBuilder b = new DomainBuilder(NAMESPACE, VERSION);
         addTestValue(b);
         addTestEvent(b);
         b.defineResource("resourceWithMap")
-                .withCompositeMap(mapRefName)
-                .keyType(valueRefName, valueName)
-                .withDescription(valueRefDesc)
+                .withCompositeMap(MAP_REF_NAME)
+                .keyType(VALUE_REF_NAME, VALUE_TYPE_NAME)
+                .withDescription(VALUE_REF_DESC)
                 .build() //map key ref
-                .valueRef(eventRefName)
-                .referencedType(eventName)
+                .valueRef(EVENT_REF_NAME)
+                .referencedType(EVENT_TYPE_NAME)
                 .isCollection(true)
                 .build() //may key value
                 .build() //resource
@@ -216,63 +203,31 @@ public class DomainBuilderTest {
 
         ResourceType r = m.getResources().iterator().next();
         assertEquals(1, r.getComposites().size());
-        Optional<NamedRef> cRef = r.findComposite(mapRefName);
+        Optional<NamedRef> cRef = r.findComposite(MAP_REF_NAME);
         assertTrue(cRef.isPresent());
         NamedRef ref = cRef.get();
         assertTrue(ref instanceof NamedMapRef);
         NamedMapRef mapRef = (NamedMapRef) ref;
 
         //test key
-        assertEquals(valueRefName, mapRef.getKeyRef().getName());
+        assertEquals(VALUE_REF_NAME, mapRef.getKeyRef().getName());
         assertTrue(mapRef.getKeyRef().getDescription().isPresent());
-        assertEquals(valueRefDesc, mapRef.getKeyRef().getDescription().get());
+        assertEquals(VALUE_REF_DESC, mapRef.getKeyRef().getDescription().get());
         assertFalse(mapRef.getKeyRef().isCollection());
         DomainType keyType = mapRef.getKeyRef().getReferencedType();
         assertTrue(keyType instanceof ValueType);
         ValueType keyValueType = (ValueType) keyType;
-        assertEquals(valueName, keyValueType.getName());
+        assertEquals(VALUE_TYPE_NAME, keyValueType.getName());
 
         //test value
         NamedRef valueRef = mapRef.getValueRef();
-        assertEquals(eventRefName, valueRef.getName());
+        assertEquals(EVENT_REF_NAME, valueRef.getName());
         assertTrue(valueRef instanceof NamedTypeRef);
         NamedTypeRef valueTypeRef = (NamedTypeRef) valueRef;
         DomainType valueType = valueTypeRef.getReferencedType();
         assertTrue(valueType instanceof EventType);
         EventType valueEventType = (EventType) valueType;
-        assertEquals(eventName, valueEventType.getName());
+        assertEquals(EVENT_TYPE_NAME, valueEventType.getName());
     }
 
-    private DomainBuilder addTestResource(DomainBuilder b)
-            throws InvalidModelException {
-        return b.defineResource(resourceName, resourceDesc)
-                .withCompositeType(valueRefName, valueName)
-                .withDescription(valueRefDesc)
-                .build() //ref
-                .build(); //resource
-    }
-
-    private DomainBuilder addTestEvent(DomainBuilder b)
-            throws InvalidModelException {
-        b.defineEvent(eventName, eventDesc)
-                .withCompositeType(valueRefName, valueName)
-                .withDescription(valueRefDesc)
-                .build() //ref
-                .build(); //event
-        return b;
-    }
-
-    private DomainBuilder addTestValue(DomainBuilder b)
-            throws InvalidModelException {
-        b.defineValue(valueName)
-                //                .withDefaultBinCodec(MockValueBinaryCodec.class)
-                //                .withDefaultCharCodec(MockValueBinaryCodec.class)
-                .withDescription(valueDescription)
-                .build();
-        return b;
-    }
-
-    private DomainBuilder newTestDomainBuilder() {
-        return new DomainBuilder(NS, V);
-    }
 }
