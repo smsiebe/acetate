@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import org.geoint.acetate.InstanceRef;
 import org.geoint.acetate.ResourceInstance;
@@ -244,6 +245,43 @@ public final class ResourceType extends DomainType {
                                     + "initialization error", ex);
                         }
                     });
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%s: %s-%s",
+                    model.toString(),
+                    guid, version);
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 5;
+            hash = 79 * hash + Objects.hashCode(this.model);
+            hash = 79 * hash + Objects.hashCode(this.guid);
+            hash = 79 * hash + Objects.hashCode(this.version);
+            return hash;
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj) {
+                return true;
+            }
+            if (obj == null) {
+                return false;
+            }
+            if (getClass() != obj.getClass()) {
+                return false;
+            }
+            final DefaultResourceInstance other = (DefaultResourceInstance) obj;
+            if (!Objects.equals(this.guid, other.guid)) {
+                return false;
+            }
+            if (!Objects.equals(this.version, other.version)) {
+                return false;
+            }
+            return Objects.equals(this.model, other.model);
         }
 
     }
