@@ -188,8 +188,7 @@ public class DomainBuilderTest {
                 .keyType(VALUE_REF_NAME, VALUE_TYPE_NAME)
                 .withDescription(VALUE_REF_DESC)
                 .build() //map key ref
-                .valueRef(EVENT_REF_NAME)
-                .referencedType(EVENT_TYPE_NAME)
+                .valueType(EVENT_REF_NAME, EVENT_TYPE_NAME)
                 .isCollection(true)
                 .build() //may key value
                 .build() //resource

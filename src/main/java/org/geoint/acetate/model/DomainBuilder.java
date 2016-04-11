@@ -97,27 +97,11 @@ public class DomainBuilder {
         return defineType(ValueBuilder::new, typeName);
     }
 
-//    public ValueBuilder defineValue(String typeName,
-//            TypeCodec defaultCharCodec, TypeCodec defaultBinCodec)
-//            throws InvalidModelException, IllegalStateException {
-//        ValueBuilder b = defineType(ValueBuilder::new, typeName);
-//        return b;
-////        return b.withDefaultCharCodec(defaultCharCodec.getClass())
-////                .withDefaultBinCodec(defaultBinCodec.getClass());
-//    }
     public ValueBuilder defineValue(String typeName, String desc)
             throws InvalidModelException {
         return defineType(ValueBuilder::new, typeName, desc);
     }
 
-//    public ValueBuilder defineValue(String typeName, String desc,
-//            TypeCodec defaultCharCodec, TypeCodec defaultBinCodec)
-//            throws InvalidModelException, IllegalStateException {
-//        ValueBuilder b = defineType(ValueBuilder::new, typeName, desc);
-//        return b;
-////        return b.withDefaultBinCodec(defaultBinCodec.getClass())
-////                .withDefaultBinCodec(defaultBinCodec.getClass());;
-//    }
     public EventBuilder defineEvent(String typeName)
             throws InvalidModelException {
         return defineType(EventBuilder::new, typeName);
@@ -196,6 +180,8 @@ public class DomainBuilder {
 
     public abstract class ModelBuilder<M> {
 
+        public abstract String getName();
+
         /**
          * Creates the domain model component from this builder.
          *
@@ -227,6 +213,11 @@ public class DomainBuilder {
             this.onBuild = onBuild;
             this.typeName = typeName;
             this.description = description;
+        }
+
+        @Override
+        public String getName() {
+            return typeName;
         }
 
         String getTypeName() {
@@ -276,6 +267,26 @@ public class DomainBuilder {
 
     }
 
+    public class BuiltOperationBuilder extends ModelBuilder<ResourceOperation> {
+
+        private final ResourceOperation op;
+
+        public BuiltOperationBuilder(ResourceOperation op) {
+            this.op = op;
+        }
+
+        @Override
+        public String getName() {
+            return op.getName();
+        }
+
+        @Override
+        protected ResourceOperation createModel(TypeResolver resolver) throws InvalidModelException {
+            return op;
+        }
+
+    }
+
     public class OperationBuilder extends ModelBuilder<ResourceOperation> {
 
         private final ResourceBuilder resource;
@@ -290,6 +301,10 @@ public class DomainBuilder {
         public OperationBuilder(ResourceBuilder rb, String operationName) {
             this.resource = rb;
             this.operationName = operationName;
+        }
+
+        public String getName() {
+            return operationName;
         }
 
         public OperationBuilder withDescription(String desc) {
@@ -377,8 +392,8 @@ public class DomainBuilder {
 
         final NamedSet<NamedTypeRefBuilder> links
                 = new NamedSet<>(NamedTypeRefBuilder::getRefName);
-        final NamedSet<OperationBuilder> operations
-                = new NamedSet<>((o) -> o.operationName);
+        final NamedSet<ModelBuilder<ResourceOperation>> operations
+                = new NamedSet<>(ModelBuilder::getName);
 
         public ResourceBuilder(ThrowingFunction<ResourceBuilder, DomainBuilder, InvalidModelException> onBuild,
                 String typeName) {
@@ -390,10 +405,24 @@ public class DomainBuilder {
             super(onBuild, typeName, description);
         }
 
-        public OperationBuilder withOperation(String opName) {
+        public OperationBuilder withOperation(String opName)
+                throws InvalidModelException {
             OperationBuilder op = new OperationBuilder(this, opName);
-            operations.add(op);
+            addOperation(op);
             return op;
+        }
+
+        public ResourceBuilder withOperation(ResourceOperation operation)
+                throws InvalidModelException {
+            addOperation(new BuiltOperationBuilder(operation));
+            return this;
+        }
+
+        protected void addOperation(ModelBuilder<ResourceOperation> opBuilder)
+                throws InvalidModelException {
+            if (!operations.add(opBuilder)) {
+                throw new DuplicateNamedTypeException(opBuilder.getName());
+            }
         }
 
         /**
@@ -427,11 +456,30 @@ public class DomainBuilder {
 
             NamedTypeRefBuilder<ResourceBuilder> ref = new NamedTypeRefBuilder(this, refName,
                     compositeNamespace, compositeVersion, compositeName);
-
-            if (!links.add(ref)) {
-                throw new DuplicateNamedTypeException(refName);
-            }
+            addLink(ref);
             return ref;
+        }
+
+        /**
+         * Defines a link with previously resolved reference model.
+         *
+         * @param ref reference model
+         * @return this builder
+         * @throws InvalidModelException if invalid definition
+         */
+        public ResourceBuilder withLink(NamedTypeRef ref)
+                throws InvalidModelException {
+            NamedTypeRefBuilder<ResourceBuilder> refBuilder
+                    = new NamedTypeRefBuilder(this, ref);
+            addLink(refBuilder);
+            return this;
+        }
+
+        protected void addLink(NamedTypeRefBuilder linkBuilder)
+                throws DuplicateNamedTypeException {
+            if (!links.add(linkBuilder)) {
+                throw new DuplicateNamedTypeException(linkBuilder.getRefName());
+            }
         }
 
         @Override
@@ -459,8 +507,6 @@ public class DomainBuilder {
 
     public class ValueBuilder extends TypeBuilder<ValueType, ValueBuilder> {
 
-//        private TypeCodec defaultCharCodec;
-//        private TypeCodec defaultBinCodec;
         public ValueBuilder(
                 ThrowingFunction<ValueBuilder, DomainBuilder, InvalidModelException> onBuild,
                 String typeName) {
@@ -473,52 +519,11 @@ public class DomainBuilder {
             super(onBuild, typeName, description);
         }
 
-//        public ValueBuilder withDefaultCharCodec(
-//                SerializationFormat format, TypeSerializer serializer,
-//                TypeDeserializer deserializer) {
-//            this.defaultCharCodec = ValueCodec.valueCodec(namespace, version,
-//                    typeName, format, serializer, deserializer);
-//            return this;
-//        }
-//
-//        public ValueBuilder withDefaultCharCodec(
-//                Class<? extends TypeCodec> codecClass)
-//                throws InvalidModelException {
-//            this.defaultCharCodec = loadCodec(codecClass);
-//            return this;
-//        }
-//
-//        public ValueBuilder withDefaultBinCodec(
-//                SerializationFormat format,
-//                TypeSerializer serializer, TypeDeserializer deserializer) {
-//            this.defaultBinCodec = ValueCodec.valueCodec(namespace, version,
-//                    typeName, format, serializer, deserializer);
-//            return this;
-//        }
-//
-//        public ValueBuilder withDefaultBinCodec(
-//                Class<? extends TypeCodec> codecClass)
-//                throws InvalidModelException {
-//            this.defaultBinCodec = loadCodec(codecClass);
-//            return this;
-//        }
         @Override
         protected ValueType createModel(TypeResolver resolver)
                 throws InvalidModelException {
             return new ValueType(namespace, version, typeName, description);
-//                    ,defaultCharCodec, defaultBinCodec);
         }
-
-//        private TypeCodec loadCodec(Class<? extends TypeCodec> codecClass)
-//                throws InvalidModelException {
-//            try {
-//                return codecClass.newInstance();
-//            } catch (InstantiationException | IllegalAccessException ex) {
-//                throw new InvalidModelException(String.format("Unable to "
-//                        + "instantiate value codec class '%s' using no-arg "
-//                        + "constructor", codecClass.getName()));
-//            }
-//        }
     }
 
     public abstract class ComposedTypeBuilder<T extends DomainType, B extends TypeBuilder>
@@ -540,20 +545,6 @@ public class DomainBuilder {
         }
 
         /**
-         * Defines composite reference.
-         *
-         * @param refName name for this composite type
-         * @throws InvalidModelException if this definition is invalid
-         * @return this builder (fluid interface)
-         */
-        public NamedRefBuilder<B> withComposite(String refName)
-                throws InvalidModelException {
-            NamedRefBuilder<B> rb = new NamedRefBuilder(this, refName);
-            addCompositeRef(rb);
-            return rb;
-        }
-
-        /**
          * Defines a reference to a (or a collection of) DomainType(s) as a
          * composite.
          *
@@ -568,12 +559,10 @@ public class DomainBuilder {
                 String compositeNamespace, String compositeVersion,
                 String compositeName) throws InvalidModelException {
 
-            NamedRefBuilder<B> ref = new NamedRefBuilder(this, refName);
-            NamedTypeRefBuilder<B> typeRef
-                    = ref.referencedType(compositeNamespace,
-                            compositeVersion, compositeName);
+            NamedTypeRefBuilder<B> ref = new NamedTypeRefBuilder(this, refName,
+                    compositeNamespace, compositeVersion, compositeName);
             addCompositeRef(ref);
-            return typeRef;
+            return ref;
         }
 
         /**
@@ -586,10 +575,9 @@ public class DomainBuilder {
          */
         public NamedTypeRefBuilder<B> withCompositeType(String refName,
                 String localDomainTypeName) throws InvalidModelException {
-            NamedRefBuilder<B> ref = new NamedRefBuilder(this, refName);
-            NamedTypeRefBuilder<B> typeRef = ref.referencedType(localDomainTypeName);
+            NamedTypeRefBuilder<B> ref = new NamedTypeRefBuilder(this, refName, localDomainTypeName);
             addCompositeRef(ref);
-            return typeRef;
+            return ref;
         }
 
         /**
@@ -601,10 +589,26 @@ public class DomainBuilder {
          */
         public NamedMapRefBuilder<B> withCompositeMap(String refName)
                 throws InvalidModelException {
-            NamedRefBuilder<B> ref = new NamedRefBuilder(this, refName);
-            NamedMapRefBuilder<B> typeRef = ref.referencedMap();
+            NamedMapRefBuilder<B> ref = new NamedMapRefBuilder(this, refName);
             addCompositeRef(ref);
-            return typeRef;
+            return ref;
+        }
+
+        public ComposedTypeBuilder<T, B> withComposite(NamedRef compositeRef)
+                throws InvalidModelException {
+            BuiltNamedRef ref = new BuiltNamedRef(this, compositeRef);
+            addCompositeRef(ref);
+            return this;
+//            if (compositeRef instanceof NamedTypeRef) {
+//                return withCompositeType((NamedTypeRef) compositeRef);
+//            } else if (compositeRef instanceof NamedMapRef) {
+//                return withCompositeMap((NamedMapRef) compositeRef);
+//            } else {
+//                throw new InvalidModelException(String.format("Unknown "
+//                        + "reference type '%s'.",
+//                        compositeRef.getClass().getName()));
+//            }
+
         }
 
         protected void addCompositeRef(NamedRefBuilder ref)
@@ -616,15 +620,12 @@ public class DomainBuilder {
 
         protected Collection<NamedRef> getCompositeRefs(
                 TypeResolver resolver) throws InvalidModelException {
-            return this.composites.toList((c) -> {
-                return c.createModel(resolver);
-            });
+            Collection<NamedRef> refs = new ArrayList<>();
+            for (NamedRefBuilder b : this.composites) {
+                refs.add(b.createModel(resolver));
+            }
+            return refs;
         }
-    }
-
-    public abstract class RefModelBuilder<M extends NamedRef> extends ModelBuilder<M> {
-
-        abstract String getRefName();
     }
 
     /**
@@ -633,101 +634,100 @@ public class DomainBuilder {
      * @see NamedTypeRefBuilder
      * @see NamedMapRefBuilder
      * @param <B> declaring builder
+     * @param <T> type of model ref
      */
-    public class NamedRefBuilder<B extends ModelBuilder>
-            extends ModelBuilder {
+    public abstract class NamedRefBuilder<B extends ModelBuilder, T extends NamedRef>
+            extends ModelBuilder<T> {
 
-        private final B declaringBuilder;
-        private final String refName;
-        private String description;
-        private RefModelBuilder refModelBuilder; //aggregate
+        protected final B declaringBuilder;
+        protected final String refName;
+        protected String description;
 
         public NamedRefBuilder(B declaringBuilder, String refName) {
             this.declaringBuilder = declaringBuilder;
             this.refName = refName;
         }
 
+        @Override
+        public String getName() {
+            return getRefName();
+        }
+
         String getRefName() {
             return refName;
-        }
-
-        public NamedRefBuilder<B> withDescription(String desc) {
-            this.description = desc;
-            return this;
-        }
-
-        public NamedTypeRefBuilder<B> referencedType(String typeName) {
-            refModelBuilder = new NamedTypeRefBuilder(this, typeName);
-            return (NamedTypeRefBuilder<B>) refModelBuilder;
-        }
-
-        public NamedTypeRefBuilder<B> referencedType(String typeNamespace,
-                String typeVersion, String typeName) {
-            refModelBuilder = new NamedTypeRefBuilder(this, typeNamespace,
-                    typeVersion, typeName);
-            return (NamedTypeRefBuilder<B>) refModelBuilder;
-        }
-
-        public NamedMapRefBuilder<B> referencedMap() {
-            refModelBuilder = new NamedMapRefBuilder(this);
-            return (NamedMapRefBuilder<B>) refModelBuilder;
-        }
-
-        @Override
-        protected NamedRef createModel(TypeResolver resolver)
-                throws InvalidModelException {
-            return (NamedRef) refModelBuilder.createModel(resolver);
         }
 
         public B build() {
             return declaringBuilder;
         }
+
+        @Override
+        protected abstract T createModel(TypeResolver resolver)
+                throws InvalidModelException;
+
     }
 
-    public class NamedTypeRefBuilder<B extends ModelBuilder> extends RefModelBuilder<NamedTypeRef> {
+    /**
+     * NamedRef builder used when the reference has already been built.
+     *
+     * @param <T>
+     * @param <B>
+     */
+    public class BuiltNamedRef<T extends NamedRef, B extends ModelBuilder>
+            extends NamedRefBuilder<B, T> {
 
-        private final NamedRefBuilder<B> refBuilder; //aggregation vs inheritence because generics resulted in a too-complex API
+        private T ref;
+
+        public BuiltNamedRef(B declaringBuilder, T ref) {
+            super(declaringBuilder, ref.getName());
+            this.ref = ref;
+        }
+
+        @Override
+        protected T createModel(TypeResolver resolver)
+                throws InvalidModelException {
+            return ref;
+        }
+    }
+
+    public class NamedTypeRefBuilder<B extends ModelBuilder>
+            extends NamedRefBuilder<B, NamedTypeRef> {
+
         private final String refTypeNamespace;
         private final String refTypeVersion;
         private final String refTypeName;
         private boolean collection;
 
-        public NamedTypeRefBuilder(NamedRefBuilder<B> refBuilder,
+        public NamedTypeRefBuilder(B declaringBuilder, String refName,
                 String refNamespace, String refVersion, String refType) {
-            this.refBuilder = refBuilder;
+            super(declaringBuilder, refName);
             this.refTypeNamespace = refNamespace;
             this.refTypeVersion = refVersion;
             this.refTypeName = refType;
         }
 
-        public NamedTypeRefBuilder(NamedRefBuilder<B> refBuilder,
-                String refType) {
-            this(refBuilder, namespace, version, refType);
+        public NamedTypeRefBuilder(B declaringBuilder,
+                String refName, String refType) {
+            this(declaringBuilder, refName, namespace, version, refType);
         }
 
-        public NamedTypeRefBuilder(B builder, String refName,
-                String refNamespace, String refVersion, String refType) {
-            this(new NamedRefBuilder(builder, refName), refNamespace,
-                    refVersion, refType);
+        public NamedTypeRefBuilder(B builder, NamedTypeRef ref) {
+            super(builder, ref.getName());
+            this.refTypeNamespace = ref.getReferencedType().getNamespace();
+            this.refTypeVersion = ref.getReferencedType().getVersion();
+            this.refTypeName = ref.getReferencedType().getName();
+            this.description = ref.getDescription().orElse(null);
+            this.collection = ref.isCollection();
         }
 
         public NamedTypeRefBuilder<B> withDescription(String desc) {
-            this.refBuilder.description = desc;
+            this.description = desc;
             return this;
         }
 
         public NamedTypeRefBuilder<B> isCollection(boolean collection) {
             this.collection = collection;
             return this;
-        }
-
-        @Override
-        String getRefName() {
-            return refBuilder.getRefName();
-        }
-
-        public B build() {
-            return refBuilder.build();
         }
 
         @Override
@@ -738,26 +738,48 @@ public class DomainBuilder {
                             refTypeNamespace, refTypeVersion, refTypeName)
                     );
             return new NamedTypeRef(type,
-                    refBuilder.refName,
-                    refBuilder.description,
+                    refName,
+                    description,
                     collection);
         }
 
     }
 
     public class NamedMapRefBuilder<B extends ModelBuilder>
-            extends RefModelBuilder<NamedMapRef> {
+            extends NamedRefBuilder<B, NamedMapRef> {
 
-        private final NamedRefBuilder<B> refBuilder;
         private NamedTypeRefBuilder<NamedMapRefBuilder<B>> keyRefBuilder;
-        private NamedRefBuilder<NamedMapRefBuilder<B>> valueRefBuilder;
+        private NamedRefBuilder<NamedMapRefBuilder<B>, ?> valueRefBuilder;
 
-        public NamedMapRefBuilder(NamedRefBuilder<B> refBuilder) {
-            this.refBuilder = refBuilder;
+        public NamedMapRefBuilder(B declaringBuilder, String refName) {
+            super(declaringBuilder, refName);
+        }
+
+        public NamedMapRefBuilder(B declaringBuilder, String refName,
+                NamedTypeRefBuilder<NamedMapRefBuilder<B>> keyRefBuilder,
+                NamedRefBuilder<NamedMapRefBuilder<B>, ?> valueRefBuilder) {
+            super(declaringBuilder, refName);
+            this.keyRefBuilder = keyRefBuilder;
+            this.valueRefBuilder = valueRefBuilder;
+        }
+
+        public NamedMapRefBuilder(B builder, NamedMapRef ref)
+                throws InvalidModelException {
+            super(builder, ref.getName());
+            this.keyRefBuilder = new NamedTypeRefBuilder(builder, ref.getKeyRef());
+            if (ref.getValueRef() instanceof NamedTypeRef) {
+                this.valueRefBuilder = new NamedTypeRefBuilder(builder, (NamedTypeRef) ref.getValueRef());
+            } else if (ref.getValueRef() instanceof NamedMapRef) {
+                this.valueRefBuilder = new NamedMapRefBuilder(builder, (NamedMapRef) ref.getValueRef());
+            } else {
+                throw new InvalidModelException(String.format("Unknown map "
+                        + "value model reference type '%s'",
+                        ref.getValueRef().getClass().getName()));
+            }
         }
 
         public NamedMapRefBuilder<B> withDescription(String desc) {
-            this.refBuilder.description = desc;
+            this.description = desc;
             return this;
         }
 
@@ -768,27 +790,43 @@ public class DomainBuilder {
          * @return this builder
          */
         public NamedTypeRefBuilder<NamedMapRefBuilder<B>> keyType(String typeName) {
-            this.keyRefBuilder = new NamedTypeRefBuilder(new NamedRefBuilder(this, typeName), typeName);
+            this.keyRefBuilder = new NamedTypeRefBuilder(this, typeName, typeName);
             return this.keyRefBuilder;
         }
 
         public NamedTypeRefBuilder<NamedMapRefBuilder<B>> keyType(String refName,
-                String refTypeName) {
-            this.keyRefBuilder = new NamedTypeRefBuilder(
-                    new NamedRefBuilder(this, refName), refTypeName);
+                String typeName) {
+            this.keyRefBuilder = new NamedTypeRefBuilder(this, refName, typeName);
             return this.keyRefBuilder;
         }
 
         public NamedTypeRefBuilder<NamedMapRefBuilder<B>> keyType(String refName,
                 String refNamespace, String refVersion, String refType) {
-            this.keyRefBuilder = new NamedTypeRefBuilder(
-                    new NamedRefBuilder(this, refName), refNamespace, refVersion, refType);
+            this.keyRefBuilder = new NamedTypeRefBuilder(this, refName, refNamespace, refVersion, refType);
             return this.keyRefBuilder;
         }
 
-        public NamedRefBuilder<NamedMapRefBuilder<B>> valueRef(String refName) {
-            this.valueRefBuilder = new NamedRefBuilder(this, refName);
-            return this.valueRefBuilder;
+        public NamedTypeRefBuilder<NamedMapRefBuilder<B>> valueType(String typeName) {
+            this.valueRefBuilder = new NamedTypeRefBuilder(this, typeName, typeName);
+            return (NamedTypeRefBuilder<NamedMapRefBuilder<B>>) this.valueRefBuilder;
+        }
+
+        public NamedTypeRefBuilder<NamedMapRefBuilder<B>> valueType(String refName,
+                String typeName) {
+            this.valueRefBuilder = new NamedTypeRefBuilder(this, refName, typeName);
+            return (NamedTypeRefBuilder<NamedMapRefBuilder<B>>) this.valueRefBuilder;
+        }
+
+        public NamedTypeRefBuilder<NamedMapRefBuilder<B>> valueType(String refName,
+                String refNamespace, String refVersion, String refType) {
+            this.valueRefBuilder = new NamedTypeRefBuilder(this, refName,
+                    refNamespace, refVersion, refType);
+            return (NamedTypeRefBuilder<NamedMapRefBuilder<B>>) this.valueRefBuilder;
+        }
+
+        public NamedMapRefBuilder<NamedMapRefBuilder<B>> valueMap(String refName) {
+            this.valueRefBuilder = new NamedMapRefBuilder(this, refName);
+            return (NamedMapRefBuilder<NamedMapRefBuilder<B>>) this.valueRefBuilder;
         }
 
         @Override
@@ -796,17 +834,8 @@ public class DomainBuilder {
                 throws InvalidModelException {
             NamedTypeRef keyRef = keyRefBuilder.createModel(resolver);
             NamedRef valueRef = valueRefBuilder.createModel(resolver);
-            return new NamedMapRef(this.refBuilder.refName,
-                    this.refBuilder.description, keyRef, valueRef);
-        }
-
-        @Override
-        String getRefName() {
-            return refBuilder.getRefName();
-        }
-
-        public B build() {
-            return refBuilder.build();
+            return new NamedMapRef(this.refName,
+                    this.description, keyRef, valueRef);
         }
 
     }
