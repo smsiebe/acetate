@@ -15,6 +15,7 @@
  */
 package org.geoint.acetate.model;
 
+import org.geoint.acetate.model.resolve.MemoryTypeResolver;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
