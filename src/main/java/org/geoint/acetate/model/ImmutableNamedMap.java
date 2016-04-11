@@ -134,6 +134,14 @@ public final class ImmutableNamedMap<V> implements Map<String, V> {
         return map.getOrDefault(key, defaultValue);
     }
 
+    public <X extends Throwable> V getOrThrow(String key, Supplier<X> thrower)
+            throws X {
+        if (map.containsKey(key)) {
+            return map.get(key);
+        }
+        throw thrower.get();
+    }
+
     @Override
     public void forEach(BiConsumer<? super String, ? super V> action) {
         map.forEach(action);
