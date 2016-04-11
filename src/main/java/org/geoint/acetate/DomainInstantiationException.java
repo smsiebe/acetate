@@ -15,14 +15,26 @@
  */
 package org.geoint.acetate;
 
-import org.geoint.acetate.model.ValueType;
-
 /**
- * Instance of a domain value.
+ * Thrown if there was a problem instantiating a domain instance.
  *
+ * @author steve_siebert
  */
-public interface ValueInstance extends TypeInstance<ValueType> {
+public class DomainInstantiationException extends DomainException {
 
-    byte[] asBytes() throws DomainInstantiationException;
+    public DomainInstantiationException() {
+    }
+
+    public DomainInstantiationException(String message) {
+        super(message);
+    }
+
+    public DomainInstantiationException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public DomainInstantiationException(Throwable cause) {
+        super(cause);
+    }
 
 }
