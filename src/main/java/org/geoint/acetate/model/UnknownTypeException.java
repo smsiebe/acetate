@@ -16,7 +16,8 @@
 package org.geoint.acetate.model;
 
 /**
- * Thrown when a domain type could not be resolved.
+ * Thrown when a requested domain type could not be found, causing an invalid
+ * model.
  *
  * @author steve_siebert
  */

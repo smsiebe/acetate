@@ -15,6 +15,9 @@
  */
 package org.geoint.acetate.model;
 
+import org.geoint.acetate.model.resolve.MemoryTypeResolver;
+import org.geoint.acetate.model.resolve.TypeResolver;
+import org.geoint.acetate.model.resolve.HierarchicalTypeResolver;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;

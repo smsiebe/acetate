@@ -15,6 +15,7 @@
  */
 package org.geoint.acetate.model;
 
+import org.geoint.acetate.util.ImmutableNamedMap;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Collection;
@@ -38,7 +39,7 @@ import org.geoint.acetate.functional.ThrowingBiFunction;
  * @see EventInstace
  * @author steve_siebert
  */
-public final class ResourceOperation {
+public class ResourceOperation {
 
     private final TypeDescriptor resourceDescriptor;
     private final String operationName;

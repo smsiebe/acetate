@@ -15,6 +15,7 @@
  */
 package org.geoint.acetate.model;
 
+import org.geoint.acetate.model.resolve.TypeResolver;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Optional;

@@ -15,6 +15,7 @@
  */
 package org.geoint.acetate.model;
 
+import org.geoint.acetate.util.ImmutableNamedMap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,7 +32,7 @@ import org.geoint.acetate.TypeInstanceRef;
  * @see DomainResource
  * @author steve_siebert
  */
-public final class ResourceType extends DomainType {
+public class ResourceType extends DomainType {
 
     private final ImmutableNamedMap<NamedRef> composites;
     private final ImmutableNamedMap<NamedTypeRef<ResourceType>> links;

@@ -19,7 +19,6 @@ import java.util.Objects;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 import org.geoint.acetate.TypeInstance;
 import org.geoint.acetate.TypeInstanceRef;
@@ -29,7 +28,7 @@ import org.geoint.acetate.TypeInstanceRef;
  *
  * @param <M> referenced domain type
  */
-public final class NamedTypeRef<M extends DomainType> extends NamedRef {
+public class NamedTypeRef<M extends DomainType> extends NamedRef {
 
     private final M type;
     private final boolean collection;

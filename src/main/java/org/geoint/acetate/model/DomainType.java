@@ -28,9 +28,7 @@ import java.util.Optional;
  */
 public abstract class DomainType {
 
-    private final String namespace;
-    private final String name;
-    private final String version;
+    protected final TypeDescriptor descriptor;
     private final Optional<String> description;
 
     public DomainType(String namespace, String version, String name) {
@@ -39,9 +37,7 @@ public abstract class DomainType {
 
     public DomainType(String namespace, String version, String name,
             String description) {
-        this.namespace = namespace;
-        this.name = name;
-        this.version = version;
+        this.descriptor = new TypeDescriptor(namespace, version, name);
         this.description = Optional.ofNullable(description);
     }
 
@@ -51,7 +47,7 @@ public abstract class DomainType {
      * @return domain namespace
      */
     public String getNamespace() {
-        return namespace;
+        return descriptor.getNamespace();
     }
 
     /**
@@ -60,7 +56,7 @@ public abstract class DomainType {
      * @return value version
      */
     public String getVersion() {
-        return version;
+        return descriptor.getVersion();
     }
 
     /**
@@ -69,7 +65,11 @@ public abstract class DomainType {
      * @return contextual value name
      */
     public String getName() {
-        return name;
+        return descriptor.getType();
+    }
+
+    public TypeDescriptor getTypeDescriptor() {
+        return descriptor;
     }
 
     /**
@@ -81,9 +81,7 @@ public abstract class DomainType {
      * @return true if this descriptor identifies this domain type
      */
     public boolean isType(String namespace, String version, String typeName) {
-        return this.namespace.contentEquals(namespace)
-                && this.version.contentEquals(version)
-                && this.name.contentEquals(typeName);
+        return this.descriptor.describes(namespace, version, typeName);
     }
 
     /**
@@ -97,18 +95,13 @@ public abstract class DomainType {
 
     @Override
     public String toString() {
-        return String.format("%s.%s-%s",
-                namespace,
-                name,
-                version);
+        return descriptor.toString();
     }
 
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 71 * hash + Objects.hashCode(this.namespace);
-        hash = 71 * hash + Objects.hashCode(this.name);
-        hash = 71 * hash + Objects.hashCode(this.version);
+        hash = 43 * hash + Objects.hashCode(this.descriptor);
         return hash;
     }
 
@@ -124,7 +117,7 @@ public abstract class DomainType {
             return false;
         }
         final DomainType other = (DomainType) obj;
-        return this.isType(other.namespace, other.version, other.name);
+        return Objects.equals(this.descriptor, other.descriptor);
     }
 
 }

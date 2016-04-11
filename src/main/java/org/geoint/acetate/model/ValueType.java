@@ -17,6 +17,7 @@ package org.geoint.acetate.model;
 
 import java.util.Arrays;
 import java.util.Objects;
+import org.geoint.acetate.DomainInstantiationException;
 import org.geoint.acetate.ValueInstance;
 
 /**
@@ -27,7 +28,7 @@ import org.geoint.acetate.ValueInstance;
  *
  * @author steve_siebert
  */
-public final class ValueType extends DomainType {
+public class ValueType extends DomainType {
 
     public ValueType(String namespace, String version, String name) {
         super(namespace, version, name);
@@ -38,7 +39,8 @@ public final class ValueType extends DomainType {
         super(namespace, version, name, description);
     }
 
-    public ValueInstance createInstance(byte[] bytes) {
+    public ValueInstance createInstance(byte[] bytes)
+            throws DomainInstantiationException {
         return new DefaultValueInstance(this, bytes);
     }
 

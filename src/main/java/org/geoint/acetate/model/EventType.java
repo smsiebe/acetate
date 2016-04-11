@@ -15,6 +15,7 @@
  */
 package org.geoint.acetate.model;
 
+import org.geoint.acetate.util.ImmutableNamedMap;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -32,7 +33,7 @@ import org.geoint.acetate.InstanceRef;
  * @see ResourceOperation
  * @author steve_siebert
  */
-public final class EventType extends DomainType {
+public class EventType extends DomainType {
 
     private final ImmutableNamedMap<NamedRef> composites;
 

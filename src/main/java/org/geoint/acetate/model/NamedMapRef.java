@@ -27,7 +27,7 @@ import org.geoint.acetate.TypeInstanceRef;
  * @param <K> model of the key
  * @param <V> model of the value
  */
-public final class NamedMapRef<K extends NamedTypeRef, V extends NamedRef>
+public class NamedMapRef<K extends NamedTypeRef, V extends NamedRef>
         extends NamedRef {
 
     private final K keyRef;

@@ -15,6 +15,7 @@
  */
 package org.geoint.acetate.model;
 
+import org.geoint.acetate.util.ImmutableNamedMap;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
