@@ -132,6 +132,12 @@ public final class DomainModel {
         return resources.values();
     }
 
+    public ResourceType getResource(String typeName)
+            throws UnknownTypeException {
+        return resources.getOrThrow(typeName,
+                () -> new UnknownTypeException(namespace, version, typeName));
+    }
+
     /**
      * Values native to this domain.
      *
@@ -141,6 +147,11 @@ public final class DomainModel {
         return values.values();
     }
 
+    public ValueType getValue(String typeName) throws UnknownTypeException {
+        return values.getOrThrow(typeName,
+                () -> new UnknownTypeException(namespace, version, typeName));
+    }
+
     /**
      * Events native to this domain.
      *
@@ -148,6 +159,11 @@ public final class DomainModel {
      */
     public Collection<EventType> getEvents() {
         return events.values();
+    }
+
+    public EventType getEvent(String typeName) throws UnknownTypeException {
+        return events.getOrThrow(typeName,
+                () -> new UnknownTypeException(namespace, version, typeName));
     }
 
     /**
