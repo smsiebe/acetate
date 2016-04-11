@@ -16,25 +16,21 @@
 package org.geoint.acetate.model;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
- * Provides domain descriptor to type resolution services.
- * <p>
- * Implementations must indicate if they are thread-safe or not.
+ * A TypeResolver which, upon failing to resolve a type <i>organically</i>,
+ * executes a callback method to attempt to resolve the type.
  *
  * @author steve_siebert
  */
-@FunctionalInterface
-public interface TypeResolver {
+public interface FailoverTypeResolver extends TypeResolver {
 
-    /**
-     * Returns the requested type, if known to the resolver.
-     *
-     * @param namespace domain namespace
-     * @param version domain version
-     * @param typeName domain type name
-     * @return domain type, if known to the resolver
-     */
-    Optional<DomainType> resolve(String namespace, String version,
-            String typeName);
+    default Optional<DomainType> resolve(String namespace, String version,
+            String typeName, Supplier<DomainType> failoverCallback) {
+        return Optional.ofNullable(
+                resolve(namespace, version, typeName)
+                .orElseGet(failoverCallback)
+        );
+    }
 }
