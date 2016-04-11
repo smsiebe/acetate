@@ -27,12 +27,19 @@ public class TypeDescriptorTest {
     public void testDescribesType() {
         ValueType type = new ValueType(NAMESPACE, VERSION, VALUE_TYPE_NAME);
         TypeDescriptor desc = new TypeDescriptor(NAMESPACE, VERSION, VALUE_TYPE_NAME);
-
+        assertEquals(NAMESPACE, type.getNamespace());
+        assertEquals(VERSION, type.getVersion());
+        assertEquals(VALUE_TYPE_NAME, type.getName());
+        
+        assertEquals(NAMESPACE, desc.getNamespace());
+        assertEquals(VERSION, desc.getVersion());
+        assertEquals(VALUE_TYPE_NAME, desc.getType());
+        
         assertTrue(desc.describes(type));
     }
 
     @Test
-    public void testDescribesInstance() {
+    public void testDescribesInstance() throws Exception {
         TypeDescriptor desc = new TypeDescriptor(NAMESPACE, VERSION, VALUE_TYPE_NAME);
         ValueType type = new ValueType(NAMESPACE, VERSION, VALUE_TYPE_NAME);
         ValueInstance instance = type.createInstance(new byte[0]);
