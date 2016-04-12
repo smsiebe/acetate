@@ -32,6 +32,7 @@ import org.geoint.acetate.EventInstance;
 import org.geoint.acetate.InstanceRef;
 import org.geoint.acetate.ResourceInstance;
 import org.geoint.acetate.functional.ThrowingBiFunction;
+import org.geoint.acetate.functional.ThrowingConsumer;
 import org.geoint.acetate.functional.ThrowingFunction;
 import org.geoint.acetate.model.resolve.DomainTypeResolver;
 
@@ -113,6 +114,15 @@ public class DomainBuilder {
         return defineType(ValueBuilder::new, typeName, desc);
     }
 
+    public void defineValueIfAbsent(String typeName,
+            ThrowingConsumer<ValueBuilder, InvalidModelException> callback)
+            throws InvalidModelException {
+        if (!typeBuilders.findByName(typeName).isPresent()) {
+            ValueBuilder vb = new ValueBuilder(this::registerType, typeName);
+            callback.consume(vb);
+        }
+    }
+
     public EventBuilder defineEvent(String typeName)
             throws InvalidModelException {
         return defineType(EventBuilder::new, typeName);
@@ -123,6 +133,15 @@ public class DomainBuilder {
         return defineType(EventBuilder::new, typeName, desc);
     }
 
+    public void defineEventIfAbsent(String typeName,
+            ThrowingConsumer<EventBuilder, InvalidModelException> callback)
+            throws InvalidModelException {
+        if (!typeBuilders.findByName(typeName).isPresent()) {
+            EventBuilder eb = new EventBuilder(this::registerType, typeName);
+            callback.consume(eb);
+        }
+    }
+
     public ResourceBuilder defineResource(String typeName)
             throws InvalidModelException {
         return defineType(ResourceBuilder::new, typeName);
@@ -131,6 +150,15 @@ public class DomainBuilder {
     public ResourceBuilder defineResource(String typeName, String desc)
             throws InvalidModelException {
         return defineType(ResourceBuilder::new, typeName, desc);
+    }
+
+    public void defineResourceIfAbsent(String typeName,
+            ThrowingConsumer<ResourceBuilder, InvalidModelException> callback)
+            throws InvalidModelException {
+        if (!typeBuilders.findByName(typeName).isPresent()) {
+            ResourceBuilder rb = new ResourceBuilder(this::registerType, typeName);
+            callback.consume(rb);
+        }
     }
 
     private <B extends TypeBuilder> B defineType(
