@@ -23,6 +23,10 @@ package org.geoint.acetate.model;
  */
 public class UnknownTypeException extends InvalidModelException {
 
+    public UnknownTypeException(TypeDescriptor td) {
+        this(td.getNamespace(), td.getVersion(), td.getType());
+    }
+
     public UnknownTypeException(String namespace, String version, String typeName) {
         super(String.format("Requested domain type '%s.%s-%s' is unknown.",
                 namespace, typeName, version));

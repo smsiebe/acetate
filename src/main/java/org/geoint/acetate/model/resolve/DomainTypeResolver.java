@@ -24,18 +24,11 @@ import org.geoint.acetate.model.DomainType;
  * Implementations must indicate if they are thread-safe or not.
  *
  * @author steve_siebert
+ * @param <T>
  */
 @FunctionalInterface
-public interface TypeResolver {
+public interface DomainTypeResolver<T> {
 
-    /**
-     * Returns the requested type, if known to the resolver.
-     *
-     * @param namespace domain namespace
-     * @param version domain version
-     * @param typeName domain type name
-     * @return domain type, if known to the resolver
-     */
-    Optional<DomainType> resolve(String namespace, String version,
-            String typeName);
+    Optional<DomainType> resolveType(T td);
+    
 }

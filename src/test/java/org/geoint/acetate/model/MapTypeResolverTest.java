@@ -15,7 +15,7 @@
  */
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.model.resolve.MemoryTypeResolver;
+import org.geoint.acetate.model.resolve.MapTypeResolver;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,7 +27,7 @@ import static org.junit.Assert.*;
  *
  * @author steve_siebert
  */
-public class MemoryTypeResolverTest {
+public class MapTypeResolverTest {
 
     private static final String NS = "testNamespace";
     private static final String V = "1.0";
@@ -41,23 +41,15 @@ public class MemoryTypeResolverTest {
 
     @Test
     public void testDefaultResolver() throws InvalidModelException {
-        MemoryTypeResolver r = new MemoryTypeResolver();
-        r.getTypes().add(TEST_EVENT);
-        assertTrue(r.resolve(NS, V, TN).isPresent());
+        MapTypeResolver<TypeDescriptor> r = new MapTypeResolver<>();
+        r.getTypes().put(TEST_EVENT.descriptor, TEST_EVENT);
+        assertTrue(r.resolveType(new TypeDescriptor(NS, V, TN)).isPresent());
     }
 
     @Test
     public void testArrayBackedResolver() throws InvalidModelException {
-        MemoryTypeResolver r = new MemoryTypeResolver(TEST_EVENT);
-        assertTrue(r.resolve(NS, V, TN).isPresent());
-    }
-
-    @Test
-    public void testProvidedCollectionResolver() throws InvalidModelException {
-        Collection<DomainType> types = new ArrayList<>();
-        MemoryTypeResolver r = new MemoryTypeResolver(types);
-        types.add(TEST_EVENT);
-        assertTrue(r.resolve(NS, V, TN).isPresent());
+        MapTypeResolver<TypeDescriptor> r = new MapTypeResolver<>(DomainType::getTypeDescriptor, TEST_EVENT);
+        assertTrue(r.resolveType(new TypeDescriptor(NS, V, TN)).isPresent());
     }
 
 }

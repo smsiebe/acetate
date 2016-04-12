@@ -15,8 +15,7 @@
  */
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.model.resolve.MemoryTypeResolver;
-import org.geoint.acetate.model.resolve.TypeResolver;
+import org.geoint.acetate.model.resolve.MapTypeResolver;
 import org.geoint.acetate.model.resolve.HierarchicalTypeResolver;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,6 +33,7 @@ import org.geoint.acetate.InstanceRef;
 import org.geoint.acetate.ResourceInstance;
 import org.geoint.acetate.functional.ThrowingBiFunction;
 import org.geoint.acetate.functional.ThrowingFunction;
+import org.geoint.acetate.model.resolve.DomainTypeResolver;
 
 /**
  * Fluid interface used define a domain model.
@@ -54,14 +54,14 @@ public class DomainBuilder {
     private String description = null;
     private final NamedSet<TypeBuilder> typeBuilders = new NamedSet<>(TypeBuilder::getTypeName);
     private DomainModel model = null; //if not null the builder is no longer valid
-    private HierarchicalTypeResolver resolver;
+    private HierarchicalTypeResolver<TypeDescriptor> resolver;
 
     public DomainBuilder(String namespace, String version) {
         this(namespace, version, null);
     }
 
     public DomainBuilder(String namespace, String version,
-            TypeResolver resolver) {
+            DomainTypeResolver<TypeDescriptor> resolver) {
         this.namespace = namespace;
         this.version = version;
 
@@ -70,15 +70,23 @@ public class DomainBuilder {
              * resolution found:
              *  1) if the type is for this domain, check the collection of 
              *     types that have already been created during this build process
-             *  2) if a TypeResolver was provided (constructor), attempt to 
-             *     resolve from it
-             *  3) if the type is for this domain, attempt to resolve the type 
+             *  2) if a DomainTypeResolver was provided (constructor), attempt to 
+             *     resolveType from it
+             *  3) if the type is for this domain, attempt to resolveType the type 
              *     from any remaining domain type definitions 
              *  4) throw UnknownTypeException
          */
         this.resolver = HierarchicalTypeResolver.newHierarchy(new TypeBuilderResolver())
                 .optionalChild(resolver)
-                .addChild(new MemoryTypeResolver());
+                .addChild(new MapTypeResolver<>());
+    }
+
+    public String getNamespace() {
+        return namespace;
+    }
+
+    public String getVersion() {
+        return version;
     }
 
     /**
@@ -188,12 +196,12 @@ public class DomainBuilder {
         /**
          * Creates the domain model component from this builder.
          *
-         * @param resolver domain type resolver that may be used to resolve
+         * @param resolver domain type resolver that may be used to resolveType
          * references
          * @return domain model
          * @throws InvalidModelException if the type definition is not valid
          */
-        protected abstract M createModel(TypeResolver resolver)
+        protected abstract M createModel(DomainTypeResolver<TypeDescriptor> resolver)
                 throws InvalidModelException;
     }
 
@@ -262,7 +270,7 @@ public class DomainBuilder {
         }
 
         @Override
-        protected EventType createModel(TypeResolver resolver)
+        protected EventType createModel(DomainTypeResolver<TypeDescriptor> resolver)
                 throws InvalidModelException {
             return new EventType(namespace, version, this.typeName,
                     this.description, getCompositeRefs(resolver));
@@ -284,7 +292,7 @@ public class DomainBuilder {
         }
 
         @Override
-        protected ResourceOperation createModel(TypeResolver resolver) throws InvalidModelException {
+        protected ResourceOperation createModel(DomainTypeResolver<TypeDescriptor> resolver) throws InvalidModelException {
             return op;
         }
 
@@ -380,7 +388,7 @@ public class DomainBuilder {
         }
 
         @Override
-        protected ResourceOperation createModel(TypeResolver resolver)
+        protected ResourceOperation createModel(DomainTypeResolver<TypeDescriptor> resolver)
                 throws InvalidModelException {
             return new ResourceOperation(namespace, version,
                     this.resource.typeName, operationName, description,
@@ -486,7 +494,7 @@ public class DomainBuilder {
         }
 
         @Override
-        protected ResourceType createModel(TypeResolver resolver)
+        protected ResourceType createModel(DomainTypeResolver<TypeDescriptor> resolver)
                 throws InvalidModelException {
 
             return new ResourceType(namespace, version, typeName, description,
@@ -523,7 +531,7 @@ public class DomainBuilder {
         }
 
         @Override
-        protected ValueType createModel(TypeResolver resolver)
+        protected ValueType createModel(DomainTypeResolver<TypeDescriptor> resolver)
                 throws InvalidModelException {
             return new ValueType(namespace, version, typeName, description);
         }
@@ -622,7 +630,7 @@ public class DomainBuilder {
         }
 
         protected Collection<NamedRef> getCompositeRefs(
-                TypeResolver resolver) throws InvalidModelException {
+                DomainTypeResolver<TypeDescriptor> resolver) throws InvalidModelException {
             Collection<NamedRef> refs = new ArrayList<>();
             for (NamedRefBuilder b : this.composites) {
                 refs.add(b.createModel(resolver));
@@ -665,7 +673,7 @@ public class DomainBuilder {
         }
 
         @Override
-        protected abstract T createModel(TypeResolver resolver)
+        protected abstract T createModel(DomainTypeResolver<TypeDescriptor> resolver)
                 throws InvalidModelException;
 
     }
@@ -687,7 +695,7 @@ public class DomainBuilder {
         }
 
         @Override
-        protected T createModel(TypeResolver resolver)
+        protected T createModel(DomainTypeResolver<TypeDescriptor> resolver)
                 throws InvalidModelException {
             return ref;
         }
@@ -696,17 +704,13 @@ public class DomainBuilder {
     public class NamedTypeRefBuilder<B extends ModelBuilder>
             extends NamedRefBuilder<B, NamedTypeRef> {
 
-        private final String refTypeNamespace;
-        private final String refTypeVersion;
-        private final String refTypeName;
+        private final TypeDescriptor refTypeDescriptor;
         private boolean collection;
 
         public NamedTypeRefBuilder(B declaringBuilder, String refName,
                 String refNamespace, String refVersion, String refType) {
             super(declaringBuilder, refName);
-            this.refTypeNamespace = refNamespace;
-            this.refTypeVersion = refVersion;
-            this.refTypeName = refType;
+            this.refTypeDescriptor = new TypeDescriptor(refNamespace, refVersion, refType);
         }
 
         public NamedTypeRefBuilder(B declaringBuilder,
@@ -716,9 +720,10 @@ public class DomainBuilder {
 
         public NamedTypeRefBuilder(B builder, NamedTypeRef ref) {
             super(builder, ref.getName());
-            this.refTypeNamespace = ref.getReferencedType().getNamespace();
-            this.refTypeVersion = ref.getReferencedType().getVersion();
-            this.refTypeName = ref.getReferencedType().getName();
+            this.refTypeDescriptor
+                    = new TypeDescriptor(ref.getReferencedType().getNamespace(),
+                            ref.getReferencedType().getVersion(),
+                            ref.getReferencedType().getName());
             this.description = ref.getDescription().orElse(null);
             this.collection = ref.isCollection();
         }
@@ -734,13 +739,13 @@ public class DomainBuilder {
         }
 
         @Override
-        protected NamedTypeRef createModel(TypeResolver resolver)
+        protected NamedTypeRef createModel(DomainTypeResolver<TypeDescriptor> resolver)
                 throws InvalidModelException {
-            DomainType type = resolver.resolve(refTypeNamespace, refTypeVersion, refTypeName)
-                    .orElseThrow(() -> new UnknownTypeException(
-                            refTypeNamespace, refTypeVersion, refTypeName)
-                    );
-            return new NamedTypeRef(type,
+            Optional<DomainType> type = resolver.resolveType(refTypeDescriptor);
+            if (!type.isPresent()) {
+                throw new UnknownTypeException(refTypeDescriptor);
+            }
+            return new NamedTypeRef(type.get(),
                     refName,
                     description,
                     collection);
@@ -833,7 +838,7 @@ public class DomainBuilder {
         }
 
         @Override
-        protected NamedMapRef createModel(TypeResolver resolver)
+        protected NamedMapRef createModel(DomainTypeResolver<TypeDescriptor> resolver)
                 throws InvalidModelException {
             NamedTypeRef keyRef = keyRefBuilder.createModel(resolver);
             NamedRef valueRef = valueRefBuilder.createModel(resolver);
@@ -973,15 +978,14 @@ public class DomainBuilder {
     /**
      * Attempts to resolver a DomainType the collection of TypeBuilders
      */
-    private class TypeBuilderResolver implements TypeResolver {
+    private class TypeBuilderResolver implements DomainTypeResolver<TypeDescriptor> {
 
         @Override
-        public Optional<DomainType> resolve(String ns,
-                String v, String tn) {
+        public Optional<DomainType> resolveType(TypeDescriptor td) {
             Optional<TypeBuilder> typeBuilder = typeBuilders.stream()
-                    .filter((b) -> namespace.contentEquals(ns))
-                    .filter((b) -> version.contentEquals(v))
-                    .filter((b) -> b.typeName.contentEquals(tn))
+                    .filter((b) -> namespace.contentEquals(td.getNamespace()))
+                    .filter((b) -> version.contentEquals(td.getVersion()))
+                    .filter((b) -> b.typeName.contentEquals(td.getType()))
                     .findFirst();
 
             if (typeBuilder.isPresent()) {

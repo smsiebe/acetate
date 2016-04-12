@@ -17,6 +17,7 @@ package org.geoint.acetate.model;
 
 import java.util.Arrays;
 import java.util.Objects;
+import java.util.Optional;
 import org.geoint.acetate.DomainInstantiationException;
 import org.geoint.acetate.ValueInstance;
 
@@ -28,20 +29,56 @@ import org.geoint.acetate.ValueInstance;
  *
  * @author steve_siebert
  */
-public class ValueType extends DomainType {
+public class ValueType implements DomainType {
+
+    protected final TypeDescriptor descriptor;
+    private final Optional<String> description;
 
     public ValueType(String namespace, String version, String name) {
-        super(namespace, version, name);
+        this(namespace, version, name, null);
     }
 
     public ValueType(String namespace, String version, String name,
             String description) {
-        super(namespace, version, name, description);
+        this.descriptor = new TypeDescriptor(namespace, version, name);
+        this.description = Optional.ofNullable(description);
     }
 
     public ValueInstance createInstance(byte[] bytes)
             throws DomainInstantiationException {
         return new DefaultValueInstance(this, bytes);
+    }
+
+    @Override
+    public TypeDescriptor getTypeDescriptor() {
+        return descriptor;
+    }
+
+    @Override
+    public Optional<String> getDescription() {
+        return description;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.descriptor);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final ValueType other = (ValueType) obj;
+        return Objects.equals(this.descriptor, other.descriptor);
     }
 
     private class DefaultValueInstance implements ValueInstance {

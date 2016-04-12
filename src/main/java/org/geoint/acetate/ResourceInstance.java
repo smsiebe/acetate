@@ -23,9 +23,8 @@ import org.geoint.acetate.model.ResourceType;
 /**
  * An instance of a domain resource.
  *
- * @param <M> model used to describe the domain resource
  */
-public interface ResourceInstance<M extends ResourceType> extends TypeInstance<M> {
+public interface ResourceInstance extends TypeInstance<ResourceType> {
 
     /**
      * Resource instance globally unique identifier.
@@ -49,15 +48,12 @@ public interface ResourceInstance<M extends ResourceType> extends TypeInstance<M
      */
     Optional<String> getPreviousResourceVersion();
 
-    @Override
-    public M getModel();
-
     /**
      * Composites set on the resource.
      *
      * @return resource composites
      */
-    Collection<TypeInstanceRef> getComposites();
+    Collection<InstanceRef> getComposites();
 
     /**
      * Return an composite type by name.
@@ -65,7 +61,7 @@ public interface ResourceInstance<M extends ResourceType> extends TypeInstance<M
      * @param compositeName composite name
      * @return object describing the composite reference or null
      */
-    Optional<TypeInstanceRef> findComposite(String compositeName);
+    Optional<InstanceRef> findComposite(String compositeName);
 
     Collection<TypeInstanceRef> getLinks();
 

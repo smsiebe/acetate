@@ -33,7 +33,7 @@ import org.geoint.acetate.InstanceRef;
  * @see ResourceOperation
  * @author steve_siebert
  */
-public class EventType extends DomainType {
+public class EventType extends ComposedType {
 
     private final ImmutableNamedMap<NamedRef> composites;
 

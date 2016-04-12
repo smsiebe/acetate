@@ -15,13 +15,13 @@
  */
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.model.resolve.MemoryTypeResolver;
-import org.geoint.acetate.model.resolve.TypeResolver;
+import org.geoint.acetate.model.resolve.MapTypeResolver;
 import org.geoint.acetate.model.resolve.HierarchicalTypeResolver;
 import java.util.Collections;
 import java.util.Optional;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.geoint.acetate.model.resolve.DomainTypeResolver;
 
 /**
  *
@@ -44,13 +44,13 @@ public class HierarchicalTypeResolverTest {
         TrackingTypeResolver tierOneResolver = eventResolver(NS, V, tierOneEventType);
         TrackingTypeResolver tierTwoResolver = eventResolver(NS, V, tierTwoEventTime);
 
-        HierarchicalTypeResolver resolver
+        HierarchicalTypeResolver<TypeDescriptor> resolver
                 = HierarchicalTypeResolver.newHierarchy(rootResolver)
                 .addChild(tierOneResolver)
                 .addChild(tierTwoResolver);
 
         //resolve from root
-        Optional<DomainType> type = resolver.resolve(NS, V, rootEventType);
+        Optional<DomainType> type = resolver.resolveType(new TypeDescriptor(NS, V, rootEventType));
         assertTrue(type.isPresent());
         assertTrue(type.get().isType(NS, V, rootEventType));
         assertEquals(1, rootResolver.numResolved);
@@ -58,7 +58,7 @@ public class HierarchicalTypeResolverTest {
         assertEquals(0, tierTwoResolver.numResolved);
 
         //resolve from tier1
-        type = resolver.resolve(NS, V, tierOneEventType);
+        type = resolver.resolveType(new TypeDescriptor(NS, V, tierOneEventType));
         assertTrue(type.isPresent());
         assertTrue(type.get().isType(NS, V, tierOneEventType));
         assertEquals(1, rootResolver.numResolved);
@@ -66,7 +66,7 @@ public class HierarchicalTypeResolverTest {
         assertEquals(0, tierTwoResolver.numResolved);
 
         //resolve from tier2
-        type = resolver.resolve(NS, V, tierTwoEventTime);
+        type = resolver.resolveType(new TypeDescriptor(NS, V, tierTwoEventTime));
         assertTrue(type.isPresent());
         assertTrue(type.get().isType(NS, V, tierTwoEventTime));
         assertEquals(1, rootResolver.numResolved);
@@ -77,24 +77,22 @@ public class HierarchicalTypeResolverTest {
     private TrackingTypeResolver eventResolver(String namespace,
             String version, String typeName) throws InvalidModelException {
         return new TrackingTypeResolver(
-                new MemoryTypeResolver(
-                        new EventType(namespace, version, typeName,
-                                Collections.EMPTY_LIST)));
+                new MapTypeResolver<>(DomainType::getTypeDescriptor,
+                        new EventType(namespace, version, typeName, Collections.EMPTY_LIST)));
     }
 
-    private class TrackingTypeResolver implements TypeResolver {
+    private class TrackingTypeResolver implements DomainTypeResolver<TypeDescriptor> {
 
         int numResolved;
-        TypeResolver resolver;
+        DomainTypeResolver<TypeDescriptor> resolver;
 
-        public TrackingTypeResolver(TypeResolver resolver) {
+        public TrackingTypeResolver(DomainTypeResolver<TypeDescriptor> resolver) {
             this.resolver = resolver;
         }
 
         @Override
-        public Optional<DomainType> resolve(String namespace,
-                String version, String typeName) {
-            Optional<DomainType> t = resolver.resolve(namespace, version, typeName);
+        public Optional<DomainType> resolveType(TypeDescriptor td) {
+            Optional<DomainType> t = resolver.resolveType(td);
             if (t.isPresent()) {
                 numResolved++;
             }

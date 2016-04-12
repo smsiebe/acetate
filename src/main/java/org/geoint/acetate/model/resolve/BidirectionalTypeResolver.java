@@ -16,23 +16,15 @@
 package org.geoint.acetate.model.resolve;
 
 import java.util.Optional;
-import java.util.function.Function;
 import org.geoint.acetate.model.DomainType;
 
 /**
- * A DomainTypeResolver which, upon failing to resolveType a type
- * <i>organically</i>, executes a callback method to attempt to resolveType the
- * type.
+ * Provide bidirectional lookup of type-key and key-type.
  *
  * @author steve_siebert
- * @param <T> type key
+ * @param <T>
  */
-public interface FailoverTypeResolver<T> extends DomainTypeResolver<T> {
+public interface BidirectionalTypeResolver<T> extends DomainTypeResolver<T> {
 
-    default Optional<DomainType> resolve(T key, Function<T, DomainType> factory) {
-        return Optional.ofNullable(
-                resolveType(key)
-                .orElseGet(() -> factory.apply(key))
-        );
-    }
+    Optional<T> resolveType(DomainType td);
 }

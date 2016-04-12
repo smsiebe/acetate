@@ -15,7 +15,6 @@
  */
 package org.geoint.acetate.model;
 
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -26,28 +25,15 @@ import java.util.Optional;
  * @see ValueType
  * @author steve_siebert
  */
-public abstract class DomainType {
-
-    protected final TypeDescriptor descriptor;
-    private final Optional<String> description;
-
-    public DomainType(String namespace, String version, String name) {
-        this(namespace, version, name, null);
-    }
-
-    public DomainType(String namespace, String version, String name,
-            String description) {
-        this.descriptor = new TypeDescriptor(namespace, version, name);
-        this.description = Optional.ofNullable(description);
-    }
+public interface DomainType {
 
     /**
      * Namespace of the domain.
      *
      * @return domain namespace
      */
-    public String getNamespace() {
-        return descriptor.getNamespace();
+    public default String getNamespace() {
+        return getTypeDescriptor().getNamespace();
     }
 
     /**
@@ -55,8 +41,8 @@ public abstract class DomainType {
      *
      * @return value version
      */
-    public String getVersion() {
-        return descriptor.getVersion();
+    public default String getVersion() {
+        return getTypeDescriptor().getVersion();
     }
 
     /**
@@ -64,12 +50,8 @@ public abstract class DomainType {
      *
      * @return contextual value name
      */
-    public String getName() {
-        return descriptor.getType();
-    }
-
-    public TypeDescriptor getTypeDescriptor() {
-        return descriptor;
+    public default String getName() {
+        return getTypeDescriptor().getType();
     }
 
     /**
@@ -80,44 +62,18 @@ public abstract class DomainType {
      * @param typeName type name
      * @return true if this descriptor identifies this domain type
      */
-    public boolean isType(String namespace, String version, String typeName) {
-        return this.descriptor.describes(namespace, version, typeName);
+    public default boolean isType(String namespace, String version,
+            String typeName) {
+        return getTypeDescriptor().describes(namespace, version, typeName);
     }
+
+    public TypeDescriptor getTypeDescriptor();
 
     /**
      * Optional description for the domain type.
      *
      * @return description
      */
-    public Optional<String> getDescription() {
-        return description;
-    }
-
-    @Override
-    public String toString() {
-        return descriptor.toString();
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 43 * hash + Objects.hashCode(this.descriptor);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final DomainType other = (DomainType) obj;
-        return Objects.equals(this.descriptor, other.descriptor);
-    }
+    public Optional<String> getDescription();
 
 }

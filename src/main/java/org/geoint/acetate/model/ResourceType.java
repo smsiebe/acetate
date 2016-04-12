@@ -32,7 +32,7 @@ import org.geoint.acetate.TypeInstanceRef;
  * @see DomainResource
  * @author steve_siebert
  */
-public class ResourceType extends DomainType {
+public class ResourceType extends ComposedType {
 
     private final ImmutableNamedMap<NamedRef> composites;
     private final ImmutableNamedMap<NamedTypeRef<ResourceType>> links;

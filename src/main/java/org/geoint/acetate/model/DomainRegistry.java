@@ -15,13 +15,11 @@
  */
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.model.resolve.TypeResolver;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
-import java.util.function.Supplier;
-import org.geoint.acetate.spi.model.DomainModelProvider;
+import java.util.concurrent.ConcurrentHashMap;
+import org.geoint.acetate.model.resolve.MapTypeResolver;
+import org.geoint.acetate.model.resolve.DomainTypeResolver;
+import org.geoint.acetate.model.resolve.HierarchicalTypeResolver;
 
 /**
  * Domain model registry.
@@ -31,93 +29,170 @@ import org.geoint.acetate.spi.model.DomainModelProvider;
  *
  * @author steve_siebert
  */
-public class DomainRegistry implements DomainModelProvider, TypeResolver {
+public class DomainRegistry implements DomainTypeResolver<TypeDescriptor> {
 
-    private final Set<DomainModel> models = new HashSet<>();
+    //local registry - registered new types here
+    protected final MapTypeResolver<TypeDescriptor> localRegistry;
+    //complete registry - resolve types from here
+    protected final HierarchicalTypeResolver<TypeDescriptor> typeResolver;
+
+    protected DomainRegistry() {
+        this.localRegistry = new MapTypeResolver<>(new ConcurrentHashMap<>());
+        this.typeResolver = HierarchicalTypeResolver.newHierarchy(localRegistry);
+    }
+
+    protected DomainRegistry(DomainTypeResolver<TypeDescriptor> resolver) {
+        this.localRegistry = new MapTypeResolver<>();
+        this.typeResolver = HierarchicalTypeResolver.newHierarchy(resolver)
+                .addChild(localRegistry);
+    }
 
     /**
-     * Returns a domain builder, registering the domain on successful build.
+     * Create a new DomainRegistry backed by just its (currently empty)
+     * register.
+     *
+     * @return empty domain registry
+     */
+    public static DomainRegistry newRegistry() {
+        return new DomainRegistry();
+    }
+
+    /**
+     * Create a new DomainRegistry that attempts to resolve domain types from
+     * its local register and falls back to the provided type resolver if not
+     * found.
+     *
+     * @param resolver type resolver searched if not found in local register
+     * @return new registry
+     */
+    public static DomainRegistry newRegistry(
+            DomainTypeResolver<TypeDescriptor> resolver) {
+        return new DomainRegistry(resolver);
+    }
+
+    /**
+     * Create a new domain builder which registers the created domain types on
+     * successful build.
      *
      * @param namespace domain namespace
      * @param version domain version
      * @return domain builder
-     * @throws DuplicateDomainException thrown if the specified domain is
-     * already registered
      */
-    public DomainBuilder builder(String namespace, String version)
-            throws DuplicateDomainException {
-        if (findModel(namespace, version).isPresent()) {
-            throw new DuplicateDomainException(namespace, version);
-        }
-        return new DomainBuilder(namespace, version,
-                
-                //add a resolver that is backed by this registry
-                (ns, v, tn) -> models.parallelStream()
-                .filter((d) -> d.getNamespace().contentEquals(namespace))
-                .filter((d) -> d.getVersion().contentEquals(version))
-                .flatMap(DomainModel::typeStream)
-                .filter((t) -> t.getName().contentEquals(tn))
-                .findFirst());
+    public DomainBuilder builder(String namespace, String version) {
+        return new RegisteringDomainBuilder(new DomainBuilder(namespace, version, this));
     }
 
-    /**
-     * Returns an unmodifiable collection of domain models known to this
-     * registry.
-     *
-     * @return domain models
-     */
-    @Override
-    public Set<DomainModel> getDomainModels() {
-        return Collections.unmodifiableSet(models);
+//    /**
+//     * Returns an unmodifiable collection of domain models known to this
+//     * registry.
+//     *
+//     * @return domain models
+//     */
+//    @Override
+//    public Set<DomainModel> getDomainModels() {
+//        return Collections.unmodifiableSet(models);
+//    }
+    public void register(DomainModel model) {
+        //explode the model, registering unknown types to the local register
+        model.typeStream()
+                .filter((t) -> !typeResolver.resolveType(t.getTypeDescriptor()).isPresent())
+                .forEach(this::register);
     }
 
-    public void register(DomainModel model) throws DuplicateDomainException {
-        if (models.contains(model)) {
-            throw new DuplicateDomainException(model.getNamespace(),
-                    model.getVersion());
-        }
-        this.models.add(model);
+    public void register(DomainType type) {
+        localRegistry.getTypes().put(type.getTypeDescriptor(), type);
     }
 
-    /**
-     * Does a duplicate domain model double-check, once prior to retrieving
-     * (creating) the model from the provided supplier and once before
-     * registration of the supplied model.
-     * <p>
-     * This method is useful when the model generation process is known to be
-     * time consuming and there may be competing domain providers.
-     *
-     * @param namespace domain namespace
-     * @param version domain version
-     * @param modelSupplier domain model supplier
-     * @throws DuplicateDomainException if the domain is already registered
-     */
-    public void register(String namespace, String version,
-            Supplier<DomainModel> modelSupplier)
-            throws DuplicateDomainException {
-
-        //pre-model retrieval
-        if (findModel(namespace, version).isPresent()) {
-            throw new DuplicateDomainException(namespace, version);
-        }
-
-        register(modelSupplier.get()); //checks for duplicates before registration
-    }
-
-    public Optional<DomainModel> findModel(String namespace, String version) {
-        return models.stream()
-                .filter((m) -> m.getNamespace().contentEquals(namespace))
-                .filter((m) -> m.getVersion().contentEquals(version))
-                .findFirst();
+    public DomainModel findModel(String namespace, String version)
+            throws InvalidModelException {
+        //create a new domain model from the exploded types
+        return DomainModel.newModel(namespace, version,
+                localRegistry.getTypes().values());
     }
 
     @Override
-    public Optional<DomainType> resolve(String namespace, String version,
-            String typeName) {
-        return findModel(namespace, version)
-                .flatMap((m) -> m.typeStream()
-                        .filter((t) -> t.getName().contentEquals(typeName))
-                        .findFirst());
+    public Optional<DomainType> resolveType(TypeDescriptor td) {
+        return typeResolver.resolveType(td);
     }
 
+    /**
+     * Decorates a DomainBuilder, registering the created types on build.
+     */
+    private class RegisteringDomainBuilder extends DomainBuilder {
+
+        private final DomainBuilder builder;
+
+        public RegisteringDomainBuilder(DomainBuilder builder) {
+            super(builder.getNamespace(), builder.getVersion());
+            this.builder = builder;
+        }
+
+        @Override
+        public DomainModel build() throws InvalidModelException {
+            DomainModel model = builder.build();
+            register(model);
+            return model;
+        }
+
+        @Override
+        public String getNamespace() {
+            return builder.getNamespace();
+        }
+
+        @Override
+        public String getVersion() {
+            return builder.getVersion();
+        }
+
+        @Override
+        public DomainBuilder withDescription(String domainModelDescription) throws IllegalStateException {
+            return builder.withDescription(domainModelDescription);
+        }
+
+        @Override
+        public ValueBuilder defineValue(String typeName) throws InvalidModelException, IllegalStateException {
+            return builder.defineValue(typeName);
+        }
+
+        @Override
+        public ValueBuilder defineValue(String typeName, String desc) throws InvalidModelException {
+            return builder.defineValue(typeName, desc);
+        }
+
+        @Override
+        public EventBuilder defineEvent(String typeName) throws InvalidModelException {
+            return builder.defineEvent(typeName);
+        }
+
+        @Override
+        public EventBuilder defineEvent(String typeName, String desc) throws InvalidModelException {
+            return builder.defineEvent(typeName, desc);
+        }
+
+        @Override
+        public ResourceBuilder defineResource(String typeName) throws InvalidModelException {
+            return builder.defineResource(typeName);
+        }
+
+        @Override
+        public ResourceBuilder defineResource(String typeName, String desc) throws InvalidModelException {
+            return builder.defineResource(typeName, desc);
+        }
+
+        @Override
+        public int hashCode() {
+            return builder.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return builder.equals(obj);
+        }
+
+        @Override
+        public String toString() {
+            return builder.toString();
+        }
+
+    }
 }

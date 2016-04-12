@@ -15,68 +15,69 @@
  */
 package org.geoint.acetate.model.resolve;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.geoint.acetate.model.DomainType;
 
 /**
- * Simple in-memory type resolver.
+ * Map-backed type resolver.
  * <p>
  * The thread safety of this class depends on the underlying collection used.
+ *
+ * @param <K>
  */
-public class MemoryTypeResolver implements TypeResolver {
+public class MapTypeResolver<K> implements DomainTypeResolver<K> {
 
-    private final Collection<DomainType> types;
+    private final Map<K, DomainType> types;
 
     /**
      * Creates a non-thread-safe type in-memory resolver.
      */
-    public MemoryTypeResolver() {
-        types = new ArrayList<>();
+    public MapTypeResolver() {
+        types = new HashMap<>();
     }
 
     /**
      * Creates a fixed-sized in-memory resolver backed by the provided array.
      *
+     * @param keyGenerator generates the keys for each domain type
      * @param types types resolved by the resolver
      */
-    public MemoryTypeResolver(DomainType... types) {
-        this.types = Arrays.asList(types);
+    public MapTypeResolver(Function<DomainType, K> keyGenerator,
+            DomainType... types) {
+        this(Arrays.stream(types)
+                .collect(Collectors.toMap(keyGenerator::apply, (t) -> t))
+        );
     }
 
     /**
-     * Uses the provided collection as the source for the domain types.
+     * Uses the provided map as the source for the resolver.
      * <p>
-     * If you plan on using this resolver across threads you should use a
-     * concurrent collection here.
+     * Consider thread-safety here.
      *
      * @param types
      */
-    public MemoryTypeResolver(Collection<DomainType> types) {
+    public MapTypeResolver(Map<K, DomainType> types) {
         this.types = types;
     }
 
     /**
-     * Returns the types known to the resolver instance.
-     * <p>
-     * This method returns the actual collection used by the resolver, so any
-     * changes made to this collection will impact the resolver. Consider thread
-     * safety here.
+     * Returns the type map backing this resolver.
      *
      * @return resolved types
      */
-    public Collection<DomainType> getTypes() {
+    public Map<K, DomainType> getTypes() {
         return types;
     }
 
     @Override
-    public Optional<DomainType> resolve(String namespace, String version,
-            String typeName) {
-        return types.stream()
-                .filter((t) -> t.isType(namespace, version, typeName))
-                .findFirst();
+    public Optional<DomainType> resolveType(K key) {
+        return Optional.ofNullable(types.get(key));
     }
 
 }
