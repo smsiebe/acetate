@@ -22,12 +22,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.geoint.acetate.InstanceRef;
 import org.geoint.acetate.ResourceInstance;
 import org.geoint.acetate.TypeInstanceRef;
 
 /**
- * Model of a {@link DomainResource}.
+ * Model of a {@link DomainResource domain resource}, which is a specialized
+ * domain type that is a version controlled type that can be uniquely identified
+ * by a unique identifier.
  *
  * @see DomainResource
  * @author steve_siebert
@@ -35,32 +38,39 @@ import org.geoint.acetate.TypeInstanceRef;
 public class ResourceType extends ComposedType {
 
     private final ImmutableNamedMap<NamedRef> composites;
+    //special index of just the composite resources
     private final ImmutableNamedMap<NamedTypeRef<ResourceType>> links;
     private final ImmutableNamedMap<ResourceOperation> operations;
 
     public ResourceType(String namespace, String version, String name,
             Collection<NamedRef> composites,
-            Collection<NamedTypeRef<ResourceType>> links,
             Collection<ResourceOperation> operations)
             throws InvalidModelException {
-        this(namespace, version, name, null, composites, links, operations);
+        this(namespace, version, name, null, composites, operations);
     }
 
     public ResourceType(String namespace, String version, String name,
             String description,
             Collection<NamedRef> composites,
-            Collection<NamedTypeRef<ResourceType>> links,
             Collection<ResourceOperation> operations)
             throws InvalidModelException {
         super(namespace, version, name, description);
         this.composites = ImmutableNamedMap.createMap(composites,
                 NamedRef::getName);
-        this.links = ImmutableNamedMap.createMap(links,
-                NamedTypeRef::getName,
-                this.composites::containsKey);
+        //operation names must not conflict with composite reference names
         this.operations = ImmutableNamedMap.createMap(operations,
-                ResourceOperation::getName,
-                (n) -> this.composites.containsKey(n) || this.links.containsKey(n));
+                ResourceOperation::getName, this.composites::containsKey);
+
+        //create a map of composites that are themselves 
+        //resource types, so we don't need to generate a new collection 
+        //on each request at runtime
+        this.links = ImmutableNamedMap.createMap(composites.stream()
+                .filter((r) -> r instanceof NamedTypeRef)
+                .map((r) -> (NamedTypeRef) r)
+                .filter((r) -> r.getReferencedType() instanceof ResourceType)
+                .map((r) -> (NamedTypeRef<ResourceType>) r)
+                .collect(Collectors.toList()),
+                NamedTypeRef::getName);
     }
 
     /**
@@ -83,7 +93,9 @@ public class ResourceType extends ComposedType {
     }
 
     /**
-     * Composite types.
+     * Composite type models.
+     * <p>
+     * Note this method returns all composite types, including links.
      *
      * @return resource data attribute models
      */
@@ -92,7 +104,7 @@ public class ResourceType extends ComposedType {
     }
 
     /**
-     * Return the attribute associated with the name, or null.
+     * Return the composite type associated with the name, or null.
      *
      * @param name attribute name
      * @return the attribute information or null if the attribute name is not
@@ -103,7 +115,11 @@ public class ResourceType extends ComposedType {
     }
 
     /**
-     * Resources linked to this domain resource.
+     * Return just the composite types that are themselves resources.
+     * <p>
+     * A composite relationship between two resources is considered a "link",
+     * allowing the resources to be managed independently (ie version
+     * controlled) but maintain their relationship.
      *
      * @return resources linked to this resource
      */
@@ -206,11 +222,6 @@ public class ResourceType extends ComposedType {
         @Override
         public Optional getPreviousResourceVersion() {
             return previousVersion;
-        }
-
-        @Override
-        public ResourceType getModel() {
-            return this.model;
         }
 
         @Override

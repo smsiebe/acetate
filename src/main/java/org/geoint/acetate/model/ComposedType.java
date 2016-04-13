@@ -20,6 +20,10 @@ import java.util.Optional;
 
 /**
  * A type that is composed from other domain types.
+ * <p>
+ * A composite domain type may simply be a container of other domain types or be
+ * a special domain type, such as a {@link ResourceType resource} or
+ * {@link EventType event} which has special significance to the domain model.
  *
  * @author steve_siebert
  */

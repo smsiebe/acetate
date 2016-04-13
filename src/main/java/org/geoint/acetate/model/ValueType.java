@@ -15,11 +15,8 @@
  */
 package org.geoint.acetate.model;
 
-import java.util.Arrays;
 import java.util.Objects;
 import java.util.Optional;
-import org.geoint.acetate.DomainInstantiationException;
-import org.geoint.acetate.ValueInstance;
 
 /**
  * Domain value type.
@@ -42,11 +39,6 @@ public class ValueType implements DomainType {
             String description) {
         this.descriptor = new TypeDescriptor(namespace, version, name);
         this.description = Optional.ofNullable(description);
-    }
-
-    public ValueInstance createInstance(byte[] bytes)
-            throws DomainInstantiationException {
-        return new DefaultValueInstance(this, bytes);
     }
 
     @Override
@@ -79,58 +71,5 @@ public class ValueType implements DomainType {
         }
         final ValueType other = (ValueType) obj;
         return Objects.equals(this.descriptor, other.descriptor);
-    }
-
-    private class DefaultValueInstance implements ValueInstance {
-
-        private final ValueType model;
-        private final byte[] bytes;
-
-        public DefaultValueInstance(ValueType model, byte[] bytes) {
-            this.model = model;
-            this.bytes = bytes;
-        }
-
-        @Override
-        public byte[] asBytes() {
-            return this.bytes;
-        }
-
-        @Override
-        public ValueType getModel() {
-            return this.model;
-        }
-
-        @Override
-        public String toString() {
-            return model.toString();
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 7;
-            hash = 71 * hash + Objects.hashCode(this.model);
-            hash = 71 * hash + Arrays.hashCode(this.bytes);
-            return hash;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) {
-                return true;
-            }
-            if (obj == null) {
-                return false;
-            }
-            if (getClass() != obj.getClass()) {
-                return false;
-            }
-            final DefaultValueInstance other = (DefaultValueInstance) obj;
-            if (!Objects.equals(this.model, other.model)) {
-                return false;
-            }
-            return Arrays.equals(this.bytes, other.bytes);
-        }
-
     }
 }

@@ -23,21 +23,34 @@ import org.geoint.acetate.model.TypeDescriptor;
  *
  * @param <M>
  */
-public interface TypeInstance<M extends DomainType> {
+public class TypeInstance<M extends DomainType> {
+
+    protected final M typeModel;
+
+    public TypeInstance(M typeModel) {
+        this.typeModel = typeModel;
+    }
 
     /**
      * Model of the domain type.
      *
      * @return type model
      */
-    M getModel();
+    public M getModel() {
+        return typeModel;
+    }
 
     /**
      * Domain descriptor this type.
      *
      * @return type descriptor
      */
-    default TypeDescriptor getTypeDescriptor() {
+    public TypeDescriptor getTypeDescriptor() {
         return TypeDescriptor.valueOf(getModel());
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Instance of type '%s'", typeModel.toString());
     }
 }

@@ -15,9 +15,10 @@
  */
 package org.geoint.acetate;
 
-import java.util.Collection;
-import java.util.Optional;
+import java.time.Instant;
+import java.util.Objects;
 import org.geoint.acetate.model.EventType;
+import org.geoint.acetate.util.ImmutableNamedMap;
 
 /**
  * Instance of a domain event.
@@ -42,20 +43,61 @@ import org.geoint.acetate.model.EventType;
  *
  * @author steve_siebert
  */
-public interface EventInstance extends TypeInstance<EventType> {
+public class EventInstance extends CompositeInstance<EventType> {
+
+    protected final String guid;
+    protected final Instant eventTime;
+
+    protected EventInstance(EventType typeModel, String guid, Instant eventTime,
+            ImmutableNamedMap<InstanceRef> composites) {
+        super(typeModel, composites);
+        this.guid = guid;
+        this.eventTime = eventTime;
+    }
 
     /**
-     * Type instances that compose the event.
+     * Event instance unique identifier.
      *
-     * @return event composite types
+     * @return unique event instance identifier
      */
-    Collection<InstanceRef> getComposites();
+    public String getGuid() {
+        return guid;
+    }
 
     /**
-     * Retrieve event composite by name.
+     * Time the event instance was created.
      *
-     * @param compositeName composite name
-     * @return composite or null
+     * @return event instance created time
      */
-    Optional<InstanceRef> findComposite(String compositeName);
+    public Instant getEventTime() {
+        return eventTime;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("Instance of event '%s'", typeModel.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 17 * hash + Objects.hashCode(this.guid);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final EventInstance other = (EventInstance) obj;
+        return Objects.equals(this.guid, other.guid);
+    }
+
 }

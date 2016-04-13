@@ -17,28 +17,52 @@ package org.geoint.acetate;
 
 import java.util.Collection;
 import java.util.Optional;
+import org.geoint.acetate.model.InvalidModelException;
 import org.geoint.acetate.model.ResourceOperation;
 import org.geoint.acetate.model.ResourceType;
+import org.geoint.acetate.util.ImmutableNamedMap;
 
 /**
  * An instance of a domain resource.
  *
  */
-public interface ResourceInstance extends TypeInstance<ResourceType> {
+public class ResourceInstance extends CompositeInstance<ResourceType> {
+
+    protected final String guid;
+    protected final String version;
+    protected final Optional<String> previousVersion;
+
+    public ResourceInstance(ResourceType typeModel, String guid, String version,
+            ImmutableNamedMap<InstanceRef> composites) {
+        this(typeModel, guid, version, null, composites);
+    }
+
+    protected ResourceInstance(ResourceType typeModel, String guid,
+            String version, String previousVersion,
+            ImmutableNamedMap<InstanceRef> composites) {
+        super(typeModel, composites);
+        this.guid = guid;
+        this.version = version;
+        this.previousVersion = Optional.ofNullable(previousVersion);
+    }
 
     /**
      * Resource instance globally unique identifier.
      *
      * @return immutable unique identifier for the resource
      */
-    String getResourceGuid();
+    public String getResourceGuid() {
+        return guid;
+    }
 
     /**
      * The instance version identifier.
      *
      * @return resource version
      */
-    String getResourceVersion();
+    public String getResourceVersion() {
+        return version;
+    }
 
     /**
      * The previous version of this resource.
@@ -46,31 +70,96 @@ public interface ResourceInstance extends TypeInstance<ResourceType> {
      * @return previous version resource or null if this the resource did not
      * have a previous version
      */
-    Optional<String> getPreviousResourceVersion();
+    public Optional<String> getPreviousResourceVersion() {
+        return previousVersion;
+    }
 
     /**
-     * Composites set on the resource.
+     * Returns InstanceRef for each model-defined composite, including linked
+     * resources.
+     * <p>
+     * Note an InstanceRef will exist for each model-defined composite type even
+     * if this instance does not have a composite instance.
      *
-     * @return resource composites
+     * @return composite instances
      */
-    Collection<InstanceRef> getComposites();
+    @Override
+    public Collection<InstanceRef> getComposites() {
+        return super.getComposites();
+    }
 
     /**
-     * Return an composite type by name.
+     * Retrieve an instance reference to a model-defined composite type,
+     * including linked resources.
+     * <p>
+     * Note this method will always return an appropriate InstanceRef instance
+     * for the composite name even if the composite instance is null for this
+     * instance.
      *
-     * @param compositeName composite name
-     * @return object describing the composite reference or null
+     * @param compositeRefName composite reference name
+     * @return composite or null
+     * @throws InvalidModelException if the requested composite ref name is not
+     * a valid, model-defined, reference name for a composite
      */
-    Optional<InstanceRef> findComposite(String compositeName);
+    @Override
+    public InstanceRef findComposite(String compositeRefName)
+            throws InvalidModelException {
+        return super.findComposite(compositeRefName);
+    }
 
-    Collection<TypeInstanceRef> getLinks();
+    /**
+     * Retrieve an instance reference to the model-defined resource link.
+     * <p>
+     * Note this method will always return a TypeInstanceRef for each link
+     * defined by the resource model, even if this resource does not currently
+     * link to another resource instance.
+     *
+     * @return collection of link instance references
+     */
+    public Collection<TypeInstanceRef> getLinks() {
 
-    Optional<TypeInstanceRef> findLink(String linkName);
+    }
+
+    /**
+     * Retrieve an instance reference for the specific link name for this
+     * resource.
+     *
+     * @param linkName link reference name
+     * @return link instance reference
+     * @throws InvalidModelException if the requested link name is not defined
+     * by the resource model
+     */
+    public TypeInstanceRef findLink(String linkName)
+            throws InvalidModelException {
+
+    }
 
     default Collection<ResourceOperation> listOperations() {
         return getModel().getOperations();
     }
 
-    Optional<OperationInstance> findOperation(String operationName);
+    /**
+     * Create an executable OperationInstance with this resource instance
+     * context.
+     *
+     * @param operationRefName model-defined operation reference name
+     * @return resource operation instance
+     * @throws InvalidModelException if the requested operation name is not
+     * defined by the resource model
+     */
+    public OperationInstance findOperation(String operationRefName)
+            throws InvalidModelException {
+        return typeModel.findOperation(operationRefName)
+                .map((o) -> {
+                    try {
+                        return o.createInstance(this);
+                    } catch (InvalidModelException ex) {
+                        //we won't get here since we know the operation 
+                        //exists for this model
+                        throw new RuntimeException("Unexpected operation "
+                                + "initialization error", ex);
+                    }
+                });
+    }
 
 }
