@@ -15,6 +15,7 @@
  */
 package org.geoint.acetate.model;
 
+import org.geoint.acetate.model.design.DomainModelBuilder;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import org.geoint.acetate.model.resolve.MapTypeResolver;
@@ -78,8 +79,8 @@ public class DomainRegistry implements DomainTypeResolver<TypeDescriptor> {
      * @param version domain version
      * @return domain builder
      */
-    public DomainBuilder builder(String namespace, String version) {
-        return new RegisteringDomainBuilder(new DomainBuilder(namespace, version, this));
+    public DomainModelBuilder builder(String namespace, String version) {
+        return new RegisteringDomainBuilder(new DomainModelBuilder(namespace, version, this));
     }
 
 //    /**
@@ -116,13 +117,13 @@ public class DomainRegistry implements DomainTypeResolver<TypeDescriptor> {
     }
 
     /**
-     * Decorates a DomainBuilder, registering the created types on build.
+     * Decorates a DomainModelBuilder, registering the created types on build.
      */
-    private class RegisteringDomainBuilder extends DomainBuilder {
+    private class RegisteringDomainBuilder extends DomainModelBuilder {
 
-        private final DomainBuilder builder;
+        private final DomainModelBuilder builder;
 
-        public RegisteringDomainBuilder(DomainBuilder builder) {
+        public RegisteringDomainBuilder(DomainModelBuilder builder) {
             super(builder.getNamespace(), builder.getVersion());
             this.builder = builder;
         }
@@ -145,7 +146,7 @@ public class DomainRegistry implements DomainTypeResolver<TypeDescriptor> {
         }
 
         @Override
-        public DomainBuilder withDescription(String domainModelDescription) throws IllegalStateException {
+        public DomainModelBuilder withDescription(String domainModelDescription) throws IllegalStateException {
             return builder.withDescription(domainModelDescription);
         }
 

@@ -207,10 +207,7 @@ public final class DomainModel {
         if (!Objects.equals(this.namespace, other.namespace)) {
             return false;
         }
-        if (!Objects.equals(this.version, other.version)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(this.version, other.version);
     }
 
 }

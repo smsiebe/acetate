@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate.model;
+package org.geoint.acetate.model.design;
 
 import org.geoint.acetate.model.resolve.MapTypeResolver;
 import org.geoint.acetate.model.resolve.HierarchicalTypeResolver;
@@ -34,21 +34,34 @@ import org.geoint.acetate.ResourceInstance;
 import org.geoint.acetate.functional.ThrowingBiFunction;
 import org.geoint.acetate.functional.ThrowingConsumer;
 import org.geoint.acetate.functional.ThrowingFunction;
+import org.geoint.acetate.model.DomainModel;
+import org.geoint.acetate.model.DomainType;
+import org.geoint.acetate.model.DuplicateNamedTypeException;
+import org.geoint.acetate.model.EventType;
+import org.geoint.acetate.model.InvalidModelException;
+import org.geoint.acetate.model.NamedMapRef;
+import org.geoint.acetate.model.NamedRef;
+import org.geoint.acetate.model.NamedTypeRef;
+import org.geoint.acetate.model.ResourceOperation;
+import org.geoint.acetate.model.ResourceType;
+import org.geoint.acetate.model.TypeDescriptor;
+import org.geoint.acetate.model.UnknownTypeException;
+import org.geoint.acetate.model.ValueType;
 import org.geoint.acetate.model.resolve.DomainTypeResolver;
 
 /**
  * Fluid interface used define a domain model.
  * <p>
- * A DomainBuilder instance becomes invalid after {@link DomainBuilder#build() }
+ A DomainModelBuilder instance becomes invalid after {@link DomainModelBuilder#build() }
  * is called, no further methods can be called on the builder except 
- * {@link DomainBuilder#build() }, which will return the same DomainModel
+ * {@link DomainModelBuilder#build() }, which will return the same DomainModel
  * instance.
  * <p>
- * DomainBuilder instances should be expected to not be thread-safe.
+ DomainModelBuilder instances should be expected to not be thread-safe.
  *
  * @author steve_siebert
  */
-public class DomainBuilder {
+public class DomainModelBuilder {
 
     private final String namespace;
     private final String version;
@@ -57,11 +70,11 @@ public class DomainBuilder {
     private DomainModel model = null; //if not null the builder is no longer valid
     private HierarchicalTypeResolver<TypeDescriptor> resolver;
 
-    public DomainBuilder(String namespace, String version) {
+    public DomainModelBuilder(String namespace, String version) {
         this(namespace, version, null);
     }
 
-    public DomainBuilder(String namespace, String version,
+    public DomainModelBuilder(String namespace, String version,
             DomainTypeResolver<TypeDescriptor> resolver) {
         this.namespace = namespace;
         this.version = version;
@@ -97,7 +110,7 @@ public class DomainBuilder {
      * @return this builder
      * @throws IllegalStateException if the domain has already been built
      */
-    public DomainBuilder withDescription(String domainModelDescription)
+    public DomainModelBuilder withDescription(String domainModelDescription)
             throws IllegalStateException {
         verifyBuilderState();
         this.description = domainModelDescription;
@@ -162,7 +175,7 @@ public class DomainBuilder {
     }
 
     private <B extends TypeBuilder> B defineType(
-            BiFunction<ThrowingFunction<B, DomainBuilder, InvalidModelException>, String, B> typeBuilderConstructor,
+            BiFunction<ThrowingFunction<B, DomainModelBuilder, InvalidModelException>, String, B> typeBuilderConstructor,
             String typeName) throws InvalidModelException {
         verifyBuilderState();
         if (typeBuilders.findByName(typeName).isPresent()) {
@@ -172,7 +185,7 @@ public class DomainBuilder {
     }
 
     private <B extends TypeBuilder> B defineType(
-            BiFunction<ThrowingFunction<B, DomainBuilder, InvalidModelException>, String, B> typeBuilderConstructor,
+            BiFunction<ThrowingFunction<B, DomainModelBuilder, InvalidModelException>, String, B> typeBuilderConstructor,
             String typeName, String desc) throws InvalidModelException {
         verifyBuilderState();
         if (typeBuilders.findByName(typeName).isPresent()) {
@@ -192,7 +205,7 @@ public class DomainBuilder {
      * @return this builder
      * @throws InvalidModelException if the type
      */
-    private DomainBuilder registerType(TypeBuilder type)
+    private DomainModelBuilder registerType(TypeBuilder type)
             throws InvalidModelException {
         verifyBuilderState();
         if (!typeBuilders.add(type)) {
@@ -236,18 +249,18 @@ public class DomainBuilder {
     public abstract class TypeBuilder<T extends DomainType, B extends TypeBuilder>
             extends ModelBuilder<T> {
 
-        final ThrowingFunction<B, DomainBuilder, InvalidModelException> onBuild;
+        final ThrowingFunction<B, DomainModelBuilder, InvalidModelException> onBuild;
         final String typeName;
         String description;
 
         public TypeBuilder(
-                ThrowingFunction<B, DomainBuilder, InvalidModelException> onBuild,
+                ThrowingFunction<B, DomainModelBuilder, InvalidModelException> onBuild,
                 String typeName) {
             this(onBuild, typeName, null);
         }
 
         public TypeBuilder(
-                ThrowingFunction<B, DomainBuilder, InvalidModelException> onBuild,
+                ThrowingFunction<B, DomainModelBuilder, InvalidModelException> onBuild,
                 String typeName, String description) {
             this.onBuild = onBuild;
             this.typeName = typeName;
@@ -269,13 +282,13 @@ public class DomainBuilder {
         }
 
         /**
-         * Completes the domain type definition, returning the DomainBuilder for
-         * which this type is defined.
+         * Completes the domain type definition, returning the DomainModelBuilder for
+ which this type is defined.
          *
          * @return domain model builder (not this builder)
          * @throws InvalidModelException if the event is invalid
          */
-        public final DomainBuilder build() throws InvalidModelException {
+        public final DomainModelBuilder build() throws InvalidModelException {
             return onBuild.apply(getBuilder());
         }
 
@@ -287,12 +300,12 @@ public class DomainBuilder {
 
     public class EventBuilder extends ComposedTypeBuilder<EventType, EventBuilder> {
 
-        public EventBuilder(ThrowingFunction<EventBuilder, DomainBuilder, InvalidModelException> onBuild,
+        public EventBuilder(ThrowingFunction<EventBuilder, DomainModelBuilder, InvalidModelException> onBuild,
                 String typeName) {
             super(onBuild, typeName);
         }
 
-        public EventBuilder(ThrowingFunction<EventBuilder, DomainBuilder, InvalidModelException> onBuild,
+        public EventBuilder(ThrowingFunction<EventBuilder, DomainModelBuilder, InvalidModelException> onBuild,
                 String typeName, String description) {
             super(onBuild, typeName, description);
         }
@@ -432,12 +445,12 @@ public class DomainBuilder {
         final NamedSet<ModelBuilder<ResourceOperation>> operations
                 = new NamedSet<>(ModelBuilder::getName);
 
-        public ResourceBuilder(ThrowingFunction<ResourceBuilder, DomainBuilder, InvalidModelException> onBuild,
+        public ResourceBuilder(ThrowingFunction<ResourceBuilder, DomainModelBuilder, InvalidModelException> onBuild,
                 String typeName) {
             super(onBuild, typeName);
         }
 
-        public ResourceBuilder(ThrowingFunction<ResourceBuilder, DomainBuilder, InvalidModelException> onBuild,
+        public ResourceBuilder(ThrowingFunction<ResourceBuilder, DomainModelBuilder, InvalidModelException> onBuild,
                 String typeName, String description) {
             super(onBuild, typeName, description);
         }
@@ -525,13 +538,13 @@ public class DomainBuilder {
     public class ValueBuilder extends TypeBuilder<ValueType, ValueBuilder> {
 
         public ValueBuilder(
-                ThrowingFunction<ValueBuilder, DomainBuilder, InvalidModelException> onBuild,
+                ThrowingFunction<ValueBuilder, DomainModelBuilder, InvalidModelException> onBuild,
                 String typeName) {
             super(onBuild, typeName);
         }
 
         public ValueBuilder(
-                ThrowingFunction<ValueBuilder, DomainBuilder, InvalidModelException> onBuild,
+                ThrowingFunction<ValueBuilder, DomainModelBuilder, InvalidModelException> onBuild,
                 String typeName, String description) {
             super(onBuild, typeName, description);
         }
@@ -550,13 +563,13 @@ public class DomainBuilder {
                 = new NamedSet<>(NamedRefBuilder::getRefName);
 
         public ComposedTypeBuilder(
-                ThrowingFunction<B, DomainBuilder, InvalidModelException> onBuild,
+                ThrowingFunction<B, DomainModelBuilder, InvalidModelException> onBuild,
                 String typeName) {
             super(onBuild, typeName);
         }
 
         public ComposedTypeBuilder(
-                ThrowingFunction<B, DomainBuilder, InvalidModelException> onBuild,
+                ThrowingFunction<B, DomainModelBuilder, InvalidModelException> onBuild,
                 String typeName, String description) {
             super(onBuild, typeName, description);
         }

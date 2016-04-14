@@ -15,6 +15,8 @@
  */
 package org.geoint.acetate.model;
 
+import org.geoint.acetate.model.design.DomainModelBuilder;
+
 /**
  * Utility class used to create mock test domain objects.
  */
@@ -33,7 +35,7 @@ public class TestDomainUtil {
     public static final String MAP_REF_NAME = "mapRef";
     public static final String EVENT_REF_NAME = "myEventRef";
 
-    public static DomainBuilder addTestResource(DomainBuilder b)
+    public static DomainModelBuilder addTestResource(DomainModelBuilder b)
             throws InvalidModelException {
         return b.defineResource(RESOURCE_TYPE_NAME, RESOURCE_DESC)
                 .withCompositeType(VALUE_REF_NAME, VALUE_TYPE_NAME)
@@ -42,7 +44,7 @@ public class TestDomainUtil {
                 .build(); //resource
     }
 
-    public static DomainBuilder addTestEvent(DomainBuilder b)
+    public static DomainModelBuilder addTestEvent(DomainModelBuilder b)
             throws InvalidModelException {
         b.defineEvent(EVENT_TYPE_NAME, EVENT_DESC)
                 .withCompositeType(VALUE_REF_NAME, VALUE_TYPE_NAME)
@@ -52,7 +54,7 @@ public class TestDomainUtil {
         return b;
     }
 
-    public static DomainBuilder addTestValue(DomainBuilder b)
+    public static DomainModelBuilder addTestValue(DomainModelBuilder b)
             throws InvalidModelException {
         b.defineValue(VALUE_TYPE_NAME)
                 .withDescription(VALUE_DESC)
@@ -60,7 +62,7 @@ public class TestDomainUtil {
         return b;
     }
 
-    public static DomainBuilder newTestDomainBuilder() {
-        return new DomainBuilder(NAMESPACE, VERSION);
+    public static DomainModelBuilder newTestDomainBuilder() {
+        return new DomainModelBuilder(NAMESPACE, VERSION);
     }
 }
