@@ -30,11 +30,11 @@ public class TypeDescriptorTest {
         assertEquals(NAMESPACE, type.getNamespace());
         assertEquals(VERSION, type.getVersion());
         assertEquals(VALUE_TYPE_NAME, type.getName());
-        
+
         assertEquals(NAMESPACE, desc.getNamespace());
         assertEquals(VERSION, desc.getVersion());
         assertEquals(VALUE_TYPE_NAME, desc.getType());
-        
+
         assertTrue(desc.describes(type));
     }
 
@@ -42,7 +42,7 @@ public class TypeDescriptorTest {
     public void testDescribesInstance() throws Exception {
         TypeDescriptor desc = new TypeDescriptor(NAMESPACE, VERSION, VALUE_TYPE_NAME);
         ValueType type = new ValueType(NAMESPACE, VERSION, VALUE_TYPE_NAME);
-        ValueInstance instance = type.createInstance(new byte[0]);
+        ValueInstance instance = ValueInstance.newInstance(type, new byte[0]);
 
         assertTrue(desc.describes(instance));
     }

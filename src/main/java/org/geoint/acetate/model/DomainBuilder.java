@@ -429,8 +429,6 @@ public class DomainBuilder {
 
     public class ResourceBuilder extends ComposedTypeBuilder<ResourceType, ResourceBuilder> {
 
-        final NamedSet<NamedTypeRefBuilder> links
-                = new NamedSet<>(NamedTypeRefBuilder::getRefName);
         final NamedSet<ModelBuilder<ResourceOperation>> operations
                 = new NamedSet<>(ModelBuilder::getName);
 
@@ -495,7 +493,7 @@ public class DomainBuilder {
 
             NamedTypeRefBuilder<ResourceBuilder> ref = new NamedTypeRefBuilder(this, refName,
                     compositeNamespace, compositeVersion, compositeName);
-            addLink(ref);
+            addCompositeRef(ref);
             return ref;
         }
 
@@ -510,15 +508,8 @@ public class DomainBuilder {
                 throws InvalidModelException {
             NamedTypeRefBuilder<ResourceBuilder> refBuilder
                     = new NamedTypeRefBuilder(this, ref);
-            addLink(refBuilder);
+            addCompositeRef(refBuilder);
             return this;
-        }
-
-        protected void addLink(NamedTypeRefBuilder linkBuilder)
-                throws DuplicateNamedTypeException {
-            if (!links.add(linkBuilder)) {
-                throw new DuplicateNamedTypeException(linkBuilder.getRefName());
-            }
         }
 
         @Override
@@ -527,19 +518,6 @@ public class DomainBuilder {
 
             return new ResourceType(namespace, version, typeName, description,
                     getCompositeRefs(resolver),
-                    links.toList((l) -> {
-                        NamedTypeRef ref = l.createModel(resolver);
-                        if (!ResourceType.class.isAssignableFrom(
-                                ref.getReferencedType().getClass())) {
-                            throw new InvalidModelException(
-                                    String.format("Resource links can only be a domain "
-                                            + "ResourceType, refererence '%s' but was "
-                                            + "found to be of type '%s'",
-                                            ref.toString(),
-                                            ref.getReferencedType().getClass().getName()));
-                        }
-                        return ref;
-                    }),
                     operations.toList((o) -> o.createModel(resolver)));
         }
     }

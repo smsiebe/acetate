@@ -25,7 +25,7 @@ import org.geoint.acetate.model.ValueType;
  */
 public abstract class ValueInstance extends TypeInstance<ValueType> {
 
-    public ValueInstance(ValueType typeModel) {
+    protected ValueInstance(ValueType typeModel) {
         super(typeModel);
     }
 

@@ -22,17 +22,43 @@ import org.geoint.acetate.model.NamedMapRef;
  *
  * @author steve_siebert
  */
-public interface MapInstanceRef extends InstanceRef<NamedMapRef> {
+public class MapInstanceRef implements InstanceRef<NamedMapRef> {
 
-    default String getKeyName() {
+    private final NamedMapRef refModel;
+    private final TypeInstanceRef key;
+    private final InstanceRef value;
+
+    protected MapInstanceRef(NamedMapRef refModel,
+            TypeInstanceRef key, InstanceRef value) {
+        this.refModel = refModel;
+        this.key = key;
+        this.value = value;
+    }
+
+    public static MapInstanceRef newInstance(NamedMapRef refModel,
+            TypeInstanceRef key,
+            InstanceRef value) {
+        return new MapInstanceRef(refModel, key, value);
+    }
+
+    public String getKeyName() {
         return getKeyRef().getName();
     }
 
-    TypeInstanceRef getKeyRef();
+    public TypeInstanceRef getKeyRef() {
+        return key;
+    }
 
-    InstanceRef getValueRef();
+    public InstanceRef getValueRef() {
+        return value;
+    }
 
-    default String getValueName() {
+    @Override
+    public NamedMapRef getRefModel() {
+        return refModel;
+    }
+
+    public String getValueName() {
         return getValueRef().getName();
     }
 

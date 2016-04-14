@@ -15,22 +15,53 @@
  */
 package org.geoint.acetate;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Optional;
+import org.geoint.acetate.model.InvalidModelException;
 import org.geoint.acetate.model.ResourceOperation;
+import org.geoint.acetate.model.ResourceType;
 
 /**
+ * Invokable resource operation.
  *
  * @author steve_siebert
  */
-public interface OperationInstance {
+public class OperationInstance {
 
-    ResourceOperation getModel();
+    protected final ResourceInstance resource;
+    protected final ResourceOperation model;
 
-    default String getName() {
+    protected OperationInstance(ResourceInstance resource,
+            ResourceOperation model) {
+        this.model = model;
+        this.resource = resource;
+    }
+
+    public static OperationInstance newInstance(ResourceInstance instance,
+            String operationName) throws InvalidModelException {
+
+        ResourceType rModel = instance.getModel();
+        ResourceOperation oModel = rModel.findOperation(operationName)
+                .orElseThrow(() -> new InvalidModelException(String.format(
+                        "Unable to create instance of operation '%s', no such "
+                        + "operation is defined for resource type '%s'",
+                        operationName,
+                        rModel.getTypeDescriptor().toString())));
+
+        return new OperationInstance(instance, oModel);
+
+    }
+
+    public ResourceOperation getModel() {
+        return model;
+    }
+
+    public String getName() {
         return getModel().getName();
     }
 
-    default Optional<String> getDescription() {
+    public Optional<String> getDescription() {
         return getModel().getDescription();
     }
 
@@ -44,5 +75,19 @@ public interface OperationInstance {
      * @param params operation parameters
      * @return operation execution result
      */
-    OperationExecuted invoke(InstanceRef... params);
+    public OperationExecuted invoke(InstanceRef... params) {
+        Instant executionTime = Instant.now();
+        try {
+            EventInstance event = model.getFunction().apply(resource, params);
+            return OperationCompleted.newInstance(this, resource,
+                    executionTime,
+                    Duration.between(executionTime, Instant.now()),
+                    event);
+        } catch (Throwable ex) {
+            return OperationFailed.newInstance(this, resource,
+                    executionTime,
+                    Duration.between(executionTime, Instant.now()),
+                    ex);
+        }
+    }
 }

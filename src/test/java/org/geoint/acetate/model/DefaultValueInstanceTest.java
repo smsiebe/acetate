@@ -35,7 +35,7 @@ public class DefaultValueInstanceTest {
         DomainModel m = b.build();
 
         ValueType type = m.getValues().iterator().next();
-        ValueInstance instance = type.createInstance(valueBytes);
+        ValueInstance instance = ValueInstance.newInstance(type, valueBytes);
 
         assertTrue(Objects.nonNull(instance));
         assertEquals(type, instance.getModel());

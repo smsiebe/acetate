@@ -16,16 +16,10 @@
 package org.geoint.acetate.model;
 
 import org.geoint.acetate.util.ImmutableNamedMap;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.Collection;
 import java.util.Optional;
 import org.geoint.acetate.EventInstance;
 import org.geoint.acetate.InstanceRef;
-import org.geoint.acetate.OperationCompleted;
-import org.geoint.acetate.OperationExecuted;
-import org.geoint.acetate.OperationFailed;
-import org.geoint.acetate.OperationInstance;
 import org.geoint.acetate.ResourceInstance;
 import org.geoint.acetate.functional.ThrowingBiFunction;
 
@@ -180,65 +174,4 @@ public class ResourceOperation {
         return function;
     }
 
-    /**
-     * Create a new operation instance bound to (declared by) a resource
-     * instance.
-     *
-     * @param resource resource context
-     * @return operation instance
-     * @throws InvalidModelException if the resource type does not match the
-     * model
-     */
-    public OperationInstance createInstance(ResourceInstance resource)
-            throws InvalidModelException {
-        return new DefaultOperationInstance(this, resource);
-    }
-
-    private static class DefaultOperationInstance implements OperationInstance {
-
-        private final ResourceOperation model;
-        private final ResourceInstance resource;
-
-        public DefaultOperationInstance(ResourceOperation model,
-                ResourceInstance resource)
-                throws InvalidModelException {
-
-            if (!model.resourceDescriptor.describes(resource)) {
-                throw new InvalidModelException(String.format("Unable to create "
-                        + "instance of operation '%s#%s', contextual resource "
-                        + "instance '%s' does not match expected resource "
-                        + "type '%s'",
-                        model.resourceDescriptor.toString(),
-                        model.operationName,
-                        resource.toString(),
-                        model.resourceDescriptor.toString()));
-            }
-
-            this.model = model;
-            this.resource = resource;
-        }
-
-        @Override
-        public ResourceOperation getModel() {
-            return model;
-        }
-
-        @Override
-        public OperationExecuted invoke(InstanceRef... params) {
-            Instant executionTime = Instant.now();
-            try {
-                EventInstance event = model.getFunction().apply(resource, params);
-                return OperationCompleted.newInstance(this, resource,
-                        executionTime,
-                        Duration.between(executionTime, Instant.now()),
-                        event);
-            } catch (Throwable ex) {
-                return OperationFailed.newInstance(this, resource,
-                        executionTime,
-                        Duration.between(executionTime, Instant.now()),
-                        ex);
-            }
-        }
-
-    }
 }

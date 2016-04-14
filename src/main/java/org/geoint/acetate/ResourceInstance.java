@@ -17,7 +17,9 @@ package org.geoint.acetate;
 
 import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.geoint.acetate.model.InvalidModelException;
+import org.geoint.acetate.model.NamedTypeRef;
 import org.geoint.acetate.model.ResourceOperation;
 import org.geoint.acetate.model.ResourceType;
 import org.geoint.acetate.util.ImmutableNamedMap;
@@ -117,7 +119,10 @@ public class ResourceInstance extends CompositeInstance<ResourceType> {
      * @return collection of link instance references
      */
     public Collection<TypeInstanceRef> getLinks() {
-
+        return typeModel.getLinks().stream()
+                .map(NamedTypeRef::getName)
+                .map((n) -> (TypeInstanceRef) composites.get(n))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -131,10 +136,14 @@ public class ResourceInstance extends CompositeInstance<ResourceType> {
      */
     public TypeInstanceRef findLink(String linkName)
             throws InvalidModelException {
-
+        typeModel.findLink(linkName)
+                .orElseThrow(() -> new InvalidModelException(String.format(
+                        "Link reference '%s' is not defined by the resource "
+                        + "model.", linkName)));
+        return (TypeInstanceRef) composites.get(linkName);
     }
 
-    default Collection<ResourceOperation> listOperations() {
+    public Collection<ResourceOperation> listOperations() {
         return getModel().getOperations();
     }
 
@@ -149,17 +158,7 @@ public class ResourceInstance extends CompositeInstance<ResourceType> {
      */
     public OperationInstance findOperation(String operationRefName)
             throws InvalidModelException {
-        return typeModel.findOperation(operationRefName)
-                .map((o) -> {
-                    try {
-                        return o.createInstance(this);
-                    } catch (InvalidModelException ex) {
-                        //we won't get here since we know the operation 
-                        //exists for this model
-                        throw new RuntimeException("Unexpected operation "
-                                + "initialization error", ex);
-                    }
-                });
+        return OperationInstance.newInstance(this, operationRefName);
     }
 
 }

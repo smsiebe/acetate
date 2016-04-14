@@ -29,7 +29,7 @@ import org.geoint.acetate.util.ImmutableNamedMap;
  */
 public class CompositeInstance<M extends ComposedType> extends TypeInstance<M> {
 
-    private final ImmutableNamedMap<InstanceRef> composites;
+    protected final ImmutableNamedMap<InstanceRef> composites;
 
     protected CompositeInstance(M typeModel,
             ImmutableNamedMap<InstanceRef> composites) {
