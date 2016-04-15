@@ -32,17 +32,16 @@ public class EventType extends ComposedType {
 
     private final ImmutableNamedMap<NamedRef> composites;
 
-    public EventType(String namespace, String version, String name,
+    public EventType(TypeDescriptor descriptor,
             Collection<NamedRef> composites)
             throws InvalidModelException {
-        this(namespace, version, name, null, composites);
+        this(descriptor, null, composites);
     }
 
-    public EventType(String namespace,
-            String version, String name, String description,
+    public EventType(TypeDescriptor descriptor, String description,
             Collection<NamedRef> composites)
             throws InvalidModelException {
-        super(namespace, version, name, description);
+        super(descriptor, description);
         this.composites
                 = ImmutableNamedMap.createMap(composites, NamedRef::getName);
     }

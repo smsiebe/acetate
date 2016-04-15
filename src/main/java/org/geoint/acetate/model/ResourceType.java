@@ -35,19 +35,19 @@ public class ResourceType extends ComposedType {
     private final ImmutableNamedMap<NamedTypeRef<ResourceType>> links;
     private final ImmutableNamedMap<ResourceOperation> operations;
 
-    public ResourceType(String namespace, String version, String name,
+    public ResourceType(TypeDescriptor descriptor,
             Collection<NamedRef> composites,
             Collection<ResourceOperation> operations)
             throws InvalidModelException {
-        this(namespace, version, name, null, composites, operations);
+        this(descriptor, null, composites, operations);
     }
 
-    public ResourceType(String namespace, String version, String name,
+    public ResourceType(TypeDescriptor descriptor,
             String description,
             Collection<NamedRef> composites,
             Collection<ResourceOperation> operations)
             throws InvalidModelException {
-        super(namespace, version, name, description);
+        super(descriptor, description);
         this.composites = ImmutableNamedMap.createMap(composites,
                 NamedRef::getName);
         //operation names must not conflict with composite reference names

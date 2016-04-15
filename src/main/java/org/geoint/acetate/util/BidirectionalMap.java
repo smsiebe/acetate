@@ -22,6 +22,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.WriteLock;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
+import org.geoint.acetate.functional.ThrowingFunction;
 
 /**
  * Bidirectional map, mapping keys to values and values to keys.
@@ -49,6 +50,14 @@ public abstract class BidirectionalMap<K, V> {
 
     public abstract K getKey(V value);
 
+    public abstract <X extends Throwable> V getValueOrThrow(K key, Supplier<X> thrower) throws X;
+
+    public abstract <X extends Throwable> K getKeyOrThrow(V value, Supplier<X> thrower) throws X;
+
+    public abstract <X extends Throwable> V computeValueIfAbsent(K key, ThrowingFunction<K, V, X> factory) throws X;
+
+    public abstract <X extends Throwable> K computeKeyIfAbsent(V value, ThrowingFunction<V, K, X> factory) throws X;
+
     public abstract Optional<V> findValue(K key);
 
     public abstract Optional<K> findKey(V value);
@@ -60,6 +69,8 @@ public abstract class BidirectionalMap<K, V> {
     public abstract void forEach(BiConsumer<? super K, ? super V> action);
 
     public abstract void put(K key, V value);
+
+    public abstract void putIfAbsent(K key, V value);
 
     public abstract V removeKey(K key);
 
@@ -235,6 +246,30 @@ public abstract class BidirectionalMap<K, V> {
         }
 
         @Override
+        public void putAll(Map<? extends K, ? extends V> m) {
+            WriteLock lock = mapLock.writeLock();
+            try {
+                lock.lock();
+                m.forEach((k, v) -> this.put(k, v));
+            } finally {
+                lock.unlock();
+            }
+        }
+
+        @Override
+        public void putIfAbsent(K key, V value) {
+            ReadLock lock = mapLock.readLock();
+            try {
+                lock.lock();
+                if (!keyIndex.containsKey(key)) {
+                    put(key, value); //elevates to write lock
+                }
+            } finally {
+                lock.unlock();
+            }
+        }
+
+        @Override
         public V removeKey(K key) {
             WriteLock lock = mapLock.writeLock();
             try {
@@ -255,17 +290,6 @@ public abstract class BidirectionalMap<K, V> {
                 K key = valueIndex.remove(v);
                 keyIndex.remove(key);
                 return key;
-            } finally {
-                lock.unlock();
-            }
-        }
-
-        @Override
-        public void putAll(Map<? extends K, ? extends V> m) {
-            WriteLock lock = mapLock.writeLock();
-            try {
-                lock.lock();
-                m.forEach((k, v) -> this.put(k, v));
             } finally {
                 lock.unlock();
             }
@@ -294,6 +318,52 @@ public abstract class BidirectionalMap<K, V> {
                 lock.unlock();
             }
             return keyIndex.remove(key, value);
+        }
+
+        @Override
+        public <X extends Throwable> V getValueOrThrow(K key,
+                Supplier<X> thrower) throws X {
+            return this.findValue(key).orElseThrow(thrower);
+        }
+
+        @Override
+        public <X extends Throwable> K getKeyOrThrow(V value,
+                Supplier<X> thrower) throws X {
+            return this.findKey(value).orElseThrow(thrower);
+        }
+
+        @Override
+        public <X extends Throwable> V computeValueIfAbsent(K key,
+                ThrowingFunction<K, V, X> factory) throws X {
+            ReadLock lock = mapLock.readLock();
+            try {
+                lock.lock();
+                if (keyIndex.containsKey(key)) {
+                    return keyIndex.get(key);
+                }
+                V value = factory.apply(key);
+                this.put(key, value);
+                return value;
+            } finally {
+                lock.unlock();
+            }
+        }
+
+        @Override
+        public <X extends Throwable> K computeKeyIfAbsent(V value,
+                ThrowingFunction<V, K, X> factory) throws X {
+            ReadLock lock = mapLock.readLock();
+            try {
+                lock.lock();
+                if (valueIndex.containsKey(value)) {
+                    return valueIndex.get(value);
+                }
+                K key = factory.apply(value);
+                this.put(key, value);
+                return key;
+            } finally {
+                lock.unlock();
+            }
         }
 
     }

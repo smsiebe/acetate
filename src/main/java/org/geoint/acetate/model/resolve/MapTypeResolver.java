@@ -76,8 +76,12 @@ public class MapTypeResolver<K> implements DomainTypeResolver<K> {
     }
 
     @Override
-    public Optional<DomainType> resolveType(K key) {
-        return Optional.ofNullable(types.get(key));
+    public DomainType resolve(K key) throws UnresolvedException {
+        if (!types.containsKey(key)) {
+            throw new UnresolvedException(String.format("Mapped resolver does not "
+                    + "contain key '%s'.", key.toString()));
+        }
+        return types.get(key);
     }
 
 }

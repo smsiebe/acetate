@@ -32,13 +32,12 @@ public abstract class ComposedType implements DomainType {
     protected final TypeDescriptor descriptor;
     private final Optional<String> description;
 
-    public ComposedType(String namespace, String version, String name) {
-        this(namespace, version, name, null);
+    public ComposedType(TypeDescriptor descriptor) {
+        this(descriptor, null);
     }
 
-    public ComposedType(String namespace, String version, String name,
-            String description) {
-        this.descriptor = new TypeDescriptor(namespace, version, name);
+    public ComposedType(TypeDescriptor descriptor, String description) {
+        this.descriptor = descriptor;
         this.description = Optional.ofNullable(description);
     }
 

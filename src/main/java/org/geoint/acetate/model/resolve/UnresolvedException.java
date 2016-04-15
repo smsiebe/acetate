@@ -13,26 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.geoint.acetate.model;
+package org.geoint.acetate.model.resolve;
+
+import org.geoint.acetate.DomainException;
 
 /**
- * Thrown when a requested domain type could not be found, causing an invalid
- * model.
  *
  * @author steve_siebert
  */
-public class UnknownTypeException extends InvalidModelException {
+public class UnresolvedException extends DomainException {
 
-    public UnknownTypeException(TypeDescriptor td) {
-        super(message(td));
+    public UnresolvedException() {
     }
 
-    public UnknownTypeException(TypeDescriptor td, Throwable cause) {
-        super(message(td), cause);
+    public UnresolvedException(String message) {
+        super(message);
     }
-    
-    private static String message(TypeDescriptor td) {
-        return String.format("Requested domain type '%s.%s-%s' is unknown.",
-                td.getNamespace(), td.getVersion(), td.getType());
+
+    public UnresolvedException(String message, Throwable cause) {
+        super(message, cause);
     }
+
+    public UnresolvedException(Throwable cause) {
+        super(cause);
+    }
+
 }

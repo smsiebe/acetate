@@ -15,20 +15,16 @@
  */
 package org.geoint.acetate.model.resolve;
 
-import java.util.Optional;
+import org.geoint.acetate.functional.Resolver;
 import org.geoint.acetate.model.DomainType;
 
 /**
  * Provides domain descriptor to type resolution services.
- * <p>
- * Implementations must indicate if they are thread-safe or not.
  *
  * @author steve_siebert
  * @param <T>
  */
 @FunctionalInterface
-public interface DomainTypeResolver<T> {
+public interface DomainTypeResolver<T> extends Resolver<T, DomainType> {
 
-    Optional<DomainType> resolveType(T td);
-    
 }

@@ -78,15 +78,14 @@ public final class HierarchicalTypeResolver<T> implements DomainTypeResolver<T> 
     }
 
     @Override
-    public Optional<DomainType> resolveType(T key) {
+    public DomainType resolve(T key) throws UnresolvedException {
 
         //recursively check hierarchy
-        Optional<DomainType> type
-                = this.resolver.resolveType(key);
-        if (!type.isPresent() && this.parent != null) {
-            return this.parent.resolveType(key);
+        try {
+            return this.resolver.resolve(key);
+        } catch (UnresolvedException ex) {
+            return parent.resolve(key);
         }
-        return type;
     }
 
 }

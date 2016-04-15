@@ -15,7 +15,7 @@
  */
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.model.design.DomainModelBuilder;
+import org.geoint.acetate.model.design.DomainBuilder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import org.geoint.acetate.ValueInstance;
@@ -31,7 +31,7 @@ public class DefaultValueInstanceTest {
     @Test
     public void test() throws Exception {
         final byte[] valueBytes = "ValueValue".getBytes(StandardCharsets.UTF_8);
-        DomainModelBuilder b = newTestDomainBuilder();
+        DomainBuilder b = newTestDomainBuilder();
         addTestValue(b);
         DomainModel m = b.build();
 

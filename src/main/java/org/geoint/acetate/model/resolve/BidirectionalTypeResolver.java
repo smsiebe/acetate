@@ -26,5 +26,5 @@ import org.geoint.acetate.model.DomainType;
  */
 public interface BidirectionalTypeResolver<T> extends DomainTypeResolver<T> {
 
-    Optional<T> resolveType(DomainType td);
+    Optional<T> resolveFromType(DomainType td);
 }

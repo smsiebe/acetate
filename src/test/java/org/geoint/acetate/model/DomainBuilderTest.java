@@ -15,7 +15,7 @@
  */
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.model.design.DomainModelBuilder;
+import org.geoint.acetate.model.design.DomainBuilder;
 import java.util.Optional;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -129,7 +129,7 @@ public class DomainBuilderTest {
      */
     @Test
     public void testDefineEventOutOfDependencyOrder() throws Exception {
-        DomainModelBuilder b = new DomainModelBuilder(NAMESPACE, VERSION);
+        DomainBuilder b = new DomainBuilder(NAMESPACE, VERSION);
         addTestEvent(b); //adding event descriptor before value it depends on
         addTestValue(b); //then adding the dependecy
 
@@ -152,7 +152,7 @@ public class DomainBuilderTest {
      */
     @Test
     public void testDefineResourceOutOfDependencyOrder() throws Exception {
-        DomainModelBuilder b = new DomainModelBuilder(NAMESPACE, VERSION);
+        DomainBuilder b = new DomainBuilder(NAMESPACE, VERSION);
         addTestResource(b); //adding resource descriptor before event and value it depends on
         addTestEvent(b); //adding event descriptor before value it depends on
         addTestValue(b); //then adding the dependecy
@@ -172,7 +172,7 @@ public class DomainBuilderTest {
      */
     @Test(expected = InvalidModelException.class)
     public void testInvalidMissingValue() throws InvalidModelException {
-        DomainModelBuilder b = new DomainModelBuilder(NAMESPACE, VERSION);
+        DomainBuilder b = new DomainBuilder(NAMESPACE, VERSION);
         addTestEvent(b);
         /* addTestValue(b); <-- no value added to descriptor, do not uncomment or you invalidate test */
 
@@ -181,7 +181,7 @@ public class DomainBuilderTest {
 
     @Test
     public void testMapReference() throws InvalidModelException {
-        DomainModelBuilder b = new DomainModelBuilder(NAMESPACE, VERSION);
+        DomainBuilder b = new DomainBuilder(NAMESPACE, VERSION);
         addTestValue(b);
         addTestEvent(b);
         b.defineResource("resourceWithMap")

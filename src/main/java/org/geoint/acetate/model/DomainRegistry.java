@@ -15,12 +15,13 @@
  */
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.model.design.DomainModelBuilder;
+import org.geoint.acetate.model.design.DomainBuilder;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import org.geoint.acetate.model.resolve.MapTypeResolver;
 import org.geoint.acetate.model.resolve.DomainTypeResolver;
 import org.geoint.acetate.model.resolve.HierarchicalTypeResolver;
+import org.geoint.acetate.model.resolve.UnresolvedException;
 
 /**
  * Domain model registry.
@@ -79,8 +80,8 @@ public class DomainRegistry implements DomainTypeResolver<TypeDescriptor> {
      * @param version domain version
      * @return domain builder
      */
-    public DomainModelBuilder builder(String namespace, String version) {
-        return new RegisteringDomainBuilder(new DomainModelBuilder(namespace, version, this));
+    public DomainBuilder builder(String namespace, String version) {
+        return new RegisteringDomainBuilder(new DomainBuilder(namespace, version));
     }
 
 //    /**
@@ -96,7 +97,7 @@ public class DomainRegistry implements DomainTypeResolver<TypeDescriptor> {
     public void register(DomainModel model) {
         //explode the model, registering unknown types to the local register
         model.typeStream()
-                .filter((t) -> !typeResolver.resolveType(t.getTypeDescriptor()).isPresent())
+                .filter((t) -> typeResolver.canResolve(t.getTypeDescriptor()))
                 .forEach(this::register);
     }
 
@@ -112,19 +113,19 @@ public class DomainRegistry implements DomainTypeResolver<TypeDescriptor> {
     }
 
     @Override
-    public Optional<DomainType> resolveType(TypeDescriptor td) {
-        return typeResolver.resolveType(td);
+    public DomainType resolve(TypeDescriptor key) throws UnresolvedException {
+        return typeResolver.resolve(key);
     }
 
     /**
-     * Decorates a DomainModelBuilder, registering the created types on build.
+     * Decorates a DomainBuilder, registering the created types on build.
      */
-    private class RegisteringDomainBuilder extends DomainModelBuilder {
+    private class RegisteringDomainBuilder extends DomainBuilder {
 
-        private final DomainModelBuilder builder;
+        private final DomainBuilder builder;
 
-        public RegisteringDomainBuilder(DomainModelBuilder builder) {
-            super(builder.getNamespace(), builder.getVersion());
+        public RegisteringDomainBuilder(DomainBuilder builder) {
+            super(builder.getDefaultNamespace(), builder.getDefaultVersion());
             this.builder = builder;
         }
 
@@ -136,18 +137,13 @@ public class DomainRegistry implements DomainTypeResolver<TypeDescriptor> {
         }
 
         @Override
-        public String getNamespace() {
-            return builder.getNamespace();
+        public String getDefaultNamespace() {
+            return builder.getDefaultNamespace();
         }
 
         @Override
-        public String getVersion() {
-            return builder.getVersion();
-        }
-
-        @Override
-        public DomainModelBuilder withDescription(String domainModelDescription) throws IllegalStateException {
-            return builder.withDescription(domainModelDescription);
+        public String getDefaultVersion() {
+            return builder.getDefaultVersion();
         }
 
         @Override
@@ -156,28 +152,13 @@ public class DomainRegistry implements DomainTypeResolver<TypeDescriptor> {
         }
 
         @Override
-        public ValueBuilder defineValue(String typeName, String desc) throws InvalidModelException {
-            return builder.defineValue(typeName, desc);
-        }
-
-        @Override
         public EventBuilder defineEvent(String typeName) throws InvalidModelException {
             return builder.defineEvent(typeName);
         }
 
         @Override
-        public EventBuilder defineEvent(String typeName, String desc) throws InvalidModelException {
-            return builder.defineEvent(typeName, desc);
-        }
-
-        @Override
         public ResourceBuilder defineResource(String typeName) throws InvalidModelException {
             return builder.defineResource(typeName);
-        }
-
-        @Override
-        public ResourceBuilder defineResource(String typeName, String desc) throws InvalidModelException {
-            return builder.defineResource(typeName, desc);
         }
 
         @Override
