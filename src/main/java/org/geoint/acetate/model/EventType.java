@@ -15,9 +15,7 @@
  */
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.util.ImmutableNamedMap;
 import java.util.Collection;
-import java.util.Optional;
 import org.geoint.acetate.EventInstance;
 
 /**
@@ -30,7 +28,11 @@ import org.geoint.acetate.EventInstance;
  */
 public class EventType extends ComposedType {
 
-    private final ImmutableNamedMap<NamedRef> composites;
+    public EventType(String namespace, String version, String name,
+            Collection<NamedRef> composites) throws InvalidModelException {
+        this(new TypeDescriptor(namespace, version, name),
+                null, composites);
+    }
 
     public EventType(TypeDescriptor descriptor,
             Collection<NamedRef> composites)
@@ -41,17 +43,7 @@ public class EventType extends ComposedType {
     public EventType(TypeDescriptor descriptor, String description,
             Collection<NamedRef> composites)
             throws InvalidModelException {
-        super(descriptor, description);
-        this.composites
-                = ImmutableNamedMap.createMap(composites, NamedRef::getName);
-    }
-
-    public Collection<NamedRef> getComposites() {
-        return composites.values();
-    }
-
-    public Optional<NamedRef> findComposite(String name) {
-        return composites.find(name);
+        super(descriptor, composites, description);
     }
 
 }

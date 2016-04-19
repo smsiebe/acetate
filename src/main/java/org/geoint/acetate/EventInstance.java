@@ -18,7 +18,7 @@ package org.geoint.acetate;
 import java.time.Instant;
 import java.util.Objects;
 import org.geoint.acetate.model.EventType;
-import org.geoint.acetate.util.ImmutableNamedMap;
+import org.geoint.acetate.util.ImmutableKeyedSet;
 
 /**
  * Instance of a domain event.
@@ -49,7 +49,7 @@ public class EventInstance extends CompositeInstance<EventType> {
     protected final Instant eventTime;
 
     protected EventInstance(EventType typeModel, String guid, Instant eventTime,
-            ImmutableNamedMap<InstanceRef> composites) {
+            ImmutableKeyedSet<String, InstanceRef> composites) {
         super(typeModel, composites);
         this.guid = guid;
         this.eventTime = eventTime;

@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.Objects;
 import org.geoint.acetate.model.ComposedType;
 import org.geoint.acetate.model.InvalidModelException;
-import org.geoint.acetate.util.ImmutableNamedMap;
+import org.geoint.acetate.util.ImmutableKeyedSet;
 
 /**
  * An instance of a domain composite type.
@@ -29,10 +29,10 @@ import org.geoint.acetate.util.ImmutableNamedMap;
  */
 public class CompositeInstance<M extends ComposedType> extends TypeInstance<M> {
 
-    protected final ImmutableNamedMap<InstanceRef> composites;
+    protected final ImmutableKeyedSet<String, InstanceRef> composites;
 
     protected CompositeInstance(M typeModel,
-            ImmutableNamedMap<InstanceRef> composites) {
+            ImmutableKeyedSet<String, InstanceRef> composites) {
         super(typeModel);
         this.composites = composites;
     }
@@ -46,7 +46,7 @@ public class CompositeInstance<M extends ComposedType> extends TypeInstance<M> {
      * @return composite instances
      */
     public Collection<InstanceRef> getComposites() {
-        return composites.values();
+        return composites;
     }
 
     /**

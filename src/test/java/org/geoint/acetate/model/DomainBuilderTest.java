@@ -15,8 +15,10 @@
  */
 package org.geoint.acetate.model;
 
+import java.util.Objects;
 import org.geoint.acetate.model.design.DomainBuilder;
 import java.util.Optional;
+import java.util.Set;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.geoint.acetate.model.TestDomainUtil.*;
@@ -27,20 +29,24 @@ import static org.geoint.acetate.model.TestDomainUtil.*;
  */
 public class DomainBuilderTest {
 
+    /**
+     * Test that no domain model is returned if no types are defined.
+     *
+     * @throws Exception
+     */
     @Test
     public void testDefineModel() throws Exception {
-        DomainModel m = newTestDomainBuilder()
-                .build();
-        assertEquals(NAMESPACE, m.getNamespace());
-        assertEquals(VERSION, m.getVersion());
-        assertTrue(m.getEvents().isEmpty());
-        assertTrue(m.getResources().isEmpty());
-        assertTrue(m.getValues().isEmpty());
+        DomainBuilder db = newTestDomainBuilder();
+        Set<DomainModel> m = db.createModels();
+        assertTrue(m.isEmpty());
     }
 
     @Test
     public void testDefineValue() throws Exception {
-        DomainModel m = addTestValue(newTestDomainBuilder()).build();
+        DomainModel m = addTestValue(newTestDomainBuilder())
+                .createModels().iterator().next();
+        assertTrue(Objects.nonNull(m));
+
         assertEquals(0, m.getResources().size());
         assertEquals(0, m.getEvents().size());
         assertEquals(1, m.getValues().size());
@@ -57,7 +63,10 @@ public class DomainBuilderTest {
 
     @Test
     public void testDefineEvent() throws Exception {
-        DomainModel m = addTestEvent(addTestValue(newTestDomainBuilder())).build();
+        DomainModel m = addTestEvent(addTestValue(newTestDomainBuilder()))
+                .createModels().iterator().next();
+        assertTrue(Objects.nonNull(m));
+
         assertEquals(0, m.getResources().size());
         assertEquals(1, m.getValues().size());
         assertEquals(1, m.getEvents().size());
@@ -90,7 +99,8 @@ public class DomainBuilderTest {
                 addTestEvent(
                         addTestValue(
                                 newTestDomainBuilder()))
-        ).build();
+        ).createModels().iterator().next();
+        assertTrue(Objects.nonNull(m));
 
         assertEquals(1, m.getValues().size());
         assertEquals(1, m.getEvents().size());
@@ -133,7 +143,8 @@ public class DomainBuilderTest {
         addTestEvent(b); //adding event descriptor before value it depends on
         addTestValue(b); //then adding the dependecy
 
-        DomainModel m = b.build();
+        DomainModel m = b.createModels().iterator().next();
+        assertTrue(Objects.nonNull(m));
 
         assertEquals(0, m.getResources().size());
         assertEquals(1, m.getValues().size());
@@ -157,7 +168,8 @@ public class DomainBuilderTest {
         addTestEvent(b); //adding event descriptor before value it depends on
         addTestValue(b); //then adding the dependecy
 
-        DomainModel m = b.build();
+        DomainModel m = b.createModels().iterator().next();
+        assertTrue(Objects.nonNull(m));
 
         assertEquals(1, m.getValues().size());
         assertEquals(1, m.getEvents().size());
@@ -176,7 +188,8 @@ public class DomainBuilderTest {
         addTestEvent(b);
         /* addTestValue(b); <-- no value added to descriptor, do not uncomment or you invalidate test */
 
-        DomainModel m = b.build(); //InvalidModelException expected
+        DomainModel m = b.createModels().iterator().next();
+        assertTrue(Objects.nonNull(m)); //InvalidModelException expected
     }
 
     @Test
@@ -188,14 +201,15 @@ public class DomainBuilderTest {
                 .withCompositeMap(MAP_REF_NAME)
                 .keyType(VALUE_REF_NAME, VALUE_TYPE_NAME)
                 .withDescription(VALUE_REF_DESC)
-                .build() //map key ref
+                .complete() //map key ref
                 .valueType(EVENT_REF_NAME, EVENT_TYPE_NAME)
                 .isCollection(true)
-                .build() //may key value
-                .build() //resource
-                .build(); //domain
+                .complete() //may key value
+                .complete() //resource
+                .complete(); //domain
 
-        DomainModel m = b.build();
+        DomainModel m = b.createModels().iterator().next();
+        assertTrue(Objects.nonNull(m));
 
         assertEquals(1, m.getValues().size());
         assertEquals(1, m.getEvents().size());
@@ -230,4 +244,18 @@ public class DomainBuilderTest {
         assertEquals(EVENT_TYPE_NAME, valueEventType.getName());
     }
 
+    
+    @Test
+    public void testDefineValueIfAbsent() throws Exception {
+        DomainBuilder b = new DomainBuilder(NAMESPACE, VERSION);
+        addTestEvent(b); //adding event descriptor before value it depends on
+        b.defineValueIfAbsent(NAMESPACE, VERSION, VALUE_TYPE_NAME, TestDomainUtil::modelTestValue);
+
+        DomainModel m = b.createModels().iterator().next();
+        assertTrue(Objects.nonNull(m));
+
+        assertEquals(0, m.getResources().size());
+        assertEquals(1, m.getValues().size());
+        assertEquals(1, m.getEvents().size());
+    }
 }

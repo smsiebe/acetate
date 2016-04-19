@@ -15,8 +15,13 @@
  */
 package org.geoint.acetate.model;
 
+import java.util.Collection;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.geoint.acetate.util.DuplicatedKeyedItemException;
+import org.geoint.acetate.util.ImmutableKeyedSet;
 
 /**
  * A type that is composed from other domain types.
@@ -27,17 +32,28 @@ import java.util.Optional;
  *
  * @author steve_siebert
  */
-public abstract class ComposedType implements DomainType {
+public class ComposedType implements DomainType {
 
     protected final TypeDescriptor descriptor;
-    private final Optional<String> description;
+    protected final Optional<String> description;
+    protected final ImmutableKeyedSet<String, NamedRef> composites;
 
-    public ComposedType(TypeDescriptor descriptor) {
-        this(descriptor, null);
+    public ComposedType(TypeDescriptor descriptor,
+            Collection<NamedRef> composites)
+            throws InvalidModelException {
+        this(descriptor, composites, null);
     }
 
-    public ComposedType(TypeDescriptor descriptor, String description) {
+    public ComposedType(TypeDescriptor descriptor,
+            Collection<NamedRef> composites,
+            String description) throws InvalidModelException {
         this.descriptor = descriptor;
+        try {
+            this.composites
+                    = ImmutableKeyedSet.createSet(composites, NamedRef::getName);
+        } catch (DuplicatedKeyedItemException ex) {
+            throw new InvalidModelException("Duplicate composite type name.", ex);
+        }
         this.description = Optional.ofNullable(description);
     }
 
@@ -54,6 +70,14 @@ public abstract class ComposedType implements DomainType {
     @Override
     public Optional<String> getDescription() {
         return description;
+    }
+
+    public Collection<NamedRef> getComposites() {
+        return composites;
+    }
+
+    public Optional<NamedRef> findComposite(String name) {
+        return composites.findByKey(name);
     }
 
     @Override

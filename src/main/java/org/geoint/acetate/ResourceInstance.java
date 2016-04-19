@@ -22,7 +22,7 @@ import org.geoint.acetate.model.InvalidModelException;
 import org.geoint.acetate.model.NamedTypeRef;
 import org.geoint.acetate.model.ResourceOperation;
 import org.geoint.acetate.model.ResourceType;
-import org.geoint.acetate.util.ImmutableNamedMap;
+import org.geoint.acetate.util.ImmutableKeyedSet;
 
 /**
  * An instance of a domain resource.
@@ -35,13 +35,13 @@ public class ResourceInstance extends CompositeInstance<ResourceType> {
     protected final Optional<String> previousVersion;
 
     public ResourceInstance(ResourceType typeModel, String guid, String version,
-            ImmutableNamedMap<InstanceRef> composites) {
+            ImmutableKeyedSet<String, InstanceRef> composites) {
         this(typeModel, guid, version, null, composites);
     }
 
     protected ResourceInstance(ResourceType typeModel, String guid,
             String version, String previousVersion,
-            ImmutableNamedMap<InstanceRef> composites) {
+            ImmutableKeyedSet<String, InstanceRef> composites) {
         super(typeModel, composites);
         this.guid = guid;
         this.version = version;
@@ -121,7 +121,7 @@ public class ResourceInstance extends CompositeInstance<ResourceType> {
     public Collection<TypeInstanceRef> getLinks() {
         return typeModel.getLinks().stream()
                 .map(NamedTypeRef::getName)
-                .map((n) -> (TypeInstanceRef) composites.get(n))
+                .map((n) -> (TypeInstanceRef) composites.findByKey(n).get())
                 .collect(Collectors.toList());
     }
 
@@ -140,7 +140,7 @@ public class ResourceInstance extends CompositeInstance<ResourceType> {
                 .orElseThrow(() -> new InvalidModelException(String.format(
                         "Link reference '%s' is not defined by the resource "
                         + "model.", linkName)));
-        return (TypeInstanceRef) composites.get(linkName);
+        return (TypeInstanceRef) composites.findByKey(linkName).get();
     }
 
     public Collection<ResourceOperation> listOperations() {

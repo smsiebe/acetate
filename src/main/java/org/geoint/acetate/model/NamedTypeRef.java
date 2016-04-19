@@ -63,6 +63,10 @@ public class NamedTypeRef<M extends DomainType> extends NamedRef {
         return type;
     }
 
+    public TypeDescriptor getReferencedDescriptor() {
+        return type.getTypeDescriptor();
+    }
+
     @Override
     public String toString() {
         return String.format("%s: %s", this.getName(), type.toString());

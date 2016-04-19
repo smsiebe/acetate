@@ -17,7 +17,9 @@ package org.geoint.acetate.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +36,8 @@ import org.geoint.acetate.functional.ThrowingFunction;
  * deterministic, key to be generated the the same way for every item by
  * permitting the key to be registered only once. As a result, both the key and
  * value are unique to the set.
+ * <p>
+ * Instances of a keyed set is not thread safe.
  *
  * @author steve_siebert
  * @param <K> key type
@@ -41,14 +45,14 @@ import org.geoint.acetate.functional.ThrowingFunction;
  */
 public class KeyedSet<K, V> implements Set<V> {
 
-    private final Map<String, V> items = new HashMap<>();
-    private final Function<V, String> keyGen;
+    private final Map<K, V> items = new HashMap<>();
+    private final Function<V, K> keyGen;
 
     /**
      *
      * @param keyGenerator function used to generate the item key
      */
-    public KeyedSet(Function<V, String> keyGenerator) {
+    public KeyedSet(Function<V, K> keyGenerator) {
         this.keyGen = keyGenerator;
     }
 
@@ -83,8 +87,7 @@ public class KeyedSet<K, V> implements Set<V> {
     }
 
     /**
-     * Maps each item in the set to a new List.
-     * <p>
+     * Re-key each item and return a list.
      *
      * @param <T>
      * @param <X>
@@ -92,12 +95,24 @@ public class KeyedSet<K, V> implements Set<V> {
      * @return
      * @throws X
      */
-    public <T, X extends Throwable> List<T> toList(
+    public <T, X extends Throwable> List<T> rekeyList(
             ThrowingFunction<V, T, X> mapper) throws X {
-        return toCollection(ArrayList::new, mapper);
+        return rekeyCollection(ArrayList::new, mapper);
     }
 
-    public <T, C extends Collection<T>, X extends Throwable> C toCollection(
+    /**
+     * Rekey each item and return a new collection created by the provided
+     * supplier.
+     *
+     * @param <T>
+     * @param <C>
+     * @param <X>
+     * @param collectionSupplier
+     * @param mapper
+     * @return
+     * @throws X
+     */
+    public <T, C extends Collection<T>, X extends Throwable> C rekeyCollection(
             Supplier<C> collectionSupplier,
             ThrowingFunction<V, T, X> mapper) throws X {
         C to = collectionSupplier.get();
@@ -107,7 +122,64 @@ public class KeyedSet<K, V> implements Set<V> {
         return to;
     }
 
-    public Optional<V> findByName(String name) {
+    /**
+     * Rekey, returning a new set.
+     *
+     * @param <T>
+     * @param <X>
+     * @param mapper
+     * @return
+     * @throws X
+     */
+    public <T, X extends Throwable> Set<T> rekeySet(
+            ThrowingFunction<V, T, X> mapper) throws X {
+        return rekeyCollection(HashSet::new, mapper);
+    }
+
+    /**
+     * Returns an unmodifiable map of a key->value map backed by this set.
+     *
+     * @return
+     */
+    public Map<K, V> toMap() {
+        return Collections.unmodifiableMap(items);
+    }
+
+    public BidirectionalMap<K, V> toBidirectionalMap() {
+        BidirectionalMap biMap = BidirectionalMap.newMap(() -> new HashMap<>());
+        biMap.putAll(items);
+        return biMap;
+    }
+
+    /**
+     * Returns a new keyed set containing only items which match the type
+     * filters.
+     *
+     * @param <T>
+     * @param valueType
+     * @return
+     */
+    public <T extends V> KeyedSet<K, T> typedFilter(Class<T> valueType) {
+        KeyedSet typedSet = new KeyedSet<>(keyGen);
+        this.items.entrySet().stream()
+                .filter((e) -> valueType.equals(e.getValue().getClass()))
+                .forEach((e) -> typedSet.items.put(e.getKey(), e.getValue()));
+        return typedSet;
+    }
+
+    /**
+     * Create a new, immutable, keyed set by copying the content of this keyed
+     * set.
+     * <p>
+     * Changes to this set will not change any created immutable set.
+     *
+     * @return immutable keyed set
+     */
+    public ImmutableKeyedSet<K, V> toImmutableSet() {
+        return ImmutableKeyedSet.createSet(this);
+    }
+
+    public Optional<V> findByKey(K name) {
         return Optional.ofNullable(items.get(name));
     }
 
@@ -119,12 +191,27 @@ public class KeyedSet<K, V> implements Set<V> {
      */
     @Override
     public boolean add(V item) {
-        final String name = keyGen.apply(item);
-        if (items.containsKey(name)) {
+        final K key = keyGen.apply(item);
+        if (items.containsKey(key)) {
             return false;
         }
-        items.put(name, item);
+        items.put(key, item);
         return true;
+    }
+
+    public V addIfAbsent(K key, Supplier<V> valueSupplier) {
+        if (!items.containsKey(key)) {
+            items.put(key, valueSupplier.get());
+        }
+        return items.get(key);
+    }
+
+    public void addOrThrow(V item) throws DuplicatedKeyedItemException {
+        if (!add(item)) {
+            throw new DuplicatedKeyedItemException(String.format("Item '%s' "
+                    + "could not be added, generates a duplicate key",
+                    item.toString()));
+        }
     }
 
     @Override
@@ -143,6 +230,22 @@ public class KeyedSet<K, V> implements Set<V> {
         return true;
     }
 
+    public void addAllOrThrow(Collection<? extends V> c)
+            throws DuplicatedKeyedItemException {
+        final Map<K, V> newItems = new HashMap<>();
+        for (V v : c) {
+            final K k = keyGen.apply(v);
+            if (items.containsKey(k)) {
+                throw new DuplicatedKeyedItemException(String.format("Item '%s' "
+                        + "generates a duplicate key '%s', no items were "
+                        + "added to the keyed set.", v.toString(), k.toString()));
+            }
+            newItems.put(k, v);
+        }
+        //all items a unique, add them all
+        this.items.putAll(newItems);
+    }
+
     @Override
     public boolean retainAll(Collection<?> c) {
         throw new UnsupportedOperationException();
@@ -150,7 +253,7 @@ public class KeyedSet<K, V> implements Set<V> {
 
     @Override
     public boolean remove(Object o) {
-        final String key = keyGen.apply((V) o);
+        final K key = keyGen.apply((V) o);
         return this.items.remove(key, o);
     }
 

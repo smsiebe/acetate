@@ -16,6 +16,7 @@
 package org.geoint.acetate.model;
 
 import org.geoint.acetate.model.design.DomainBuilder;
+import org.geoint.acetate.model.design.ValueBuilder;
 
 /**
  * Utility class used to create mock test domain objects.
@@ -37,20 +38,22 @@ public class TestDomainUtil {
 
     public static DomainBuilder addTestResource(DomainBuilder b)
             throws InvalidModelException {
-        return b.defineResource(RESOURCE_TYPE_NAME, RESOURCE_DESC)
+        return b.defineResource(RESOURCE_TYPE_NAME)
                 .withCompositeType(VALUE_REF_NAME, VALUE_TYPE_NAME)
                 .withDescription(VALUE_REF_DESC)
-                .build() //ref
-                .build(); //resource
+                .complete() //ref
+                .withDescription(RESOURCE_DESC)
+                .complete(); //resource
     }
 
     public static DomainBuilder addTestEvent(DomainBuilder b)
             throws InvalidModelException {
-        b.defineEvent(EVENT_TYPE_NAME, EVENT_DESC)
+        b.defineEvent(EVENT_TYPE_NAME)
                 .withCompositeType(VALUE_REF_NAME, VALUE_TYPE_NAME)
                 .withDescription(VALUE_REF_DESC)
-                .build() //ref
-                .build(); //event
+                .complete() //ref
+                .withDescription(EVENT_DESC)
+                .complete(); //event
         return b;
     }
 
@@ -58,8 +61,13 @@ public class TestDomainUtil {
             throws InvalidModelException {
         b.defineValue(VALUE_TYPE_NAME)
                 .withDescription(VALUE_DESC)
-                .build();
+                .complete();
         return b;
+    }
+
+    public static void modelTestValue(ValueBuilder vb) throws InvalidModelException {
+        vb.withDescription(VALUE_DESC);
+        vb.complete();
     }
 
     public static DomainBuilder newTestDomainBuilder() {

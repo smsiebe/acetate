@@ -15,8 +15,8 @@
  */
 package org.geoint.acetate.model;
 
+import java.util.Set;
 import org.geoint.acetate.model.design.DomainBuilder;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import org.geoint.acetate.model.resolve.MapTypeResolver;
 import org.geoint.acetate.model.resolve.DomainTypeResolver;
@@ -38,25 +38,14 @@ public class DomainRegistry implements DomainTypeResolver<TypeDescriptor> {
     //complete registry - resolve types from here
     protected final HierarchicalTypeResolver<TypeDescriptor> typeResolver;
 
-    protected DomainRegistry() {
-        this.localRegistry = new MapTypeResolver<>(new ConcurrentHashMap<>());
-        this.typeResolver = HierarchicalTypeResolver.newHierarchy(localRegistry);
-    }
-
-    protected DomainRegistry(DomainTypeResolver<TypeDescriptor> resolver) {
-        this.localRegistry = new MapTypeResolver<>();
-        this.typeResolver = HierarchicalTypeResolver.newHierarchy(resolver)
-                .addChild(localRegistry);
-    }
-
     /**
      * Create a new DomainRegistry backed by just its (currently empty)
      * register.
      *
-     * @return empty domain registry
      */
-    public static DomainRegistry newRegistry() {
-        return new DomainRegistry();
+    public DomainRegistry() {
+        this.localRegistry = new MapTypeResolver<>(new ConcurrentHashMap<>());
+        this.typeResolver = HierarchicalTypeResolver.newHierarchy(localRegistry);
     }
 
     /**
@@ -65,11 +54,11 @@ public class DomainRegistry implements DomainTypeResolver<TypeDescriptor> {
      * found.
      *
      * @param resolver type resolver searched if not found in local register
-     * @return new registry
      */
-    public static DomainRegistry newRegistry(
-            DomainTypeResolver<TypeDescriptor> resolver) {
-        return new DomainRegistry(resolver);
+    public DomainRegistry(DomainTypeResolver<TypeDescriptor> resolver) {
+        this.localRegistry = new MapTypeResolver<>();
+        this.typeResolver = HierarchicalTypeResolver.newHierarchy(resolver)
+                .addChild(localRegistry);
     }
 
     /**
@@ -81,7 +70,7 @@ public class DomainRegistry implements DomainTypeResolver<TypeDescriptor> {
      * @return domain builder
      */
     public DomainBuilder builder(String namespace, String version) {
-        return new RegisteringDomainBuilder(new DomainBuilder(namespace, version));
+        return new RegisteringDomainBuilder(namespace, version);
     }
 
 //    /**
@@ -94,6 +83,12 @@ public class DomainRegistry implements DomainTypeResolver<TypeDescriptor> {
 //    public Set<DomainModel> getDomainModels() {
 //        return Collections.unmodifiableSet(models);
 //    }
+//    public DomainModel findModel(String namespace, String version)
+//            throws InvalidModelException {
+//        //create a new domain model from the exploded types
+//        DomainModelBuilder mb = new DomainModelBuilder(namespace, version);
+//        
+//    }
     public void register(DomainModel model) {
         //explode the model, registering unknown types to the local register
         model.typeStream()
@@ -103,13 +98,6 @@ public class DomainRegistry implements DomainTypeResolver<TypeDescriptor> {
 
     public void register(DomainType type) {
         localRegistry.getTypes().put(type.getTypeDescriptor(), type);
-    }
-
-    public DomainModel findModel(String namespace, String version)
-            throws InvalidModelException {
-        //create a new domain model from the exploded types
-        return DomainModel.newModel(namespace, version,
-                localRegistry.getTypes().values());
     }
 
     @Override
@@ -122,58 +110,22 @@ public class DomainRegistry implements DomainTypeResolver<TypeDescriptor> {
      */
     private class RegisteringDomainBuilder extends DomainBuilder {
 
-        private final DomainBuilder builder;
-
-        public RegisteringDomainBuilder(DomainBuilder builder) {
-            super(builder.getDefaultNamespace(), builder.getDefaultVersion());
-            this.builder = builder;
+        public RegisteringDomainBuilder(String defaultNamespace, String defaultVersion) {
+            super(defaultNamespace, defaultVersion);
         }
 
         @Override
-        public DomainModel build() throws InvalidModelException {
-            DomainModel model = builder.build();
-            register(model);
-            return model;
+        public Set<DomainType> createTypes() throws InvalidModelException {
+            Set<DomainType> types = super.createTypes(typeResolver);
+            types.forEach((t) -> localRegistry.getTypes().put(t.getTypeDescriptor(), t));
+            return types;
         }
 
         @Override
-        public String getDefaultNamespace() {
-            return builder.getDefaultNamespace();
-        }
-
-        @Override
-        public String getDefaultVersion() {
-            return builder.getDefaultVersion();
-        }
-
-        @Override
-        public ValueBuilder defineValue(String typeName) throws InvalidModelException, IllegalStateException {
-            return builder.defineValue(typeName);
-        }
-
-        @Override
-        public EventBuilder defineEvent(String typeName) throws InvalidModelException {
-            return builder.defineEvent(typeName);
-        }
-
-        @Override
-        public ResourceBuilder defineResource(String typeName) throws InvalidModelException {
-            return builder.defineResource(typeName);
-        }
-
-        @Override
-        public int hashCode() {
-            return builder.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return builder.equals(obj);
-        }
-
-        @Override
-        public String toString() {
-            return builder.toString();
+        public Set<DomainType> createTypes(DomainTypeResolver<TypeDescriptor> resolver) throws InvalidModelException {
+            Set<DomainType> types = super.createTypes(typeResolver.addChild(resolver));
+            types.forEach((t) -> localRegistry.getTypes().put(t.getTypeDescriptor(), t));
+            return types;
         }
 
     }

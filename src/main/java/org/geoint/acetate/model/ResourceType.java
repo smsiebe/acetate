@@ -15,10 +15,13 @@
  */
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.util.ImmutableNamedMap;
+import org.geoint.acetate.util.ImmutableKeyedSet;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import org.geoint.acetate.util.DuplicatedKeyedItemException;
 
 /**
  * Model of a {@link DomainResource domain resource}, which is a specialized
@@ -30,10 +33,9 @@ import java.util.stream.Collectors;
  */
 public class ResourceType extends ComposedType {
 
-    private final ImmutableNamedMap<NamedRef> composites;
     //special index of just the composite resources
-    private final ImmutableNamedMap<NamedTypeRef<ResourceType>> links;
-    private final ImmutableNamedMap<ResourceOperation> operations;
+    private final ImmutableKeyedSet<String, NamedTypeRef<ResourceType>> links;
+    private final ImmutableKeyedSet<String, ResourceOperation> operations;
 
     public ResourceType(TypeDescriptor descriptor,
             Collection<NamedRef> composites,
@@ -47,23 +49,43 @@ public class ResourceType extends ComposedType {
             Collection<NamedRef> composites,
             Collection<ResourceOperation> operations)
             throws InvalidModelException {
-        super(descriptor, description);
-        this.composites = ImmutableNamedMap.createMap(composites,
-                NamedRef::getName);
-        //operation names must not conflict with composite reference names
-        this.operations = ImmutableNamedMap.createMap(operations,
-                ResourceOperation::getName, this.composites::containsKey);
 
-        //create a map of composites that are themselves 
-        //resource types, so we don't need to generate a new collection 
-        //on each request at runtime
-        this.links = ImmutableNamedMap.createMap(composites.stream()
-                .filter((r) -> r instanceof NamedTypeRef)
-                .map((r) -> (NamedTypeRef) r)
-                .filter((r) -> r.getReferencedType() instanceof ResourceType)
-                .map((r) -> (NamedTypeRef<ResourceType>) r)
-                .collect(Collectors.toList()),
-                NamedTypeRef::getName);
+        super(descriptor, composites, description);
+
+        try {
+            this.operations = ImmutableKeyedSet.createSet(operations,
+                    ResourceOperation::getName);
+        } catch (DuplicatedKeyedItemException ex) {
+            throw new InvalidModelException("Resource operation names must be "
+                    + "unique.", ex);
+        }
+
+        for (ResourceOperation o : this.operations) {
+            //operation names must not conflict with composite reference names
+            if (this.composites.containsKey(o.getName())) {
+                throw new InvalidModelException(String.format("Resource '%s' "
+                        + "contains an operation and resource named '%s', "
+                        + "operation names must be unique to both operations "
+                        + "and resource reference names.",
+                        descriptor.toString(),
+                        o.getName()));
+            }
+        }
+
+        try {
+            //create a convenience map of links (composites which are resources)
+            this.links = ImmutableKeyedSet.createSet(composites.stream()
+                    .filter((r) -> r instanceof NamedTypeRef)
+                    .map((r) -> (NamedTypeRef) r)
+                    .filter((r) -> r.getReferencedType() instanceof ResourceType)
+                    .map((r) -> (NamedTypeRef<ResourceType>) r)
+                    .collect(Collectors.toList()),
+                    NamedTypeRef::getName);
+        } catch (DuplicatedKeyedItemException ex) {
+            //we shouldn't get here, since the composites are already vetted
+            throw new InvalidModelException("Links must have unique "
+                    + "reference names.");
+        }
     }
 
     /**
@@ -72,7 +94,7 @@ public class ResourceType extends ComposedType {
      * @return resource operations
      */
     public Collection<ResourceOperation> getOperations() {
-        return operations.values();
+        return operations;
     }
 
     /**
@@ -82,29 +104,7 @@ public class ResourceType extends ComposedType {
      * @return operation or null
      */
     public Optional<ResourceOperation> findOperation(String operationName) {
-        return operations.find(operationName);
-    }
-
-    /**
-     * Composite type models.
-     * <p>
-     * Note this method returns all composite types, including links.
-     *
-     * @return resource data attribute models
-     */
-    public Collection<NamedRef> getComposites() {
-        return composites.values();
-    }
-
-    /**
-     * Return the composite type associated with the name, or null.
-     *
-     * @param name attribute name
-     * @return the attribute information or null if the attribute name is not
-     * valid for this resource
-     */
-    public Optional<NamedRef> findComposite(String name) {
-        return composites.find(name);
+        return operations.findByKey(operationName);
     }
 
     /**
@@ -117,7 +117,7 @@ public class ResourceType extends ComposedType {
      * @return resources linked to this resource
      */
     public Collection<NamedTypeRef<ResourceType>> getLinks() {
-        return links.values();
+        return links;
     }
 
     /**
@@ -128,7 +128,7 @@ public class ResourceType extends ComposedType {
      * @return link details or null if link by this name does not exist
      */
     public Optional<NamedTypeRef<ResourceType>> findLink(String linkName) {
-        return links.find(linkName);
+        return links.findByKey(linkName);
     }
 
 }

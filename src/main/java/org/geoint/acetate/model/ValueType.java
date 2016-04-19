@@ -31,6 +31,10 @@ public class ValueType implements DomainType {
     protected final TypeDescriptor descriptor;
     private final Optional<String> description;
 
+    public ValueType(String namespace, String version, String name) {
+        this(new TypeDescriptor(namespace, version, name), null);
+    }
+
     public ValueType(TypeDescriptor descriptor) {
         this(descriptor, null);
     }

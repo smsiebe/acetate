@@ -262,7 +262,8 @@ public abstract class BidirectionalMap<K, V> {
             try {
                 lock.lock();
                 if (!keyIndex.containsKey(key)) {
-                    put(key, value); //elevates to write lock
+                    lock.unlock(); //must release read lock before write lock
+                    this.put(key, value);
                 }
             } finally {
                 lock.unlock();
@@ -341,12 +342,13 @@ public abstract class BidirectionalMap<K, V> {
                 if (keyIndex.containsKey(key)) {
                     return keyIndex.get(key);
                 }
-                V value = factory.apply(key);
-                this.put(key, value);
-                return value;
             } finally {
                 lock.unlock();
             }
+            //have to release read lock before obtaining write lock
+            V value = factory.apply(key);
+            this.put(key, value);
+            return value;
         }
 
         @Override
@@ -358,12 +360,13 @@ public abstract class BidirectionalMap<K, V> {
                 if (valueIndex.containsKey(value)) {
                     return valueIndex.get(value);
                 }
-                K key = factory.apply(value);
-                this.put(key, value);
-                return key;
             } finally {
                 lock.unlock();
             }
+            //have to release read lock before obtaining write lock
+            K key = factory.apply(value);
+            this.put(key, value);
+            return key;
         }
 
     }

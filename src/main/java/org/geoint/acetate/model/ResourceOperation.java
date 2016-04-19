@@ -15,13 +15,16 @@
  */
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.util.ImmutableNamedMap;
+import org.geoint.acetate.util.ImmutableKeyedSet;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.geoint.acetate.EventInstance;
 import org.geoint.acetate.InstanceRef;
 import org.geoint.acetate.ResourceInstance;
 import org.geoint.acetate.functional.ThrowingBiFunction;
+import org.geoint.acetate.util.DuplicatedKeyedItemException;
 
 /**
  * Behavior of a domain is described as resource operations, returning events
@@ -41,7 +44,7 @@ public class ResourceOperation {
     private final boolean idempotent;
     private final boolean safe;
     private final ThrowingBiFunction<ResourceInstance, InstanceRef[], EventInstance, ?> function;
-    private final ImmutableNamedMap<NamedTypeRef> parameters;
+    private final ImmutableKeyedSet<String, NamedTypeRef> parameters;
     private final NamedTypeRef<EventType> returnEvent;
 
     public ResourceOperation(String namespace, String version, String resourceType,
@@ -75,8 +78,13 @@ public class ResourceOperation {
         this.idempotent = idempotent;
         this.safe = safe;
         this.function = function;
-        this.parameters
-                = ImmutableNamedMap.createMap(parameters, NamedTypeRef::getName);
+        try {
+            this.parameters
+                    = ImmutableKeyedSet.createSet(parameters, NamedTypeRef::getName);
+        } catch (DuplicatedKeyedItemException ex) {
+            throw new InvalidModelException("Operation parameters must have unique "
+                    + "names.", ex);
+        }
         this.returnEvent = returnEvent;
     }
 
@@ -85,7 +93,7 @@ public class ResourceOperation {
      *
      * @return resource namespace
      */
-    public String getNamespace() {
+    public String getResourceNamespace() {
         return resourceDescriptor.getNamespace();
     }
 
@@ -155,7 +163,7 @@ public class ResourceOperation {
      * @return operation parameters, if none returns an empty array
      */
     public Collection<NamedTypeRef> getParameters() {
-        return parameters.values();
+        return parameters;
     }
 
     /**

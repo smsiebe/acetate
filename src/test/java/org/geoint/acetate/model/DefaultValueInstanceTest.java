@@ -33,8 +33,9 @@ public class DefaultValueInstanceTest {
         final byte[] valueBytes = "ValueValue".getBytes(StandardCharsets.UTF_8);
         DomainBuilder b = newTestDomainBuilder();
         addTestValue(b);
-        DomainModel m = b.build();
-
+        DomainModel m = b.createModels().iterator().next();
+        assertTrue(Objects.nonNull(m));
+        
         ValueType type = m.getValues().iterator().next();
         ValueInstance instance = ValueInstance.newInstance(type, valueBytes);
 

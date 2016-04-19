@@ -84,6 +84,9 @@ public final class HierarchicalTypeResolver<T> implements DomainTypeResolver<T> 
         try {
             return this.resolver.resolve(key);
         } catch (UnresolvedException ex) {
+            if (parent == null) {
+                throw ex;
+            }
             return parent.resolve(key);
         }
     }

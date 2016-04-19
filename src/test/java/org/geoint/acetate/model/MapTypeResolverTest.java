@@ -19,6 +19,7 @@ import org.geoint.acetate.model.resolve.MapTypeResolver;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 import org.junit.Test;
 import org.junit.BeforeClass;
 import static org.junit.Assert.*;
@@ -40,16 +41,16 @@ public class MapTypeResolverTest {
     }
 
     @Test
-    public void testDefaultResolver() throws InvalidModelException {
+    public void testDefaultResolver() throws Exception {
         MapTypeResolver<TypeDescriptor> r = new MapTypeResolver<>();
         r.getTypes().put(TEST_EVENT.descriptor, TEST_EVENT);
-        assertTrue(r.resolveType(new TypeDescriptor(NS, V, TN)).isPresent());
+        assertTrue(Objects.nonNull(r.resolve(new TypeDescriptor(NS, V, TN))));
     }
 
     @Test
-    public void testArrayBackedResolver() throws InvalidModelException {
+    public void testArrayBackedResolver() throws Exception {
         MapTypeResolver<TypeDescriptor> r = new MapTypeResolver<>(DomainType::getTypeDescriptor, TEST_EVENT);
-        assertTrue(r.resolveType(new TypeDescriptor(NS, V, TN)).isPresent());
+        assertTrue(Objects.nonNull(r.resolve(new TypeDescriptor(NS, V, TN))));
     }
 
 }

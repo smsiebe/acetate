@@ -15,14 +15,14 @@
  */
 package org.geoint.acetate.model;
 
-import org.geoint.acetate.util.ImmutableNamedMap;
-import java.util.ArrayList;
+import org.geoint.acetate.util.ImmutableKeyedSet;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
+import org.geoint.acetate.util.KeyedSet;
 
 /**
  * The model of a unique application domain.
@@ -34,58 +34,21 @@ public final class DomainModel {
     private final String namespace;
     private final String version;
     private final Optional<String> description;
-    private final ImmutableNamedMap<ResourceType> resources;
-    private final ImmutableNamedMap<EventType> events;
-    private final ImmutableNamedMap<ValueType> values;
+    private final ImmutableKeyedSet<String, ResourceType> resources;
+    private final ImmutableKeyedSet<String, EventType> events;
+    private final ImmutableKeyedSet<String, ValueType> values;
     private final Set<TypeDescriptor> dependencies;
 
     public DomainModel(String namespace, String version, String description,
-            Collection<ResourceType> resources,
-            Collection<EventType> events,
-            Collection<ValueType> values,
+            KeyedSet<String, DomainType> types,
             Collection<TypeDescriptor> dependencies) throws InvalidModelException {
         this.namespace = namespace;
         this.version = version;
         this.description = Optional.ofNullable(description);
-        this.resources = ImmutableNamedMap.createMap(resources, ResourceType::getName);
-        this.events = ImmutableNamedMap.createMap(events,
-                EventType::getName, this.resources::containsKey);
-        this.values = ImmutableNamedMap.createMap(values,
-                ValueType::getName,
-                (n) -> this.resources.containsKey(n) || this.events.containsKey(n));
+        this.resources = types.typedFilter(ResourceType.class).toImmutableSet();
+        this.events = types.typedFilter(EventType.class).toImmutableSet();
+        this.values = types.typedFilter(ValueType.class).toImmutableSet();
         this.dependencies = new HashSet<>(dependencies);
-    }
-
-    public static DomainModel newModel(String namespace, String version,
-            Collection<DomainType> types) throws InvalidModelException {
-        return newModel(namespace, version, null, types);
-    }
-
-    public static DomainModel newModel(String namespace, String version,
-            String description, Collection<DomainType> types)
-            throws InvalidModelException {
-        Collection<ResourceType> resources = new ArrayList<>();
-        Collection<EventType> events = new ArrayList<>();
-        Collection<ValueType> values = new ArrayList<>();
-        Set<TypeDescriptor> dependencies = new HashSet<>();
-
-        for (DomainType t : types) {
-            if (!t.getNamespace().contentEquals(namespace)
-                    || !t.getVersion().contentEquals(version)) {
-                dependencies.add(TypeDescriptor.valueOf(t));
-            } else if (t instanceof ResourceType) {
-                resources.add((ResourceType) t);
-            } else if (t instanceof EventType) {
-                events.add((EventType) t);
-            } else if (t instanceof ValueType) {
-                values.add((ValueType) t);
-            } else {
-                throw new InvalidModelException(String.format("Unknown "
-                        + "domain type '%s'", t.toString()));
-            }
-        }
-        return new DomainModel(namespace, version, description,
-                resources, events, values, dependencies);
     }
 
     /**
@@ -130,7 +93,7 @@ public final class DomainModel {
      * @return domain resource models
      */
     public Collection<ResourceType> getResources() {
-        return resources.values();
+        return resources;
     }
 
     public ResourceType getResource(String typeName)
@@ -145,7 +108,7 @@ public final class DomainModel {
      * @return domain value models
      */
     public Collection<ValueType> getValues() {
-        return values.values();
+        return values;
     }
 
     public ValueType getValue(String typeName) throws UnknownTypeException {
@@ -159,7 +122,7 @@ public final class DomainModel {
      * @return domain event models
      */
     public Collection<EventType> getEvents() {
-        return events.values();
+        return events;
     }
 
     public EventType getEvent(String typeName) throws UnknownTypeException {
@@ -174,14 +137,23 @@ public final class DomainModel {
      */
     public Stream<DomainType> typeStream() {
         return Stream.concat(
-                Stream.concat(resources.values().stream(),
-                        events.values().stream()
-                ), values.values().stream());
+                Stream.concat(resources.stream(),
+                        events.stream()
+                ), values.stream());
+    }
+
+    /**
+     * Returns the formatted domain name as domainName-domainVersion.
+     *
+     * @return formatted domain name
+     */
+    public String asString() {
+        return String.format("%s-%s", namespace, version);
     }
 
     @Override
     public String toString() {
-        return String.format("%s-%s", namespace, version);
+        return asString();
     }
 
     @Override
