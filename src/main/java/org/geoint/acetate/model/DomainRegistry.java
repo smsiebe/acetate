@@ -57,8 +57,8 @@ public class DomainRegistry implements DomainTypeResolver<TypeDescriptor> {
      */
     public DomainRegistry(DomainTypeResolver<TypeDescriptor> resolver) {
         this.localRegistry = new MapTypeResolver<>();
-        this.typeResolver = HierarchicalTypeResolver.newHierarchy(resolver)
-                .addChild(localRegistry);
+        this.typeResolver = HierarchicalTypeResolver.newHierarchy(this.localRegistry)
+                .optionalChild(resolver);
     }
 
     /**

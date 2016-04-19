@@ -16,10 +16,8 @@
 package org.geoint.acetate.model.resolve;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.geoint.acetate.model.DomainType;

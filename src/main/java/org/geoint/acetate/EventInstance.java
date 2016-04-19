@@ -30,16 +30,15 @@ import org.geoint.acetate.util.ImmutableKeyedSet;
  * domain do not change the state of the current domain).
  * <p>
  * While a domain resource defines the "things" in the domain, as well as their
- * behavior, the domain event is arguable to "core" of a domain. Not only is the
- * state of the domain (its resources) sourced from events, domain events may
- * trigger additional events both within and outside of the domain. In other
+ * behavior, the domain event is arguably the "core" of a domain. Not only is
+ * the state of the domain (its resources) sourced from events, domain events
+ * may trigger additional events both within and outside of the domain. In other
  * words, while a domain resource define how to directly interact with the
  * domain (its API), domain events allows developers to lift the facade of the
  * domain and observe the context (the meaning) of what is occurring with a
- * domain. How specifically events are defined by a domain is implementation
- * specific; developers are encouraged to model a domain "event-first" based on
- * how a domain actually operates, and build a domain facade based on those
- * events.
+ * domain. How events are defined and used are domain specific; developers are
+ * encouraged to model a domain "event-first" based on how a domain actually
+ * operates, and build a domain facade based on those events.
  *
  * @author steve_siebert
  */

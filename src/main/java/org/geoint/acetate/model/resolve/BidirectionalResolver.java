@@ -20,8 +20,10 @@ import org.geoint.acetate.functional.Resolver;
 /**
  *
  * @author steve_siebert
+ * @param <K>
+ * @param <V>
  */
 public interface BidirectionalResolver<K, V> extends Resolver<K, V> {
 
-    K getKey(V value) throws UnresolvedException;
+    K reverse(V value) throws UnresolvedException;
 }

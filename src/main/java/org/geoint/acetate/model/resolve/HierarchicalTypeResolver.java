@@ -28,16 +28,16 @@ import org.geoint.acetate.model.DomainType;
  * @author steve_siebert
  * @param <T> domain type key
  */
-public final class HierarchicalTypeResolver<T> implements DomainTypeResolver<T> {
+public class HierarchicalTypeResolver<T> implements DomainTypeResolver<T> {
 
     private final HierarchicalTypeResolver<T> parent; //null indicates the root/parent node
     private final DomainTypeResolver<T> resolver;
 
-    private HierarchicalTypeResolver(DomainTypeResolver<T> resolver) {
+    protected HierarchicalTypeResolver(DomainTypeResolver<T> resolver) {
         this(null, resolver);
     }
 
-    private HierarchicalTypeResolver(HierarchicalTypeResolver<T> parent,
+    protected HierarchicalTypeResolver(HierarchicalTypeResolver<T> parent,
             DomainTypeResolver<T> resolver) throws NullPointerException {
         if (resolver == null) {
             throw new NullPointerException("HierarchicalTypeResolver node must "
